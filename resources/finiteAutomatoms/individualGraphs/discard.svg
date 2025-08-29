@@ -1,0 +1,20 @@
+<?xml version="1.0" standalone="no"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="44pt" height="133pt" viewBox="0.00 0.00 44 132.8">
+<g id="graph0" class="graph" transform="translate(4,128.8000030517578) scale(1)" data-name="DFA">
+
+<polygon fill="white" stroke="none" points="-4,4 -4,-128.8 40,-128.8 40,4 -4,4"/>
+<!-- F -->
+
+<!-- 0 -->
+<g id="node1" class="node" pointer-events="visible" data-name="0">
+
+<ellipse fill="none" stroke="black" cx="18" cy="-18" rx="18" ry="18"/>
+<text text-anchor="middle" x="18" y="-13.8" font-family="Times,serif" font-size="14.00">0</text>
+</g>
+<g id="edge1" class="edge" data-name="0-&gt;0" data-comment="0">
+
+<path fill="none" stroke="black" d="M14.16,-35.67C9.27,-66.85 10.55,-108 18,-108 24.58,-108 26.35,-75.93 23.31,-46.96"/>
+<polygon fill="black" stroke="black" points="26.8,-46.64 22.04,-37.17 19.85,-47.54 26.8,-46.64"/>
+<text text-anchor="middle" x="18" y="-112.2" font-family="Times,serif" font-size="14.00">s, t, n</text>
+</g></g>
+</svg>
