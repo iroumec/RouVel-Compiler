@@ -1,4 +1,4 @@
-﻿digraph DFA {
+digraph DFA {
     splines = true;
     overlap = false;
     nodesep = 1;
@@ -25,6 +25,16 @@
         <TR><TD><FONT POINT-SIZE="10">AS1</FONT></TD></TR>
         </TABLE>
         >;];
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     
     

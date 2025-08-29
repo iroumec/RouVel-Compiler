@@ -1,4 +1,4 @@
-﻿digraph DFA {
+digraph DFA {
     // Layout más libre y cuadrado
     splines = true;
     overlap = false;

@@ -6,5 +6,5 @@ for file in *.dot; do
     [ -e "$file" ] || continue  
 
     base="${file%.dot}"
-    dot -Tsvg "$file" -o "$base.svg"
+    dot -Tpng "$file" -o "$base.png"
 done

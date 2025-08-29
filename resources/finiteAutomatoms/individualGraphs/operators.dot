@@ -1,4 +1,4 @@
-﻿digraph DFA {
+digraph DFA {
     rankdir = LR;
     // layout de izquierda a derecha
     
