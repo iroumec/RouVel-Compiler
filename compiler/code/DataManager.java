@@ -2,21 +2,20 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 public class DataManager {
 
-    public static String[] getReservedWords() {
+    public static Set<String> getReservedWords() {
 
-        List<String> lista = new ArrayList<>();
+        Set<String> palabras = new HashSet<>();
 
         try (BufferedReader br = new BufferedReader(new FileReader(
                 "resources/reservedWords.txt"))) {
             String linea;
             while ((linea = br.readLine()) != null) {
-                lista.add(linea.trim()); // trim por si hay espacios o saltos
+                palabras.add(linea.trim()); // trim por si hay espacios o saltos
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -24,14 +23,11 @@ public class DataManager {
             e.printStackTrace();
         }
 
-        // Pasar la lista a arreglo
-        String[] palabras = lista.toArray(new String[0]);
-
         return palabras;
     }
 
     public static void main(String[] args) {
-        System.out.println(Arrays.toString(DataManager.getReservedWords()));
+        System.out.println(DataManager.getReservedWords());
     }
 
 }

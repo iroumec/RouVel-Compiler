@@ -1,20 +1,30 @@
 ﻿import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Set;
 
 public class LexicAnalyzer {
 
+    private final static LexicAnalyzer INSTANCE;
+
     private final int[][] matrizTransicionEstados;
     private final SemanticAction[][] matrizAccionesSemanticas;
-    private final String[] reservedWords;
+    private final Set<String> reservedWords;
 
     private String codigoFuente;
     private int siguienteCaracterALeer;
 
-    public LexicAnalyzer(String sourceCodePath) {
+    public LexicAnalyzer getInstance() {
+
+        if (INSTANCE == null) {
+            INSTANCE = new LexicAnalyzer(codigoFuente);
+        }
+    }
+
+    private LexicAnalyzer(String sourceCodePath) {
         this.matrizTransicionEstados = getMatrizTransicionEstados();
         this.matrizAccionesSemanticas = getMatrizAccionesSemanticas();
-        this.reservedWords = 
+        this.reservedWords = DataManager.getReservedWords();
 
         try {
             this.codigoFuente = Files.readString(Paths.get(sourceCodePath));
@@ -45,6 +55,10 @@ public class LexicAnalyzer {
         return new Token();
     }
 
+    public boolean isReservedWord(String lexema) {
+        return this.reservedWords.contains(lexema);
+    }
+
     /**
      * El objetivo de esta función es que todas las letras mayúsculas, por ejemplo,
      * sean mapeadas a una misma columna de requerirse.
@@ -52,7 +66,7 @@ public class LexicAnalyzer {
      * @param c
      * @return
      */
-    public int normalizeChar(char c) {
+    private int normalizeChar(char c) {
 
         return 0;
     }

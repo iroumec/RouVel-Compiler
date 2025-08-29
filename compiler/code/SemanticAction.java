@@ -1,5 +1,4 @@
 ﻿public interface SemanticAction {
 
-    void execute();
-
+    void execute(LexicAnalyzer lexicAnalyzer);
 }
