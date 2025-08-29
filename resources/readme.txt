@@ -9,3 +9,11 @@ De la misma forma, el siguiente error se debe al mismo motivo:
 ./dot2png.sh: line 1: #!/usr/bin/env: No such file or directory
 
 Se debe cambiar la codificación del archivo bash a UTF-8.
+
+Al ejecutar archivos java también...
+
+Si aparece que no se reconoce el comando javac.
+
+java -version
+
+Te fijás la versión de JDK, suponete que figura 21. Luego hacés: sudo apt install openjdk-21-jdk 

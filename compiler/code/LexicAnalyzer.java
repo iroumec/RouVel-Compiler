@@ -6,6 +6,7 @@ public class LexicAnalyzer {
 
     private final int[][] matrizTransicionEstados;
     private final SemanticAction[][] matrizAccionesSemanticas;
+    private final String[] reservedWords;
 
     private String codigoFuente;
     private int siguienteCaracterALeer;
@@ -13,6 +14,7 @@ public class LexicAnalyzer {
     public LexicAnalyzer(String sourceCodePath) {
         this.matrizTransicionEstados = getMatrizTransicionEstados();
         this.matrizAccionesSemanticas = getMatrizAccionesSemanticas();
+        this.reservedWords = 
 
         try {
             this.codigoFuente = Files.readString(Paths.get(sourceCodePath));

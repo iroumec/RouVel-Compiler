@@ -25,6 +25,7 @@ class LexicalAnalyzer {
 
     - {readOnly} transicionEstados : int[][]
     - {readOnly} accionesSemanticas : SemanticAction[][]
+    - {readOnly} reservedWords : String[]
     - codigoFuente : String
     - siguienteCaracterALeer : int
 
