@@ -16,21 +16,25 @@ class Symbol {
     + Symbol(token : Token, lexema : Lexema)
 }
 
-enum Token {
+enum TokenType {
     ID,
     CTE
 }
 
 class LexicalAnalyzer {
 
-    - transicionEstados : int[][]
-    - accionesSemanticas : SemanticAction[][]
-    - ¿Información acerca del archivo que lee?
+    - {readOnly} transicionEstados : int[][]
+    - {readOnly} accionesSemanticas : SemanticAction[][]
+    - codigoFuente : String
+    - siguienteCaracterALeer : int
 
-    - cargarArchivo(path : String) : boolean
-    // Se carga el archivo para luego leerlo
-
+    + LexicalAnalyzer(sourceCodePath : String)
     + normalizeInput(caracter : char) : int
+    + getNextToken() : Token
+}
+
+class Token {
+
 }
 
 class SemanticAction {
