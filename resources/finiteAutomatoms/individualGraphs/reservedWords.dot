@@ -11,5 +11,6 @@
     
     0 -> 12 [label = "l";];
     12 -> 12 [label = "l";];
-    12 -> F [label = "c - l";];
+    12 -> F [label = "c - l"; headlabel = "AS";];
+    // Probar con taillabel, xlabel.
 }

@@ -1,0 +1,41 @@
+﻿@startuml classDiagram
+
+class SymbolTable {
+
+    - tabla : HashMap<Integer, Symbol>
+    + agregarEntrada(Symbol) : int
+    + existeEntrada(Symbol) : int
+    + obtenerEntrada(indice : int) : Symbol 
+}
+
+class Symbol {
+
+    - tipoToken : Token
+    - lexema : String
+
+    + Symbol(token : Token, lexema : Lexema)
+}
+
+enum Token {
+    ID,
+    CTE
+}
+
+class LexicalAnalyzer {
+
+    - transicionEstados : int[][]
+    - accionesSemanticas : SemanticAction[][]
+    - ¿Información acerca del archivo que lee?
+
+    - cargarArchivo(path : String) : boolean
+    // Se carga el archivo para luego leerlo
+
+    + normalizeInput(caracter : char) : int
+}
+
+class SemanticAction {
+
+    + execute()
+}
+
+@enduml
