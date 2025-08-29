@@ -1,0 +1,28 @@
+﻿digraph DFA {
+    // Layout más libre y cuadrado
+    splines = true;
+    overlap = false;
+    nodesep = 1;
+    ranksep = 1;
+    rankdir = LR;
+    
+    // Estados normales.
+    node [shape = circle;];
+    
+    // Estado de aceptación.
+    F [shape = doublecircle;];
+    
+    
+    0 -> 4 [label = "d";];
+    0 -> 5 [label = "\".\"";];
+    4 -> 4 [label = "d";];
+    4 -> 6 [label = "\".\"";];
+    5 -> 6 [label = "d";];
+    6 -> 6 [label = "d";];
+    6 -> F [label = "c - d";];
+    6 -> 7 [label = "\"F\"";];
+    7 -> 8 [label = "\"+\", \"-\"";];
+    8 -> 9 [label = "d";];
+    9 -> 9 [label = "d";];
+    9 -> F [label = "c - d";];
+}

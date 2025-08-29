@@ -1,5 +1,5 @@
 ﻿digraph DFA {
-    // Layout más libre.
+    // Layout más libre y cuadrado
     splines = true;
     overlap = false;
     nodesep = 1;
@@ -11,6 +11,7 @@
     
     // Estado de aceptación.
     F [shape = doublecircle;];
+    
     
     0 -> 10 [label = "\"";];
     10 -> 10 [label = "L, l";];
