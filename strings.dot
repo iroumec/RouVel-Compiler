@@ -1,5 +1,5 @@
 ﻿digraph DFA {
-    // Layout más libre y cuadrado.
+    // Layout más libre.
     splines = true;
     overlap = false;
     nodesep = 1;
