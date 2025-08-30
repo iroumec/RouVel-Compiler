@@ -2,11 +2,12 @@
 
 Trabajo práctico de cursada para la materia Compiladores e Intérpretes.
 
-# Texto de Informe.
+# Decisiones.
 
 Decidimos minimizar la cantidad de acciones semánticas a aplicar a costa de aumentar el número de estados en el autómata finito. De esta forma:
-El autómata se autoexplica. No es necesario recurrir al código constantemente para entenderlo.
-Se facilita el debugging, ya que se minimiza el código.
+
+- El autómata se autoexplica. No es necesario recurrir al código constantemente para entenderlo.
+- Se facilita el debugging, ya que se minimiza el código.
 
 Se define:
 

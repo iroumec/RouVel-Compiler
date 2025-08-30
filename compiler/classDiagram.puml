@@ -17,8 +17,9 @@ class Symbol {
 }
 
 enum TokenType {
-    ID,
+    ID
     CTE
+    STR
 }
 
 class LexicalAnalyzer {
@@ -35,6 +36,21 @@ class LexicalAnalyzer {
 }
 
 class Token {
+
+    - type : TokenType
+    - token : Token
+
+    + getToken() : TokenType
+    + getNumericToken() : int
+    + getAttributes() : List<String>
+}
+
+class TokenSimple {
+
+
+}
+
+class TokenCompuesto {
 
 }
 

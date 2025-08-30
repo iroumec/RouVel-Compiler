@@ -1,9 +1,10 @@
 ﻿public class ReservedWordChecker implements SemanticAction {
 
     @Override
-    public void execute() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'execute'");
+    public void execute(LexicAnalyzer lexicAnalyzer, String lexema) {
+        if (lexicAnalyzer.isReservedWord(lexema)) {
+            return new Token(lexema.toUpperCase());
+        }
     }
 
 }
