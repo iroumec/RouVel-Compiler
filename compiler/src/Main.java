@@ -13,5 +13,7 @@ public class Main {
             System.out.println(token);
             token = lexicalAnalyzer.getNextToken();
         }
+
+        System.out.println("El programa tiene " + lexicalAnalyzer.getNroLinea() + " líneas.");
     }
 }

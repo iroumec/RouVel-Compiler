@@ -5,7 +5,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 public final class DataLoader {
@@ -13,6 +15,14 @@ public final class DataLoader {
     private static String sourceCodePath;
     private final static String reservedWordsPath = "../resources/reservedWords.txt";
     private final static String stateTransitionMatrixPath = "../resources/stateTransitionMatrix.csv";
+    private final static String semanticActionsMatrixPath = "../resources/semanticActionsMatrix.csv";
+
+    // --------------------------------------------------------------------------------------------
+
+    private static final Map<String, SemanticAction> semanticActions = new HashMap<>();
+    static {
+        semanticActions.put("ASN", new NewLineDetected());
+    }
 
     // --------------------------------------------------------------------------------------------
 
@@ -80,21 +90,19 @@ public final class DataLoader {
         String separator = ",";
         ArrayList<SemanticAction[]> lista = new ArrayList<>();
 
-        try (BufferedReader br = new BufferedReader(new FileReader(stateTransitionMatrixPath))) {
+        try (BufferedReader br = new BufferedReader(new FileReader(semanticActionsMatrixPath))) {
             br.readLine(); // saltar encabezado
 
             while ((line = br.readLine()) != null) {
                 String[] tokens = line.split(separator, -1); // -1 para mantener vacíos
-                SemanticAction[] fila = new SemanticAction[tokens.length - 1]; // ignorar columna row
+                SemanticAction[] fila = new SemanticAction[tokens.length - 1]; // Se ignora la columna row.
 
                 for (int i = 1; i < tokens.length; i++) {
                     String valor = tokens[i].trim();
                     if (valor.isEmpty()) {
-                        fila[i - 1] = null; // sin acción semántica
+                        fila[i - 1] = null; // Sin acción semántica.
                     } else {
-                        // Aquí deberías mapear el valor a la acción semántica correspondiente
-                        // fila[i - 1] = SemanticAction.fromString(valor);
-                        // suponiendo que tienes un método que convierte string a SemanticAction
+                        fila[i - 1] = semanticActions.get(valor);
                     }
                 }
                 lista.add(fila);
