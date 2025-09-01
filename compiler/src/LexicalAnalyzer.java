@@ -18,7 +18,10 @@ public final class LexicalAnalyzer {
     private final int[][] matrizTransicionEstados;
     private final SemanticAction[][] matrizAccionesSemanticas;
 
-    private int nroLinea = 1;
+    private Token token;
+    StringBuilder lexema = new StringBuilder();
+    private int nroLinea;
+    private char lastCharRead;
     private String codigoFuente;
     private int siguienteCaracterALeer;
 
@@ -63,31 +66,49 @@ public final class LexicalAnalyzer {
     // --------------------------------------------------------------------------------------------
 
     private LexicalAnalyzer() {
-        this.matrizTransicionEstados = DataLoader.loadStateTransitionMatrix();
-        this.matrizAccionesSemanticas = DataLoader.loadSemanticActionMatrix();
+        this.token = null;
+        this.nroLinea = 1;
+        this.siguienteCaracterALeer = 0;
         this.reservedWords = DataLoader.loadReservedWords();
         // Se agrega un salto de línea para marcar el final del archivo.
         this.codigoFuente = DataLoader.loadSourceCode() + '\s';
-        this.siguienteCaracterALeer = 0;
+        this.matrizTransicionEstados = DataLoader.loadStateTransitionMatrix();
+        this.matrizAccionesSemanticas = DataLoader.loadSemanticActionMatrix();
     }
 
     // --------------------------------------------------------------------------------------------
 
     public Token getNextToken() {
 
+        if (this.token == null) {
+            searchToken();
+        }
+
+        Token out = this.token;
+
+        // Se limpia el token, ya que se consumió.
+        this.token = null;
+
+        return out;
+
+    }
+
+    private void searchToken() {
+
         StringBuilder lexema = new StringBuilder();
-        char caracter = ' ';
         int estadoActual = estadoInicio;
         Integer symbolTableEntry = null;
         TokenType tokenType = null;
 
         while (estadoActual != estadoAceptacion && siguienteCaracterALeer < codigoFuente.length()) {
             if (estadoActual != estadoInicio) {
-                lexema.append(caracter);
+                lexema.append(lastCharRead);
             }
 
-            caracter = codigoFuente.charAt(siguienteCaracterALeer);
-            int normalizedChar = normalizeChar(caracter);
+            lastCharRead = codigoFuente.charAt(siguienteCaracterALeer);
+
+            System.out.println("Caracter leido: " + lastCharRead);
+            int normalizedChar = normalizeChar(lastCharRead);
 
             SemanticAction accionSemantica = matrizAccionesSemanticas[estadoActual][normalizedChar];
             estadoActual = matrizTransicionEstados[estadoActual][normalizedChar];
@@ -105,7 +126,7 @@ public final class LexicalAnalyzer {
 
         // Resolución del token al llegar al estado de aceptación.
         String lex = lexema.toString();
-        String posiblePalabra = lex + caracter;
+        String posiblePalabra = lex + lastCharRead;
 
         if (isReservedWord(posiblePalabra)) {
             lex = posiblePalabra;
@@ -117,7 +138,9 @@ public final class LexicalAnalyzer {
             symbolTableEntry = SymbolTable.agregarEntrada(tokenType, lex);
         }
 
-        return (tokenType == null) ? null : new Token(tokenType, symbolTableEntry);
+        if (tokenType != null) {
+            this.token = new Token(tokenType, symbolTableEntry);
+        }
     }
 
     public boolean isReservedWord(String lexema) {

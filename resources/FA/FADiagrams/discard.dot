@@ -1,8 +1,7 @@
 digraph DFA {
     rankdir = LR;
     node [shape = circle;];
-    F [shape = doublecircle;];
     
     0 -> 0 [label = "s, t";];
-    0 -> 0 [label = "n \n AS"; tailport = s;];
+    0 -> 0 [label = "n \n ASN"; tailport = s;];
 }

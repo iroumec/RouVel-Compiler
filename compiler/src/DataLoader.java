@@ -21,6 +21,10 @@ public final class DataLoader {
 
     private static final Map<String, SemanticAction> semanticActions = new HashMap<>();
     static {
+        semanticActions.put("AS1", new LexemaInitializer());
+        semanticActions.put("AS2", new LexemaAppender());
+        semanticActions.put("AS3", new LexemaFinalizer());
+        semanticActions.put("AS4", new LexemaIdentifier());
         semanticActions.put("ASN", new NewLineDetected());
     }
 
