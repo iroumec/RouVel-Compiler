@@ -1,10 +1,6 @@
 digraph DFA {
     rankdir = LR;
-    // layout de izquierda a derecha
-    
     node [shape = circle;];
-    
-    // Estado de aceptación.
     F [shape = doublecircle;];
     
     0 -> 12 [label = "\":\"";];

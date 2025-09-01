@@ -1,13 +1,8 @@
 digraph DFA {
-    // Layout más libre y cuadrado
-    splines = true;
-    overlap = false;
-    nodesep = 1;
-    ranksep = 1;
     rankdir = LR;
-    
-    // Estados normales.
     node [shape = circle;];
+    F [shape = doublecircle;];
     
-    0 -> 0 [label = "s, t, n";];
+    0 -> 0 [label = "s, t";];
+    0 -> 0 [label = "n \n AS"; tailport = s;];
 }

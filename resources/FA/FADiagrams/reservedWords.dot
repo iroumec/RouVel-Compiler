@@ -1,15 +1,9 @@
 digraph DFA {
     rankdir = LR;
-    // layout de izquierda a derecha
-    
-    // Estados normales.
     node [shape = circle;];
-    
-    // Estado de aceptación.
     F [shape = doublecircle;];
     
     0 -> 11 [label = "l";];
     11 -> 11 [label = "l";];
-    11 -> F [label = "c - l"; headlabel = "AS";];
-    // Probar con taillabel, xlabel.
+    11 -> F [label = "c - l \n AS";];
 }

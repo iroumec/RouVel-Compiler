@@ -1,24 +1,8 @@
 digraph DFA {
-    splines = true;
-    overlap = false;
-    nodesep = 1;
-    ranksep = 1;
     rankdir = LR;
-    // layout de izquierda a derecha
-    
     node [shape = circle;];
-    
-    // Estado de aceptación.
     F [shape = doublecircle;];
     
-    
-    // 0 -> 21 [label = "L"; headlabel = "AS1";];
     20 -> 20 [label = "L, d, \"%\" \nAS2";];
-    20 -> F [label = "c - L - d - \"%\" \n AS#"; xlabel = "AS3";];
-    
-    // Esto es solo de prueba.
-    // 0 -> 21 [label = "L"; headlabel = "AS1"; labelangle = 60; labeldistance = 2;];
-    
-    
-    0 -> 20 [label = <<TABLE BORDER="0" CELLBORDER="0" CELLPADDING="0"><TR><TD>L</TD></TR><TR><TD><FONT POINT-SIZE="10">AS1</FONT></TD></TR></TABLE>>;];
+    20 -> F [label = "c - L - d - \"%\" \n AS3";];
 }

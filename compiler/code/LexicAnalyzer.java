@@ -40,6 +40,7 @@ public class LexicAnalyzer {
         excepciones.put('<', 23);
         excepciones.put('%', 24);
         excepciones.put('#', 25);
+        excepciones.put('\n', 26);
     }
 
     public static LexicAnalyzer getInstance() {
@@ -63,15 +64,15 @@ public class LexicAnalyzer {
     public Token getNextToken() {
 
         int estadoActual = 0;
-        // -1 es el fin.
-        while (estadoActual != -1) {
+        // 21 es el fin.
+        while (estadoActual != 21) {
             char caracter = codigoFuente.charAt(siguienteCaracterALeer);
             int nomalizedChar = normalizeChar(caracter);
 
             SemanticAction accionSemantica = matrizAccionesSemanticas[estadoActual][nomalizedChar];
             estadoActual = matrizTransicionEstados[estadoActual][normalizeChar(caracter)];
 
-            accionSemantica.execute();
+            accionSemantica.execute(this);
 
             siguienteCaracterALeer++;
         }
