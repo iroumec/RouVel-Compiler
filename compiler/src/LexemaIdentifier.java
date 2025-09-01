@@ -8,6 +8,8 @@ public class LexemaIdentifier implements SemanticAction {
             tokenType = TokenType.ID;
         } else if (Character.isDigit(lastChar)) {
             tokenType = TokenType.CTE;
+        } else if (lastChar == '\"') {
+            tokenType = TokenType.STR;
         }
     }
 
