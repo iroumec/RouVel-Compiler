@@ -1,4 +1,4 @@
-﻿public class SymbolTable {
+public class SymbolTable {
 
     private final HashMap<Integer, Symbol> tabla;
 

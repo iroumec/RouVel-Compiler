@@ -1,11 +1,9 @@
-﻿import java.io.IOException;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-
-import dataManagement.DataLoader;
 
 public final class LexicalAnalyzer {
 
@@ -86,7 +84,8 @@ public final class LexicalAnalyzer {
             if (accionSemantica != null)
                 accionSemantica.execute(this, lexema);
 
-            lexema += caracter;
+            if (estadoActual != estadoAceptacion)
+                lexema += caracter;
 
             siguienteCaracterALeer++;
         }
@@ -110,8 +109,8 @@ public final class LexicalAnalyzer {
         this.nroLinea++;
     }
 
-    public void setSiguienteCaracterALeer(int siguienteCaracterALeer) {
-        this.siguienteCaracterALeer = siguienteCaracterALeer;
+    public void decrementarSiguienteCaracterALeer() {
+        this.siguienteCaracterALeer--;
     }
 
     // --------------------------------------------------------------------------------------------

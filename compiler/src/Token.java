@@ -1,7 +1,7 @@
-﻿public class Token {
+public class Token {
 
     private TokenType tokenType;
-    private Symbol symbol;
+    // private Symbol symbol;
 
     public Token() {
 

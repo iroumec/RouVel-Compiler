@@ -1,5 +1,3 @@
-﻿package dataManagement;
-
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -13,8 +11,8 @@ import java.util.Set;
 public final class DataLoader {
 
     private static String sourceCode;
-    private final static String reservedWordsPath = "resources/reservedWords.txt";
-    private final static String stateTransitionMatrixPath = "resources/stateTransitionMatrix.csv";
+    private final static String reservedWordsPath = "../resources/reservedWords.txt";
+    private final static String stateTransitionMatrixPath = "../resources/stateTransitionMatrix.csv";
 
     // --------------------------------------------------------------------------------------------
 
@@ -73,6 +71,39 @@ public final class DataLoader {
 
         // Conversión a matriz y retorno.
         return lista.toArray(new int[0][]);
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    public static SemanticAction[][] loadSemanticActionMatrix() {
+        String line;
+        String separator = ",";
+        ArrayList<SemanticAction[]> lista = new ArrayList<>();
+
+        try (BufferedReader br = new BufferedReader(new FileReader(stateTransitionMatrixPath))) {
+            br.readLine(); // saltar encabezado
+
+            while ((line = br.readLine()) != null) {
+                String[] tokens = line.split(separator, -1); // -1 para mantener vacíos
+                SemanticAction[] fila = new SemanticAction[tokens.length - 1]; // ignorar columna row
+
+                for (int i = 1; i < tokens.length; i++) {
+                    String valor = tokens[i].trim();
+                    if (valor.isEmpty()) {
+                        fila[i - 1] = null; // sin acción semántica
+                    } else {
+                        // Aquí deberías mapear el valor a la acción semántica correspondiente
+                        // fila[i - 1] = SemanticAction.fromString(valor);
+                        // suponiendo que tienes un método que convierte string a SemanticAction
+                    }
+                }
+                lista.add(fila);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return lista.toArray(new SemanticAction[0][]);
     }
 
     // --------------------------------------------------------------------------------------------
