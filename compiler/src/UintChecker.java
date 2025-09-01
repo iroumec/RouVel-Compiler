@@ -2,7 +2,10 @@ public class UintChecker implements SemanticAction {
     private static final int MAX_UINT = 65535;
 
     @Override
-    public void execute(LexicalAnalyzer lexicAnalyzer, String lexema) {
+    public void execute(LexicalAnalyzer lexicalAnalyzer) {
+
+        String lexema = lexicalAnalyzer.getLexema();
+
         int number = Integer.parseInt(lexema.substring(0, lexema.length() - 2));
         if (number < 0 || number > MAX_UINT) {
             System.out.println(

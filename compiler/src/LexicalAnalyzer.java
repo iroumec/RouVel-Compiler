@@ -16,7 +16,7 @@ public final class LexicalAnalyzer {
 
     private final Set<String> reservedWords;
     private final int[][] matrizTransicionEstados;
-    private final SemanticAction[][] matrizAccionesSemanticas;
+    private final SemanticAction[][][] matrizAccionesSemanticas;
 
     private Token token;
     StringBuilder lexema = new StringBuilder();
@@ -86,6 +86,9 @@ public final class LexicalAnalyzer {
 
         Token out = this.token;
 
+        // Solucionar esto. Hardcodeado
+        lexema = new StringBuilder();
+
         // Se limpia el token, ya que se consumió.
         this.token = null;
 
@@ -93,9 +96,10 @@ public final class LexicalAnalyzer {
 
     }
 
+    // --------------------------------------------------------------------------------------------
+
     private void searchToken() {
 
-        StringBuilder lexema = new StringBuilder();
         int estadoActual = estadoInicio;
         Integer symbolTableEntry = null;
         TokenType tokenType = null;
@@ -110,15 +114,15 @@ public final class LexicalAnalyzer {
             System.out.println("Caracter leido: " + lastCharRead);
             int normalizedChar = normalizeChar(lastCharRead);
 
-            SemanticAction accionSemantica = matrizAccionesSemanticas[estadoActual][normalizedChar];
+            SemanticAction[] semanticActionsToExecute = matrizAccionesSemanticas[estadoActual][normalizedChar];
             estadoActual = matrizTransicionEstados[estadoActual][normalizedChar];
 
             if (estadoActual == estadoError) {
                 throw new RuntimeException("Se llegó a un estado de error en la posición " + siguienteCaracterALeer);
             }
 
-            if (accionSemantica != null) {
-                accionSemantica.execute(this, lexema.toString());
+            for (SemanticAction action : semanticActionsToExecute) {
+                action.execute(this);
             }
 
             siguienteCaracterALeer++;
@@ -143,39 +147,6 @@ public final class LexicalAnalyzer {
         }
     }
 
-    public boolean isReservedWord(String lexema) {
-        return this.reservedWords.contains(lexema);
-    }
-
-    public TokenType getTokenType(String lexema) {
-
-        // Identifier, constante o string.
-
-        if (lexema.startsWith("\"")) {
-            return TokenType.STR;
-        } else if (Character.isLetter(lexema.charAt(0))) {
-            return TokenType.ID;
-        } else {
-            return TokenType.CTE;
-        }
-    }
-
-    public int getMaxCaracteres() {
-        return maxCaracteres;
-    }
-
-    public int getNroLinea() {
-        return nroLinea;
-    }
-
-    public void incrementarNroLinea() {
-        this.nroLinea++;
-    }
-
-    public void decrementarSiguienteCaracterALeer() {
-        this.siguienteCaracterALeer--;
-    }
-
     // --------------------------------------------------------------------------------------------
 
     /**
@@ -192,4 +163,69 @@ public final class LexicalAnalyzer {
         // Chequeo de reglas generales.
         return Character.isUpperCase(c) ? 0 : Character.isLowerCase(c) ? 1 : Character.isDigit(c) ? 2 : 26;
     }
+
+    // --------------------------------------------------------------------------------------------
+
+    public boolean isReservedWord(String lexema) {
+        return this.reservedWords.contains(lexema);
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    public TokenType getTokenType(String lexema) {
+
+        // Identifier, constante o string.
+
+        if (lexema.startsWith("\"")) {
+            return TokenType.STR;
+        } else if (Character.isLetter(lexema.charAt(0))) {
+            return TokenType.ID;
+        } else {
+            return TokenType.CTE;
+        }
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    public char getLastCharRead() {
+        return this.lastCharRead;
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    public int getMaxCaracteres() {
+        return maxCaracteres;
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    public int getNroLinea() {
+        return this.nroLinea;
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    public void incrementarNroLinea() {
+        this.nroLinea++;
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    public void decrementarSiguienteCaracterALeer() {
+        this.siguienteCaracterALeer--;
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    public void setLexema(String lexema) {
+        this.lexema = new StringBuilder(lexema);
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    public String getLexema() {
+        return this.lexema.toString();
+    }
+
+    // --------------------------------------------------------------------------------------------
 }

@@ -7,8 +7,10 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 public final class DataLoader {
 
@@ -25,6 +27,7 @@ public final class DataLoader {
         semanticActions.put("AS2", new LexemaAppender());
         semanticActions.put("AS3", new LexemaFinalizer());
         semanticActions.put("AS4", new LexemaIdentifier());
+        semanticActions.put("AS5", new IdentifierLengthChecker());
         semanticActions.put("ASN", new NewLineDetected());
     }
 
@@ -89,33 +92,46 @@ public final class DataLoader {
 
     // --------------------------------------------------------------------------------------------
 
-    public static SemanticAction[][] loadSemanticActionMatrix() {
-        String line;
-        String separator = ",";
-        ArrayList<SemanticAction[]> lista = new ArrayList<>();
+    public static SemanticAction[][][] loadSemanticActionMatrix() {
+
+        ArrayList<SemanticAction[][]> listaFilas = new ArrayList<>();
 
         try (BufferedReader br = new BufferedReader(new FileReader(semanticActionsMatrixPath))) {
-            br.readLine(); // saltar encabezado
+            br.readLine(); // Salteo de encabezado
+            String line;
 
             while ((line = br.readLine()) != null) {
-                String[] tokens = line.split(separator, -1); // -1 para mantener vacíos
-                SemanticAction[] fila = new SemanticAction[tokens.length - 1]; // Se ignora la columna row.
+                String[] tokens = line.split(",", -1); // -1 para mantener vacíos
+                SemanticAction[][] fila = new SemanticAction[tokens.length - 1][]; // Ignorar columna row
 
                 for (int i = 1; i < tokens.length; i++) {
                     String valor = tokens[i].trim();
+
                     if (valor.isEmpty()) {
-                        fila[i - 1] = null; // Sin acción semántica.
+                        fila[i - 1] = new SemanticAction[0]; // Sin acciones
                     } else {
-                        fila[i - 1] = semanticActions.get(valor);
+                        String[] acciones = valor.split("\\s*,\\s*"); // Separar por coma
+                        List<SemanticAction> validActions = new ArrayList<>();
+
+                        for (String act : acciones) {
+                            act = act.trim();
+                            if (semanticActions.containsKey(act)) {
+                                validActions.add(semanticActions.get(act));
+                            }
+                        }
+
+                        fila[i - 1] = validActions.toArray(new SemanticAction[0]);
                     }
                 }
-                lista.add(fila);
+
+                listaFilas.add(fila);
             }
+
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        return lista.toArray(new SemanticAction[0][]);
+        return listaFilas.toArray(new SemanticAction[0][][]);
     }
 
     // --------------------------------------------------------------------------------------------

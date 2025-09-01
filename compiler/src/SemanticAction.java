@@ -1,3 +1,3 @@
 public interface SemanticAction {
-    public void execute(LexicalAnalyzer lexicAnalyzer, String lexema);
+    public void execute(LexicalAnalyzer lexicalAnalyzer);
 }

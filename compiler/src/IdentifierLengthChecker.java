@@ -1,6 +1,12 @@
-public class IdentifierChecker implements SemanticAction {
+//AS3
+public class IdentifierLengthChecker implements SemanticAction {
     @Override
-    public void execute(LexicalAnalyzer lexicalAnalyzer, String lexema) {
+    public void execute(LexicalAnalyzer lexicalAnalyzer) {
+
+        String lexema = lexicalAnalyzer.getLexema().substring(-1);
+        lexicalAnalyzer.setLexema(lexema);
+        lexicalAnalyzer.decrementarSiguienteCaracterALeer();
+
         if (lexema.length() > lexicalAnalyzer.getMaxCaracteres()) {
             System.out.println("WARNING en la línea " + lexicalAnalyzer.getNroLinea() + ": El identificador '" + lexema
                     + "' excede la longitud máxima de " + lexicalAnalyzer.getMaxCaracteres()
