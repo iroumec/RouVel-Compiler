@@ -39,6 +39,7 @@ public class LexicAnalyzer {
         excepciones.put('>', 22);
         excepciones.put('<', 23);
         excepciones.put('%', 24);
+        excepciones.put('#', 25);
     }
 
     public static LexicAnalyzer getInstance() {
