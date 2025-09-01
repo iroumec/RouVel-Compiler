@@ -114,7 +114,9 @@ public final class DataLoader {
                         List<SemanticAction> validActions = new ArrayList<>();
 
                         for (String act : acciones) {
-                            act = act.trim();
+
+                            act = act.trim().replace("\"", "");
+
                             if (semanticActions.containsKey(act)) {
                                 validActions.add(semanticActions.get(act));
                             }

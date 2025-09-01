@@ -18,8 +18,9 @@ public final class LexicalAnalyzer {
     private final int[][] matrizTransicionEstados;
     private final SemanticAction[][][] matrizAccionesSemanticas;
 
+    private TokenType detectedType;
     private Token token;
-    StringBuilder lexema = new StringBuilder();
+    private StringBuilder lexema = new StringBuilder();
     private int nroLinea;
     private char lastCharRead;
     private String codigoFuente;
@@ -155,13 +156,16 @@ public final class LexicalAnalyzer {
      */
     private int normalizeChar(char c) {
 
-        // Chequeo de símbolos particulares.
-        if (excepciones.containsKey(c)) {
-            return excepciones.get(c);
+        if (detectedType == null || !detectedType.requiereLexema()) {
+            // Chequeo de símbolos particulares.
+            if (excepciones.containsKey(c)) {
+                return excepciones.get(c);
+            }
         }
 
         // Chequeo de reglas generales.
         return Character.isUpperCase(c) ? 0 : Character.isLowerCase(c) ? 1 : Character.isDigit(c) ? 2 : 26;
+
     }
 
     // --------------------------------------------------------------------------------------------
