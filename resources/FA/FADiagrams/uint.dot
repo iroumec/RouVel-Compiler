@@ -8,10 +8,9 @@ digraph DFA {
     // Estado de aceptación.
     F [shape = doublecircle;];
     
-    
     0 -> 1 [label = "d";];
     1 -> 1 [label = "d";];
     1 -> 2 [label = "\"U\"";];
     2 -> 3 [label = "\"I\"";];
-    3 -> F [label = "c";];
+    3 -> F [label = "C";];
 }

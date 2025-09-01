@@ -18,12 +18,27 @@ public class LexicAnalyzer {
 
     private static final Map<Character, Integer> excepciones = new HashMap<>();
     static {
-        excepciones.put('U', 8);
-        excepciones.put('I', 9);
-        excepciones.put('F', 10);
-        excepciones.put('-', 11);
-        excepciones.put('+', 12);
-        excepciones.put('.', 13);
+        excepciones.put('U', 4);
+        excepciones.put('I', 5);
+        excepciones.put('.', 6);
+        excepciones.put('F', 7);
+        excepciones.put('-', 8);
+        excepciones.put('+', 9);
+        excepciones.put('"', 10);
+        excepciones.put('*', 11);
+        excepciones.put('/', 12);
+        excepciones.put('(', 13);
+        excepciones.put(')', 14);
+        excepciones.put('{', 15);
+        excepciones.put('}', 16);
+        excepciones.put('_', 17);
+        excepciones.put(';', 18);
+        excepciones.put(':', 19);
+        excepciones.put('=', 20);
+        excepciones.put('!', 21);
+        excepciones.put('>', 22);
+        excepciones.put('<', 23);
+        excepciones.put('%', 24);
     }
 
     public static LexicAnalyzer getInstance() {

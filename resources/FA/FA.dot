@@ -1,0 +1,63 @@
+digraph DFA {
+    // Layout más libre y cuadrado
+    splines = true;
+    overlap = false;
+    //nodesep = 1;
+    //ranksep = 1;
+    rankdir = LR;
+    
+    // Estados normales.
+    node [shape = circle;];
+    
+    // Estado de aceptación.
+    F [shape = doublecircle;];
+    0 -> 0 [label = "s, t, n";];
+    0 -> 11 [label = "l";];
+    0 -> 12 [label = "\":\"";];
+    0 -> 13 [label = "\"=\"";];
+    0 -> 14 [label = "\"-\"";];
+    0 -> 15 [label = "\">\"";];
+    0 -> 16 [label = "\"<\"";];
+    0 -> 17 [label = "\"#\"";];
+    0 -> 1 [label = "d";];
+    0 -> 20 [label = <<TABLE BORDER="0" CELLBORDER="0" CELLPADDING="0"><TR><TD>L</TD></TR><TR><TD><FONT POINT-SIZE="10">AS1</FONT></TD></TR></TABLE>>;];
+    // 0 -> 21 [label = "L"; headlabel = "AS1";];
+    // 0 -> 21 [label = "L"; headlabel = "AS1"; labelangle = 60; labeldistance = 2;];
+    0 -> 4 [label = "\".\"";];
+    0 -> 9 [label = "\"";];
+    0 -> F [label = "\"+\", \"*\", \"/\", \"(\", \")\", \"{\", \"}\", \"_\", \";\"";];
+    1 -> 1 [label = "d";];
+    1 -> 2 [label = "\"U\"";];
+    1 -> 5 [label = "\".\"";];
+    2 -> 3 [label = "\"I\"";];
+    3 -> F [label = "C";];
+    4 -> 5 [label = "d";];
+    5 -> 5 [label = "d";];
+    5 -> 6 [label = "\"F\"";];
+    5 -> F [label = "c - d"; xlabel = "AS";];
+    6 -> 7 [label = "\"+\", \"-\"";];
+    7 -> 8 [label = "d";];
+    8 -> 8 [label = "d";];
+    8 -> F [label = "c - d"; xlabel = "AS";];
+    9 -> 10 [label = "\"";];
+    9 -> 9 [label = "L, l";];
+    10 -> F [label = "C";];
+    11 -> 11 [label = "l";];
+    11 -> F [label = "c - l"; headlabel = "AS";];
+    12 -> F [label = "\"=\"";];
+    13 -> F [label = "\"=\", \"!\"";];
+    13 -> F [label = "C - \"=\" - \"!\"";];
+    14 -> F [label = "\">\"";];
+    14 -> F [label = "C - \">\"";];
+    15 -> F [label = "\"=\"";];
+    15 -> F [label = "C - \"=\"";];
+    16 -> F [label = "\"=\"";];
+    16 -> F [label = "C - \"=\"";];
+    17 -> 18 [label = "\"#\"";];
+    18 -> 18 [label = "C - \"#\"";];
+    18 -> 19 [label = "\"#\"";];
+    19 -> 18 [label = "C - \"#\"";];
+    19 -> F [label = "\"#\"";];
+    20 -> 20 [label = "L, d, \"%\" \nAS2";];
+    20 -> F [label = "c - L - d - \"%\" \n AS#"; xlabel = "AS3";];
+}

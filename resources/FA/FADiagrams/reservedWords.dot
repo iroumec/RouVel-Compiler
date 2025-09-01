@@ -8,9 +8,8 @@ digraph DFA {
     // Estado de aceptación.
     F [shape = doublecircle;];
     
-    
-    0 -> 12 [label = "l";];
-    12 -> 12 [label = "l";];
-    12 -> F [label = "c - l"; headlabel = "AS";];
+    0 -> 11 [label = "l";];
+    11 -> 11 [label = "l";];
+    11 -> F [label = "c - l"; headlabel = "AS";];
     // Probar con taillabel, xlabel.
 }
