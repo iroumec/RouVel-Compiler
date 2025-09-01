@@ -75,54 +75,46 @@ public final class LexicalAnalyzer {
 
     public Token getNextToken() {
 
-        String lexema = "";
+        StringBuilder lexema = new StringBuilder();
         char caracter = ' ';
-        int normalizedChar;
-        TokenType tokenType = null;
-        SemanticAction accionSemantica;
         int estadoActual = estadoInicio;
         Integer symbolTableEntry = null;
+        TokenType tokenType = null;
 
-        while (estadoActual != estadoAceptacion && siguienteCaracterALeer != codigoFuente.length()) {
-
-            // Si estoy en el estado cero, se vacía el lexema.
-            // En caso contrario, pasé a un estado no final y lo agrego.
-            lexema = (estadoActual == estadoInicio) ? "" : lexema + caracter;
+        while (estadoActual != estadoAceptacion && siguienteCaracterALeer < codigoFuente.length()) {
+            if (estadoActual != estadoInicio) {
+                lexema.append(caracter);
+            }
 
             caracter = codigoFuente.charAt(siguienteCaracterALeer);
-            // System.out.println("Caracter leído: \"" + caracter + "\"");
-            // System.out.println("Lexema actual: \"" + lexema + "\"");
-            normalizedChar = normalizeChar(caracter);
-            // System.out.println("Caracter normalizado: " + normalizedChar);
+            int normalizedChar = normalizeChar(caracter);
 
-            accionSemantica = matrizAccionesSemanticas[estadoActual][normalizedChar];
+            SemanticAction accionSemantica = matrizAccionesSemanticas[estadoActual][normalizedChar];
             estadoActual = matrizTransicionEstados[estadoActual][normalizedChar];
 
-            // System.out.println("Estado siguiente: " + estadoActual);
-
             if (estadoActual == estadoError) {
-                System.err.println("Se llegó a un estado de error.");
-                System.exit(1);
+                throw new RuntimeException("Se llegó a un estado de error en la posición " + siguienteCaracterALeer);
             }
 
-            if (accionSemantica != null)
-                accionSemantica.execute(this, lexema);
-
-            if (estadoActual == estadoAceptacion) {
-                if (isReservedWord(lexema + caracter)) {
-                    // System.out.println("Palabra reservada hallada.1");
-                    lexema += caracter;
-                    tokenType = TokenType.fromSymbol(lexema);
-                } else if (isReservedWord(lexema)) {
-                    // System.out.println("Palabra reservada hallada.2");
-                    tokenType = TokenType.fromSymbol(lexema);
-                } else {
-                    tokenType = getTokenType(lexema);
-                    symbolTableEntry = SymbolTable.agregarEntrada(tokenType, lexema);
-                }
-            } else {
-                siguienteCaracterALeer++;
+            if (accionSemantica != null) {
+                accionSemantica.execute(this, lexema.toString());
             }
+
+            siguienteCaracterALeer++;
+        }
+
+        // Resolución del token al llegar al estado de aceptación.
+        String lex = lexema.toString();
+        String posiblePalabra = lex + caracter;
+
+        if (isReservedWord(posiblePalabra)) {
+            lex = posiblePalabra;
+            tokenType = TokenType.fromSymbol(lex);
+        } else if (isReservedWord(lex)) {
+            tokenType = TokenType.fromSymbol(lex);
+        } else if (!lex.isEmpty()) {
+            tokenType = getTokenType(lex);
+            symbolTableEntry = SymbolTable.agregarEntrada(tokenType, lex);
         }
 
         return (tokenType == null) ? null : new Token(tokenType, symbolTableEntry);
