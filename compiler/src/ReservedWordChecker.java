@@ -7,6 +7,7 @@ public class ReservedWordChecker implements SemanticAction {
                     + "' no es una palabra reservada.");
         } else {
             lexicalAnalyzer.decrementarSiguienteCaracterALeer();
+
         }
 
         // ¿Buscar la palabra reservada más parecida a la que puso el usuario?

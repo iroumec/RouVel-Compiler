@@ -7,17 +7,20 @@ import java.util.Set;
 
 public final class LexicalAnalyzer {
 
-    private final static int estadoAceptacion = 21;
-    private final static int maxCaracteres = 20;
     private static LexicalAnalyzer INSTANCE;
 
+    private final static int estadoInicio = 0;
+    private final static int estadoError = -1;
+    private final static int maxCaracteres = 20;
+    private final static int estadoAceptacion = 21;
+
+    private final Set<String> reservedWords;
     private final int[][] matrizTransicionEstados;
     private final SemanticAction[][] matrizAccionesSemanticas;
-    private final Set<String> reservedWords;
 
+    private int nroLinea = 1;
     private String codigoFuente;
     private int siguienteCaracterALeer;
-    private int nroLinea = 1;
 
     private static final Map<Character, Integer> excepciones = new HashMap<>();
     static {
@@ -71,15 +74,28 @@ public final class LexicalAnalyzer {
 
     public Token getNextToken() {
 
-        int estadoActual = 0;
-        String lexema = "";
+        String lexema;
+        char caracter;
+        int normalizedChar;
+        SemanticAction accionSemantica;
+        int estadoActual = estadoInicio;
 
         while (estadoActual != estadoAceptacion) {
-            char caracter = codigoFuente.charAt(siguienteCaracterALeer);
-            int normalizedChar = normalizeChar(caracter);
 
-            SemanticAction accionSemantica = matrizAccionesSemanticas[estadoActual][normalizedChar];
+            // Si estoy en el estado cero, se vacía el lexema.
+            // En caso contrario, pasé a un estado no final y lo agrego.
+            lexema = (estadoActual == estadoInicio) ? "" : lexema + caracter;
+
+            caracter = codigoFuente.charAt(siguienteCaracterALeer);
+            normalizedChar = normalizeChar(caracter);
+
+            accionSemantica = matrizAccionesSemanticas[estadoActual][normalizedChar];
             estadoActual = matrizTransicionEstados[estadoActual][normalizedChar];
+
+            if (estadoActual == estadoError) {
+                System.err.println("Se llegó a un estado de error.");
+                System.exit(1);
+            }
 
             if (accionSemantica != null)
                 accionSemantica.execute(this, lexema);
@@ -90,6 +106,7 @@ public final class LexicalAnalyzer {
             siguienteCaracterALeer++;
         }
 
+        // aca se llega con un lexema como "if"
         return new Token();
     }
 

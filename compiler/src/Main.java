@@ -1,6 +1,9 @@
 public class Main {
     public static void main(String[] args) {
 
+        DataLoader.setSourceCode(
+                "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/resources/testFiles/firstTest.uki");
+
         LexicalAnalyzer lexicalAnalyzer = LexicalAnalyzer.getInstance();
 
         System.out.println("Tokens identificados en el programa:");
@@ -10,6 +13,5 @@ public class Main {
             System.out.println(token);
             token = lexicalAnalyzer.getNextToken();
         }
-
     }
 }

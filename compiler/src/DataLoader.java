@@ -10,7 +10,7 @@ import java.util.Set;
 
 public final class DataLoader {
 
-    private static String sourceCode;
+    private static String sourceCodePath;
     private final static String reservedWordsPath = "../resources/reservedWords.txt";
     private final static String stateTransitionMatrixPath = "../resources/stateTransitionMatrix.csv";
 
@@ -110,12 +110,19 @@ public final class DataLoader {
 
     public static String loadSourceCode() {
         try {
-            return Files.readString(Paths.get(sourceCode));
-        } catch (IOException e) {
-            e.printStackTrace();
+            return Files.readString(Paths.get(sourceCodePath));
+        } catch (Exception e) {
+            System.err.println("Debe especificar una ruta a un código fuente.");
+            System.exit(1);
         }
 
         return null;
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    public static void setSourceCode(String path) {
+        sourceCodePath = path;
     }
 
 }
