@@ -21,3 +21,5 @@ Se define:
 - s: indica un espacio en blanco.
 - t: indica una tabulación.
 - n: indica un salto de línea.
+
+¿Qué hacemos si viene un <==? Es ambiguo. Tomamos como vaya llegando.

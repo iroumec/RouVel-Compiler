@@ -24,29 +24,29 @@ public final class LexicalAnalyzer {
 
     private static final Map<Character, Integer> excepciones = new HashMap<>();
     static {
-        excepciones.put('U', 4);
-        excepciones.put('I', 5);
-        excepciones.put('.', 6);
-        excepciones.put('F', 7);
-        excepciones.put('-', 8);
-        excepciones.put('+', 9);
-        excepciones.put('"', 10);
-        excepciones.put('*', 11);
-        excepciones.put('/', 12);
-        excepciones.put('(', 13);
-        excepciones.put(')', 14);
-        excepciones.put('{', 15);
-        excepciones.put('}', 16);
-        excepciones.put('_', 17);
-        excepciones.put(';', 18);
-        excepciones.put(':', 19);
-        excepciones.put('=', 20);
-        excepciones.put('!', 21);
-        excepciones.put('>', 22);
-        excepciones.put('<', 23);
-        excepciones.put('%', 24);
-        excepciones.put('#', 25);
-        excepciones.put('\n', 26);
+        excepciones.put('U', 3);
+        excepciones.put('I', 4);
+        excepciones.put('.', 5);
+        excepciones.put('F', 6);
+        excepciones.put('-', 7);
+        excepciones.put('+', 8);
+        excepciones.put('"', 9);
+        excepciones.put('*', 10);
+        excepciones.put('/', 11);
+        excepciones.put('(', 12);
+        excepciones.put(')', 13);
+        excepciones.put('{', 14);
+        excepciones.put('}', 15);
+        excepciones.put('_', 16);
+        excepciones.put(';', 17);
+        excepciones.put(':', 18);
+        excepciones.put('=', 19);
+        excepciones.put('!', 20);
+        excepciones.put('>', 21);
+        excepciones.put('<', 22);
+        excepciones.put('%', 23);
+        excepciones.put('#', 24);
+        excepciones.put('\n', 25);
     }
 
     // --------------------------------------------------------------------------------------------
@@ -74,9 +74,10 @@ public final class LexicalAnalyzer {
 
     public Token getNextToken() {
 
-        String lexema;
-        char caracter;
+        String lexema = "";
+        char caracter = ' ';
         int normalizedChar;
+        TokenType tokenType = null;
         SemanticAction accionSemantica;
         int estadoActual = estadoInicio;
 
@@ -87,10 +88,15 @@ public final class LexicalAnalyzer {
             lexema = (estadoActual == estadoInicio) ? "" : lexema + caracter;
 
             caracter = codigoFuente.charAt(siguienteCaracterALeer);
+            System.out.println("Caracter leído: \"" + caracter + "\"");
+            System.out.println("Lexema actual: \"" + lexema + "\"");
             normalizedChar = normalizeChar(caracter);
+            System.out.println("Caracter normalizado: " + normalizedChar);
 
             accionSemantica = matrizAccionesSemanticas[estadoActual][normalizedChar];
             estadoActual = matrizTransicionEstados[estadoActual][normalizedChar];
+
+            System.out.println("Estado siguiente: " + estadoActual);
 
             if (estadoActual == estadoError) {
                 System.err.println("Se llegó a un estado de error.");
@@ -100,14 +106,23 @@ public final class LexicalAnalyzer {
             if (accionSemantica != null)
                 accionSemantica.execute(this, lexema);
 
-            if (estadoActual != estadoAceptacion)
-                lexema += caracter;
-
-            siguienteCaracterALeer++;
+            if (estadoActual == estadoAceptacion) {
+                if (isReservedWord(lexema + caracter)) {
+                    System.out.println("Palabra reservada hallada.");
+                    lexema += caracter;
+                    tokenType = TokenType.fromSymbol(lexema);
+                } else {
+                    if (isReservedWord(lexema)) {
+                        System.out.println("Palabra reservada hallada.");
+                        tokenType = TokenType.fromSymbol(lexema);
+                    }
+                }
+            } else {
+                siguienteCaracterALeer++;
+            }
         }
 
-        // aca se llega con un lexema como "if"
-        return new Token();
+        return new Token(tokenType);
     }
 
     public boolean isReservedWord(String lexema) {
@@ -144,6 +159,6 @@ public final class LexicalAnalyzer {
         }
 
         // Chequeo de reglas generales.
-        return Character.isUpperCase(c) ? 1 : Character.isLowerCase(c) ? 2 : Character.isDigit(c) ? 3 : 0;
+        return Character.isUpperCase(c) ? 0 : Character.isLowerCase(c) ? 1 : Character.isDigit(c) ? 2 : 21;
     }
 }
