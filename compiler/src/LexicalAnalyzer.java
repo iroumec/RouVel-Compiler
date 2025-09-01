@@ -159,6 +159,6 @@ public final class LexicalAnalyzer {
         }
 
         // Chequeo de reglas generales.
-        return Character.isUpperCase(c) ? 0 : Character.isLowerCase(c) ? 1 : Character.isDigit(c) ? 2 : 21;
+        return Character.isUpperCase(c) ? 0 : Character.isLowerCase(c) ? 1 : Character.isDigit(c) ? 2 : 26;
     }
 }
