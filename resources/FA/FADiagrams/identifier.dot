@@ -12,12 +12,12 @@ digraph DFA {
     F [shape = doublecircle;];
     
     
-    0 -> 15 [label = "L"; headlabel = "AS1";];
+    //0 -> 15 [label = "L"; headlabel = "AS1";];
     15 -> 15 [label = "L, d, \"%\" \nAS2";];
     15 -> F [label = "c - L - d - \"%\" \n AS#"; xlabel = "AS3";];
     
     // Esto es solo de prueba.
-    0 -> 15 [label = "L"; headlabel = "AS1"; labelangle = 60; labeldistance = 2;];
+    //0 -> 15 [label = "L"; headlabel = "AS1"; labelangle = 60; labeldistance = 2;];
     
     0 -> 15 [label = <
         <TABLE BORDER="0" CELLBORDER="0" CELLPADDING="0">
@@ -25,7 +25,7 @@ digraph DFA {
         <TR><TD><FONT POINT-SIZE="10">AS1</FONT></TD></TR>
         </TABLE>
         >;];
-    
+}
     
     
     

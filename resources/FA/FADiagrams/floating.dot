@@ -12,7 +12,6 @@ digraph DFA {
     // Estado de aceptación.
     F [shape = doublecircle;];
     
-    
     0 -> 4 [label = "d";];
     0 -> 5 [label = "\".\"";];
     4 -> 4 [label = "d";];

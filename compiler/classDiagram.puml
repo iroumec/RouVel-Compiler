@@ -1,5 +1,9 @@
 ﻿@startuml classDiagram
 
+Symbol <|-- SymbolUnitrario
+
+<|..
+
 class SymbolTable {
 
     - tabla : HashMap<Integer, Symbol>
@@ -56,7 +60,7 @@ class TokenCompuesto {
 
 class SemanticAction {
 
-    + execute()
+    + {abstract} execute()
 }
 
 @enduml

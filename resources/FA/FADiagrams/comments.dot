@@ -9,5 +9,10 @@ digraph DFA {
     // Estados normales.
     node [shape = circle;];
     
-    0 -> 0 [label = "s, t, n";];
+    0 -> 16 [label = "\"#\"";];
+    16 -> 17 [label = "\"#\"";];
+    17 -> 17 [label = "C - \"#\"";];
+    17 -> 18 [label = "\"#\"";];
+    18 -> 17 [label = "C - \"#\"";];
+    18 -> F [label = "\"#\"";];
 }

@@ -4,7 +4,7 @@ Trabajo práctico de cursada para la materia Compiladores e Intérpretes.
 
 Posible nombre: RouVel Compiler.
 
-# Decisiones.
+## Decisiones
 
 Decidimos minimizar la cantidad de acciones semánticas a aplicar a costa de aumentar el número de estados en el autómata finito. De esta forma:
 

@@ -7,12 +7,11 @@ digraph DFA {
     // Estado de aceptación.
     F [shape = doublecircle;];
     
-    start [shape = point;];
-    // pseudo-nodo para inicio
-    
-    start -> 13 [label = "\"-\"";];
+    0 -> 13 [label = "\":\"";];
+    13 -> F [label = "\"=\"";];
     13 -> F [label = "\">\"";];
     13 -> F [label = "c - \">\"";];
-    start -> 14 [label = "\"=\"";];
-    start -> F [label = "\"+\", \"*\", \"/\", \"(\", \")\", \"{\", \"}\", \"_\", \";\"";];
+    0 -> 14 [label = "\"=\"";];
+    0 -> F [label = "\"+\", \"*\", \"/\", \"(\", \")\", \"{\", \"}\", \"_\", \";\"";];
+    0 -> 15 [label = "\":\"";];
 }
