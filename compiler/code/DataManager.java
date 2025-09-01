@@ -2,10 +2,14 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.Set;
 
 public class DataManager {
+
+    private static String sourceCodePath;
 
     public static Set<String> getReservedWords() {
 
@@ -24,6 +28,20 @@ public class DataManager {
         }
 
         return palabras;
+    }
+
+    public static String getSourceCode() {
+        try {
+            return Files.readString(Paths.get(sourceCodePath));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public static void setsourceCodePath(String path) {
+        sourceCodePath = path;
     }
 
     public static void main(String[] args) {

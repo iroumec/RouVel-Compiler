@@ -1,11 +1,13 @@
 ﻿import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 public class LexicAnalyzer {
 
-    private final static LexicAnalyzer INSTANCE;
+    private static LexicAnalyzer INSTANCE;
 
     private final int[][] matrizTransicionEstados;
     private final SemanticAction[][] matrizAccionesSemanticas;
@@ -14,24 +16,30 @@ public class LexicAnalyzer {
     private String codigoFuente;
     private int siguienteCaracterALeer;
 
-    public LexicAnalyzer getInstance() {
-
-        if (INSTANCE == null) {
-            INSTANCE = new LexicAnalyzer(codigoFuente);
-        }
+    private static final Map<Character, Integer> excepciones = new HashMap<>();
+    static {
+        excepciones.put('U', 8);
+        excepciones.put('I', 9);
+        excepciones.put('F', 10);
+        excepciones.put('-', 11);
+        excepciones.put('+', 12);
+        excepciones.put('.', 13);
     }
 
-    private LexicAnalyzer(String sourceCodePath) {
+    public static LexicAnalyzer getInstance() {
+
+        if (INSTANCE == null) {
+            INSTANCE = new LexicAnalyzer();
+        }
+
+        return INSTANCE;
+    }
+
+    private LexicAnalyzer() {
         this.matrizTransicionEstados = getMatrizTransicionEstados();
         this.matrizAccionesSemanticas = getMatrizAccionesSemanticas();
         this.reservedWords = DataManager.getReservedWords();
-
-        try {
-            this.codigoFuente = Files.readString(Paths.get(sourceCodePath));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
+        this.codigoFuente = DataManager.getSourceCode();
         this.siguienteCaracterALeer = 0;
         // codigoFuente.charAt(siguienteCaracterALeer);
     }
@@ -63,12 +71,22 @@ public class LexicAnalyzer {
      * El objetivo de esta función es que todas las letras mayúsculas, por ejemplo,
      * sean mapeadas a una misma columna de requerirse.
      * 
+     * 1 --> Mayúscula.
+     * 2 --> Minúscula.
+     * 3 --> Dígito.
+     * 
      * @param c
      * @return
      */
     private int normalizeChar(char c) {
 
-        return 0;
+        // Chequeo de símbolos particulares.
+        if (excepciones.containsKey(c)) {
+            return excepciones.get(c);
+        }
+
+        // Chequeo de reglas generales.
+        return Character.isUpperCase(c) ? 1 : Character.isLowerCase(c) ? 2 : Character.isDigit(c) ? 3 : 0;
     }
 
     private int[][] getMatrizTransicionEstados() {
