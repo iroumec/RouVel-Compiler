@@ -5,9 +5,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-public class LexicAnalyzer {
+import dataManagement.DataLoader;
 
-    private static LexicAnalyzer INSTANCE;
+public final class LexicalAnalyzer {
+
+    private final static int estadoAceptacion = 21;
+    private final static int maxCaracteres = 20;
+    private static LexicalAnalyzer INSTANCE;
 
     private final int[][] matrizTransicionEstados;
     private final SemanticAction[][] matrizAccionesSemanticas;
@@ -15,6 +19,7 @@ public class LexicAnalyzer {
 
     private String codigoFuente;
     private int siguienteCaracterALeer;
+    private int nroLinea = 1;
 
     private static final Map<Character, Integer> excepciones = new HashMap<>();
     static {
@@ -43,36 +48,45 @@ public class LexicAnalyzer {
         excepciones.put('\n', 26);
     }
 
-    public static LexicAnalyzer getInstance() {
+    // --------------------------------------------------------------------------------------------
+
+    public static LexicalAnalyzer getInstance() {
 
         if (INSTANCE == null) {
-            INSTANCE = new LexicAnalyzer();
+            INSTANCE = new LexicalAnalyzer();
         }
 
         return INSTANCE;
     }
 
-    private LexicAnalyzer() {
-        this.matrizTransicionEstados = getMatrizTransicionEstados();
-        this.matrizAccionesSemanticas = getMatrizAccionesSemanticas();
-        this.reservedWords = DataManager.getReservedWords();
-        this.codigoFuente = DataManager.getSourceCode();
+    // --------------------------------------------------------------------------------------------
+
+    private LexicalAnalyzer() {
+        this.matrizTransicionEstados = DataLoader.loadStateTransitionMatrix();
+        this.matrizAccionesSemanticas = DataLoader.loadSemanticActionMatrix();
+        this.reservedWords = DataLoader.loadReservedWords();
+        this.codigoFuente = DataLoader.loadSourceCode();
         this.siguienteCaracterALeer = 0;
-        // codigoFuente.charAt(siguienteCaracterALeer);
     }
+
+    // --------------------------------------------------------------------------------------------
 
     public Token getNextToken() {
 
         int estadoActual = 0;
-        // 21 es el fin.
-        while (estadoActual != 21) {
+        String lexema = "";
+
+        while (estadoActual != estadoAceptacion) {
             char caracter = codigoFuente.charAt(siguienteCaracterALeer);
-            int nomalizedChar = normalizeChar(caracter);
+            int normalizedChar = normalizeChar(caracter);
 
-            SemanticAction accionSemantica = matrizAccionesSemanticas[estadoActual][nomalizedChar];
-            estadoActual = matrizTransicionEstados[estadoActual][normalizeChar(caracter)];
+            SemanticAction accionSemantica = matrizAccionesSemanticas[estadoActual][normalizedChar];
+            estadoActual = matrizTransicionEstados[estadoActual][normalizedChar];
 
-            accionSemantica.execute(this);
+            if (accionSemantica != null)
+                accionSemantica.execute(this, lexema);
+
+            lexema += caracter;
 
             siguienteCaracterALeer++;
         }
@@ -84,16 +98,27 @@ public class LexicAnalyzer {
         return this.reservedWords.contains(lexema);
     }
 
+    public int getMaxCaracteres() {
+        return maxCaracteres;
+    }
+
+    public int getNroLinea() {
+        return nroLinea;
+    }
+
+    public void incrementarNroLinea() {
+        this.nroLinea++;
+    }
+
+    public void setSiguienteCaracterALeer(int siguienteCaracterALeer) {
+        this.siguienteCaracterALeer = siguienteCaracterALeer;
+    }
+
+    // --------------------------------------------------------------------------------------------
+
     /**
      * El objetivo de esta función es que todas las letras mayúsculas, por ejemplo,
      * sean mapeadas a una misma columna de requerirse.
-     * 
-     * 1 --> Mayúscula.
-     * 2 --> Minúscula.
-     * 3 --> Dígito.
-     * 
-     * @param c
-     * @return
      */
     private int normalizeChar(char c) {
 
@@ -105,21 +130,4 @@ public class LexicAnalyzer {
         // Chequeo de reglas generales.
         return Character.isUpperCase(c) ? 1 : Character.isLowerCase(c) ? 2 : Character.isDigit(c) ? 3 : 0;
     }
-
-    private int[][] getMatrizTransicionEstados() {
-
-        // ¿Podría cargarse desde un CCV?
-
-        return new int[][] {
-                {}, // 0
-                {}, // 1
-                {}
-        };
-    }
-
-    private SemanticAction[][] getMatrizAccionesSemanticas() {
-        return new SemanticAction[1][1];
-
-    }
-
 }

@@ -1,3 +1,5 @@
+﻿package dataManagement;
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -8,13 +10,15 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
-public class DataManager {
+public final class DataLoader {
 
-    private static String sourceCodePath;
+    private static String sourceCode;
     private final static String reservedWordsPath = "resources/reservedWords.txt";
     private final static String stateTransitionMatrixPath = "resources/stateTransitionMatrix.csv";
 
-    public static Set<String> getReservedWords() {
+    // --------------------------------------------------------------------------------------------
+
+    public static Set<String> loadReservedWords() {
 
         Set<String> palabras = new HashSet<>();
 
@@ -33,7 +37,9 @@ public class DataManager {
         return palabras;
     }
 
-    public static int[][] getTransitionMatrix() {
+    // --------------------------------------------------------------------------------------------
+
+    public static int[][] loadStateTransitionMatrix() {
 
         String line;
         String separator = ",";
@@ -69,24 +75,16 @@ public class DataManager {
         return lista.toArray(new int[0][]);
     }
 
-    public static String getSourceCode() {
+    // --------------------------------------------------------------------------------------------
+
+    public static String loadSourceCode() {
         try {
-            return Files.readString(Paths.get(sourceCodePath));
+            return Files.readString(Paths.get(sourceCode));
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         return null;
-    }
-
-    public static void setsourceCodePath(String path) {
-        sourceCodePath = path;
-    }
-
-    public static void main(String[] args) {
-        System.out.println(DataManager.getReservedWords());
-
-        System.out.println(DataManager.getTransitionMatrix());
     }
 
 }

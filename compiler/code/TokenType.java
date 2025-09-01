@@ -1,5 +1,21 @@
 ﻿public enum TokenType {
     ID,
     CTE,
-    STR
+    STR,
+    ASIG,
+    DASIG,
+    GE,
+    LE,
+    EQ,
+    NEQ,
+    FLECHA,
+    IF,
+    ELSE,
+    EIF,
+    PRNT,
+    RET,
+    UINT,
+    FLOAT,
+    DO,
+    WHILE,
 }
