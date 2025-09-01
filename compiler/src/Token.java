@@ -23,6 +23,12 @@ public class Token {
 
     @Override
     public String toString() {
-        return this.tokenType.name();
+        return "["
+                + this.tokenType.name()
+                + (symbolTableEntry == null
+                        ? ""
+                        : ", " + SymbolTable.getLexema(symbolTableEntry))
+                + "]";
     }
+
 }

@@ -66,7 +66,8 @@ public final class LexicalAnalyzer {
         this.matrizTransicionEstados = DataLoader.loadStateTransitionMatrix();
         this.matrizAccionesSemanticas = DataLoader.loadSemanticActionMatrix();
         this.reservedWords = DataLoader.loadReservedWords();
-        this.codigoFuente = DataLoader.loadSourceCode();
+        // Se agrega un salto de línea para marcar el final del archivo.
+        this.codigoFuente = DataLoader.loadSourceCode() + '\s';
         this.siguienteCaracterALeer = 0;
     }
 
@@ -80,23 +81,24 @@ public final class LexicalAnalyzer {
         TokenType tokenType = null;
         SemanticAction accionSemantica;
         int estadoActual = estadoInicio;
+        Integer symbolTableEntry = null;
 
-        while (estadoActual != estadoAceptacion) {
+        while (estadoActual != estadoAceptacion && siguienteCaracterALeer != codigoFuente.length()) {
 
             // Si estoy en el estado cero, se vacía el lexema.
             // En caso contrario, pasé a un estado no final y lo agrego.
             lexema = (estadoActual == estadoInicio) ? "" : lexema + caracter;
 
             caracter = codigoFuente.charAt(siguienteCaracterALeer);
-            System.out.println("Caracter leído: \"" + caracter + "\"");
-            System.out.println("Lexema actual: \"" + lexema + "\"");
+            // System.out.println("Caracter leído: \"" + caracter + "\"");
+            // System.out.println("Lexema actual: \"" + lexema + "\"");
             normalizedChar = normalizeChar(caracter);
-            System.out.println("Caracter normalizado: " + normalizedChar);
+            // System.out.println("Caracter normalizado: " + normalizedChar);
 
             accionSemantica = matrizAccionesSemanticas[estadoActual][normalizedChar];
             estadoActual = matrizTransicionEstados[estadoActual][normalizedChar];
 
-            System.out.println("Estado siguiente: " + estadoActual);
+            // System.out.println("Estado siguiente: " + estadoActual);
 
             if (estadoActual == estadoError) {
                 System.err.println("Se llegó a un estado de error.");
@@ -108,25 +110,39 @@ public final class LexicalAnalyzer {
 
             if (estadoActual == estadoAceptacion) {
                 if (isReservedWord(lexema + caracter)) {
-                    System.out.println("Palabra reservada hallada.");
+                    // System.out.println("Palabra reservada hallada.1");
                     lexema += caracter;
                     tokenType = TokenType.fromSymbol(lexema);
+                } else if (isReservedWord(lexema)) {
+                    // System.out.println("Palabra reservada hallada.2");
+                    tokenType = TokenType.fromSymbol(lexema);
                 } else {
-                    if (isReservedWord(lexema)) {
-                        System.out.println("Palabra reservada hallada.");
-                        tokenType = TokenType.fromSymbol(lexema);
-                    }
+                    tokenType = getTokenType(lexema);
+                    symbolTableEntry = SymbolTable.agregarEntrada(tokenType, lexema);
                 }
             } else {
                 siguienteCaracterALeer++;
             }
         }
 
-        return new Token(tokenType);
+        return (tokenType == null) ? null : new Token(tokenType, symbolTableEntry);
     }
 
     public boolean isReservedWord(String lexema) {
         return this.reservedWords.contains(lexema);
+    }
+
+    public TokenType getTokenType(String lexema) {
+
+        // Identifier, constante o string.
+
+        if (lexema.startsWith("\"")) {
+            return TokenType.STR;
+        } else if (Character.isLetter(lexema.charAt(0))) {
+            return TokenType.ID;
+        } else {
+            return TokenType.CTE;
+        }
     }
 
     public int getMaxCaracteres() {

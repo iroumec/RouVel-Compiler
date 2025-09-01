@@ -37,6 +37,7 @@ public enum TokenType {
 
     private TokenType(int number, String symbol) {
         this.number = number;
+        this.symbol = symbol;
     }
 
     public int getNumber() {
@@ -57,7 +58,9 @@ public enum TokenType {
     static {
         for (TokenType t : TokenType.values()) {
             integerLookup.put(t.getNumber(), t);
-            symbolLookup.put(t.getSymbol(), t);
+            if (t.getSymbol() != null) {
+                symbolLookup.put(t.getSymbol(), t);
+            }
         }
     }
 
