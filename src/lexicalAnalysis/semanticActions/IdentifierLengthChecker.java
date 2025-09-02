@@ -2,6 +2,7 @@ package lexicalAnalysis.semanticActions;
 //AS3
 
 import lexicalAnalysis.LexicalAnalyzer;
+import lexicalAnalysis.SemanticAction;
 
 /**
  * AS5

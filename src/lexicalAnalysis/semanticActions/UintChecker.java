@@ -1,6 +1,7 @@
 package lexicalAnalysis.semanticActions;
 
 import lexicalAnalysis.LexicalAnalyzer;
+import lexicalAnalysis.SemanticAction;
 
 public class UintChecker implements SemanticAction {
 

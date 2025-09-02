@@ -2,6 +2,7 @@ package lexicalAnalysis.semanticActions;
 
 import general.TokenType;
 import lexicalAnalysis.LexicalAnalyzer;
+import lexicalAnalysis.SemanticAction;
 
 public class LiteralIdentifier implements SemanticAction {
 

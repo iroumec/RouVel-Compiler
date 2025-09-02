@@ -10,7 +10,6 @@ import java.nio.file.Paths;
 import general.Token;
 import general.TokenType;
 import general.SymbolTable;
-import lexicalAnalysis.semanticActions.SemanticAction;
 
 public final class LexicalAnalyzer {
 

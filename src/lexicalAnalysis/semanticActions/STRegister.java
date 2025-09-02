@@ -5,6 +5,7 @@ import general.SymbolTable;
 import general.Token;
 import general.TokenType;
 import lexicalAnalysis.LexicalAnalyzer;
+import lexicalAnalysis.SemanticAction;
 
 public class STRegister implements SemanticAction {
 

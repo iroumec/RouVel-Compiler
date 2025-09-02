@@ -4,6 +4,7 @@ import general.SymbolTable;
 import general.Token;
 import general.TokenType;
 import lexicalAnalysis.LexicalAnalyzer;
+import lexicalAnalysis.SemanticAction;
 
 /**
  * AS3
@@ -16,7 +17,6 @@ public class LexemaFinalizer implements SemanticAction {
         // Resolución del token al llegar al estado de aceptación.
         Integer symbolTableEntry = null;
         String lexema = lexicalAnalyzer.getLexema();
-
         TokenType tokenType = TokenType.fromSymbol(lexema);
 
         // Se trata de un tipo de token que requiere de un lexema...

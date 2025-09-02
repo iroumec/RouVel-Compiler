@@ -3,6 +3,7 @@ package lexicalAnalysis.semanticActions;
 import java.math.BigDecimal;
 
 import lexicalAnalysis.LexicalAnalyzer;
+import lexicalAnalysis.SemanticAction;
 
 public class FloatChecker implements SemanticAction {
 
