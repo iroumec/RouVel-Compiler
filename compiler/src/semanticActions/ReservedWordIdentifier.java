@@ -1,4 +1,14 @@
+package semanticActions;
 //AS5
+
+// 0 (+,*,/,(,),{,},_,;)
+// 11 (otro)
+//12 (=)
+// 
+
+import app.LexicalAnalyzer;
+import app.TokenType;
+
 public class ReservedWordIdentifier implements SemanticAction {
 
     @Override
@@ -6,7 +16,7 @@ public class ReservedWordIdentifier implements SemanticAction {
         String lexema = lexicalAnalyzer.getLexema().substring(-1);
         char lastChar = lexicalAnalyzer.getLastCharRead();
         String posiblePalabra = lexicalAnalyzer.getLexema();
-        TokenType tokenType;
+        TokenType tokenType = null;
 
         if (lexicalAnalyzer.isReservedWord(posiblePalabra)) {
             tokenType = TokenType.fromSymbol(posiblePalabra);
@@ -14,5 +24,7 @@ public class ReservedWordIdentifier implements SemanticAction {
             tokenType = TokenType.fromSymbol(lexema);
             lexicalAnalyzer.decrementarSiguienteCaracterALeer();
         }
+
+        lexicalAnalyzer.setDetectedType(tokenType);
     }
 }

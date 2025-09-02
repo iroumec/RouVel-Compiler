@@ -54,5 +54,5 @@ digraph DFA {
     19 -> 18 [label = "C - \"#\"";];
     19 -> F [label = "\"#\"";];
     20 -> 20 [label = "L, d, \"%\" \nAS2";];
-    0 -> F [label = "c - L - d - \"%\" \n AS3";];
+    20 -> F [label = "c - L - d - \"%\" \n AS3";];
 }

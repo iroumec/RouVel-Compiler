@@ -1,3 +1,5 @@
+package app;
+
 import java.util.HashMap;
 
 public final class SymbolTable {

@@ -1,3 +1,7 @@
+package semanticActions;
+
+import app.LexicalAnalyzer;
+
 public class NewLineDetected implements SemanticAction {
 
     @Override

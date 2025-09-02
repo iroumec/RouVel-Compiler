@@ -1,21 +1,24 @@
+package semanticActions;
 //AS4
+
+import app.LexicalAnalyzer;
+import app.TokenType;
+
 public class LexemaIdentifier implements SemanticAction {
 
     @Override
     public void execute(LexicalAnalyzer lexicalAnalyzer) {
-
-        System.out.println("AS4 executed.");
         char lastChar = lexicalAnalyzer.getLastCharRead();
         TokenType tokenType;
         if (Character.isUpperCase(lastChar)) {
-            tokenType = TokenType.ID;
+            lexicalAnalyzer.setDetectedType(TokenType.ID);
         } else if (Character.isDigit(lastChar)) {
-            tokenType = TokenType.CTE;
+            lexicalAnalyzer.setDetectedType(TokenType.CTE);
         } else if (lastChar == '\"') {
-            tokenType = TokenType.STR;
+            lexicalAnalyzer.setDetectedType(TokenType.STR);
         }
 
-        lexicalAnalyzer.setDetectedType(tokenType);
+        System.out.println("AS4 executed.");
     }
 
 }

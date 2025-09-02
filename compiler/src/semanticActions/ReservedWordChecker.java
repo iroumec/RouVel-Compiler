@@ -1,3 +1,7 @@
+package semanticActions;
+
+import app.LexicalAnalyzer;
+
 public class ReservedWordChecker implements SemanticAction {
 
     @Override

@@ -1,9 +1,13 @@
+package app;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+
+import semanticActions.SemanticAction;
 
 public final class LexicalAnalyzer {
 
@@ -15,6 +19,7 @@ public final class LexicalAnalyzer {
     private final static int estadoAceptacion = 21;
 
     private final Set<String> reservedWords;
+    private final Set<String> literals;
     private final int[][] matrizTransicionEstados;
     private final SemanticAction[][][] matrizAccionesSemanticas;
 
@@ -71,6 +76,7 @@ public final class LexicalAnalyzer {
         this.nroLinea = 1;
         this.siguienteCaracterALeer = 0;
         this.reservedWords = DataLoader.loadReservedWords();
+        this.literals = DataLoader.loadLiterals();
         // Se agrega un salto de línea para marcar el final del archivo.
         this.codigoFuente = DataLoader.loadSourceCode() + '\s';
         this.matrizTransicionEstados = DataLoader.loadStateTransitionMatrix();
@@ -112,7 +118,6 @@ public final class LexicalAnalyzer {
 
             lastCharRead = codigoFuente.charAt(siguienteCaracterALeer);
 
-            System.out.println("Caracter leido: " + lastCharRead);
             int normalizedChar = normalizeChar(lastCharRead);
 
             SemanticAction[] semanticActionsToExecute = matrizAccionesSemanticas[estadoActual][normalizedChar];
@@ -156,7 +161,7 @@ public final class LexicalAnalyzer {
      */
     private int normalizeChar(char c) {
 
-        if (detectedType == null || !detectedType.requiereLexema()) {
+        if (detectedType == null || detectedType == TokenType.CTE) {
             // Chequeo de símbolos particulares.
             if (excepciones.containsKey(c)) {
                 return excepciones.get(c);
@@ -172,6 +177,10 @@ public final class LexicalAnalyzer {
 
     public boolean isReservedWord(String lexema) {
         return this.reservedWords.contains(lexema);
+    }
+
+    public boolean isLiteral(String l) {
+        return this.literals.contains(l);
     }
 
     // --------------------------------------------------------------------------------------------
@@ -227,9 +236,31 @@ public final class LexicalAnalyzer {
 
     // --------------------------------------------------------------------------------------------
 
+    public void appendToLexema(char charToAppend) {
+        this.lexema.append(charToAppend);
+    }
+
+    // --------------------------------------------------------------------------------------------
+
     public String getLexema() {
         return this.lexema.toString();
     }
 
     // --------------------------------------------------------------------------------------------
+
+    public void setDetectedType(TokenType type) {
+        this.detectedType = type;
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    public TokenType getDetectedType() {
+        return this.detectedType;
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    public void setToken(Token token) {
+        this.token = token;
+    }
 }

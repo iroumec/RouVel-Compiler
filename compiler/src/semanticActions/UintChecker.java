@@ -1,3 +1,7 @@
+package semanticActions;
+
+import app.LexicalAnalyzer;
+
 public class UintChecker implements SemanticAction {
     private static final int MAX_UINT = 65535;
 

@@ -1,4 +1,8 @@
+package semanticActions;
 //AS3
+
+import app.LexicalAnalyzer;
+
 public class IdentifierLengthChecker implements SemanticAction {
     @Override
     public void execute(LexicalAnalyzer lexicalAnalyzer) {

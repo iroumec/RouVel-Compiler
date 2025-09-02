@@ -1,3 +1,5 @@
+package app;
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -12,10 +14,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
+import semanticActions.*;
+
 public final class DataLoader {
 
     private static String sourceCodePath;
     private final static String reservedWordsPath = "../resources/reservedWords.txt";
+    private final static String literalsPath = "../resources/literals.txt";
     private final static String stateTransitionMatrixPath = "../resources/stateTransitionMatrix.csv";
     private final static String semanticActionsMatrixPath = "../resources/semanticActionsMatrix.csv";
 
@@ -50,6 +55,27 @@ public final class DataLoader {
         }
 
         return palabras;
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    public static Set<String> loadLiterals() {
+
+        Set<String> literales = new HashSet<>();
+
+        try (BufferedReader br = new BufferedReader(new FileReader(
+                literalsPath))) {
+            String linea;
+            while ((linea = br.readLine()) != null) {
+                literales.add(linea.trim()); // trim por si hay espacios o saltos
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return literales;
     }
 
     // --------------------------------------------------------------------------------------------
@@ -110,7 +136,7 @@ public final class DataLoader {
                     if (valor.isEmpty()) {
                         fila[i - 1] = new SemanticAction[0]; // Sin acciones
                     } else {
-                        String[] acciones = valor.split("\\s*,\\s*"); // Separar por coma
+                        String[] acciones = valor.split("-"); // Separar por guion.
                         List<SemanticAction> validActions = new ArrayList<>();
 
                         for (String act : acciones) {

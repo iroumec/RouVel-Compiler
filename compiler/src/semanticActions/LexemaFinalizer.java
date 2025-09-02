@@ -1,6 +1,8 @@
-public class FloatChecker implements SemanticAction {
+package semanticActions;
 
-    private static final float
+import app.LexicalAnalyzer;
+
+public class LexemaFinalizer implements SemanticAction {
 
     @Override
     public void execute(LexicalAnalyzer lexicalAnalyzer) {
