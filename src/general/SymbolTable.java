@@ -2,6 +2,9 @@ package general;
 
 import java.util.HashMap;
 
+/**
+ * Cambiar a Singleton.
+ */
 public final class SymbolTable {
 
     private static int nroEntradas = 0;

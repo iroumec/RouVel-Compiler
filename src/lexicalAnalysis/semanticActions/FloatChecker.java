@@ -27,22 +27,33 @@ public class FloatChecker implements SemanticAction {
     // --------------------------------------------------------------------------------------------
 
     private String cleanFloat(String lexema) {
-
-        // Maneja notación con F
-        if (lexema.contains("F")) {
+        if (lexema.matches(".*F.*")) {
             String[] parts = lexema.split("F", 2);
-            // Elimina ceros a la izquierda y derecha del número
-            String number = parts[0].replaceFirst("^0+(?!$)", "0").replaceFirst("0+$", "");
-            lexema = number + "E" + parts[1];
+            String number = parts[0].replaceFirst("^0+(?!\\.)", ""); // Elimina ceros a la izquierda.
+            if (number.isEmpty() || number.equals("."))
+                number = "0.0";
+            String exponent = parts.length > 1 ? parts[1].replaceFirst("^0+", "") : "0";
+            lexema = number + "E" + exponent;
         } else {
-            // Elimina ceros a la izquierda y derecha del número
-            lexema = lexema.replaceFirst("^0+(?!$)", "0").replaceFirst("0+$", "");
-            // Asegura que no quede cadena vacía
-            if (lexema.isEmpty() || lexema.equals(".")) {
+            // Se eliminan ceros a la derecha.
+            lexema = lexema.replaceFirst("^0+(?!\\.)", "");
+            // Si termina en punto, agrega un cero.
+            if (lexema.endsWith("."))
+                lexema += "0";
+            // Si empieza con punto, agrega un cero al inicio.
+            if (lexema.startsWith("."))
+                lexema = "0" + lexema;
+            // Si está vacío o es solo un punto, es 0.0.
+            if (lexema.isEmpty() || lexema.equals("."))
                 lexema = "0.0";
-            }
         }
-
+        // Elimina ceros a la derecha del decimal, a menos de que sea el único dígito.
+        if (lexema.contains(".")) {
+            lexema = lexema.replaceFirst("(\\.\\d*?)0+$", "$1");
+            // Si termina en punto, agrega un cero
+            if (lexema.endsWith("."))
+                lexema += "0";
+        }
         return lexema;
     }
 
