@@ -23,3 +23,6 @@ Se define:
 - n: indica un salto de línea.
 
 ¿Qué hacemos si viene un <==? Es ambiguo. Tomamos como vaya llegando.
+
+    // No es necesario contemplar el salto de línea porque, al
+    // retrocederse en el carácter, se vuelve a leer.

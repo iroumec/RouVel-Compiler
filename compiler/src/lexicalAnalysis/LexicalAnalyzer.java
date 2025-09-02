@@ -19,7 +19,7 @@ public final class LexicalAnalyzer {
     private final static int estadoInicio = 0;
     private final static int estadoError = -1;
     private final static int maxCaracteres = 20;
-    private final static int estadoAceptacion = 21;
+    private final static int estadoAceptacion = 19;
 
     private final Set<String> reservedWords;
     private final Set<String> literals;
@@ -111,15 +111,10 @@ public final class LexicalAnalyzer {
     private void searchToken() {
 
         int estadoActual = estadoInicio;
-        Integer symbolTableEntry = null;
-        TokenType tokenType = null;
 
         while (estadoActual != estadoAceptacion && siguienteCaracterALeer < codigoFuente.length()) {
-            if (estadoActual != estadoInicio) {
-                lexema.append(lastCharRead);
-            }
 
-            lastCharRead = codigoFuente.charAt(siguienteCaracterALeer);
+            this.lastCharRead = codigoFuente.charAt(siguienteCaracterALeer);
 
             int normalizedChar = normalizeChar(lastCharRead);
 
@@ -222,7 +217,7 @@ public final class LexicalAnalyzer {
     // --------------------------------------------------------------------------------------------
 
     public void initializeLexema(char startingChar) {
-        this.lexema = new StringBuilder(startingChar);
+        this.lexema = new StringBuilder().append(startingChar);
     }
 
     // --------------------------------------------------------------------------------------------

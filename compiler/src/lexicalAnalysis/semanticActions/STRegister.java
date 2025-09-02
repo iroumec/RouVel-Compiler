@@ -13,7 +13,7 @@ public class STRegister implements SemanticAction {
         lexicalAnalyzer.decrementarSiguienteCaracterALeer();
 
         TokenType tokenType = lexicalAnalyzer.getDetectedType();
-        String lex = lexicalAnalyzer.getLexema();
+        String lex = lexicalAnalyzer.getLexema().substring(-1);
 
         Integer symbol = SymbolTable.agregarEntrada(tokenType, lex);
 

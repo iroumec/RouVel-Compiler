@@ -14,10 +14,10 @@ digraph DFA {
     0 -> 13 [label = "\">\" \n AS1";];
     0 -> 14 [label = "\"<\" \n AS1";];
     0 -> 15 [label = "\"#\"";];
-    0 -> 18 [label = "L \n AS1";];
-    0 -> 1 [label = "d \n AS1"; tailport = n;];
-    0 -> 3 [label = "\".\" \n AS1"; tailport = s;];
-    0 -> 8 [label = "\" \n AS1";];
+    0 -> 18 [label = "L \n AS1, AS4";];
+    0 -> 1 [label = "d \n AS1, AS4"; tailport = n;];
+    0 -> 3 [label = "\".\" \n AS1, AS4"; tailport = s;];
+    0 -> 8 [label = "\" \n AS1, AS4";];
     0 -> 9 [label = "l \n AS1";];
     0 -> F [label = "\"+\", \"*\", \"/\", \"(\", \")\", \"{\", \"}\", \"_\", \";\" \n AS1, AS3";];
     1 -> 1 [label = "d \n AS2";];
@@ -40,7 +40,7 @@ digraph DFA {
     11 -> F [label = "C - \"=\" - \"!\" \n AS3, ASR";];
     11 -> F [label = "\"=\", \"!\" \n AS2, AS3";];
     12 -> F [label = "C - \">\" \n AS3, ASR";];
-    12 -> F [label = "\">\" \n AS2";];
+    12 -> F [label = "\">\" \n AS2, AS3";];
     13 -> F [label = "C - \"=\" \n AS3, ASR";];
     13 -> F [label = "\"=\" \n AS2, AS3";];
     14 -> F [label = "C - \"=\" \n AS3, ASR";];

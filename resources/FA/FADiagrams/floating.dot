@@ -3,8 +3,8 @@ digraph DFA {
     node [shape = circle;];
     F [shape = doublecircle;];
     
-    0 -> 1 [label = "d \n AS1"; tailport = n;];
-    0 -> 3 [label = "\".\" \n AS1"; tailport = s;];
+    0 -> 1 [label = "d \n AS1, AS4"; tailport = n;];
+    0 -> 3 [label = "\".\" \n AS1, AS4"; tailport = s;];
     1 -> 1 [label = "d \n AS2";];
     1 -> 4 [label = "\".\" \n AS2";];
     3 -> 4 [label = "d \n AS2";];
