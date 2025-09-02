@@ -3,8 +3,7 @@ digraph DFA {
     node [shape = circle;];
     F [shape = doublecircle;];
     
-    0 -> 9 [label = "\"";];
-    9 -> 9 [label = "L, l";];
-    9 -> 10 [label = "\"";];
-    10 -> F [label = "C";];
+    0 -> 8 [label = "\" \n AS1";];
+    8 -> 8 [label = "C - \" - n \n AS2";];
+    8 -> F [label = "\" \n AS2, AS3";];
 }

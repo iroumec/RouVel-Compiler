@@ -1,13 +1,13 @@
 digraph DFA {
     rankdir = LR;
     node [shape = circle;];
-    F [shape = doublecircle;];
     
-    0 -> 17 [label = "\"#\"";];
-    17 -> 18 [label = "\"#\"";];
-    18 -> 18 [label = "C - n - \"#\"";];
-    18 -> 18 [label = "n \n AS"; tailport = s;];
-    18 -> 19 [label = "\"#\"";];
-    19 -> 18 [label = "C - \"#\"";];
-    19 -> F [label = "\"#\"";];
+    0 -> 15 [label = "\"#\"";];
+    15 -> 16 [label = "\"#\"";];
+    16 -> 16 [label = "C - n - \"#\"";];
+    16 -> 16 [label = "n \n ASN"; tailport = s;];
+    16 -> 17 [label = "\"#\"";];
+    17 -> 16 [label = "C - n - \"#\"";];
+    17 -> 16 [label = "n \n ASN";];
+    17 -> 0 [label = "\"#\""; headport = s; tailport = s;];
 }

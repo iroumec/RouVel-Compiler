@@ -136,24 +136,6 @@ public final class LexicalAnalyzer {
 
             siguienteCaracterALeer++;
         }
-
-        // Resolución del token al llegar al estado de aceptación.
-        String lex = lexema.toString();
-        String posiblePalabra = lex + lastCharRead;
-
-        if (isReservedWord(posiblePalabra)) {
-            lex = posiblePalabra;
-            tokenType = TokenType.fromSymbol(lex);
-        } else if (isReservedWord(lex)) {
-            tokenType = TokenType.fromSymbol(lex);
-        } else if (!lex.isEmpty()) {
-            tokenType = getTokenType(lex);
-            symbolTableEntry = SymbolTable.agregarEntrada(tokenType, lex);
-        }
-
-        if (tokenType != null) {
-            this.token = new Token(tokenType, symbolTableEntry);
-        }
     }
 
     // --------------------------------------------------------------------------------------------

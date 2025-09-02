@@ -1,5 +1,4 @@
 package lexicalAnalysis.semanticActions;
-//AS5
 
 import general.TokenType;
 import lexicalAnalysis.LexicalAnalyzer;

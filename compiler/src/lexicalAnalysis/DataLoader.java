@@ -33,6 +33,7 @@ public final class DataLoader {
         semanticActions.put("AS3", new LexemaFinalizer());
         semanticActions.put("AS4", new LexemaIdentifier());
         semanticActions.put("AS5", new IdentifierLengthChecker());
+        semanticActions.put("ASR", new ReturnCharacterToEntry());
         semanticActions.put("ASN", new NewLineDetected());
     }
 

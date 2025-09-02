@@ -11,8 +11,17 @@ public class FloatChecker implements SemanticAction {
 
     @Override
     public void execute(LexicalAnalyzer lexicalAnalyzer) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'execute'");
+        String lexema = lexicalAnalyzer.getLexema();
+        if (lexema.contains("F")) {
+            lexema = lexema.replace("F", "E");
+            lexema += "f";
+        }
+        float value = Float.parseFloat(lexema);
+        if (!((value >= MIN_POS_VAL && value <= MAX_POS_VAL) || (value >= MIN_NEG_VAL && value <= MAX_NEG_VAL))) {
+            System.out.println("WARNING: El número flotante " + lexema
+                    + " está fuera del rango de representación. Se asignará el valor 0.");
+            lexicalAnalyzer.setLexema("0.0");
+        }
     }
 
 }

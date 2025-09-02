@@ -9,11 +9,10 @@ public class LiteralIdentifier implements SemanticAction {
     public void execute(LexicalAnalyzer lexicalAnalyzer) {
 
         String lexema = lexicalAnalyzer.getLexema();
-        char lastChar = lexicalAnalyzer.getLastCharRead();
         TokenType tokenType = null;
 
         if (lexicalAnalyzer.isLiteral(lexema)) {
-            tokenType = TokenType.fromSymbol(posiblePalabra);
+            tokenType = TokenType.fromSymbol(lexema);
         } else if (lexicalAnalyzer.isLiteral(lexema.substring(-1))) {
             tokenType = TokenType.fromSymbol(lexema.substring(-1));
             lexicalAnalyzer.decrementarSiguienteCaracterALeer();
