@@ -1,4 +1,7 @@
-package app;
+
+import app.DataLoader;
+import app.LexicalAnalyzer;
+import app.Token;
 
 public class Main {
     public static void main(String[] args) {
