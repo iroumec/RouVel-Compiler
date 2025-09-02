@@ -27,4 +27,12 @@ Se define:
     // No es necesario contemplar el salto de línea porque, al
     // retrocederse en el carácter, se vuelve a leer.
 
-AS1:
+Recvisar qué pasa si no se agrega UI a un número.
+
+Definiciones de acciones semánticas:
+
+AS1: Inicializador de lexema.
+Inicializa string y agrega caracter leido.
+
+AS2: LexemaAppender.
+Agrega caracter leído al string del lexema.

@@ -23,15 +23,15 @@ digraph DFA {
     1 -> 1 [label = "d \n AS2";];
     1 -> 2 [label = "\"U\" \n AS2";];
     1 -> 4 [label = "\".\" \n AS2";];
-    2 -> F [label = "\"I\" \n AS2, AS3";];
+    2 -> F [label = "\"I\" \n AS2, ASUI, AS3";];
     3 -> 4 [label = "d \n AS2";];
     4 -> 4 [label = "d \n AS2";];
     4 -> 5 [label = "\"F\" \n AS2";];
-    4 -> F [label = "c - d \n AS3, ASR";];
+    4 -> F [label = "c - d \n ASF, AS3, ASR";];
     5 -> 6 [label = "\"+\", \"-\" \n AS2";];
     6 -> 7 [label = "d \n AS2";];
     7 -> 7 [label = "d \n AS2";];
-    7 -> F [label = "c - d \n AS3, ASR";];
+    7 -> F [label = "c - d \n ASF, AS3, ASR";];
     8 -> 8 [label = "C - \" - n \n AS2";];
     8 -> F [label = "\" \n AS2, AS3";];
     9 -> 9 [label = "l \n AS2";];
@@ -53,5 +53,5 @@ digraph DFA {
     17 -> 16 [label = "C - n - \"#\"";];
     17 -> 16 [label = "n \n ASN";];
     18 -> 18 [label = "L, d, \"%\"\nAS2";];
-    18 -> F [label = "C - L - d - \"%\"\nAS3, ASR";];
+    18 -> F [label = "C - L - d - \"%\"\n AS5, AS3, ASR";];
 }

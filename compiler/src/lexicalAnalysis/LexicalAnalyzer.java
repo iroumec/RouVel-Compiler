@@ -119,12 +119,14 @@ public final class LexicalAnalyzer {
 
             int normalizedChar = normalizeChar(lastCharRead);
 
+            // System.out.println("Estado actual: " + estadoActual);
+
             SemanticAction[] semanticActionsToExecute = matrizAccionesSemanticas[estadoActual][normalizedChar];
             estadoActual = matrizTransicionEstados[estadoActual][normalizedChar];
 
-            System.out.println("Leído: " + lastCharRead);
-            System.out.println("Normalizado: " + normalizedChar);
-            System.out.println("Siguiente estado: " + estadoActual);
+            // System.out.println("Caracter: " + this.lastCharRead);
+            // System.out.println("Normalización: " + normalizedChar);
+            // System.out.println("Siguiente estado: " + estadoActual);
 
             if (estadoActual == estadoError) {
                 System.err.println("Error: Línea " + this.nroLinea + ": Se detectó el carácter \"" + this.lastCharRead

@@ -17,7 +17,6 @@ public class LexemaFinalizer implements SemanticAction {
         Integer symbolTableEntry = null;
         String lexema = lexicalAnalyzer.getLexema();
 
-        System.out.println(lexema);
         TokenType tokenType = TokenType.fromSymbol(lexema);
 
         // Se trata de un tipo de token que requiere de un lexema...
@@ -37,8 +36,6 @@ public class LexemaFinalizer implements SemanticAction {
         if (tokenType != null) {
             lexicalAnalyzer.setToken(new Token(tokenType, symbolTableEntry));
         }
-
-        System.out.println("AS3 executed.");
     }
 
 }

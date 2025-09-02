@@ -2,6 +2,9 @@ package lexicalAnalysis.semanticActions;
 
 import lexicalAnalysis.LexicalAnalyzer;
 
+/**
+ * ASN
+ */
 public class NewLineDetected implements SemanticAction {
 
     @Override

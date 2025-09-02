@@ -9,17 +9,15 @@ public class UintChecker implements SemanticAction {
     public void execute(LexicalAnalyzer lexicalAnalyzer) {
 
         String lexema = lexicalAnalyzer.getLexema();
-        System.out.println("UintChecker: lexema = " + lexema);
+        // System.out.println("UintChecker: lexema = " + lexema);
 
         int number = Integer.parseInt(lexema.substring(0, lexema.length() - 2));
         if (number < 0 || number > MAX_UINT) {
             System.out.println(
-                    "WARNING: El número " + number + " está fuera del rango de uint. Se ajustará al rango permitido.");
-            if (number < 0) {
-                number = 0;
-            } else {
-                number = MAX_UINT;
-            }
+                    "WARNING: El número " + number
+                            + " está fuera del rango de uint. Se ajustará al máximo en el rango permitido [0, "
+                            + MAX_UINT + "].");
+            lexicalAnalyzer.setLexema(MAX_UINT + "UI");
         }
     }
 

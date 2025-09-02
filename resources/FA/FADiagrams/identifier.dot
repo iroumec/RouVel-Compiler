@@ -5,5 +5,5 @@ digraph DFA {
     
     0 -> 18 [label = "L \n AS1, AS4";];
     18 -> 18 [label = "L, d, \"%\"\nAS2";];
-    18 -> F [label = "C - L - d - \"%\"\nAS3, ASR";];
+    18 -> F [label = "C - L - d - \"%\"\n AS5, AS3, ASR";];
 }

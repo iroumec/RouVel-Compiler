@@ -17,8 +17,6 @@ public class LexemaIdentifier implements SemanticAction {
         } else if (lastChar == '\"') {
             lexicalAnalyzer.setDetectedType(TokenType.STR);
         }
-
-        System.out.println("AS4 executed.");
     }
 
 }

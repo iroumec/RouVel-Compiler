@@ -12,14 +12,14 @@ public class FloatChecker implements SemanticAction {
     @Override
     public void execute(LexicalAnalyzer lexicalAnalyzer) {
         String lexema = lexicalAnalyzer.getLexema();
-        System.out.println("FloatChecker: lexema = " + lexema);
+        // System.out.println("FloatChecker: lexema = " + lexema);
         if (lexema.contains("F")) {
             lexema = lexema.replace("F", "E");
             lexema += "f";
         }
-        System.out.println("FloatChecker: lexema modificado = " + lexema);
+        // System.out.println("FloatChecker: lexema modificado = " + lexema);
         float value = Float.parseFloat(lexema);
-        System.out.println("FloatChecker: valor float = " + value);
+        // System.out.println("FloatChecker: valor float = " + value);
         if (!((value >= MIN_POS_VAL && value <= MAX_POS_VAL) || (value >= MIN_NEG_VAL && value <= MAX_NEG_VAL))) {
             System.out.println("WARNING: El número flotante " + lexema
                     + " está fuera del rango de representación. Se asignará el valor 0.");

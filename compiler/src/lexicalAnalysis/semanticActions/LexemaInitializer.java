@@ -8,7 +8,6 @@ public class LexemaInitializer implements SemanticAction {
     @Override
     public void execute(LexicalAnalyzer lexicalAnalyzer) {
         lexicalAnalyzer.initializeLexema(lexicalAnalyzer.getLastCharRead());
-        System.out.println("AS1 executed.");
     }
 
 }

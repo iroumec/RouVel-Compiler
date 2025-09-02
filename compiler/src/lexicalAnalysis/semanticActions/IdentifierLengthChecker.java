@@ -3,13 +3,14 @@ package lexicalAnalysis.semanticActions;
 
 import lexicalAnalysis.LexicalAnalyzer;
 
+/**
+ * AS5
+ */
 public class IdentifierLengthChecker implements SemanticAction {
     @Override
     public void execute(LexicalAnalyzer lexicalAnalyzer) {
 
-        String lexema = lexicalAnalyzer.getLexema().substring(-1);
-        lexicalAnalyzer.setLexema(lexema);
-        lexicalAnalyzer.decrementarSiguienteCaracterALeer();
+        String lexema = lexicalAnalyzer.getLexema();
 
         if (lexema.length() > lexicalAnalyzer.getMaxCaracteres()) {
             System.out.println("WARNING en la línea " + lexicalAnalyzer.getNroLinea() + ": El identificador '" + lexema
@@ -17,6 +18,8 @@ public class IdentifierLengthChecker implements SemanticAction {
                     + " caracteres. Se truncará a '"
                     + lexema.substring(0, lexicalAnalyzer.getMaxCaracteres()) + "'.");
             lexema = lexema.substring(0, lexicalAnalyzer.getMaxCaracteres());
+
+            lexicalAnalyzer.setLexema(lexema);
         }
     }
 }
