@@ -9,6 +9,7 @@ public class UintChecker implements SemanticAction {
     public void execute(LexicalAnalyzer lexicalAnalyzer) {
 
         String lexema = lexicalAnalyzer.getLexema();
+        System.out.println("UintChecker: lexema = " + lexema);
 
         int number = Integer.parseInt(lexema.substring(0, lexema.length() - 2));
         if (number < 0 || number > MAX_UINT) {

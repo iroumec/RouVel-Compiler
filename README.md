@@ -26,3 +26,5 @@ Se define:
 
     // No es necesario contemplar el salto de línea porque, al
     // retrocederse en el carácter, se vuelve a leer.
+
+AS1:
