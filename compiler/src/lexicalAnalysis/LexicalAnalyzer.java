@@ -59,6 +59,8 @@ public final class LexicalAnalyzer {
         excepciones.put('%', 23);
         excepciones.put('#', 24);
         excepciones.put('\n', 25);
+        excepciones.put('\s', 26);
+        excepciones.put('\t', 27);
     }
 
     // --------------------------------------------------------------------------------------------
@@ -122,9 +124,12 @@ public final class LexicalAnalyzer {
 
             System.out.println("Leído: " + lastCharRead);
             System.out.println("Normalizado: " + normalizedChar);
+            System.out.println("Siguiente estado: " + estadoActual);
 
             if (estadoActual == estadoError) {
-                throw new RuntimeException("Se llegó a un estado de error en la posición " + siguienteCaracterALeer);
+                System.err.println("Error: Línea " + this.nroLinea + ": Se detectó el carácter \"" + this.lastCharRead
+                        + "\", el cual no corresponde a una palabra válida en el lenguaje.");
+                System.exit(1);
             }
 
             for (SemanticAction action : semanticActionsToExecute) {
@@ -151,7 +156,7 @@ public final class LexicalAnalyzer {
         }
 
         // Chequeo de reglas generales.
-        return Character.isUpperCase(c) ? 0 : Character.isLowerCase(c) ? 1 : Character.isDigit(c) ? 2 : 26;
+        return Character.isUpperCase(c) ? 0 : Character.isLowerCase(c) ? 1 : Character.isDigit(c) ? 2 : 28;
 
     }
 
