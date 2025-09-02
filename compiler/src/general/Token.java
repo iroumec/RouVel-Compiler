@@ -1,4 +1,4 @@
-package app;
+package general;
 
 public class Token {
 

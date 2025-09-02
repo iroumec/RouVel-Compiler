@@ -1,4 +1,4 @@
-package app;
+package lexicalAnalysis;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import semanticActions.*;
+import lexicalAnalysis.semanticActions.*;
 
 public final class DataLoader {
 

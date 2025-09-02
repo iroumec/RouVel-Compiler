@@ -1,7 +1,7 @@
 
-import app.DataLoader;
-import app.LexicalAnalyzer;
-import app.Token;
+import general.Token;
+import lexicalAnalysis.DataLoader;
+import lexicalAnalysis.LexicalAnalyzer;
 
 public class Main {
     public static void main(String[] args) {

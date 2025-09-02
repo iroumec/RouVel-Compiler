@@ -1,6 +1,6 @@
-package semanticActions;
+package lexicalAnalysis.semanticActions;
 
-import app.LexicalAnalyzer;
+import lexicalAnalysis.LexicalAnalyzer;
 
 public interface SemanticAction {
     public void execute(LexicalAnalyzer lexicalAnalyzer);

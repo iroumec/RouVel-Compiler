@@ -1,13 +1,8 @@
-package semanticActions;
+package lexicalAnalysis.semanticActions;
 //AS5
 
-// 0 (+,*,/,(,),{,},_,;)
-// 11 (otro)
-//12 (=)
-// 
-
-import app.LexicalAnalyzer;
-import app.TokenType;
+import general.TokenType;
+import lexicalAnalysis.LexicalAnalyzer;
 
 public class ReservedWordIdentifier implements SemanticAction {
 

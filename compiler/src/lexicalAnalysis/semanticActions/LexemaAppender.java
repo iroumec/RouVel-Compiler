@@ -1,7 +1,7 @@
-package semanticActions;
+package lexicalAnalysis.semanticActions;
 //AS2
 
-import app.LexicalAnalyzer;
+import lexicalAnalysis.LexicalAnalyzer;
 
 public class LexemaAppender implements SemanticAction {
 

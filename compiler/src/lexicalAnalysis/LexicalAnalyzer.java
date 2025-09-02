@@ -1,4 +1,4 @@
-package app;
+package lexicalAnalysis;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -7,7 +7,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import semanticActions.SemanticAction;
+import general.SymbolTable;
+import general.Token;
+import general.TokenType;
+import lexicalAnalysis.semanticActions.SemanticAction;
 
 public final class LexicalAnalyzer {
 
@@ -232,6 +235,12 @@ public final class LexicalAnalyzer {
 
     public void setLexema(String lexema) {
         this.lexema = new StringBuilder(lexema);
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    public void initializeLexema(char startingChar) {
+        this.lexema = new StringBuilder(startingChar);
     }
 
     // --------------------------------------------------------------------------------------------

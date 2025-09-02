@@ -1,7 +1,7 @@
-package semanticActions;
+package lexicalAnalysis.semanticActions;
 
-import app.LexicalAnalyzer;
-import app.TokenType;
+import general.TokenType;
+import lexicalAnalysis.LexicalAnalyzer;
 
 public class LiteralIdentifier implements SemanticAction {
 

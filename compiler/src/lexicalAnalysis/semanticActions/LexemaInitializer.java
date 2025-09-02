@@ -1,13 +1,13 @@
-package semanticActions;
+package lexicalAnalysis.semanticActions;
 //AS1
 
-import app.LexicalAnalyzer;
+import lexicalAnalysis.LexicalAnalyzer;
 
 public class LexemaInitializer implements SemanticAction {
 
     @Override
     public void execute(LexicalAnalyzer lexicalAnalyzer) {
-        lexicalAnalyzer.setLexema("" + lexicalAnalyzer.getLastCharRead());
+        lexicalAnalyzer.initializeLexema(lexicalAnalyzer.getLastCharRead());
         System.out.println("AS1 executed.");
     }
 

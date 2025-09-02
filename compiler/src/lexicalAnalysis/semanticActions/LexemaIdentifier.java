@@ -1,8 +1,8 @@
-package semanticActions;
+package lexicalAnalysis.semanticActions;
 //AS4
 
-import app.LexicalAnalyzer;
-import app.TokenType;
+import general.TokenType;
+import lexicalAnalysis.LexicalAnalyzer;
 
 public class LexemaIdentifier implements SemanticAction {
 

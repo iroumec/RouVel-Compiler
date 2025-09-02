@@ -1,6 +1,6 @@
-package semanticActions;
+package lexicalAnalysis.semanticActions;
 
-import app.LexicalAnalyzer;
+import lexicalAnalysis.LexicalAnalyzer;
 
 public class ReservedWordChecker implements SemanticAction {
 
