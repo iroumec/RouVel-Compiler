@@ -65,9 +65,6 @@ public class FloatChecker implements SemanticAction {
 
     private String transformToScientific(String number) {
 
-        // Se quita la f de sufijo.
-        number = number.trim().replaceAll("[fF]$", "");
-
         if (number.equals("0") || number.equals("0.0")) {
             return "0.0";
         }
@@ -77,10 +74,10 @@ public class FloatChecker implements SemanticAction {
             return number.toUpperCase();
         }
 
-        // Manejar números que comienzan con "0."
-        // TODO: chequear esto luego. No necesariamente debe empezar con 0.
+        // La parte entera del número debe ser 0 para convertirlo en notación
+        // científica.
         if (number.startsWith("0.")) {
-            String decPart = number.substring(2); // parte después del "0."
+            String decPart = number.substring(2); // Parte después del "0.".
             int zeroCount = 0;
             int firstDigitIndex = -1;
 
@@ -93,12 +90,13 @@ public class FloatChecker implements SemanticAction {
                 }
             }
 
+            // Si solo hay ceros...
             if (firstDigitIndex == -1) {
-                return "0.0"; // solo ceros
+                return "0.0";
             }
 
             char firstDigit = decPart.charAt(firstDigitIndex);
-            int exponent = zeroCount + 1; // cantidad de ceros antes del primer dígito
+            int exponent = zeroCount + 1; // Cantidad de ceros antes del primer dígito.
             return firstDigit + ".0E-" + exponent;
         }
 

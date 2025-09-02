@@ -7,12 +7,15 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import lexicalAnalysis.semanticActions.*;
 
@@ -41,89 +44,76 @@ public final class DataLoader {
 
     public static int[][] loadStateTransitionMatrix() {
 
-        String line;
+        List<int[]> lista = null;
         String separator = ",";
-        ArrayList<int[]> lista = new ArrayList<>();
 
-        try (BufferedReader br = new BufferedReader(new FileReader(stateTransitionMatrixPath))) {
-            // Saltar encabezado
-            br.readLine();
-
-            while ((line = br.readLine()) != null) {
-                String[] tokens = line.split(separator, -1); // -1 para mantener vacíos finales
-                int[] fila = new int[tokens.length - 1]; // ignoramos la columna "row"
-
-                for (int i = 1; i < tokens.length; i++) { // empezamos desde 1
-                    String valor = tokens[i].trim();
-                    if (valor.isEmpty()) {
-                        fila[i - 1] = -1;
-                    } else {
-                        try {
-                            fila[i - 1] = Integer.parseInt(valor);
-                        } catch (NumberFormatException e) {
-                            fila[i - 1] = -1; // cualquier otro carácter se vuelve -1
-                        }
-                    }
-                }
-                lista.add(fila);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+        try (Stream<String> stream = Files.lines(Paths.get(stateTransitionMatrixPath))) {
+            lista = stream.skip(1) // Se saltea el encabezado.
+                    // -1 para devolver todos los campos, incluso los vacíos.
+                    .map(line -> Arrays.stream(line.split(separator, -1))
+                            .skip(1)
+                            .mapToInt(s -> {
+                                try {
+                                    return Integer.parseInt(s.trim());
+                                } catch (NumberFormatException e) {
+                                    return -1;
+                                }
+                            })
+                            .toArray())
+                    .collect(Collectors.toList());
+        } catch (IOException e1) {
+            System.err.println("Ha ocurrido un error relacionado a la lectura del archivo de las matrices.");
+            System.exit(1);
         }
 
-        // Conversión a matriz y retorno.
         return lista.toArray(new int[0][]);
     }
 
     // --------------------------------------------------------------------------------------------
 
     public static SemanticAction[][][] loadSemanticActionMatrix() {
+        try (Stream<String> lines = Files.lines(Paths.get(semanticActionsMatrixPath))) {
+            List<SemanticAction[][]> listaFilas = lines
+                    .skip(1) // Se saltea el encabezado (primera línea).
+                    .map(line -> {
+                        String[] tokens = line.split(",", -1); // Mantener vacíos
+                        SemanticAction[][] fila = new SemanticAction[tokens.length - 1][]; // Ignorar col. row
 
-        ArrayList<SemanticAction[][]> listaFilas = new ArrayList<>();
+                        for (int i = 1; i < tokens.length; i++) {
+                            String valor = tokens[i].trim();
 
-        try (BufferedReader br = new BufferedReader(new FileReader(semanticActionsMatrixPath))) {
-            br.readLine(); // Salteo de encabezado
-            String line;
+                            if (valor.isEmpty()) {
+                                fila[i - 1] = new SemanticAction[0]; // Sin acciones
+                            } else {
+                                String[] acciones = valor.replace("\"", "").split("-");
+                                List<SemanticAction> validActions = new ArrayList<>();
 
-            while ((line = br.readLine()) != null) {
-                String[] tokens = line.split(",", -1); // -1 para mantener vacíos
-                SemanticAction[][] fila = new SemanticAction[tokens.length - 1][]; // Ignorar columna row
+                                for (String act : acciones) {
+                                    SemanticAction sa = semanticActions.get(act.trim());
+                                    if (sa != null)
+                                        validActions.add(sa);
+                                }
 
-                for (int i = 1; i < tokens.length; i++) {
-                    String valor = tokens[i].trim();
-
-                    if (valor.isEmpty()) {
-                        fila[i - 1] = new SemanticAction[0]; // Sin acciones
-                    } else {
-                        String[] acciones = valor.split("-"); // Separar por guion.
-                        List<SemanticAction> validActions = new ArrayList<>();
-
-                        for (String act : acciones) {
-
-                            act = act.trim().replace("\"", "");
-
-                            if (semanticActions.containsKey(act)) {
-                                validActions.add(semanticActions.get(act));
+                                fila[i - 1] = validActions.toArray(new SemanticAction[0]);
                             }
                         }
 
-                        fila[i - 1] = validActions.toArray(new SemanticAction[0]);
-                    }
-                }
+                        return fila;
+                    })
+                    .toList();
 
-                listaFilas.add(fila);
-            }
+            return listaFilas.toArray(new SemanticAction[0][][]);
 
         } catch (IOException e) {
             e.printStackTrace();
+            return new SemanticAction[0][][]; // Se devuelve vacío en caso de error.
         }
-
-        return listaFilas.toArray(new SemanticAction[0][][]);
     }
 
     // --------------------------------------------------------------------------------------------
 
     public static String loadSourceCode() {
+
         try {
             return Files.readString(Paths.get(sourceCodePath));
         } catch (Exception e) {

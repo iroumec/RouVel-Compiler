@@ -28,42 +28,14 @@ public final class LexicalAnalyzer {
 
     private final int[][] matrizTransicionEstados;
     private final SemanticAction[][][] matrizAccionesSemanticas;
-    private static final Map<Character, Integer> excepciones = new HashMap<>();
-    static {
-        excepciones.put('U', 3);
-        excepciones.put('I', 4);
-        excepciones.put('.', 5);
-        excepciones.put('F', 6);
-        excepciones.put('-', 7);
-        excepciones.put('+', 8);
-        excepciones.put('"', 9);
-        excepciones.put('*', 10);
-        excepciones.put('/', 11);
-        excepciones.put('(', 12);
-        excepciones.put(')', 13);
-        excepciones.put('{', 14);
-        excepciones.put('}', 15);
-        excepciones.put('_', 16);
-        excepciones.put(';', 17);
-        excepciones.put(':', 18);
-        excepciones.put('=', 19);
-        excepciones.put('!', 20);
-        excepciones.put('>', 21);
-        excepciones.put('<', 22);
-        excepciones.put('%', 23);
-        excepciones.put('#', 24);
-        excepciones.put('\n', 25);
-        excepciones.put('\s', 26);
-        excepciones.put('\t', 27);
-    }
 
     // --------------------------------------------------------------------------------------------
 
     public LexicalAnalyzer() {
         this.nroLinea = 1;
         this.siguienteCaracterALeer = 0;
-        // Se agrega un espacio en blanco para marcar el final del archivo.
-        this.codigoFuente = DataLoader.loadSourceCode() + '\s';
+        // Se agrega una marca para indicar el final del archivo.
+        this.codigoFuente = DataLoader.loadSourceCode() + '\0';
         this.matrizTransicionEstados = DataLoader.loadStateTransitionMatrix();
         this.matrizAccionesSemanticas = DataLoader.loadSemanticActionMatrix();
     }
@@ -87,22 +59,17 @@ public final class LexicalAnalyzer {
 
     private void searchToken() {
 
+        int normalizedChar;
         int estadoActual = estadoInicio;
 
-        while (estadoActual != estadoAceptacion && siguienteCaracterALeer < codigoFuente.length()) {
+        while (estadoActual != estadoAceptacion && siguienteCaracterALeer < codigoFuente.length() - 1) {
 
             this.lastCharRead = codigoFuente.charAt(siguienteCaracterALeer);
 
-            int normalizedChar = normalizeChar(lastCharRead);
-
-            // System.out.println("Estado actual: " + estadoActual);
+            normalizedChar = normalizeChar(lastCharRead);
 
             SemanticAction[] semanticActionsToExecute = matrizAccionesSemanticas[estadoActual][normalizedChar];
             estadoActual = matrizTransicionEstados[estadoActual][normalizedChar];
-
-            // System.out.println("Caracter: \"" + this.lastCharRead + "\"");
-            // System.out.println("Normalización: " + normalizedChar);
-            // System.out.println("Siguiente estado: " + estadoActual);
 
             if (estadoActual == estadoError) {
                 System.err.println("Error: Línea " + this.nroLinea + ": Se detectó el carácter \"" + this.lastCharRead
@@ -126,7 +93,10 @@ public final class LexicalAnalyzer {
     private void cleanSearch() {
         this.token = null;
         this.detectedType = null;
-        this.lexema = null;
+        if (this.lexema == null)
+            this.lexema = new StringBuilder();
+        else
+            this.lexema.setLength(0); // Se limpia el lexema y no hay necesidad de crear uno nuevo.
     }
 
     // --------------------------------------------------------------------------------------------
@@ -136,18 +106,52 @@ public final class LexicalAnalyzer {
      * sean mapeadas a una misma columna de requerirse.
      */
     private int normalizeChar(char c) {
-
         if (detectedType == null || detectedType == TokenType.CTE || detectedType == TokenType.STR
                 || (detectedType == TokenType.ID && c == '%')) {
-            // Chequeo de símbolos particulares.
-            if (excepciones.containsKey(c)) {
-                return excepciones.get(c);
-            }
+            int exc = excepcion(c);
+            if (exc != -1)
+                return exc;
         }
+        if (Character.isUpperCase(c))
+            return 0;
+        if (Character.isLowerCase(c))
+            return 1;
+        if (Character.isDigit(c))
+            return 2;
+        return 28;
+    }
 
-        // Chequeo de reglas generales.
-        return Character.isUpperCase(c) ? 0 : Character.isLowerCase(c) ? 1 : Character.isDigit(c) ? 2 : 28;
+    // --------------------------------------------------------------------------------------------
 
+    private int excepcion(char c) {
+        return switch (c) {
+            case 'U' -> 3;
+            case 'I' -> 4;
+            case '.' -> 5;
+            case 'F' -> 6;
+            case '-' -> 7;
+            case '+' -> 8;
+            case '"' -> 9;
+            case '*' -> 10;
+            case '/' -> 11;
+            case '(' -> 12;
+            case ')' -> 13;
+            case '{' -> 14;
+            case '}' -> 15;
+            case '_' -> 16;
+            case ';' -> 17;
+            case ':' -> 18;
+            case '=' -> 19;
+            case '!' -> 20;
+            case '>' -> 21;
+            case '<' -> 22;
+            case '%' -> 23;
+            case '#' -> 24;
+            case '\n' -> 25;
+            case ' ' -> 26;
+            case '\t' -> 27;
+            default -> -1;
+        };
     }
 
     // --------------------------------------------------------------------------------------------
