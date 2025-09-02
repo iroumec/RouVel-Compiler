@@ -17,6 +17,9 @@ public class ReservedWordIdentifier implements SemanticAction {
         } else if (lexicalAnalyzer.isReservedWord(lexema)) {
             tokenType = TokenType.fromSymbol(lexema);
             lexicalAnalyzer.decrementarSiguienteCaracterALeer();
+        } else {
+            System.err.println("Error en la línea " + lexicalAnalyzer.getNroLinea() + ": La palabra '" + lexema
+                    + "' no es una palabra reservada.");
         }
 
         lexicalAnalyzer.setDetectedType(tokenType);
