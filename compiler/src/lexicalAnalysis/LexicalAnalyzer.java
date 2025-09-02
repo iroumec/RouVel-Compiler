@@ -28,7 +28,7 @@ public final class LexicalAnalyzer {
 
     private TokenType detectedType;
     private Token token;
-    private StringBuilder lexema = new StringBuilder();
+    private StringBuilder lexema;
     private int nroLinea;
     private char lastCharRead;
     private String codigoFuente;
@@ -96,11 +96,10 @@ public final class LexicalAnalyzer {
 
         Token out = this.token;
 
-        // Solucionar esto. Hardcodeado
-        lexema = new StringBuilder();
-
         // Se limpia el token, ya que se consumió.
         this.token = null;
+        this.detectedType = null;
+        this.lexema = null;
 
         return out;
 
@@ -120,6 +119,9 @@ public final class LexicalAnalyzer {
 
             SemanticAction[] semanticActionsToExecute = matrizAccionesSemanticas[estadoActual][normalizedChar];
             estadoActual = matrizTransicionEstados[estadoActual][normalizedChar];
+
+            System.out.println("Leído: " + lastCharRead);
+            System.out.println("Normalizado: " + normalizedChar);
 
             if (estadoActual == estadoError) {
                 throw new RuntimeException("Se llegó a un estado de error en la posición " + siguienteCaracterALeer);
@@ -141,7 +143,7 @@ public final class LexicalAnalyzer {
      */
     private int normalizeChar(char c) {
 
-        if (detectedType == null || detectedType == TokenType.CTE) {
+        if (detectedType == null || detectedType == TokenType.CTE || detectedType == TokenType.STR) {
             // Chequeo de símbolos particulares.
             if (excepciones.containsKey(c)) {
                 return excepciones.get(c);

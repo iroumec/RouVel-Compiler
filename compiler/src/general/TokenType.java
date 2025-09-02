@@ -28,6 +28,8 @@ public enum TokenType {
     // --------------------------------------------------------------------------------------------
     // Literales.
 
+    GT(6, ">", Category.LITERAL),
+    LT(6, "<", Category.LITERAL),
     GE(6, ">=", Category.LITERAL),
     LE(7, "<=", Category.LITERAL),
     EQ(8, "==", Category.LITERAL),
