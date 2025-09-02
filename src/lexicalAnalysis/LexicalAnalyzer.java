@@ -160,7 +160,7 @@ public final class LexicalAnalyzer {
     // --------------------------------------------------------------------------------------------
 
     public int getMaxCaracteres() {
-        return this.maxCaracteres;
+        return maxCaracteres;
     }
 
     // --------------------------------------------------------------------------------------------

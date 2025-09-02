@@ -1,5 +1,5 @@
 #!/bin/bash
-BASE_DIR="$(dirname "$0")/FADiagrams"
+BASE_DIR="$(dirname "$0")/units"
 cd "$BASE_DIR" || exit 1
 archivo_salida="$(dirname "$0")/FA.dot"
 

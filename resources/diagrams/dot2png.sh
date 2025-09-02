@@ -1,7 +1,7 @@
 #!/bin/bash
-# Convert all .dot files in FADiagrams to .png.
+# Convert all .dot files in units to .png.
 
-BASE_DIR="$(dirname "$0")/FADiagrams"
+BASE_DIR="$(dirname "$0")/units"
 
 cd "$BASE_DIR"
 

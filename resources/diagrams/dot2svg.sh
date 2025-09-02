@@ -1,7 +1,7 @@
 #!/bin/bash
-# Convert all .dot files in FADiagrams to .svg.
+# Convert all .dot files in units to .svg.
 
-BASE_DIR="$(dirname "$0")/FADiagrams"
+BASE_DIR="$(dirname "$0")/units"
 
 cd "$BASE_DIR"
 
