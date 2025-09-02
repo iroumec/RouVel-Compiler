@@ -38,3 +38,12 @@ AS2: LexemaAppender.
 Agrega caracter leído al string del lexema.
 
 LOS ARCHIVOS .UKI DEBEN ESTAR CODIFICADOS CON UTF-8. Si se codifican con UTF-8 with BOM, da error.
+
+----DUDAS----
+-79.F ¿Número 79. y luego identificador F? O ¿intento fallido de flotante?
+
+0.0UI ¿Número flotante 0. y numero UINT 0UI? Lo toma como flotante 0.0
+
+010201101.F-00000.0 Detecta dos tokens, dos flotantes, siendo el segundo ".0". ¿Debería dar error
+porque se intenta poner un flotante como exponente de otro flotante o está bien que identifique
+dos flotantes distintos?

@@ -8,72 +8,64 @@ public enum TokenType {
     // --------------------------------------------------------------------------------------------
     // Tokens que pueden corresponder a más de un lexema.
 
-    ID(1, null, Category.REQUIRE_LEXEMA),
-    CTE(2, null, Category.REQUIRE_LEXEMA),
-    STR(3, null, Category.REQUIRE_LEXEMA),
+    ID(null, Category.REQUIRES_LEXEMA),
+    CTE(null, Category.REQUIRES_LEXEMA),
+    STR(null, Category.REQUIRES_LEXEMA),
 
     // --------------------------------------------------------------------------------------------
     // Palabras reservadas.
 
-    IF(11, "if", Category.RESERVED_WORD),
-    DO(18, "do", Category.RESERVED_WORD),
-    ELSE(12, "else", Category.RESERVED_WORD),
-    EIF(13, "endif", Category.RESERVED_WORD),
-    UINT(16, "uint", Category.RESERVED_WORD),
-    PRNT(14, "print", Category.RESERVED_WORD),
-    RET(15, "return", Category.RESERVED_WORD),
-    FLOAT(17, "float", Category.RESERVED_WORD),
-    WHILE(19, "while", Category.RESERVED_WORD),
+    IF("if", Category.RESERVED_WORD),
+    DO("do", Category.RESERVED_WORD),
+    ELSE("else", Category.RESERVED_WORD),
+    EIF("endif", Category.RESERVED_WORD),
+    UINT("uint", Category.RESERVED_WORD),
+    PRNT("print", Category.RESERVED_WORD),
+    RET("return", Category.RESERVED_WORD),
+    FLOAT("float", Category.RESERVED_WORD),
+    WHILE("while", Category.RESERVED_WORD),
 
     // --------------------------------------------------------------------------------------------
     // Literales.
 
-    GT(6, ">", Category.LITERAL),
-    LT(6, "<", Category.LITERAL),
-    GE(6, ">=", Category.LITERAL),
-    LE(7, "<=", Category.LITERAL),
-    EQ(8, "==", Category.LITERAL),
-    PC(29, ";", Category.LITERAL),
-    ASIG(4, "=", Category.LITERAL),
-    NEQ(9, "!=", Category.LITERAL),
-    SUM(20, "+", Category.LITERAL),
-    RES(21, "-", Category.LITERAL),
-    MUL(22, "*", Category.LITERAL),
-    DIV(23, "/", Category.LITERAL),
-    PAR(24, "(", Category.LITERAL),
-    RAP(25, ")", Category.LITERAL),
-    KEY(26, "{", Category.LITERAL),
-    YEK(27, "}", Category.LITERAL),
-    SLSH(28, "_", Category.LITERAL),
-    DASIG(5, ":=", Category.LITERAL),
-    FLECHA(10, "->", Category.LITERAL);
-
-    // --------------------------------------------------------------------------------------------
-
-    private int number;
-    private String symbol;
-    private Category category;
+    GT(">", Category.LITERAL),
+    LT("<", Category.LITERAL),
+    GE(">=", Category.LITERAL),
+    LE("<=", Category.LITERAL),
+    EQ("==", Category.LITERAL),
+    PC(";", Category.LITERAL),
+    ASIG("=", Category.LITERAL),
+    NEQ("!=", Category.LITERAL),
+    SUM("+", Category.LITERAL),
+    RES("-", Category.LITERAL),
+    MUL("*", Category.LITERAL),
+    DIV("/", Category.LITERAL),
+    PAR("(", Category.LITERAL),
+    RAP(")", Category.LITERAL),
+    KEY("{", Category.LITERAL),
+    YEK("}", Category.LITERAL),
+    SLSH("_", Category.LITERAL),
+    DASIG(":=", Category.LITERAL),
+    FLECHA("->", Category.LITERAL);
 
     // --------------------------------------------------------------------------------------------
 
     private enum Category {
         LITERAL,
         RESERVED_WORD,
-        REQUIRE_LEXEMA;
+        REQUIRES_LEXEMA;
     };
 
     // --------------------------------------------------------------------------------------------
 
-    private TokenType(int number, String symbol, Category category) {
-        this.number = number;
-        this.symbol = symbol;
-        this.category = category;
-    }
+    private String symbol;
+    private Category category;
 
     // --------------------------------------------------------------------------------------------
 
-    public int getNumber() {
-        return this.number;
+    private TokenType(String symbol, Category category) {
+        this.symbol = symbol;
+        this.category = category;
     }
 
     // --------------------------------------------------------------------------------------------
@@ -85,7 +77,7 @@ public enum TokenType {
     // --------------------------------------------------------------------------------------------
 
     public boolean requiereLexema() {
-        return this.category == Category.REQUIRE_LEXEMA;
+        return this.category == Category.REQUIRES_LEXEMA;
     }
 
     // --------------------------------------------------------------------------------------------
@@ -101,22 +93,10 @@ public enum TokenType {
 
     static {
         for (TokenType t : TokenType.values()) {
-            integerLookup.put(t.getNumber(), t);
             if (t.getSymbol() != null) {
                 symbolLookup.put(t.getSymbol(), t);
             }
         }
-    }
-
-    // --------------------------------------------------------------------------------------------
-
-    /**
-     * 
-     * @param number
-     * @return NULL if it doesn't exist.
-     */
-    public static TokenType fromNumber(int number) {
-        return integerLookup.get(number);
     }
 
     // --------------------------------------------------------------------------------------------

@@ -1,18 +1,26 @@
 package lexicalAnalysis;
 
+import java.util.Set;
+import java.util.Map;
+import java.util.HashMap;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
 
-import general.SymbolTable;
 import general.Token;
 import general.TokenType;
+import general.SymbolTable;
 import lexicalAnalysis.semanticActions.SemanticAction;
 
 public final class LexicalAnalyzer {
+
+    private Token token;
+    private int nroLinea;
+    private char lastCharRead;
+    private String codigoFuente;
+    private StringBuilder lexema;
+    private TokenType detectedType;
+    private int siguienteCaracterALeer;
 
     private final static int estadoInicio = 0;
     private final static int estadoError = -1;
@@ -21,15 +29,6 @@ public final class LexicalAnalyzer {
 
     private final int[][] matrizTransicionEstados;
     private final SemanticAction[][][] matrizAccionesSemanticas;
-
-    private TokenType detectedType;
-    private Token token;
-    private StringBuilder lexema;
-    private int nroLinea;
-    private char lastCharRead;
-    private String codigoFuente;
-    private int siguienteCaracterALeer;
-
     private static final Map<Character, Integer> excepciones = new HashMap<>();
     static {
         excepciones.put('U', 3);
@@ -62,10 +61,9 @@ public final class LexicalAnalyzer {
     // --------------------------------------------------------------------------------------------
 
     public LexicalAnalyzer() {
-        this.token = null;
         this.nroLinea = 1;
         this.siguienteCaracterALeer = 0;
-        // Se agrega un salto de línea para marcar el final del archivo.
+        // Se agrega un espacio en blanco para marcar el final del archivo.
         this.codigoFuente = DataLoader.loadSourceCode() + '\s';
         this.matrizTransicionEstados = DataLoader.loadStateTransitionMatrix();
         this.matrizAccionesSemanticas = DataLoader.loadSemanticActionMatrix();
@@ -75,19 +73,15 @@ public final class LexicalAnalyzer {
 
     public Token getNextToken() {
 
-        if (this.token == null) {
-            searchToken();
-        }
+        // Se limpia los datos arrastrados de búsquedas anteriores.
+        // De no haber búsqueda anterior, se inicializan.
+        cleanSearch();
 
-        Token out = this.token;
+        // Se comienza la búsqueda de un token.
+        searchToken();
 
-        // Se limpia el token, ya que se consumió.
-        this.token = null;
-        this.detectedType = null;
-        this.lexema = null;
-
-        return out;
-
+        // Se devuelve un token (si se halló).
+        return this.token;
     }
 
     // --------------------------------------------------------------------------------------------
@@ -113,7 +107,7 @@ public final class LexicalAnalyzer {
 
             if (estadoActual == estadoError) {
                 System.err.println("Error: Línea " + this.nroLinea + ": Se detectó el carácter \"" + this.lastCharRead
-                        + "\", el cual no corresponde a una palabra válida en el lenguaje.");
+                        + "\", el cual no corresponde a un símbolo válido en el lenguaje.");
                 System.exit(1);
             }
 
@@ -123,6 +117,17 @@ public final class LexicalAnalyzer {
 
             siguienteCaracterALeer++;
         }
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    /**
+     * Se limpian las variables utilizadas entre búsquedas.
+     */
+    private void cleanSearch() {
+        this.token = null;
+        this.detectedType = null;
+        this.lexema = null;
     }
 
     // --------------------------------------------------------------------------------------------
@@ -155,7 +160,7 @@ public final class LexicalAnalyzer {
     // --------------------------------------------------------------------------------------------
 
     public int getMaxCaracteres() {
-        return maxCaracteres;
+        return this.maxCaracteres;
     }
 
     // --------------------------------------------------------------------------------------------

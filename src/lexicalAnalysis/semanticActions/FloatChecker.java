@@ -1,30 +1,118 @@
 package lexicalAnalysis.semanticActions;
 
+import java.math.BigDecimal;
+
 import lexicalAnalysis.LexicalAnalyzer;
 
 public class FloatChecker implements SemanticAction {
 
-    private static final float MIN_POS_VAL = 1.17549435E-38f;
-    private static final float MAX_POS_VAL = 3.40282347E+38f;
-    private static final float MIN_NEG_VAL = -3.40282347E+38f;
-    private static final float MAX_NEG_VAL = -1.17549435E-38f;
+    private static final BigDecimal MIN_POS_VAL = new BigDecimal("1.17549435E-38");
+    private static final BigDecimal MAX_POS_VAL = new BigDecimal("3.40282347E38");
+    private static final BigDecimal MIN_NEG_VAL = new BigDecimal("-3.40282347E38");
+    private static final BigDecimal MAX_NEG_VAL = new BigDecimal("-1.17549435E-38");
+
+    // --------------------------------------------------------------------------------------------
 
     @Override
     public void execute(LexicalAnalyzer lexicalAnalyzer) {
+
         String lexema = lexicalAnalyzer.getLexema();
-        // System.out.println("FloatChecker: lexema = " + lexema);
+
+        lexema = cleanFloat(lexema);
+
+        lexicalAnalyzer.setLexema(parseToFloat(lexema));
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    private String cleanFloat(String lexema) {
+
+        // Maneja notación con F
         if (lexema.contains("F")) {
-            lexema = lexema.replace("F", "E");
-            lexema += "f";
+            String[] parts = lexema.split("F", 2);
+            // Elimina ceros a la izquierda y derecha del número
+            String number = parts[0].replaceFirst("^0+(?!$)", "0").replaceFirst("0+$", "");
+            lexema = number + "E" + parts[1];
+        } else {
+            // Elimina ceros a la izquierda y derecha del número
+            lexema = lexema.replaceFirst("^0+(?!$)", "0").replaceFirst("0+$", "");
+            // Asegura que no quede cadena vacía
+            if (lexema.isEmpty() || lexema.equals(".")) {
+                lexema = "0.0";
+            }
         }
-        // System.out.println("FloatChecker: lexema modificado = " + lexema);
-        float value = Float.parseFloat(lexema);
-        // System.out.println("FloatChecker: valor float = " + value);
-        if (!((value >= MIN_POS_VAL && value <= MAX_POS_VAL) || (value >= MIN_NEG_VAL && value <= MAX_NEG_VAL))) {
-            System.out.println("WARNING: El número flotante " + lexema
-                    + " está fuera del rango de representación. Se asignará el valor 0.");
-            lexicalAnalyzer.setLexema("0.0");
+
+        return lexema;
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    private String parseToFloat(String lexema) {
+
+        String number = transformToScientific(lexema);
+
+        if (!isInRange(number)) {
+            System.out.println("WARNING: El número flotante " + number
+                    + " está fuera del rango de representación. Se asignará el valor 0.0.");
+            return "0.0";
         }
+
+        return number.replace("E", "F");
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    private String transformToScientific(String number) {
+
+        // Se quita la f de sufijo.
+        number = number.trim().replaceAll("[fF]$", "");
+
+        if (number.equals("0") || number.equals("0.0")) {
+            return "0.0";
+        }
+
+        // Ya está en notación científica.
+        if (number.contains("E") || number.contains("e")) {
+            return number.toUpperCase();
+        }
+
+        // Manejar números que comienzan con "0."
+        // TODO: chequear esto luego. No necesariamente debe empezar con 0.
+        if (number.startsWith("0.")) {
+            String decPart = number.substring(2); // parte después del "0."
+            int zeroCount = 0;
+            int firstDigitIndex = -1;
+
+            for (int i = 0; i < decPart.length(); i++) {
+                if (decPart.charAt(i) == '0') {
+                    zeroCount++;
+                } else {
+                    firstDigitIndex = i;
+                    break;
+                }
+            }
+
+            if (firstDigitIndex == -1) {
+                return "0.0"; // solo ceros
+            }
+
+            char firstDigit = decPart.charAt(firstDigitIndex);
+            int exponent = zeroCount + 1; // cantidad de ceros antes del primer dígito
+            return firstDigit + ".0E-" + exponent;
+        }
+
+        return number;
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    private boolean isInRange(String number) {
+
+        BigDecimal value = new BigDecimal(number);
+
+        return (value.compareTo(MIN_POS_VAL) >= 0 && value.compareTo(MAX_POS_VAL) <= 0)
+                || (value.compareTo(MAX_NEG_VAL) <= 0 && value.compareTo(MIN_NEG_VAL) >= 0)
+                || value.compareTo(BigDecimal.ZERO) == 0;
     }
 
 }

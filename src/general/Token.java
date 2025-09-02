@@ -3,33 +3,35 @@ package general;
 public class Token {
 
     private TokenType tokenType;
-    private Integer symbolTableEntry;
+    private Integer symbolTableIndex;
 
-    public Token(TokenType tokenType) {
-        this(tokenType, null);
-    }
+    // --------------------------------------------------------------------------------------------
 
-    public Token(TokenType tokenType, Integer symbolTableEntry) {
+    public Token(TokenType tokenType, Integer symbolTableIndex) {
 
-        if (tokenType.requiereLexema() && symbolTableEntry == null) {
+        if (tokenType.requiereLexema() && symbolTableIndex == null) {
             System.err.println("El tipo de token especificado no requiere de una entrada en la tabla.");
+            System.exit(1);
         }
 
-        if (!tokenType.requiereLexema() && symbolTableEntry != null) {
+        if (!tokenType.requiereLexema() && symbolTableIndex != null) {
             System.err.println("El tipo de token especificado no requiere de una entrada en la tabla.");
+            System.exit(1);
         }
 
         this.tokenType = tokenType;
-        this.symbolTableEntry = symbolTableEntry;
+        this.symbolTableIndex = symbolTableIndex;
     }
+
+    // --------------------------------------------------------------------------------------------
 
     @Override
     public String toString() {
         return "["
                 + this.tokenType.name()
-                + (symbolTableEntry == null
+                + (symbolTableIndex == null
                         ? ""
-                        : ", " + SymbolTable.getLexema(symbolTableEntry))
+                        : ", " + SymbolTable.getLexema(symbolTableIndex))
                 + "]";
     }
 

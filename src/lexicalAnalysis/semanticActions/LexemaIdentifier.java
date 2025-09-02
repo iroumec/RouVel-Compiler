@@ -12,7 +12,7 @@ public class LexemaIdentifier implements SemanticAction {
         TokenType tokenType;
         if (Character.isUpperCase(lastChar)) {
             lexicalAnalyzer.setDetectedType(TokenType.ID);
-        } else if (Character.isDigit(lastChar)) {
+        } else if (Character.isDigit(lastChar) || lastChar == '.') {
             lexicalAnalyzer.setDetectedType(TokenType.CTE);
         } else if (lastChar == '\"') {
             lexicalAnalyzer.setDetectedType(TokenType.STR);
