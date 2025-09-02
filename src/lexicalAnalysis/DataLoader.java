@@ -19,10 +19,8 @@ import lexicalAnalysis.semanticActions.*;
 public final class DataLoader {
 
     private static String sourceCodePath;
-    private final static String reservedWordsPath = "../resources/reservedWords.txt";
-    private final static String literalsPath = "../resources/literals.txt";
-    private final static String stateTransitionMatrixPath = "../resources/stateTransitionMatrix.csv";
-    private final static String semanticActionsMatrixPath = "../resources/semanticActionsMatrix.csv";
+    private final static String stateTransitionMatrixPath = "../resources/data/stateTransitionMatrix.csv";
+    private final static String semanticActionsMatrixPath = "../resources/data/semanticActionsMatrix.csv";
 
     // --------------------------------------------------------------------------------------------
 
@@ -37,48 +35,6 @@ public final class DataLoader {
         semanticActions.put("ASF", new FloatChecker());
         semanticActions.put("ASR", new ReturnCharacterToEntry());
         semanticActions.put("ASN", new NewLineDetected());
-    }
-
-    // --------------------------------------------------------------------------------------------
-
-    public static Set<String> loadReservedWords() {
-
-        Set<String> palabras = new HashSet<>();
-
-        try (BufferedReader br = new BufferedReader(new FileReader(
-                reservedWordsPath))) {
-            String linea;
-            while ((linea = br.readLine()) != null) {
-                palabras.add(linea.trim()); // trim por si hay espacios o saltos
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return palabras;
-    }
-
-    // --------------------------------------------------------------------------------------------
-
-    public static Set<String> loadLiterals() {
-
-        Set<String> literales = new HashSet<>();
-
-        try (BufferedReader br = new BufferedReader(new FileReader(
-                literalsPath))) {
-            String linea;
-            while ((linea = br.readLine()) != null) {
-                literales.add(linea.trim()); // trim por si hay espacios o saltos
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return literales;
     }
 
     // --------------------------------------------------------------------------------------------

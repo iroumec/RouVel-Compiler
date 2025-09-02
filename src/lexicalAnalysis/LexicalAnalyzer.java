@@ -14,15 +14,11 @@ import lexicalAnalysis.semanticActions.SemanticAction;
 
 public final class LexicalAnalyzer {
 
-    private static LexicalAnalyzer INSTANCE;
-
     private final static int estadoInicio = 0;
     private final static int estadoError = -1;
     private final static int maxCaracteres = 20;
     private final static int estadoAceptacion = 19;
 
-    private final Set<String> reservedWords;
-    private final Set<String> literals;
     private final int[][] matrizTransicionEstados;
     private final SemanticAction[][][] matrizAccionesSemanticas;
 
@@ -65,23 +61,10 @@ public final class LexicalAnalyzer {
 
     // --------------------------------------------------------------------------------------------
 
-    public static LexicalAnalyzer getInstance() {
-
-        if (INSTANCE == null) {
-            INSTANCE = new LexicalAnalyzer();
-        }
-
-        return INSTANCE;
-    }
-
-    // --------------------------------------------------------------------------------------------
-
-    private LexicalAnalyzer() {
+    public LexicalAnalyzer() {
         this.token = null;
         this.nroLinea = 1;
         this.siguienteCaracterALeer = 0;
-        this.reservedWords = DataLoader.loadReservedWords();
-        this.literals = DataLoader.loadLiterals();
         // Se agrega un salto de línea para marcar el final del archivo.
         this.codigoFuente = DataLoader.loadSourceCode() + '\s';
         this.matrizTransicionEstados = DataLoader.loadStateTransitionMatrix();
@@ -124,7 +107,7 @@ public final class LexicalAnalyzer {
             SemanticAction[] semanticActionsToExecute = matrizAccionesSemanticas[estadoActual][normalizedChar];
             estadoActual = matrizTransicionEstados[estadoActual][normalizedChar];
 
-            // System.out.println("Caracter: " + this.lastCharRead);
+            // System.out.println("Caracter: \"" + this.lastCharRead + "\"");
             // System.out.println("Normalización: " + normalizedChar);
             // System.out.println("Siguiente estado: " + estadoActual);
 
@@ -150,7 +133,8 @@ public final class LexicalAnalyzer {
      */
     private int normalizeChar(char c) {
 
-        if (detectedType == null || detectedType == TokenType.CTE || detectedType == TokenType.STR) {
+        if (detectedType == null || detectedType == TokenType.CTE || detectedType == TokenType.STR
+                || (detectedType == TokenType.ID && c == '%')) {
             // Chequeo de símbolos particulares.
             if (excepciones.containsKey(c)) {
                 return excepciones.get(c);
@@ -160,31 +144,6 @@ public final class LexicalAnalyzer {
         // Chequeo de reglas generales.
         return Character.isUpperCase(c) ? 0 : Character.isLowerCase(c) ? 1 : Character.isDigit(c) ? 2 : 28;
 
-    }
-
-    // --------------------------------------------------------------------------------------------
-
-    public boolean isReservedWord(String lexema) {
-        return this.reservedWords.contains(lexema);
-    }
-
-    public boolean isLiteral(String l) {
-        return this.literals.contains(l);
-    }
-
-    // --------------------------------------------------------------------------------------------
-
-    public TokenType getTokenType(String lexema) {
-
-        // Identifier, constante o string.
-
-        if (lexema.startsWith("\"")) {
-            return TokenType.STR;
-        } else if (Character.isLetter(lexema.charAt(0))) {
-            return TokenType.ID;
-        } else {
-            return TokenType.CTE;
-        }
     }
 
     // --------------------------------------------------------------------------------------------

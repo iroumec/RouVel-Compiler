@@ -36,3 +36,5 @@ Inicializa string y agrega caracter leido.
 
 AS2: LexemaAppender.
 Agrega caracter leído al string del lexema.
+
+LOS ARCHIVOS .UKI DEBEN ESTAR CODIFICADOS CON UTF-8. Si se codifican con UTF-8 with BOM, da error.
