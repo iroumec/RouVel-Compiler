@@ -187,7 +187,7 @@ public final class DataLoader {
                     }
                 }
 
-                // Inicializa toda la fila con el default
+                // Inicializa toda la fila con el default.
                 for (int i = 0; i < NUM_SIMBOLOS; i++) {
                     matrix[state][i] = defaultActions.toArray(new SemanticAction[0]);
                 }
@@ -241,47 +241,6 @@ public final class DataLoader {
         }
 
         return matrix;
-    }
-
-    // --------------------------------------------------------------------------------------------
-
-    public static SemanticAction[][][] loadSemanticActionMatrix() {
-        try (Stream<String> lines = Files.lines(Paths.get(semanticActionsMatrixPath))) {
-            List<SemanticAction[][]> listaFilas = lines
-                    .skip(1) // Se saltea el encabezado (primera línea).
-                    .map(line -> {
-                        String[] tokens = line.split(",", -1); // Mantener vacíos
-                        SemanticAction[][] fila = new SemanticAction[tokens.length - 1][]; // Ignorar col. row
-
-                        for (int i = 1; i < tokens.length; i++) {
-                            String valor = tokens[i].trim();
-
-                            if (valor.isEmpty()) {
-                                fila[i - 1] = new SemanticAction[0]; // Sin acciones
-                            } else {
-                                String[] acciones = valor.replace("\"", "").split("-");
-                                List<SemanticAction> validActions = new ArrayList<>();
-
-                                for (String act : acciones) {
-                                    SemanticAction sa = semanticActions.get(act.trim());
-                                    if (sa != null)
-                                        validActions.add(sa);
-                                }
-
-                                fila[i - 1] = validActions.toArray(new SemanticAction[0]);
-                            }
-                        }
-
-                        return fila;
-                    })
-                    .toList();
-
-            return listaFilas.toArray(new SemanticAction[0][][]);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            return new SemanticAction[0][][]; // Se devuelve vacío en caso de error.
-        }
     }
 
     // --------------------------------------------------------------------------------------------

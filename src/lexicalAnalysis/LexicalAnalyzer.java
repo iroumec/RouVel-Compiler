@@ -22,10 +22,10 @@ public final class LexicalAnalyzer {
     private TokenType detectedType;
     private int siguienteCaracterALeer;
 
-    private final static int estadoInicio = 0;
-    private final static int estadoError = -1;
-    private final static int maxCaracteres = 20;
-    private final static int estadoAceptacion = 19;
+    private final static int ESTADO_ERROR = -1;
+    private final static int ESTADO_INICIO = 0;
+    private final static int MAX_CARACTERES = 20;
+    private final static int ESTADO_ACEPTACION = 19;
 
     private final int[][] matrizTransicionEstados;
     private final SemanticAction[][][] matrizAccionesSemanticas;
@@ -53,9 +53,12 @@ public final class LexicalAnalyzer {
         cleanSearch();
 
         // Se comienza la búsqueda de un token.
+        // Al terminar de ejecutarse, se habrá hallado un token
+        // o este será nulo (en caso de ya haberse leído todo el archivo).
         searchToken();
 
         // Se devuelve un token (si se halló).
+        // En otro caso, se devuelve null.
         return this.token;
     }
 
@@ -64,9 +67,9 @@ public final class LexicalAnalyzer {
     private void searchToken() {
 
         int index;
-        int estadoActual = estadoInicio;
+        int estadoActual = ESTADO_INICIO;
 
-        while (estadoActual != estadoAceptacion && siguienteCaracterALeer < codigoFuente.length()) {
+        while (estadoActual != ESTADO_ACEPTACION && siguienteCaracterALeer < codigoFuente.length()) {
 
             this.lastCharRead = codigoFuente.charAt(siguienteCaracterALeer);
 
@@ -75,7 +78,7 @@ public final class LexicalAnalyzer {
             SemanticAction[] semanticActionsToExecute = matrizAccionesSemanticas[estadoActual][index];
             estadoActual = matrizTransicionEstados[estadoActual][index];
 
-            if (estadoActual == estadoError) {
+            if (estadoActual == ESTADO_ERROR) {
                 System.err.println("Error: Línea " + this.nroLinea + ": Se detectó el carácter \"" + this.lastCharRead
                         + "\", el cual no corresponde a un símbolo válido en el lenguaje.");
                 System.exit(1);
@@ -144,7 +147,7 @@ public final class LexicalAnalyzer {
                 else if (Character.isDigit(c))
                     yield 2;
                 else
-                    yield 28;
+                    yield 28; // Otro.
             }
         };
     }
@@ -158,7 +161,7 @@ public final class LexicalAnalyzer {
     // --------------------------------------------------------------------------------------------
 
     public int getMaxCaracteres() {
-        return maxCaracteres;
+        return MAX_CARACTERES;
     }
 
     // --------------------------------------------------------------------------------------------
@@ -182,13 +185,15 @@ public final class LexicalAnalyzer {
     // --------------------------------------------------------------------------------------------
 
     public void setLexema(String lexema) {
-        this.lexema = new StringBuilder(lexema);
+        this.lexema.setLength(0);
+        this.lexema.append(lexema);
     }
 
     // --------------------------------------------------------------------------------------------
 
     public void initializeLexema(char startingChar) {
-        this.lexema = new StringBuilder().append(startingChar);
+        this.lexema.setLength(0);
+        this.lexema.append(startingChar);
     }
 
     // --------------------------------------------------------------------------------------------

@@ -43,7 +43,7 @@ AS3: LexemaFinalizer:
 -Se obtiene el TokenType detectado (es el caso de identificadores, constantes y cadenas de caracteres).
 -Si el TokenType es vacío:
 -Error (Se toma como palabra reservada inexistente)
--Se da de alta e
+-Se da de alta en la tabla de símbolos.
 
 AS4: LexemaIdentifier:
 -Se obtiene el último caracter leído (que es el primero del lexema).
