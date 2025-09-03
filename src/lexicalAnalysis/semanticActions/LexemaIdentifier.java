@@ -20,4 +20,11 @@ public class LexemaIdentifier implements SemanticAction {
         }
     }
 
+    // --------------------------------------------------------------------------------------------
+
+    @Override
+    public String toString() {
+        return "AS4";
+    }
+
 }

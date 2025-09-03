@@ -13,4 +13,10 @@ public class NewLineDetected implements SemanticAction {
         lexicalAnalyzer.incrementarNroLinea();
     }
 
+    // --------------------------------------------------------------------------------------------
+
+    @Override
+    public String toString() {
+        return "ASN";
+    }
 }

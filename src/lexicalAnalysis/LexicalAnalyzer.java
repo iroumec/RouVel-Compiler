@@ -2,6 +2,7 @@ package lexicalAnalysis;
 
 import java.util.Set;
 import java.util.Map;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -38,7 +39,9 @@ public final class LexicalAnalyzer {
         // Quizás deberpia usarse '\0'.
         this.codigoFuente = DataLoader.loadSourceCode() + '\s';
         this.matrizTransicionEstados = DataLoader.loadStateTransitionMatrix();
-        this.matrizAccionesSemanticas = DataLoader.loadSemanticActionMatrix();
+        // System.out.println(Arrays.deepToString(matrizTransicionEstados));
+        this.matrizAccionesSemanticas = DataLoader.loadSemanticActionsMatrix();
+        // System.out.println(Arrays.deepToString(matrizAccionesSemanticas));
     }
 
     // --------------------------------------------------------------------------------------------
@@ -60,17 +63,17 @@ public final class LexicalAnalyzer {
 
     private void searchToken() {
 
-        int normalizedChar;
+        int index;
         int estadoActual = estadoInicio;
 
         while (estadoActual != estadoAceptacion && siguienteCaracterALeer < codigoFuente.length()) {
 
             this.lastCharRead = codigoFuente.charAt(siguienteCaracterALeer);
 
-            normalizedChar = normalizeChar(lastCharRead);
+            index = charToIndex(lastCharRead);
 
-            SemanticAction[] semanticActionsToExecute = matrizAccionesSemanticas[estadoActual][normalizedChar];
-            estadoActual = matrizTransicionEstados[estadoActual][normalizedChar];
+            SemanticAction[] semanticActionsToExecute = matrizAccionesSemanticas[estadoActual][index];
+            estadoActual = matrizTransicionEstados[estadoActual][index];
 
             if (estadoActual == estadoError) {
                 System.err.println("Error: Línea " + this.nroLinea + ": Se detectó el carácter \"" + this.lastCharRead
@@ -106,33 +109,7 @@ public final class LexicalAnalyzer {
      * El objetivo de esta función es que todas las letras mayúsculas, por ejemplo,
      * sean mapeadas a una misma columna de requerirse.
      */
-    private int normalizeChar(char c) {
-
-        int exc = excepcion(c);
-        if (exc != -1)
-            return exc;
-
-        /*
-         * if (detectedType == null || detectedType == TokenType.CTE || detectedType ==
-         * TokenType.STR
-         * || (detectedType == TokenType.ID && c == '%')) {
-         * int exc = excepcion(c);
-         * if (exc != -1)
-         * return exc;
-         * }
-         */
-        if (Character.isUpperCase(c))
-            return 0;
-        if (Character.isLowerCase(c))
-            return 1;
-        if (Character.isDigit(c))
-            return 2;
-        return 28;
-    }
-
-    // --------------------------------------------------------------------------------------------
-
-    private int excepcion(char c) {
+    public static int charToIndex(char c) {
         return switch (c) {
             case 'U' -> 3;
             case 'I' -> 4;
@@ -159,7 +136,16 @@ public final class LexicalAnalyzer {
             case '\n' -> 25;
             case ' ' -> 26;
             case '\t' -> 27;
-            default -> -1;
+            default -> {
+                if (Character.isUpperCase(c))
+                    yield 0;
+                else if (Character.isLowerCase(c))
+                    yield 1;
+                else if (Character.isDigit(c))
+                    yield 2;
+                else
+                    yield 28;
+            }
         };
     }
 

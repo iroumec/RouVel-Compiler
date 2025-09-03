@@ -23,4 +23,10 @@ public class IdentifierLengthChecker implements SemanticAction {
             lexicalAnalyzer.setLexema(lexema);
         }
     }
+
+    // --------------------------------------------------------------------------------------------
+
+    public String toString() {
+        return "AS5";
+    }
 }

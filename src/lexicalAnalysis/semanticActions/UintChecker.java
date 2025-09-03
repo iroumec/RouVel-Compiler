@@ -3,6 +3,9 @@ package lexicalAnalysis.semanticActions;
 import lexicalAnalysis.LexicalAnalyzer;
 import lexicalAnalysis.SemanticAction;
 
+/**
+ * ASUI
+ */
 public class UintChecker implements SemanticAction {
 
     private static final int MAX_UINT = 65535;
@@ -52,6 +55,13 @@ public class UintChecker implements SemanticAction {
         int number = Integer.parseInt(lexema.substring(0, lexema.length() - 2));
         return number >= 0 && number <= MAX_UINT;
 
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    @Override
+    public String toString() {
+        return "ASUI";
     }
 
 }

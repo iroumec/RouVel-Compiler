@@ -7,7 +7,8 @@ import lexicalAnalysis.LexicalAnalyzer;
 import lexicalAnalysis.SemanticAction;
 
 /**
- * AS3
+ * AS3:
+ * 
  */
 public class LexemaFinalizer implements SemanticAction {
 
@@ -35,6 +36,13 @@ public class LexemaFinalizer implements SemanticAction {
         if (tokenType != null) {
             lexicalAnalyzer.setToken(new Token(tokenType, symbolTableEntry));
         }
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    @Override
+    public String toString() {
+        return "AS3";
     }
 
 }

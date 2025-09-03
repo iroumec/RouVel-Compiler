@@ -31,11 +31,25 @@ Recvisar qué pasa si no se agrega UI a un número.
 
 Definiciones de acciones semánticas:
 
-AS1: Inicializador de lexema.
-Inicializa string y agrega caracter leido.
+AS1: LexemaInitializer:
+-Inicializa el string del lexema y agrega caracter leido.
 
-AS2: LexemaAppender.
-Agrega caracter leído al string del lexema.
+AS2: LexemaAppender:
+-Agrega caracter leído al string del lexema.
+
+AS3: LexemaFinalizer:
+-Se obtiene el lexema y el TokenType (será nulo para todo aquello que no sea palabra reservada o literal).
+-Si el TokenType era nulo y el lexema no es vacío:
+-Se obtiene el TokenType detectado (es el caso de identificadores, constantes y cadenas de caracteres).
+-Si el TokenType es vacío:
+-Error (Se toma como palabra reservada inexistente)
+-Se da de alta e
+
+AS4: LexemaIdentifier:
+-Se obtiene el último caracter leído (que es el primero del lexema).
+-Si es letra mayúscula, define el TokenType como ID (identificador).
+-Si es dígito o punto, define el TokenType como CTE (constante).
+-Si es comillas, define el TokenType como STR (cadena de caracteres).
 
 LOS ARCHIVOS .UKI DEBEN ESTAR CODIFICADOS CON UTF-8. Si se codifican con UTF-8 with BOM, da error.
 

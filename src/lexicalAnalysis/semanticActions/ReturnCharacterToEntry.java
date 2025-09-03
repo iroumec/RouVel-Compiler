@@ -13,4 +13,11 @@ public class ReturnCharacterToEntry implements SemanticAction {
         lexicalAnalyzer.decrementarSiguienteCaracterALeer();
     }
 
+    // --------------------------------------------------------------------------------------------
+
+    @Override
+    public String toString() {
+        return "ASR";
+    }
+
 }

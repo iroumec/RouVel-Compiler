@@ -22,4 +22,11 @@ public class STRegister implements SemanticAction {
             lexicalAnalyzer.setToken(new Token(tokenType, symbol));
         }
     }
+
+    // --------------------------------------------------------------------------------------------
+
+    @Override
+    public String toString() {
+        return "AS6";
+    }
 }

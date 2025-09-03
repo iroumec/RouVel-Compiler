@@ -5,6 +5,9 @@ import java.math.BigDecimal;
 import lexicalAnalysis.LexicalAnalyzer;
 import lexicalAnalysis.SemanticAction;
 
+/**
+ * ASF.
+ */
 public class FloatChecker implements SemanticAction {
 
     private static final BigDecimal MIN_POS_VAL = new BigDecimal("1.17549435E-38");
@@ -123,6 +126,13 @@ public class FloatChecker implements SemanticAction {
         return (value.compareTo(MIN_POS_VAL) >= 0 && value.compareTo(MAX_POS_VAL) <= 0)
                 || (value.compareTo(MAX_NEG_VAL) <= 0 && value.compareTo(MIN_NEG_VAL) >= 0)
                 || value.compareTo(BigDecimal.ZERO) == 0;
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    @Override
+    public String toString() {
+        return "ASF";
     }
 
 }
