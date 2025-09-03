@@ -11,10 +11,9 @@ public class STRegister implements SemanticAction {
 
     @Override
     public void execute(LexicalAnalyzer lexicalAnalyzer) {
-        lexicalAnalyzer.decrementarSiguienteCaracterALeer();
 
         TokenType tokenType = lexicalAnalyzer.getDetectedType();
-        String lex = lexicalAnalyzer.getLexema().substring(-1);
+        String lex = lexicalAnalyzer.getLexema();
 
         Integer symbol = SymbolTable.agregarEntrada(tokenType, lex);
 

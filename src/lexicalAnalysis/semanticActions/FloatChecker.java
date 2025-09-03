@@ -6,7 +6,8 @@ import lexicalAnalysis.LexicalAnalyzer;
 import lexicalAnalysis.SemanticAction;
 
 /**
- * ASF.
+ * ASF:
+ * 
  */
 public class FloatChecker implements SemanticAction {
 

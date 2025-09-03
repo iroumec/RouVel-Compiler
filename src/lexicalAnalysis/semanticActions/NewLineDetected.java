@@ -4,7 +4,8 @@ import lexicalAnalysis.LexicalAnalyzer;
 import lexicalAnalysis.SemanticAction;
 
 /**
- * ASN
+ * ASN:
+ * Incrementa el número de línea.
  */
 public class NewLineDetected implements SemanticAction {
 

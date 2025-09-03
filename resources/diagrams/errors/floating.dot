@@ -10,11 +10,14 @@ digraph DFA {
     1 -> 4 [label = "\".\" \n AS2";];
     1 -> e [label = "c - d - \".\" \n ER"; style = dashed;];
     3 -> 4 [label = "d \n AS2";];
+    3 -> e [label = "C - d \n ER"; style = dashed;];
     4 -> 4 [label = "d \n AS2";];
     4 -> F [label = "c - d - \"F\" \n ASF, AS3, ASR";];
     4 -> 5 [label = "\"F\" \n AS2";];
     5 -> 6 [label = "\"+\", \"-\" \n AS2";];
+    5 -> e [label = "c - \"+\", \"-\" \n ER"; style = dashed;];
     6 -> 7 [label = "d \n AS2";];
+    6 -> e [label = "c - d \n ER"; style = dashed;];
     7 -> 7 [label = "d \n AS2";];
     7 -> F [label = "c - d \n ASF, AS3, ASR";];
 }

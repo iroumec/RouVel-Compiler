@@ -40,9 +40,9 @@ AS2: LexemaAppender:
 AS3: LexemaFinalizer:
 -Se obtiene el lexema y el TokenType (será nulo para todo aquello que no sea palabra reservada o literal).
 -Si el TokenType era nulo y el lexema no es vacío:
--Se obtiene el TokenType detectado (es el caso de identificadores, constantes y cadenas de caracteres).
--Si el TokenType es vacío:
--Error (Se toma como palabra reservada inexistente)
+--Se obtiene el TokenType detectado (es el caso de identificadores, constantes y cadenas de caracteres).
+--Si el TokenType es vacío:
+---Error (Se toma como palabra reservada inexistente)
 -Se da de alta en la tabla de símbolos.
 
 AS4: LexemaIdentifier:
@@ -50,6 +50,20 @@ AS4: LexemaIdentifier:
 -Si es letra mayúscula, define el TokenType como ID (identificador).
 -Si es dígito o punto, define el TokenType como CTE (constante).
 -Si es comillas, define el TokenType como STR (cadena de caracteres).
+
+ASN: NewLineDetected:
+-Incrementa el número de linea.
+
+ASR: ReturnCharacterToEntry:
+-Decrementa la referencia al siguiente caracter a leer (devolviendo así el último caracter leído a la entrada).
+
+ASUI: UintChecker:
+-Se eliminan los trailing zeros.
+-Se verifica que el número está dentro del rango de uint.
+--Si no, entonces se le da el valor máximo del rango.
+
+ASF: FloatChecker:
+-?
 
 LOS ARCHIVOS .UKI DEBEN ESTAR CODIFICADOS CON UTF-8. Si se codifican con UTF-8 with BOM, da error.
 
@@ -61,3 +75,5 @@ LOS ARCHIVOS .UKI DEBEN ESTAR CODIFICADOS CON UTF-8. Si se codifican con UTF-8 w
 010201101.F-00000.0 Detecta dos tokens, dos flotantes, siendo el segundo ".0". ¿Debería dar error porque se intenta poner un flotante como exponente de otro flotante o está bien que identifique dos flotantes distintos?
 
 Cuando nuestro programa guarda las constantes como 0., las guarda como 0.0, para mayor legibilidad. ¿Está bien que haga eso? Si encuentra un número como 0.000000000001, ¿está bien que lo guarde en notación científica? ¿Tenemos esas libertades?
+
+Estando en el estado 1 es distinto el error si se quiere escribir un UINT a si se quiere escribir un float. Pero no hay forma de darse cuenta.

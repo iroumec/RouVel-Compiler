@@ -1,10 +1,14 @@
 package lexicalAnalysis.semanticActions;
-//AS4
 
 import general.TokenType;
 import lexicalAnalysis.LexicalAnalyzer;
 import lexicalAnalysis.SemanticAction;
 
+/**
+ * AS4:
+ * Detecta el TokenType para identificadores, constantes y cadenas de
+ * caracteres.
+ */
 public class LexemaIdentifier implements SemanticAction {
 
     private static LexemaIdentifier INSTANCE;

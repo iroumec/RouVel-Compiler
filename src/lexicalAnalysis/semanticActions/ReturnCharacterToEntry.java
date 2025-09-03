@@ -4,7 +4,8 @@ import lexicalAnalysis.LexicalAnalyzer;
 import lexicalAnalysis.SemanticAction;
 
 /**
- * ASR
+ * ASR:
+ * Devuelve el último caracter leído a la entrada.
  */
 public class ReturnCharacterToEntry implements SemanticAction {
 

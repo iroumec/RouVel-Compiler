@@ -8,7 +8,9 @@ import lexicalAnalysis.SemanticAction;
 
 /**
  * AS3:
- * 
+ * Detecta palabras reservadas y literales, da de alta en la tabla de símbolos
+ * los lexemas de constantes, identificadores y cadenas de caracteres y devuelve
+ * el Token correspondiente.
  */
 public class LexemaFinalizer implements SemanticAction {
 

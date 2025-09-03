@@ -4,7 +4,8 @@ import lexicalAnalysis.LexicalAnalyzer;
 import lexicalAnalysis.SemanticAction;
 
 /**
- * ASUI
+ * ASUI:
+ * Se verifica que el número está dentro del rango de uint.
  */
 public class UintChecker implements SemanticAction {
 

@@ -4,7 +4,7 @@ digraph DFA {
     e [shape = doublecircle;style = dashed;color = red;];
     
     0 -> 15 [label = "\"#\"";];
-    15 -> e [label = "C - \"#\""; style = dashed;];
+    15 -> e [label = "C - \"#\" \n ERC"; style = dashed;];
     15 -> 16 [label = "\"#\"";];
     16 -> 16 [label = "C - n - \"#\"";];
     16 -> 16 [label = "n \n ASN"; tailport = s;];
