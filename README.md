@@ -21,6 +21,7 @@ Se define:
 - s: indica un espacio en blanco.
 - t: indica una tabulación.
 - n: indica un salto de línea.
+- Otro: representa a un carácter que no está comprendido en los demás arcos.
 
 ¿Qué hacemos si viene un <==? Es ambiguo. Tomamos como vaya llegando.
 
@@ -77,3 +78,9 @@ LOS ARCHIVOS .UKI DEBEN ESTAR CODIFICADOS CON UTF-8. Si se codifican con UTF-8 w
 Cuando nuestro programa guarda las constantes como 0., las guarda como 0.0, para mayor legibilidad. ¿Está bien que haga eso? Si encuentra un número como 0.000000000001, ¿está bien que lo guarde en notación científica? ¿Tenemos esas libertades?
 
 Estando en el estado 1 es distinto el error si se quiere escribir un UINT a si se quiere escribir un float. Pero no hay forma de darse cuenta.
+
+Quisimos adecuarnos a la convención utilizado para la cátedra y, si bien está buena para ejemplos concretos, en un grafo grande puede ser algo tedioso. Por eso, definimos nuestra convención como sigue:
+
+Se define P el conjunto de los siguientes símbolos de un carácter:
+P = [+, *, /, (, ), {, }, _, ;]
+\"+\", \"\*\", \"/\", \"(\", \")\", \"{\", \"}\", \"\_\", \";\"

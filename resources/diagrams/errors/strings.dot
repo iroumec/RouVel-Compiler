@@ -4,8 +4,8 @@ digraph DFA {
     F [shape = doublecircle;];
     e [shape = doublecircle;style = dashed;color = red;];
     
-    0 -> 8 [label = "\" \n AS1, AS4";];
-    8 -> 8 [label = "C - \" - n \n AS2";];
-    8 -> F [label = "\" \n AS2, AS3";];
-    8 -> e [label = "n \n ERN"; style = dashed;];
+    0 -> 8 [label = "\" | AS1, AS4";];
+    8 -> 8 [label = "Otro | AS2";];
+    8 -> F [label = "\" | AS2, AS3";];
+    8 -> e [label = "n | ERN"; style = dashed;];
 }

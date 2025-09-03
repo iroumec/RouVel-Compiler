@@ -1,6 +1,10 @@
 digraph DFA {
     // Layout.
     rankdir = LR;
+    splines = true;
+    overlap = false;
+    nodesep = 0.05;
+    ranksep = 0.1;
     // Estados normales.
     node [shape = circle;];
     // Estado de aceptación.
@@ -8,8 +12,7 @@ digraph DFA {
     // Estado de error.
     e [shape = doublecircle;style = dashed;color = red;];
     
-    0 -> 0 [label = "n \n ASN";];
-    0 -> 0 [label = "s, t";];
+    0 -> 0 [label = "s, t, n [ASN]";];
     0 -> 10 [label = "\":\" \n AS1";];
     0 -> 11 [label = "\"=\" \n AS1";];
     0 -> 12 [label = "\"-\" \n AS1";];
@@ -21,49 +24,47 @@ digraph DFA {
     0 -> 3 [label = "\".\" \n AS1, AS4"; tailport = s;];
     0 -> 8 [label = "\" \n AS1, AS4";];
     0 -> 9 [label = "l \n AS1";];
-    0 -> e [label = "    C - n - s - t - l - L - \"#\" - \".\" - \"+\", \"*\", \"/\", \"(\", \")\", \"{\", \"}\", \"_\", \";\", \":\", \"=\", \"-\", \">\", \"<\" \n ERD"; style = dashed;];
-    0 -> F [label = "\"+\", \"*\", \"/\", \"(\", \")\", \"{\", \"}\", \"_\", \";\" \n AS1, AS3";];
+    0 -> e [label = "Otro \n ERD"; style = dashed;];
+    0 -> F [label = "P \n AS1, AS3";];
     1 -> 1 [label = "d \n AS2";];
     1 -> 2 [label = "\"U\" \n AS2";];
     1 -> 4 [label = "\".\" \n AS2";];
-    1 -> e [label = "c - d - \".\" \n ER"; style = dashed;];
-    1 -> e [label = "C - d - \"U\" - \"I\" \n ER1"; style = dashed;];
-    2 -> e [label = "C - \"I\" \n ER2";];
+    1 -> e [label = "Otro \n ER1"; style = dashed;];
+    1 -> e [label = "Otro \n ER"; style = dashed;];
+    2 -> e [label = "Otro \n ER2";];
     2 -> F [label = "\"I\" \n AS2, ASUI, AS3";];
     3 -> 4 [label = "d \n AS2";];
-    3 -> e [label = "c - d \n ER"; style = dashed;];
+    3 -> e [label = "Otro \n ER"; style = dashed;];
     4 -> 4 [label = "d \n AS2";];
     4 -> 5 [label = "\"F\" \n AS2";];
-    4 -> F [label = "c - d - \"F\" \n ASF, AS3, ASR";];
+    4 -> F [label = "Otro \n ASF, AS3, ASR";];
     5 -> 6 [label = "\"+\", \"-\" \n AS2";];
-    5 -> e [label = "c - \"+\", \"-\" \n ER"; style = dashed;];
+    5 -> e [label = "Otro \n ER"; style = dashed;];
     6 -> 7 [label = "d \n AS2";];
-    6 -> e [label = "c - d \n ER"; style = dashed;];
+    6 -> e [label = "Otro \n ER"; style = dashed;];
     7 -> 7 [label = "d \n AS2";];
-    7 -> F [label = "c - d \n ASF, AS3, ASR";];
-    8 -> 8 [label = "C - \" - n \n AS2";];
+    7 -> F [label = "Otro \n ASF, AS3, ASR";];
+    8 -> 8 [label = "Otro \n AS2";];
     8 -> e [label = "n \n ERN"; style = dashed;];
     8 -> F [label = "\" \n AS2, AS3";];
     9 -> 9 [label = "l \n AS2";];
-    9 -> F [label = "C - l \n AS3, ASR";];
-    10 -> e [label = "C - \"=\" \n ER"; style = dashed;];
+    9 -> F [label = "Otro \n AS3, ASR";];
+    10 -> e [label = "Otro \n ER"; style = dashed;];
     10 -> F [label = "\"=\" \n AS2, AS3";];
-    11 -> F [label = "C - \"=\" - \"!\" \n AS3, ASR";];
     11 -> F [label = "\"=\", \"!\" \n AS2, AS3";];
-    12 -> F [label = "C - \">\" \n AS3, ASR";];
+    11 -> F [label = "Otro \n AS3, ASR";];
     12 -> F [label = "\">\" \n AS2, AS3";];
-    13 -> F [label = "C - \"=\" \n AS3, ASR";];
+    12 -> F [label = "Otro \n AS3, ASR";];
     13 -> F [label = "\"=\" \n AS2, AS3";];
-    14 -> F [label = "C - \"=\" \n AS3, ASR";];
+    13 -> F [label = "Otro \n AS3, ASR";];
     14 -> F [label = "\"=\" \n AS2, AS3";];
+    14 -> F [label = "Otro \n AS3, ASR";];
     15 -> 16 [label = "\"#\"";];
-    15 -> e [label = "C - \"#\" \n ERC"; style = dashed;];
-    16 -> 16 [label = "C - n - \"#\"";];
-    16 -> 16 [label = "n \n ASN"; tailport = s;];
+    15 -> e [label = " \n ERC"; style = dashed;];
+    16 -> 16 [label = "n [ASN]";];
     16 -> 17 [label = "\"#\"";];
-    17 -> 0 [label = "\"#\""; headport = s; tailport = s;];
-    17 -> 16 [label = "C - n - \"#\"";];
-    17 -> 16 [label = "n \n ASN";];
+    17 -> 0 [label = "\"#\"";];
+    17 -> 16 [label = "C, n [ASN]"; tailport = n;];
     18 -> 18 [label = "L, d, \"%\"\nAS2";];
-    18 -> F [label = "C - L - d - \"%\"\n AS5, AS3, ASR";];
+    18 -> F [label = "Otro \n AS5, AS3, ASR";];
 }

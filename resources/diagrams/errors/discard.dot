@@ -3,7 +3,6 @@ digraph DFA {
     node [shape = circle;];
     e [shape = doublecircle;style = dashed;color = red;];
     
-    0 -> 0 [label = "s, t";];
-    0 -> 0 [label = "n \n ASN";];
-    0 -> e [label = "    C - n - s - t - l - L - \"#\" - \".\" - \"+\", \"*\", \"/\", \"(\", \")\", \"{\", \"}\", \"_\", \";\", \":\", \"=\", \"-\", \">\", \"<\" \n ERD"; style = dashed;];
+    0 -> 0 [label = "s, t, n [ASN]";];
+    0 -> e [label = "Otro \n ERD"; style = dashed;];
 }
