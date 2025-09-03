@@ -32,12 +32,12 @@ public final class LexicalAnalyzer {
 
     // --------------------------------------------------------------------------------------------
 
-    public LexicalAnalyzer() {
+    public LexicalAnalyzer(String sourceCodePath) {
         this.nroLinea = 1;
         this.siguienteCaracterALeer = 0;
         // Se agrega una marca para indicar el final del archivo.
         // Quizás deberpia usarse '\0'.
-        this.codigoFuente = DataLoader.loadSourceCode() + '\s';
+        this.codigoFuente = DataLoader.loadSourceCode(sourceCodePath) + '\s';
         this.matrizTransicionEstados = DataLoader.loadStateTransitionMatrix();
         // System.out.println(Arrays.deepToString(matrizTransicionEstados));
         this.matrizAccionesSemanticas = DataLoader.loadSemanticActionsMatrix();

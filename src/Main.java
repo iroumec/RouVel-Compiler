@@ -23,8 +23,7 @@ public class Main {
         for (File file : files) {
             System.out.println("=== Analizando archivo: " + file.getName() + " ===");
 
-            DataLoader.setSourceCode(file.getPath());
-            LexicalAnalyzer lexicalAnalyzer = new LexicalAnalyzer();
+            LexicalAnalyzer lexicalAnalyzer = new LexicalAnalyzer(file.getPath());
 
             System.out.println("Tokens identificados en el programa:");
 

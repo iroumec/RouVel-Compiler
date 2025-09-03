@@ -22,7 +22,6 @@ import lexicalAnalysis.semanticActions.*;
 
 public final class DataLoader {
 
-    private static String sourceCodePath;
     private final static String stateTransitionMatrixPath = "../resources/data/stateTransitionMatrix.csv";
     private final static String semanticActionsMatrixPath = "../resources/data/semanticActionsMatrix.csv";
 
@@ -31,17 +30,26 @@ public final class DataLoader {
 
     // --------------------------------------------------------------------------------------------
 
-    private static final Map<String, SemanticAction> semanticActions = new HashMap<>();
-    static {
-        semanticActions.put("AS1", new LexemaInitializer());
-        semanticActions.put("AS2", new LexemaAppender());
-        semanticActions.put("AS3", new LexemaFinalizer());
-        semanticActions.put("AS4", new LexemaIdentifier());
-        semanticActions.put("AS5", new IdentifierLengthChecker());
-        semanticActions.put("ASUI", new UintChecker());
-        semanticActions.put("ASF", new FloatChecker());
-        semanticActions.put("ASR", new ReturnCharacterToEntry());
-        semanticActions.put("ASN", new NewLineDetected());
+    /**
+     * Se mapean los nombres de las acciones semánticas a sus instancias.
+     * 
+     * @param semanticAction Nombre de la acción semántica.
+     * @return Instancia de la acción semántica.
+     */
+    private static SemanticAction getSemanticAction(String semanticAction) {
+
+        return switch (semanticAction) {
+            case "AS1" -> new LexemaInitializer();
+            case "AS2" -> new LexemaAppender();
+            case "AS3" -> new LexemaFinalizer();
+            case "AS4" -> new LexemaIdentifier();
+            case "AS5" -> new IdentifierLengthChecker();
+            case "ASUI" -> new UintChecker();
+            case "ASF" -> new FloatChecker();
+            case "ASR" -> new ReturnCharacterToEntry();
+            case "ASN" -> new NewLineDetected();
+            default -> null;
+        };
     }
 
     // --------------------------------------------------------------------------------------------
@@ -49,11 +57,11 @@ public final class DataLoader {
     /**
      * Se mapean los caracteres a índices de columna en las matrices.
      * 
-     * @param c
-     * @return
+     * @param character Carácter a mapear.
+     * @return Índice de la columna correspondiente.
      */
-    public static int charToIndex(char c) {
-        return switch (c) {
+    public static int charToIndex(char character) {
+        return switch (character) {
             case 'L' -> 0;
             case 'l' -> 1;
             case 'd' -> 2;
@@ -169,30 +177,30 @@ public final class DataLoader {
 
         try (Stream<String> lines = Files.lines(Paths.get(semanticActionsMatrixPath))) {
             lines.skip(1).forEach(line -> {
-                // Partes: state, default, exceptions
+                // Se separa la línea en partes: estado, valor por defecto, excepciones
                 String[] parts = line.split(separator, 3);
                 if (parts.length < 1)
-                    return;
+                    return; // La línea no tiene tres columnas.
 
                 int state = Integer.parseInt(parts[0].trim());
 
-                // Default
+                // Default.
                 List<SemanticAction> defaultActions = new ArrayList<>();
                 if (parts.length > 1 && !parts[1].isBlank()) {
                     String def = parts[1].trim().replace("\"", "");
                     for (String act : def.split("-")) {
-                        SemanticAction sa = semanticActions.get(act.trim());
+                        SemanticAction sa = getSemanticAction(act.trim());
                         if (sa != null)
                             defaultActions.add(sa);
                     }
                 }
 
-                // Inicializa toda la fila con el default.
+                // Se inicializa toda la fila con el default.
                 for (int i = 0; i < NUM_SIMBOLOS; i++) {
                     matrix[state][i] = defaultActions.toArray(new SemanticAction[0]);
                 }
 
-                // Exceptions
+                // Manejo de la columna de las excepciones.
                 if (parts.length == 3) {
                     String exceptions = parts[2].trim();
                     if (exceptions.startsWith("[") && exceptions.endsWith("]")) {
@@ -214,7 +222,7 @@ public final class DataLoader {
 
                             List<SemanticAction> actions = new ArrayList<>();
                             for (String act : actionsPart.split("-")) {
-                                SemanticAction sa = semanticActions.get(act.trim());
+                                SemanticAction sa = getSemanticAction(act.trim());
                                 if (sa != null)
                                     actions.add(sa);
                             }
@@ -245,7 +253,13 @@ public final class DataLoader {
 
     // --------------------------------------------------------------------------------------------
 
-    public static String loadSourceCode() {
+    /**
+     * Se lee el código fuente y se lo convierte a String.
+     * 
+     * @param sourceCodePath Ruta al archivo del código fuente.
+     * @return Código fuente en formato String.
+     */
+    public static String loadSourceCode(String sourceCodePath) {
 
         try {
             return Files.readString(Paths.get(sourceCodePath));
@@ -255,12 +269,6 @@ public final class DataLoader {
         }
 
         return null;
-    }
-
-    // --------------------------------------------------------------------------------------------
-
-    public static void setSourceCode(String path) {
-        sourceCodePath = path;
     }
 
 }
