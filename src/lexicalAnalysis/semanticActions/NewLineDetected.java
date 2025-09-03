@@ -8,6 +8,24 @@ import lexicalAnalysis.SemanticAction;
  */
 public class NewLineDetected implements SemanticAction {
 
+    private static NewLineDetected INSTANCE;
+
+    // --------------------------------------------------------------------------------------------
+
+    private NewLineDetected() {
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    public static NewLineDetected getInstance() {
+        if (INSTANCE == null) {
+            INSTANCE = new NewLineDetected();
+        }
+        return INSTANCE;
+    }
+
+    // --------------------------------------------------------------------------------------------
+
     @Override
     public void execute(LexicalAnalyzer lexicalAnalyzer) {
         lexicalAnalyzer.incrementarNroLinea();

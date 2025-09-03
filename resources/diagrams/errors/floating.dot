@@ -2,11 +2,13 @@ digraph DFA {
     rankdir = LR;
     node [shape = circle;];
     F [shape = doublecircle;];
+    e [shape = doublecircle;style = dashed;color = red;];
     
     0 -> 1 [label = "d \n AS1, AS4"; tailport = n;];
     0 -> 3 [label = "\".\" \n AS1, AS4"; tailport = s;];
     1 -> 1 [label = "d \n AS2";];
     1 -> 4 [label = "\".\" \n AS2";];
+    1 -> e [label = "c - d - \".\" \n ER"; style = dashed;];
     3 -> 4 [label = "d \n AS2";];
     4 -> 4 [label = "d \n AS2";];
     4 -> F [label = "c - d - \"F\" \n ASF, AS3, ASR";];

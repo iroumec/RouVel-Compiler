@@ -8,6 +8,25 @@ import lexicalAnalysis.SemanticAction;
  * AS5
  */
 public class IdentifierLengthChecker implements SemanticAction {
+
+    private static IdentifierLengthChecker INSTANCE;
+
+    // --------------------------------------------------------------------------------------------
+
+    private IdentifierLengthChecker() {
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    public static IdentifierLengthChecker getInstance() {
+        if (INSTANCE == null) {
+            INSTANCE = new IdentifierLengthChecker();
+        }
+        return INSTANCE;
+    }
+
+    // --------------------------------------------------------------------------------------------
+
     @Override
     public void execute(LexicalAnalyzer lexicalAnalyzer) {
 

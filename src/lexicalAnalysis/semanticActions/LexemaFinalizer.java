@@ -12,6 +12,24 @@ import lexicalAnalysis.SemanticAction;
  */
 public class LexemaFinalizer implements SemanticAction {
 
+    private static LexemaFinalizer INSTANCE;
+
+    // --------------------------------------------------------------------------------------------
+
+    private LexemaFinalizer() {
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    public static LexemaFinalizer getInstance() {
+        if (INSTANCE == null) {
+            INSTANCE = new LexemaFinalizer();
+        }
+        return INSTANCE;
+    }
+
+    // --------------------------------------------------------------------------------------------
+
     @Override
     public void execute(LexicalAnalyzer lexicalAnalyzer) {
 

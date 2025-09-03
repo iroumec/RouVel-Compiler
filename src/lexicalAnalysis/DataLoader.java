@@ -39,15 +39,15 @@ public final class DataLoader {
     private static SemanticAction getSemanticAction(String semanticAction) {
 
         return switch (semanticAction) {
-            case "AS1" -> new LexemaInitializer();
-            case "AS2" -> new LexemaAppender();
-            case "AS3" -> new LexemaFinalizer();
-            case "AS4" -> new LexemaIdentifier();
-            case "AS5" -> new IdentifierLengthChecker();
-            case "ASUI" -> new UintChecker();
-            case "ASF" -> new FloatChecker();
-            case "ASR" -> new ReturnCharacterToEntry();
-            case "ASN" -> new NewLineDetected();
+            case "AS1" -> LexemaInitializer.getInstance();
+            case "AS2" -> LexemaAppender.getInstance();
+            case "AS3" -> LexemaFinalizer.getInstance();
+            case "AS4" -> LexemaIdentifier.getInstance();
+            case "AS5" -> IdentifierLengthChecker.getInstance();
+            case "ASUI" -> UintChecker.getInstance();
+            case "ASF" -> FloatChecker.getInstance();
+            case "ASR" -> ReturnCharacterToEntry.getInstance();
+            case "ASN" -> NewLineDetected.getInstance();
             default -> null;
         };
     }

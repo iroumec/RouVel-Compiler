@@ -10,10 +10,26 @@ import lexicalAnalysis.SemanticAction;
  */
 public class FloatChecker implements SemanticAction {
 
+    private static FloatChecker INSTANCE;
+
     private static final BigDecimal MIN_POS_VAL = new BigDecimal("1.17549435E-38");
     private static final BigDecimal MAX_POS_VAL = new BigDecimal("3.40282347E38");
     private static final BigDecimal MIN_NEG_VAL = new BigDecimal("-3.40282347E38");
     private static final BigDecimal MAX_NEG_VAL = new BigDecimal("-1.17549435E-38");
+
+    // --------------------------------------------------------------------------------------------
+
+    private FloatChecker() {
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    public static FloatChecker getInstance() {
+        if (INSTANCE == null) {
+            INSTANCE = new FloatChecker();
+        }
+        return INSTANCE;
+    }
 
     // --------------------------------------------------------------------------------------------
 

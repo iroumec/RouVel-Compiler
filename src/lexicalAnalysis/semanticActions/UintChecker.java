@@ -8,7 +8,23 @@ import lexicalAnalysis.SemanticAction;
  */
 public class UintChecker implements SemanticAction {
 
+    private static UintChecker INSTANCE;
+
     private static final int MAX_UINT = 65535;
+
+    // --------------------------------------------------------------------------------------------
+
+    private UintChecker() {
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    public static UintChecker getInstance() {
+        if (INSTANCE == null) {
+            INSTANCE = new UintChecker();
+        }
+        return INSTANCE;
+    }
 
     // --------------------------------------------------------------------------------------------
 

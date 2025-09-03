@@ -7,6 +7,24 @@ import lexicalAnalysis.SemanticAction;
 
 public class LexemaIdentifier implements SemanticAction {
 
+    private static LexemaIdentifier INSTANCE;
+
+    // --------------------------------------------------------------------------------------------
+
+    private LexemaIdentifier() {
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    public static LexemaIdentifier getInstance() {
+        if (INSTANCE == null) {
+            INSTANCE = new LexemaIdentifier();
+        }
+        return INSTANCE;
+    }
+
+    // --------------------------------------------------------------------------------------------
+
     @Override
     public void execute(LexicalAnalyzer lexicalAnalyzer) {
         char lastChar = lexicalAnalyzer.getLastCharRead();
