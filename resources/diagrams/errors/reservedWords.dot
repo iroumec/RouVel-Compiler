@@ -1,0 +1,10 @@
+digraph DFA {
+    rankdir = LR;
+    node [shape = circle;];
+    F [shape = doublecircle;];
+    // No hay posible error.
+    
+    0 -> 9 [label = "l \n AS1";];
+    9 -> 9 [label = "l \n AS2";];
+    9 -> F [label = "C - l \n AS3, ASR";];
+}

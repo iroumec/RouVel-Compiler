@@ -1,0 +1,21 @@
+digraph DFA {
+    rankdir = LR;
+    node [shape = circle;];
+    F [shape = doublecircle;];
+    
+    0 -> 10 [label = "\":\" \n AS1";];
+    10 -> F [label = "\"=\" \n AS2, AS3";];
+    0 -> 11 [label = "\"=\" \n AS1";];
+    11 -> F [label = "\"=\", \"!\" \n AS2, AS3";];
+    11 -> F [label = "C - \"=\" - \"!\" \n AS3, ASR";];
+    0 -> F [label = "\"+\", \"*\", \"/\", \"(\", \")\", \"{\", \"}\", \"_\", \";\" \n AS1, AS3";];
+    0 -> 12 [label = "\"-\" \n AS1";];
+    12 -> F [label = "\">\" \n AS2, AS3";];
+    12 -> F [label = "C - \">\" \n AS3, ASR";];
+    0 -> 13 [label = "\">\" \n AS1";];
+    13 -> F [label = "\"=\" \n AS2, AS3";];
+    13 -> F [label = "C - \"=\" \n AS3, ASR";];
+    0 -> 14 [label = "\"<\" \n AS1";];
+    14 -> F [label = "\"=\" \n AS2, AS3";];
+    14 -> F [label = "C - \"=\" \n AS3, ASR";];
+}

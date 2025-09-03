@@ -1,0 +1,15 @@
+digraph DFA {
+    rankdir = LR;
+    node [shape = circle;];
+    e [shape = doublecircle;style = dashed;color = red;];
+    
+    0 -> 15 [label = "\"#\"";];
+    15 -> e [label = "C - \"#\""; style = dashed;];
+    15 -> 16 [label = "\"#\"";];
+    16 -> 16 [label = "C - n - \"#\"";];
+    16 -> 16 [label = "n \n ASN"; tailport = s;];
+    16 -> 17 [label = "\"#\"";];
+    17 -> 16 [label = "C - n - \"#\"";];
+    17 -> 16 [label = "n \n ASN";];
+    17 -> 0 [label = "\"#\""; headport = s; tailport = s;];
+}

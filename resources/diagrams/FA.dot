@@ -27,7 +27,7 @@ digraph DFA {
     3 -> 4 [label = "d \n AS2";];
     4 -> 4 [label = "d \n AS2";];
     4 -> 5 [label = "\"F\" \n AS2";];
-    4 -> F [label = "c - d \n ASF, AS3, ASR";];
+    4 -> F [label = "c - d - \"F\" \n ASF, AS3, ASR";];
     5 -> 6 [label = "\"+\", \"-\" \n AS2";];
     6 -> 7 [label = "d \n AS2";];
     7 -> 7 [label = "d \n AS2";];
