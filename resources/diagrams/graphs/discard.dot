@@ -1,0 +1,8 @@
+digraph DFA {
+    rankdir = LR;
+    node [shape = circle;];
+    eG [shape = doublecircle;style = dashed;color = red;label = "e";];
+    
+    0 -> 0 [label = "s, t, n [ASN]";];
+    0 -> eG [label = "Otro | ERD"; style = dashed;];
+}

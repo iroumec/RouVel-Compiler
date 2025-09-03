@@ -1,10 +1,10 @@
 digraph DFA {
     rankdir = LR;
     node [shape = circle;];
-    e [shape = doublecircle;style = dashed;color = red;];
+    eC [shape = doublecircle;style = dashed;color = red;label = "e";];
     
     0 -> 15 [label = "\"#\"";];
-    15 -> e [label = "Otro \n ERC"; style = dashed;];
+    15 -> eC [label = "Otro | ERC"; style = dashed;];
     15 -> 16 [label = "\"#\"";];
     16 -> 16 [label = "n | ASN";];
     16 -> 17 [label = "\"#\"";];

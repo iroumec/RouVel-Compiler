@@ -1,5 +1,5 @@
 #!/bin/bash
-BASE_DIR="$(dirname "$0")/errors"
+BASE_DIR="$(dirname "$0")/graphs"
 cd "$BASE_DIR" || exit 1
 SALIDA="$(dirname "$0")/finiteAutomatom.dot"
 
@@ -25,8 +25,19 @@ digraph DFA {
     // Estado de aceptación
     F [shape = doublecircle;style = dashed;color = "#8a048a";];
     
-    // Estado de error
-    e [shape = doublecircle;style = dashed;color = red;];
+    // Estados de error.
+    // Se definen varios para que el autómata quede más claro.
+    // Todos referencias al mismo estado de error.
+    // ERROR GENERAL.
+    eG [shape = doublecircle;style = dashed;color = red;label = "e";];
+    // ERROR DE COMENTARIO.
+    eC [shape = doublecircle;style = dashed;color = red;label = "e";];
+    // ERROR DE OPERADOR.
+    eP [shape = doublecircle;style = dashed;color = red;label = "e";];
+    // ERROR DE NÚMERO.
+    eN [shape = doublecircle;style = dashed;color = red;label = "e";];
+    // ERROR DE CADENA.
+    eS [shape = doublecircle;style = dashed;color = red;label = "e";];
     
     // -----------------------------
     // Agrupación inicial
@@ -94,3 +105,6 @@ grep -h -E '\->' *.dot 2>/dev/null | sort -n -k1,1 | uniq >> "$SALIDA"
 
 # Cerramos el grafo
 echo "}" >> "$SALIDA"
+
+# Se genera una versión .png del grafo.
+dot -Tpng "$SALIDA" -o "$(dirname "$0")"/finiteAutomatom.png

@@ -12,8 +12,19 @@ digraph DFA {
     // Estado de aceptación
     F [shape = doublecircle;style = dashed;color = "#8a048a";];
     
-    // Estado de error
-    e [shape = doublecircle;style = dashed;color = red;];
+    // Estados de error.
+    // Se definen varios para que el autómata quede más claro.
+    // Todos referencias al mismo estado de error.
+    // ERROR GENERAL.
+    eG [shape = doublecircle;style = dashed;color = red;label = "e";];
+    // ERROR DE COMENTARIO.
+    eC [shape = doublecircle;style = dashed;color = red;label = "e";];
+    // ERROR DE OPERADOR.
+    eP [shape = doublecircle;style = dashed;color = red;label = "e";];
+    // ERROR DE NÚMERO.
+    eN [shape = doublecircle;style = dashed;color = red;label = "e";];
+    // ERROR DE CADENA.
+    eS [shape = doublecircle;style = dashed;color = red;label = "e";];
     
     // -----------------------------
     // Agrupación inicial
@@ -83,33 +94,31 @@ digraph DFA {
     0 -> 3 [label = "\".\" | AS1, AS4";];
     0 -> 8 [label = "\" | AS1, AS4";];
     0 -> 9 [label = "l | AS1";];
-    0 -> e [label = "Otro \n ERD"; style = dashed;];
+    0 -> eG [label = "Otro | ERD"; style = dashed;];
     0 -> F [label = "P | AS1, AS3";];
-    
     1 -> 1 [label = "d | AS2";];
     1 -> 2 [label = "\"U\" | AS2";];
     1 -> 4 [label = "\".\" | AS2";];
-    1 -> e [label = "Otro | ER1"; style = dashed;];
-    2 -> e [label = "Otro | ER2";];
+    1 -> eN [label = "Otro | ER1"; style = dashed;];
+    2 -> eN [label = "Otro | ER2";];
     2 -> F [label = "\"I\" | AS2, ASUI, AS3";];
     3 -> 4 [label = "d | AS2";];
-    3 -> e [label = "Otro | ER"; style = dashed;];
+    3 -> eN [label = "Otro | ER"; style = dashed;];
     4 -> 4 [label = "d | AS2";];
     4 -> 5 [label = "\"F\" | AS2";];
     4 -> F [label = "Otro | ASF, AS3, ASR";];
     5 -> 6 [label = "\"+\", \"-\" | AS2";];
-    5 -> e [label = "Otro | ER"; style = dashed;];
+    5 -> eN [label = "Otro | ER"; style = dashed;];
     6 -> 7 [label = "d | AS2";];
-    6 -> e [label = "Otro | ER"; style = dashed;];
+    6 -> eN [label = "Otro | ER"; style = dashed;];
     7 -> 7 [label = "d | AS2";];
     7 -> F [label = "Otro | ASF, AS3, ASR";];
-    
     8 -> 8 [label = "Otro | AS2";];
-    8 -> e [label = "n | ERN"; style = dashed;];
+    8 -> eS [label = "n | ERN"; style = dashed;];
     8 -> F [label = "\" | AS2, AS3";];
     9 -> 9 [label = "l | AS2";];
     9 -> F [label = "Otro | AS3, ASR";];
-    10 -> e [label = "Otro | ER"; style = dashed;];
+    10 -> eP [label = "Otro | ER"; style = dashed;];
     10 -> F [label = "\"=\" | AS2, AS3";];
     11 -> F [label = "\"=\", \"!\" | AS2, AS3";];
     11 -> F [label = "Otro | AS3, ASR";];
@@ -120,7 +129,7 @@ digraph DFA {
     14 -> F [label = "\"=\" | AS2, AS3";];
     14 -> F [label = "Otro | AS3, ASR";];
     15 -> 16 [label = "\"#\"";];
-    15 -> e [label = "Otro \n ERC"; style = dashed;];
+    15 -> eC [label = "Otro | ERC"; style = dashed;];
     16 -> 16 [label = "n | ASN";];
     16 -> 17 [label = "\"#\"";];
     17 -> 0 [label = "\"#\"";];
