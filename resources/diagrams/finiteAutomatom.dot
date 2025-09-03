@@ -71,63 +71,60 @@ digraph DFA {
         17;
     }
     
-    // -----------------------------
-    // Transiciones desde 0
     0 -> 0 [label = "s, t, n [ASN]";];
-    0 -> 10 [label = "\":\"  | AS1";];
-    0 -> 11 [label = "\"=\"  | AS1";];
-    0 -> 12 [label = "\"-\"  | AS1";];
-    0 -> 13 [label = "\">\"  | AS1";];
-    0 -> 14 [label = "\"<\"  | AS1";];
+    0 -> 10 [label = "\":\" | AS1";];
+    0 -> 11 [label = "\"=\" | AS1";];
+    0 -> 12 [label = "\"-\" | AS1";];
+    0 -> 13 [label = "\">\" | AS1";];
+    0 -> 14 [label = "\"<\" | AS1";];
     0 -> 15 [label = "\"#\"";];
-    0 -> 18 [label = "L | AS1,AS4";];
-    0 -> 1 [label = "d | AS1,AS4";];
-    0 -> 3 [label = "\".\" | AS1,AS4";];
-    0 -> 8 [label = "\" \" | AS1,AS4";];
+    0 -> 18 [label = "L | AS1, AS4";];
+    0 -> 1 [label = "d | AS1, AS4";];
+    0 -> 3 [label = "\".\" | AS1, AS4";];
+    0 -> 8 [label = "\" | AS1, AS4";];
     0 -> 9 [label = "l | AS1";];
-    0 -> F [label = "P | AS1,AS3";];
-    0 -> e [label = "Otro | ERD"; style = dashed;];
+    0 -> e [label = "Otro \n ERD"; style = dashed;];
+    0 -> F [label = "P | AS1, AS3";];
     
-    // Números
     1 -> 1 [label = "d | AS2";];
     1 -> 2 [label = "\"U\" | AS2";];
     1 -> 4 [label = "\".\" | AS2";];
     1 -> e [label = "Otro | ER1"; style = dashed;];
-    2 -> F [label = "\"I\" | AS2,ASUI,AS3";];
+    2 -> e [label = "Otro | ER2";];
+    2 -> F [label = "\"I\" | AS2, ASUI, AS3";];
     3 -> 4 [label = "d | AS2";];
+    3 -> e [label = "Otro | ER"; style = dashed;];
     4 -> 4 [label = "d | AS2";];
     4 -> 5 [label = "\"F\" | AS2";];
-    4 -> F [label = "Otro | ASF,AS3,ASR";];
+    4 -> F [label = "Otro | ASF, AS3, ASR";];
     5 -> 6 [label = "\"+\", \"-\" | AS2";];
+    5 -> e [label = "Otro | ER"; style = dashed;];
     6 -> 7 [label = "d | AS2";];
+    6 -> e [label = "Otro | ER"; style = dashed;];
     7 -> 7 [label = "d | AS2";];
-    7 -> F [label = "Otro | ASF,AS3,ASR";];
+    7 -> F [label = "Otro | ASF, AS3, ASR";];
     
-    // Literales
     8 -> 8 [label = "Otro | AS2";];
     8 -> e [label = "n | ERN"; style = dashed;];
-    8 -> F [label = "\" \" | AS2,AS3";];
+    8 -> F [label = "\" | AS2, AS3";];
     9 -> 9 [label = "l | AS2";];
-    9 -> F [label = "Otro | AS3,ASR";];
-    18 -> 18 [label = "L,d,\"%\" | AS2";];
-    18 -> F [label = "Otro | AS5,AS3,ASR";];
-    
-    // Operadores
-    10 -> F [label = "\"=\" | AS2,AS3";];
-    11 -> F [label = "\"=\", \"!\" | AS2,AS3";];
-    11 -> F [label = "Otro | AS3,ASR";];
-    12 -> F [label = "\">\" | AS2,AS3";];
-    12 -> F [label = "Otro | AS3,ASR";];
-    13 -> F [label = "\"=\" | AS2,AS3";];
-    13 -> F [label = "Otro | AS3,ASR";];
-    14 -> F [label = "\"=\" | AS2,AS3";];
-    14 -> F [label = "Otro | AS3,ASR";];
-    
-    // Comentarios
+    9 -> F [label = "Otro | AS3, ASR";];
+    10 -> e [label = "Otro | ER"; style = dashed;];
+    10 -> F [label = "\"=\" | AS2, AS3";];
+    11 -> F [label = "\"=\", \"!\" | AS2, AS3";];
+    11 -> F [label = "Otro | AS3, ASR";];
+    12 -> F [label = "\">\" | AS2, AS3";];
+    12 -> F [label = "Otro | AS3, ASR";];
+    13 -> F [label = "\"=\" | AS2, AS3";];
+    13 -> F [label = "Otro | AS3, ASR";];
+    14 -> F [label = "\"=\" | AS2, AS3";];
+    14 -> F [label = "Otro | AS3, ASR";];
     15 -> 16 [label = "\"#\"";];
+    15 -> e [label = "Otro \n ERC"; style = dashed;];
     16 -> 16 [label = "n | ASN";];
     16 -> 17 [label = "\"#\"";];
     17 -> 0 [label = "\"#\"";];
-    17 -> 16 [label = "C, n [ASN]";];
-    15 -> e [label = "Otro | ERC"; style = dashed;];
+    17 -> 16 [label = "C, n [ASN]"; tailport = n;];
+    18 -> 18 [label = "L, d, \"%\" | AS2";];
+    18 -> F [label = "Otro | AS5, AS3, ASR";];
 }

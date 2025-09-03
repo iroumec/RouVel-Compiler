@@ -8,7 +8,7 @@ digraph DFA {
     0 -> 3 [label = "\".\" | AS1, AS4";];
     1 -> 1 [label = "d | AS2";];
     1 -> 4 [label = "\".\" | AS2";];
-    1 -> e [label = "Otro | ER"; style = dashed;];
+    1 -> e [label = "Otro | ER1"; style = dashed;];
     3 -> 4 [label = "d | AS2";];
     3 -> e [label = "Otro | ER"; style = dashed;];
     4 -> 4 [label = "d | AS2";];
