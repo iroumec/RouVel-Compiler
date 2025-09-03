@@ -21,7 +21,7 @@ public class FloatChecker implements SemanticAction {
 
         lexema = cleanFloat(lexema);
 
-        lexicalAnalyzer.setLexema(parseToFloat(lexema));
+        lexicalAnalyzer.setLexema(parseToFloat(lexema, lexicalAnalyzer));
     }
 
     // --------------------------------------------------------------------------------------------
@@ -59,12 +59,12 @@ public class FloatChecker implements SemanticAction {
 
     // --------------------------------------------------------------------------------------------
 
-    private String parseToFloat(String lexema) {
+    private String parseToFloat(String lexema, LexicalAnalyzer lexicalAnalyzer) {
 
         String number = transformToScientific(lexema);
 
         if (!isInRange(number)) {
-            System.out.println("WARNING: El número flotante " + number
+            System.out.println("WARNING: Línea: " + lexicalAnalyzer.getNroLinea() + ": El número flotante " + number
                     + " está fuera del rango de representación. Se asignará el valor 0.0.");
             return "0.0";
         }

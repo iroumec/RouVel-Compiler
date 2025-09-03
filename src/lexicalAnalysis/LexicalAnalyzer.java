@@ -35,7 +35,8 @@ public final class LexicalAnalyzer {
         this.nroLinea = 1;
         this.siguienteCaracterALeer = 0;
         // Se agrega una marca para indicar el final del archivo.
-        this.codigoFuente = DataLoader.loadSourceCode() + '\0';
+        // Quizás deberpia usarse '\0'.
+        this.codigoFuente = DataLoader.loadSourceCode() + '\s';
         this.matrizTransicionEstados = DataLoader.loadStateTransitionMatrix();
         this.matrizAccionesSemanticas = DataLoader.loadSemanticActionMatrix();
     }
@@ -62,7 +63,7 @@ public final class LexicalAnalyzer {
         int normalizedChar;
         int estadoActual = estadoInicio;
 
-        while (estadoActual != estadoAceptacion && siguienteCaracterALeer < codigoFuente.length() - 1) {
+        while (estadoActual != estadoAceptacion && siguienteCaracterALeer < codigoFuente.length()) {
 
             this.lastCharRead = codigoFuente.charAt(siguienteCaracterALeer);
 
@@ -106,12 +107,20 @@ public final class LexicalAnalyzer {
      * sean mapeadas a una misma columna de requerirse.
      */
     private int normalizeChar(char c) {
-        if (detectedType == null || detectedType == TokenType.CTE || detectedType == TokenType.STR
-                || (detectedType == TokenType.ID && c == '%')) {
-            int exc = excepcion(c);
-            if (exc != -1)
-                return exc;
-        }
+
+        int exc = excepcion(c);
+        if (exc != -1)
+            return exc;
+
+        /*
+         * if (detectedType == null || detectedType == TokenType.CTE || detectedType ==
+         * TokenType.STR
+         * || (detectedType == TokenType.ID && c == '%')) {
+         * int exc = excepcion(c);
+         * if (exc != -1)
+         * return exc;
+         * }
+         */
         if (Character.isUpperCase(c))
             return 0;
         if (Character.isLowerCase(c))

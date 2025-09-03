@@ -19,7 +19,7 @@ public class UintChecker implements SemanticAction {
 
         if (!isInRange(lexema)) {
             System.out.println(
-                    "WARNING: El número " + lexema
+                    "WARNING: Línea: " + lexicalAnalyzer.getNroLinea() + ": El número " + lexema
                             + " está fuera del rango de uint. Se ajustará al máximo en el rango permitido [0, "
                             + MAX_UINT + "].");
             lexema = MAX_UINT + "UI";
