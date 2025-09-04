@@ -1,23 +1,17 @@
-# TPE-Compiler
+# RouVel Compiler
 
 Trabajo práctico de cursada para la materia Compiladores e Intérpretes.
 
-Posible nombre: RouVel Compiler.
+A partir de un lenguaje simple proporcionado por la cátedra, se implementó su compilador lenguaje. Las características del lenguaje son las siguientes:
+
+
 
 ## Autómata Finito
 
 ![Finite Automatom](resources/diagrams/finiteAutomatom.png)
 
-## Decisiones
-
-Decidimos minimizar la cantidad de acciones semánticas a aplicar a costa de aumentar el número de estados en el autómata finito. De esta forma:
-
-- El autómata se autoexplica. No es necesario recurrir al código constantemente para entenderlo.
-- Se facilita el debugging, ya que se minimiza el código.
-
 Se define:
 
-- C: conjunto de todos los caracteres.
 - L: conjunto de todos los carácteres correspondientes a letras mayúsculas.
 - l: conjunto de todos los carácteres correspondientes a letras minúsculas.
 - d: conjunto de carácteres correspondientes a dígitos (0 a 9).
@@ -27,14 +21,7 @@ Se define:
 - n: indica un salto de línea.
 - Otro: representa a un carácter que no está comprendido en los demás arcos.
 
-¿Qué hacemos si viene un <==? Es ambiguo. Tomamos como vaya llegando.
-
-    // No es necesario contemplar el salto de línea porque, al
-    // retrocederse en el carácter, se vuelve a leer.
-
-Recvisar qué pasa si no se agrega UI a un número.
-
-Definiciones de acciones semánticas:
+Además, se definen las siguientes acciones semánticas (AS):
 
 AS1: LexemaInitializer:
 -Inicializa el string del lexema y agrega caracter leido.
@@ -69,6 +56,22 @@ ASUI: UintChecker:
 
 ASF: FloatChecker:
 -?
+
+## Decisiones
+
+Decidimos minimizar la cantidad de acciones semánticas a aplicar a costa de aumentar el número de estados en el autómata finito. De esta forma:
+
+- El autómata se autoexplica. No es necesario recurrir al código constantemente para entenderlo.
+- Se facilita el debugging, ya que se minimiza el código.
+
+Se define:
+
+
+
+¿Qué hacemos si viene un <==? Es ambiguo. Tomamos como vaya llegando.
+
+    // No es necesario contemplar el salto de línea porque, al
+    // retrocederse en el carácter, se vuelve a leer.
 
 LOS ARCHIVOS .UKI DEBEN ESTAR CODIFICADOS CON UTF-8. Si se codifican con UTF-8 with BOM, da error.
 
