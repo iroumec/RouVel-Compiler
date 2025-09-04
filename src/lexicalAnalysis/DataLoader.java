@@ -22,9 +22,6 @@ import lexicalAnalysis.semanticActions.*;
 
 public final class DataLoader {
 
-    private final static String stateTransitionMatrixPath = "../resources/data/stateTransitionMatrix.csv";
-    private final static String semanticActionsMatrixPath = "../resources/data/semanticActionsMatrix.csv";
-
     private final static int NUM_ESTADOS = 19;
     private final static int NUM_SIMBOLOS = 29;
 
@@ -97,73 +94,81 @@ public final class DataLoader {
     // --------------------------------------------------------------------------------------------
 
     public static int[][] loadStateTransitionMatrix() {
-
         int[][] matrix = new int[NUM_ESTADOS][NUM_SIMBOLOS];
-        String separator = ",";
 
-        try (Stream<String> stream = Files.lines(Paths.get(stateTransitionMatrixPath))) {
-            stream.skip(1) // Se saltea el encabezado (primera línea).
-                    .forEach(line -> {
-                        // Se sapara la línea en partes: estado, valor por defecto, excepciones
-                        String[] parts = line.split(separator, 3);
-                        if (parts.length < 2)
-                            return; // Línea vacía o inválida.
+        // Definición de la matriz en formato similar al CSV
+        String[][] MATRIX_DATA = {
+                { "0", "-1",
+                        "[+,*,/,(,),{,},_,;:19 | L,U,I,F:18 | l:9 | d:1 | .:3 | -:12 | \":8 | ::10 | =:11 | >:13 | <:14 | #:15 | n,s,t:0]" },
+                { "1", "-2", "[d:1 | U:2 | .:4]" },
+                { "2", "-3", "[I:19]" },
+                { "3", "-4", "[d:4]" },
+                { "4", "19", "[d:4 | F:5]" },
+                { "5", "-5", "[-,+:6]" },
+                { "6", "-6", "[d:7]" },
+                { "7", "19", "[d:7]" },
+                { "8", "8", "[\":19 | n:-8]" },
+                { "9", "19", "[l:9]" },
+                { "10", "-7", "[=:19]" },
+                { "11", "19", "[]" },
+                { "12", "19", "[]" },
+                { "13", "19", "[]" },
+                { "14", "19", "[]" },
+                { "15", "-9", "[#:16]" },
+                { "16", "16", "[#:17]" },
+                { "17", "16", "[#:0]" },
+                { "18", "19", "[L,d,U,I,F,%:18]" }
+        };
 
-                        int state = Integer.parseInt(parts[0].trim());
-                        int defaultValue = Integer.parseInt(parts[1].trim());
+        for (String[] parts : MATRIX_DATA) {
+            if (parts.length < 2)
+                continue;
 
-                        // Se inicializa toda la fila con el valor por defecto.
-                        Arrays.fill(matrix[state], defaultValue);
+            int state = Integer.parseInt(parts[0].trim());
+            int defaultValue = Integer.parseInt(parts[1].trim());
 
-                        if (parts.length == 3) {
-                            String exceptions = parts[2].trim();
-                            if (exceptions.startsWith("[") && exceptions.endsWith("]")) {
-                                exceptions = exceptions.substring(1, exceptions.length() - 1); // Se quitan las llaves.
-                            }
+            // Inicializa toda la fila con el valor por defecto
+            Arrays.fill(matrix[state], defaultValue);
 
-                            // Si hay excepciones...
-                            if (!exceptions.isBlank()) {
-                                // Se divide por '|' para separar cada grupo.
-                                for (String group : exceptions.split("\\|")) {
-                                    group = group.trim();
-                                    if (group.isEmpty())
-                                        continue;
+            if (parts.length == 3) {
+                String exceptions = parts[2].trim();
+                if (exceptions.startsWith("[") && exceptions.endsWith("]")) {
+                    exceptions = exceptions.substring(1, exceptions.length() - 1); // quitar corchetes
+                }
 
-                                    // Se busca la última aparición de ':' para separar símbolos y valor.
-                                    // Se busca la última aparición ya que ':' es un símbolo válido y se pueden
-                                    // tener cosas como "::8".
-                                    int colonPos = group.lastIndexOf(':');
-                                    if (colonPos == -1)
-                                        continue; // Inválido.
+                if (!exceptions.isBlank()) {
+                    for (String group : exceptions.split("\\|")) {
+                        group = group.trim();
+                        if (group.isEmpty())
+                            continue;
 
-                                    String symbolsPart = group.substring(0, colonPos).trim();
-                                    String valuePart = group.substring(colonPos + 1).trim();
+                        int colonPos = group.lastIndexOf(':');
+                        if (colonPos == -1)
+                            continue;
 
-                                    int value;
-                                    try {
-                                        value = valuePart.isEmpty() ? -1 : Integer.parseInt(valuePart);
-                                    } catch (NumberFormatException e) {
-                                        value = -1;
-                                    }
+                        String symbolsPart = group.substring(0, colonPos).trim();
+                        String valuePart = group.substring(colonPos + 1).trim();
 
-                                    // Obtención de los símbolos separados por coma.
-                                    for (String sym : symbolsPart.split(",")) {
-                                        sym = sym.trim(); // Eliminación de espacios..
-                                        if (sym.isEmpty())
-                                            continue;
+                        int value;
+                        try {
+                            value = valuePart.isEmpty() ? -1 : Integer.parseInt(valuePart);
+                        } catch (NumberFormatException e) {
+                            value = -1;
+                        }
 
-                                        Integer idx = charToIndex(sym.charAt(0));
-                                        if (idx != null && idx >= 0 && idx < NUM_SIMBOLOS) {
-                                            matrix[state][idx] = value;
-                                        }
-                                    }
-                                }
+                        for (String sym : symbolsPart.split(",")) {
+                            sym = sym.trim();
+                            if (sym.isEmpty())
+                                continue;
+
+                            Integer idx = charToIndex(sym.charAt(0));
+                            if (idx != null && idx >= 0 && idx < NUM_SIMBOLOS) {
+                                matrix[state][idx] = value;
                             }
                         }
-                    });
-        } catch (IOException e) {
-            System.err.println("Error al leer el archivo de la matriz: " + e.getMessage());
-            System.exit(1);
+                    }
+                }
+            }
         }
 
         return matrix;
@@ -173,79 +178,93 @@ public final class DataLoader {
 
     public static SemanticAction[][][] loadSemanticActionsMatrix() {
         SemanticAction[][][] matrix = new SemanticAction[NUM_ESTADOS][NUM_SIMBOLOS][];
-        String separator = ",";
 
-        try (Stream<String> lines = Files.lines(Paths.get(semanticActionsMatrixPath))) {
-            lines.skip(1).forEach(line -> {
-                // Se separa la línea en partes: estado, valor por defecto, excepciones
-                String[] parts = line.split(separator, 3);
-                if (parts.length < 1)
-                    return; // La línea no tiene tres columnas.
+        // Matriz hardcodeada en formato CSV-like
+        String[][] MATRIX_DATA = {
+                { "0", "", "[L,d,U,I,.,F,\",:\"AS1-AS4\" | :,=,>,<,l,-:AS1 | n:ASN | +,*,/,(,),{,},_,;:\"AS1-AS3\"]" },
+                { "1", "", "[L,l,d,U,.:AS2]" },
+                { "2", "", "[I:\"AS2-ASUI-AS3\"]" },
+                { "3", "", "[d:AS2]" },
+                { "4", "\"ASF-AS3-ASR\"", "[d:AS2 | F:AS2]" },
+                { "5", "", "[-,+:AS2]" },
+                { "6", "", "[d:AS2]" },
+                { "7", "\"ASF-AS3-ASR\"", "[d:AS2]" },
+                { "8", "AS2", "[\":AS2-AS3 | n:ASN]" },
+                { "9", "\"AS3-ASR\"", "[l:AS2]" },
+                { "10", "", "[=:\"AS2-AS3\"]" },
+                { "11", "\"AS3-ASR\"", "[=,!:\"AS2-AS3\"]" },
+                { "12", "\"AS3-ASR\"", "[>:\"AS2-AS3\"]" },
+                { "13", "\"AS3-ASR\"", "[=:\"AS2-AS3\"]" },
+                { "14", "\"AS3-ASR\"", "[=:\"AS2-AS3\"]" },
+                { "15", "", "" },
+                { "16", "", "[n:ASN]" },
+                { "17", "", "[n:ASN]" },
+                { "18", "\"AS5-AS3-ASR\"", "[L,d,U,I,F,%:AS2]" }
+        };
 
-                int state = Integer.parseInt(parts[0].trim());
+        for (String[] parts : MATRIX_DATA) {
+            if (parts.length < 1)
+                continue;
 
-                // Default.
-                List<SemanticAction> defaultActions = new ArrayList<>();
-                if (parts.length > 1 && !parts[1].isBlank()) {
-                    String def = parts[1].trim().replace("\"", "");
-                    for (String act : def.split("-")) {
-                        SemanticAction sa = getSemanticAction(act.trim());
-                        if (sa != null)
-                            defaultActions.add(sa);
-                    }
+            int state = Integer.parseInt(parts[0].trim());
+
+            // Default
+            List<SemanticAction> defaultActions = new ArrayList<>();
+            if (parts.length > 1 && parts[1] != null && !parts[1].isBlank()) {
+                String def = parts[1].trim().replace("\"", "");
+                for (String act : def.split("-")) {
+                    SemanticAction sa = getSemanticAction(act.trim());
+                    if (sa != null)
+                        defaultActions.add(sa);
+                }
+            }
+
+            for (int i = 0; i < NUM_SIMBOLOS; i++) {
+                matrix[state][i] = defaultActions.toArray(new SemanticAction[0]);
+            }
+
+            // Exceptions
+            if (parts.length == 3 && parts[2] != null) {
+                String exceptions = parts[2].trim();
+                if (exceptions.startsWith("[") && exceptions.endsWith("]")) {
+                    exceptions = exceptions.substring(1, exceptions.length() - 1);
                 }
 
-                // Se inicializa toda la fila con el default.
-                for (int i = 0; i < NUM_SIMBOLOS; i++) {
-                    matrix[state][i] = defaultActions.toArray(new SemanticAction[0]);
-                }
+                if (!exceptions.isBlank()) {
+                    for (String group : exceptions.split("\\|")) {
+                        group = group.trim();
+                        if (group.isEmpty())
+                            continue;
 
-                // Manejo de la columna de las excepciones.
-                if (parts.length == 3) {
-                    String exceptions = parts[2].trim();
-                    if (exceptions.startsWith("[") && exceptions.endsWith("]")) {
-                        exceptions = exceptions.substring(1, exceptions.length() - 1);
-                    }
+                        int colonPos = group.lastIndexOf(':');
+                        if (colonPos == -1)
+                            continue;
 
-                    if (!exceptions.isBlank()) {
-                        for (String group : exceptions.split("\\|")) {
-                            group = group.trim();
-                            if (group.isEmpty())
+                        String symbolsPart = group.substring(0, colonPos).trim();
+                        String actionsPart = group.substring(colonPos + 1).trim().replace("\"", "");
+
+                        List<SemanticAction> actions = new ArrayList<>();
+                        for (String act : actionsPart.split("-")) {
+                            SemanticAction sa = getSemanticAction(act.trim());
+                            if (sa != null)
+                                actions.add(sa);
+                        }
+
+                        SemanticAction[] arr = actions.toArray(new SemanticAction[0]);
+
+                        for (String sym : symbolsPart.split(",")) {
+                            sym = sym.trim();
+                            if (sym.isEmpty())
                                 continue;
 
-                            int colonPos = group.lastIndexOf(':');
-                            if (colonPos == -1)
-                                continue;
-
-                            String symbolsPart = group.substring(0, colonPos).trim();
-                            String actionsPart = group.substring(colonPos + 1).trim().replace("\"", "");
-
-                            List<SemanticAction> actions = new ArrayList<>();
-                            for (String act : actionsPart.split("-")) {
-                                SemanticAction sa = getSemanticAction(act.trim());
-                                if (sa != null)
-                                    actions.add(sa);
-                            }
-
-                            SemanticAction[] arr = actions.toArray(new SemanticAction[0]);
-
-                            for (String sym : symbolsPart.split(",")) {
-                                sym = sym.trim();
-                                if (sym.isEmpty())
-                                    continue;
-
-                                Integer idx = charToIndex(sym.charAt(0));
-                                if (idx != null && idx >= 0 && idx < NUM_SIMBOLOS) {
-                                    matrix[state][idx] = arr;
-                                }
+                            Integer idx = charToIndex(sym.charAt(0));
+                            if (idx != null && idx >= 0 && idx < NUM_SIMBOLOS) {
+                                matrix[state][idx] = arr;
                             }
                         }
                     }
                 }
-            });
-        } catch (IOException e) {
-            e.printStackTrace();
-            return new SemanticAction[0][0][];
+            }
         }
 
         return matrix;
