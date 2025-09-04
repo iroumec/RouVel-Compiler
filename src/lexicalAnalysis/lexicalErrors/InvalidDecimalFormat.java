@@ -2,27 +2,25 @@ package lexicalAnalysis.lexicalErrors;
 
 import lexicalAnalysis.LexicalAnalyzer;
 import lexicalAnalysis.LexicalError;
-import lexicalAnalysis.semanticActions.LexemaFinalizer;
-import lexicalAnalysis.semanticActions.UintChecker;
 
 /**
- * Estado de Error: -3.
- * BadUISuffix.
+ * Estado de error -4.
+ * InvalidDecimalFormat.
  */
-public class BadUISuffix implements LexicalError {
+public class InvalidDecimalFormat implements LexicalError {
 
-    private static BadUISuffix INSTANCE;
+    private static InvalidDecimalFormat INSTANCE;
 
     // --------------------------------------------------------------------------------------------
 
-    private BadUISuffix() {
+    private InvalidDecimalFormat() {
     }
 
     // --------------------------------------------------------------------------------------------
 
-    public static BadUISuffix getInstance() {
+    public static InvalidDecimalFormat getInstance() {
         if (INSTANCE == null) {
-            INSTANCE = new BadUISuffix();
+            INSTANCE = new InvalidDecimalFormat();
         }
         return INSTANCE;
     }
@@ -33,28 +31,22 @@ public class BadUISuffix implements LexicalError {
     public void handleError(LexicalAnalyzer lexicalAnalyzer) {
         System.err.println("ERROR: Línea "
                 + lexicalAnalyzer.getNroLinea()
-                + ": El número: '"
-                + lexicalAnalyzer.getLexema() + "' posee un sufijo inválido. "
-                + "Se añadirá el sufijo 'I'.");
+                + ": El símbolo '.' es inválido a menos de que le siga la parte decimal de un número. "
+                + "Este será omitido.");
         lexicalAnalyzer.incrementErrorsDetected();
-
-        // Agregado del sufijo y finalización del lexema.
-        lexicalAnalyzer.appendToLexema('I');
-        UintChecker.getInstance().execute(lexicalAnalyzer);
-        LexemaFinalizer.getInstance().execute(lexicalAnalyzer);
     }
 
     // --------------------------------------------------------------------------------------------
 
     @Override
-    public boolean requiresFinalization() {
+    public boolean requiresReturnToStart() {
         return true;
     }
 
     // --------------------------------------------------------------------------------------------
 
     public String toString() {
-        return "Estado de Error: -3. BadUISuffix.";
+        return "Estado de Error: -4. InvalidDecimalFormat.";
     }
 
 }

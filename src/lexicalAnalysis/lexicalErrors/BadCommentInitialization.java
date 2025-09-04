@@ -3,8 +3,8 @@ package lexicalAnalysis.lexicalErrors;
 import lexicalAnalysis.LexicalError;
 
 /**
- * ERC.
- * -9
+ * Estado de error -9.
+ * BadCommentInitialization.
  */
 public class BadCommentInitialization implements LexicalError {
 
@@ -45,7 +45,7 @@ public class BadCommentInitialization implements LexicalError {
     // --------------------------------------------------------------------------------------------
 
     public String toString() {
-        return "ERC";
+        return "Estado de Error: -9. BadCommentInitialization.";
     }
 
 }

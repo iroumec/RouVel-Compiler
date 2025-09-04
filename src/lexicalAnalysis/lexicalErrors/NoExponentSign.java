@@ -1,4 +1,4 @@
-﻿package lexicalAnalysis.lexicalErrors;
+package lexicalAnalysis.lexicalErrors;
 
 import lexicalAnalysis.LexicalAnalyzer;
 import lexicalAnalysis.LexicalError;
@@ -7,8 +7,8 @@ import lexicalAnalysis.semanticActions.LexemaAppender;
 import lexicalAnalysis.semanticActions.LexemaFinalizer;
 
 /**
- * EREXP.
- * -3
+ * Estado de error -5.
+ * NoExponentSign.
  */
 public class NoExponentSign implements LexicalError {
 
@@ -33,25 +33,49 @@ public class NoExponentSign implements LexicalError {
     @Override
     public void handleError(LexicalAnalyzer lexicalAnalyzer) {
 
+        // Se obtienen los siguientes caracteres para ver si hay un dígito.
+        StringBuilder number = new StringBuilder();
+        char currentChar = lexicalAnalyzer.getLastCharRead();
+        while (Character.isDigit(currentChar)) {
+            number.append(currentChar);
+            currentChar = lexicalAnalyzer.getCharInAdvance();
+        }
+        lexicalAnalyzer.decrementarSiguienteCaracterALeer();
+
+        // Si no prosigue con un dígito, se asume exponente 0 positivo.
+        // Si prosigue con dígito, se asume exponente positivo.
+        if (number.length() == 0) {
+            number.append('0');
+        }
+
         System.err.println("ERROR: Línea "
                 + lexicalAnalyzer.getNroLinea()
-                + ": Se debe especificar un número decimal como exponente."
-                + lexicalAnalyzer.getLastCharRead() + "'. "
-                + "Se asumirá que el exponente de interés es: F"
-                + lexicalAnalyzer.getLexema().split("F", 2)[1] // Obtención del signo.
-                + "0.");
+                + ": Se debe especificar un signo para el exponente."
+                + " Se asumirá que el exponente de interés es positivo: F+"
+                + number + ".");
+        number.insert(0, '+');
         lexicalAnalyzer.incrementErrorsDetected();
 
         // Se invocan a las acciones semánticas correspondientes.
-        lexicalAnalyzer.appendToLexema('0');
-        LexemaAppender.getInstance().execute(lexicalAnalyzer);
+        lexicalAnalyzer.appendToLexema(number.toString());
         FloatChecker.getInstance().execute(lexicalAnalyzer);
         LexemaFinalizer.getInstance().execute(lexicalAnalyzer);
     }
 
     // --------------------------------------------------------------------------------------------
 
+    /**
+     * El handler realiza las acciones semánticas necesarias,
+     * por lo que el token queda listo para ser entregado.
+     */
+    @Override
+    public boolean requiresFinalization() {
+        return true;
+    }
+
+    // --------------------------------------------------------------------------------------------
+
     public String toString() {
-        return "EREXP";
+        return "Estado de error: -5. NoExponentSign.";
     }
 }

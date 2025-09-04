@@ -7,8 +7,8 @@ import lexicalAnalysis.semanticActions.LexemaAppender;
 import lexicalAnalysis.semanticActions.LexemaFinalizer;
 
 /**
- * EREXP.
- * -4
+ * Estado de error -6.
+ * NoExponent.
  */
 public class NoExponent implements LexicalError {
 
@@ -61,6 +61,6 @@ public class NoExponent implements LexicalError {
     // --------------------------------------------------------------------------------------------
 
     public String toString() {
-        return "EREXP";
+        return "Estado de error: -6. NoExponent.";
     }
 }

@@ -4,8 +4,8 @@ import lexicalAnalysis.LexicalAnalyzer;
 import lexicalAnalysis.LexicalError;
 
 /**
- * ERS.
- * -1
+ * Estado de error -1.
+ * InvalidSymbol.
  */
 public class InvalidSymbol implements LexicalError {
 
@@ -40,7 +40,7 @@ public class InvalidSymbol implements LexicalError {
     // --------------------------------------------------------------------------------------------
 
     public String toString() {
-        return "ERS";
+        return "Estado de Error: -1. InvalidSymbol.";
     }
 
 }

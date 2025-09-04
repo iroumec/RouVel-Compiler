@@ -46,8 +46,10 @@ public class LexemaFinalizer implements SemanticAction {
             tokenType = lexicalAnalyzer.getDetectedType();
 
             if (tokenType == null) {
-                throw new RuntimeException("Error en línea " + lexicalAnalyzer.getNroLinea() +
-                        ": El lexema \"" + lexema + "\" no corresponde a una palabra reservada.");
+                System.out.println("Error: Línea " + lexicalAnalyzer.getNroLinea() +
+                        ": El lexema '" + lexema
+                        + "' no corresponde a una palabra reservada del lenguaje. Este se omitirá.");
+                lexicalAnalyzer.incrementErrorsDetected();
             }
 
             symbolTableEntry = SymbolTable.agregarEntrada(tokenType, lexema);

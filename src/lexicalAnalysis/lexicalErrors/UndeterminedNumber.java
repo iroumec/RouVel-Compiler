@@ -1,8 +1,14 @@
-﻿package lexicalAnalysis.lexicalErrors;
+package lexicalAnalysis.lexicalErrors;
 
 import lexicalAnalysis.LexicalAnalyzer;
 import lexicalAnalysis.LexicalError;
+import lexicalAnalysis.semanticActions.LexemaFinalizer;
+import lexicalAnalysis.semanticActions.UintChecker;
 
+/**
+ * Estado de Error: -2.
+ * UndeterminedNumber.
+ */
 public class UndeterminedNumber implements LexicalError {
 
     private static UndeterminedNumber INSTANCE;
@@ -33,19 +39,25 @@ public class UndeterminedNumber implements LexicalError {
                 + "\n\t - De ser un flotante y no tener parte decimal, se debe especificar un punto '.' al final."
                 + "\nSe asumirá que es un entero y se agregará el sufijo 'UI'.");
         lexicalAnalyzer.incrementErrorsDetected();
+
+        // Se realiza el agregado del sufijo y las acciones semánticas
+        // necesarias para entregar el token.
+        lexicalAnalyzer.appendToLexema("UI");
+        UintChecker.getInstance().execute(lexicalAnalyzer);
+        LexemaFinalizer.getInstance().execute(lexicalAnalyzer);
     }
 
     // --------------------------------------------------------------------------------------------
 
     @Override
-    public boolean requiresReturnToStart() {
+    public boolean requiresFinalization() {
         return true;
     }
 
     // --------------------------------------------------------------------------------------------
 
     public String toString() {
-        return "ERNUM";
+        return "Estado de Error: -2. UndeterminedNumber.";
     }
 
 }

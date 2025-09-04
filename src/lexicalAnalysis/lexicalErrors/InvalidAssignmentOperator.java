@@ -4,8 +4,8 @@ import lexicalAnalysis.LexicalAnalyzer;
 import lexicalAnalysis.LexicalError;
 
 /**
- * ERAS.
- * -7
+ * Estado de error -7.
+ * InvalidAssignmentOperator.
  */
 public class InvalidAssignmentOperator implements lexicalAnalysis.LexicalError {
 
@@ -47,7 +47,7 @@ public class InvalidAssignmentOperator implements lexicalAnalysis.LexicalError {
     // --------------------------------------------------------------------------------------------
 
     public String toString() {
-        return "ERAS";
+        return "Estado de Error: -7. InvalidAssignmentOperator.";
     }
 
 }

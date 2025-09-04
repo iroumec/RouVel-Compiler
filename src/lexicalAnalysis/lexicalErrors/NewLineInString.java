@@ -3,8 +3,8 @@ package lexicalAnalysis.lexicalErrors;
 import lexicalAnalysis.LexicalError;
 
 /**
- * ERSTR.
- * -3
+ * Estado de error -8.
+ * NewLineInString.
  */
 public class NewLineInString implements LexicalError {
 
@@ -38,7 +38,7 @@ public class NewLineInString implements LexicalError {
     // --------------------------------------------------------------------------------------------
 
     public String toString() {
-        return "ERSTR";
+        return "Estado de Error: -8. NewLineInString.";
     }
 
 }

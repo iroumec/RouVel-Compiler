@@ -51,7 +51,11 @@ public final class LexicalAnalyzer {
 
     public Token getNextToken() {
 
-        // Se limpia los datos arrastrados de búsquedas anteriores.
+        // Mientras no se haya hallado un token y queden caracteres por leer...
+        // while (this.token == null && siguienteCaracterALeer < codigoFuente.length())
+        // {
+
+        // Se limpian los datos arrastrados de búsquedas anteriores.
         // De no haber búsqueda anterior, se inicializan.
         cleanSearch();
 
@@ -59,6 +63,7 @@ public final class LexicalAnalyzer {
         // Al terminar de ejecutarse, se habrá hallado un token
         // o este será nulo (en caso de ya haberse leído todo el archivo).
         searchToken();
+        // }
 
         // Se devuelve un token (si se halló).
         // En otro caso, se devuelve null.
@@ -188,16 +193,27 @@ public final class LexicalAnalyzer {
 
         return switch (index) {
             case -1 -> InvalidSymbol.getInstance();
-            // case -2 -> BadUISuffix.getInstance();
-            // case -3 -> InvalidUintFormat.getInstance();
-            // case -4 -> InvalidDecimalFormat.getInstance();
-            // case -5 -> InvalidExponentSign.getInstance();
+            case -2 -> UndeterminedNumber.getInstance();
+            case -3 -> BadUISuffix.getInstance();
+            case -4 -> InvalidDecimalFormat.getInstance();
+            case -5 -> NoExponentSign.getInstance();
             case -6 -> NoExponent.getInstance();
             case -7 -> InvalidAssignmentOperator.getInstance();
             case -8 -> NewLineInString.getInstance();
             case -9 -> BadCommentInitialization.getInstance();
             default -> null;
         };
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    public char getCharInAdvance() {
+        if (siguienteCaracterALeer + 1 < codigoFuente.length()) {
+            siguienteCaracterALeer++;
+            return codigoFuente.charAt(siguienteCaracterALeer);
+        } else {
+            return '\0';
+        }
     }
 
     // --------------------------------------------------------------------------------------------
@@ -248,6 +264,12 @@ public final class LexicalAnalyzer {
 
     public void appendToLexema(char charToAppend) {
         this.lexema.append(charToAppend);
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    public void appendToLexema(String stringToAppeend) {
+        this.lexema.append(stringToAppeend);
     }
 
     // --------------------------------------------------------------------------------------------
