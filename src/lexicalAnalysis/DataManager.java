@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -20,16 +21,21 @@ public final class DataManager {
     private final static int NUM_ESTADOS = 19;
     private final static int NUM_SIMBOLOS = 29;
 
-    // Matrices estáticas inicializadas una sola vez
-    private static final int[][] STATE_TRANSITION_MATRIX;
-    private static final SemanticAction[][][] SEMANTIC_ACTIONS_MATRIX;
+    // --------------------------------------------------------------------------------------------
 
-    static {
-        STATE_TRANSITION_MATRIX = new int[NUM_ESTADOS][NUM_SIMBOLOS];
-        StateTransitionMatrix.loadStateTransitionMatrix(STATE_TRANSITION_MATRIX);
+    private static final int[][] STATE_TRANSITION_MATRIX = new int[NUM_ESTADOS][NUM_SIMBOLOS];
+    private static final SemanticAction[][][] SEMANTIC_ACTIONS_MATRIX = new SemanticAction[NUM_ESTADOS][NUM_SIMBOLOS][];
 
-        SEMANTIC_ACTIONS_MATRIX = new SemanticAction[NUM_ESTADOS][NUM_SIMBOLOS][];
-        SemanticActionMatrix.loadSemanticActionsMatrix(SEMANTIC_ACTIONS_MATRIX);
+    // --------------------------------------------------------------------------------------------
+
+    public static int[][] getStateTransitionMatrix() {
+        return STATE_TRANSITION_MATRIX;
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    public static SemanticAction[][][] getSemanticActionsMatrix() {
+        return SEMANTIC_ACTIONS_MATRIX;
     }
 
     // --------------------------------------------------------------------------------------------
@@ -50,15 +56,254 @@ public final class DataManager {
     }
 
     // --------------------------------------------------------------------------------------------
+    // Carga de Matriz de Transición de Estados
+    // --------------------------------------------------------------------------------------------
 
-    public static int[][] getStateTransitionMatrix() {
-        return STATE_TRANSITION_MATRIX;
+    static {
+
+        // Estado 0
+        Arrays.fill(STATE_TRANSITION_MATRIX[0], -1);
+        STATE_TRANSITION_MATRIX[0][charToIndex('n')] = 0;
+        STATE_TRANSITION_MATRIX[0][charToIndex('s')] = 0;
+        STATE_TRANSITION_MATRIX[0][charToIndex('t')] = 0;
+        STATE_TRANSITION_MATRIX[0][charToIndex('d')] = 1;
+        STATE_TRANSITION_MATRIX[0][charToIndex('.')] = 3;
+        STATE_TRANSITION_MATRIX[0][charToIndex('"')] = 8;
+        STATE_TRANSITION_MATRIX[0][charToIndex('l')] = 9;
+        STATE_TRANSITION_MATRIX[0][charToIndex(':')] = 10;
+        STATE_TRANSITION_MATRIX[0][charToIndex('=')] = 11;
+        STATE_TRANSITION_MATRIX[0][charToIndex('-')] = 12;
+        STATE_TRANSITION_MATRIX[0][charToIndex('>')] = 13;
+        STATE_TRANSITION_MATRIX[0][charToIndex('<')] = 14;
+        STATE_TRANSITION_MATRIX[0][charToIndex('#')] = 15;
+        STATE_TRANSITION_MATRIX[0][charToIndex('L')] = 18;
+        STATE_TRANSITION_MATRIX[0][charToIndex('U')] = 18;
+        STATE_TRANSITION_MATRIX[0][charToIndex('I')] = 18;
+        STATE_TRANSITION_MATRIX[0][charToIndex('F')] = 18;
+        STATE_TRANSITION_MATRIX[0][charToIndex('+')] = 19;
+        STATE_TRANSITION_MATRIX[0][charToIndex('*')] = 19;
+        STATE_TRANSITION_MATRIX[0][charToIndex('/')] = 19;
+        STATE_TRANSITION_MATRIX[0][charToIndex('(')] = 19;
+        STATE_TRANSITION_MATRIX[0][charToIndex(')')] = 19;
+        STATE_TRANSITION_MATRIX[0][charToIndex('{')] = 19;
+        STATE_TRANSITION_MATRIX[0][charToIndex('}')] = 19;
+        STATE_TRANSITION_MATRIX[0][charToIndex('_')] = 19;
+        STATE_TRANSITION_MATRIX[0][charToIndex(';')] = 19;
+
+        // Estado 1
+        Arrays.fill(STATE_TRANSITION_MATRIX[1], -2);
+        STATE_TRANSITION_MATRIX[1][charToIndex('d')] = 1;
+        STATE_TRANSITION_MATRIX[1][charToIndex('U')] = 2;
+        STATE_TRANSITION_MATRIX[1][charToIndex('.')] = 4;
+
+        // Estado 2
+        Arrays.fill(STATE_TRANSITION_MATRIX[2], -3);
+        STATE_TRANSITION_MATRIX[2][charToIndex('I')] = 19;
+
+        // Estado 3
+        Arrays.fill(STATE_TRANSITION_MATRIX[3], -4);
+        STATE_TRANSITION_MATRIX[3][charToIndex('d')] = 4;
+
+        // Estado 4
+        Arrays.fill(STATE_TRANSITION_MATRIX[4], 19);
+        STATE_TRANSITION_MATRIX[4][charToIndex('d')] = 4;
+        STATE_TRANSITION_MATRIX[4][charToIndex('F')] = 5;
+
+        // Estado 5
+        Arrays.fill(STATE_TRANSITION_MATRIX[5], -5);
+        STATE_TRANSITION_MATRIX[5][charToIndex('-')] = 6;
+        STATE_TRANSITION_MATRIX[5][charToIndex('+')] = 6;
+
+        // Estado 6
+        Arrays.fill(STATE_TRANSITION_MATRIX[6], -6);
+        STATE_TRANSITION_MATRIX[6][charToIndex('d')] = 7;
+
+        // Estado 7
+        Arrays.fill(STATE_TRANSITION_MATRIX[7], 19);
+        STATE_TRANSITION_MATRIX[7][charToIndex('d')] = 7;
+
+        // Estado 8
+        Arrays.fill(STATE_TRANSITION_MATRIX[8], 8);
+        STATE_TRANSITION_MATRIX[8][charToIndex('"')] = 19;
+        STATE_TRANSITION_MATRIX[8][charToIndex('n')] = -8;
+
+        // Estado 9
+        Arrays.fill(STATE_TRANSITION_MATRIX[9], 19);
+        STATE_TRANSITION_MATRIX[9][charToIndex('l')] = 9;
+
+        // Estado 10
+        Arrays.fill(STATE_TRANSITION_MATRIX[10], -7);
+        STATE_TRANSITION_MATRIX[10][charToIndex('=')] = 19;
+
+        // Estado 11
+        Arrays.fill(STATE_TRANSITION_MATRIX[11], 19);
+
+        // Estado 12
+        Arrays.fill(STATE_TRANSITION_MATRIX[12], 19);
+
+        // Estado 13
+        Arrays.fill(STATE_TRANSITION_MATRIX[13], 19);
+
+        // Estado 14
+        Arrays.fill(STATE_TRANSITION_MATRIX[14], 19);
+
+        // Estado 15
+        Arrays.fill(STATE_TRANSITION_MATRIX[15], -9);
+        STATE_TRANSITION_MATRIX[15][charToIndex('#')] = 16;
+
+        // Estado 16
+        Arrays.fill(STATE_TRANSITION_MATRIX[16], 16);
+        STATE_TRANSITION_MATRIX[16][charToIndex('#')] = 17;
+
+        // Estado 17
+        Arrays.fill(STATE_TRANSITION_MATRIX[17], 16);
+        STATE_TRANSITION_MATRIX[17][charToIndex('#')] = 0;
+
+        // Estado 18
+        Arrays.fill(STATE_TRANSITION_MATRIX[18], 19);
+        STATE_TRANSITION_MATRIX[18][charToIndex('L')] = 18;
+        STATE_TRANSITION_MATRIX[18][charToIndex('d')] = 18;
+        STATE_TRANSITION_MATRIX[18][charToIndex('U')] = 18;
+        STATE_TRANSITION_MATRIX[18][charToIndex('I')] = 18;
+        STATE_TRANSITION_MATRIX[18][charToIndex('F')] = 18;
+        STATE_TRANSITION_MATRIX[18][charToIndex('%')] = 18;
     }
 
-    public static SemanticAction[][][] getSemanticActionsMatrix() {
-        return SEMANTIC_ACTIONS_MATRIX;
+    // --------------------------------------------------------------------------------------------
+    // Carga de Matriz de Acciones Semánticas
+    // --------------------------------------------------------------------------------------------
+
+    static {
+
+        // Se definen objetos comunes para no tener múltiples instancias iguales.
+        SemanticAction[] EMPTY = new SemanticAction[0];
+        SemanticAction[] AS1_AS4 = new SemanticAction[] { getSemanticAction("AS1"), getSemanticAction("AS4") };
+        SemanticAction[] AS1 = new SemanticAction[] { getSemanticAction("AS1") };
+        SemanticAction[] AS1_AS3 = new SemanticAction[] { getSemanticAction("AS1"), getSemanticAction("AS3") };
+        SemanticAction[] AS2 = new SemanticAction[] { getSemanticAction("AS2") };
+        SemanticAction[] AS2_AS3 = new SemanticAction[] { getSemanticAction("AS2"), getSemanticAction("AS3") };
+        SemanticAction[] AS2_ASUI_AS3 = new SemanticAction[] { getSemanticAction("AS2"), getSemanticAction("AS3"),
+                getSemanticAction("ASUI") };
+        SemanticAction[] ASN = new SemanticAction[] { getSemanticAction("ASN") };
+        SemanticAction[] ASF_AS3_ASR = new SemanticAction[] { getSemanticAction("ASF"),
+                getSemanticAction("AS3"), getSemanticAction("ASR") };
+        SemanticAction[] AS3_ASR = new SemanticAction[] { getSemanticAction("AS3"), getSemanticAction("ASR") };
+        SemanticAction[] AS5_AS3_ASR = new SemanticAction[] { getSemanticAction("AS5"),
+                getSemanticAction("AS3"), getSemanticAction("ASR") };
+
+        // Estado 0
+        Arrays.fill(SEMANTIC_ACTIONS_MATRIX[0], EMPTY);
+        SEMANTIC_ACTIONS_MATRIX[0][charToIndex('L')] = AS1_AS4;
+        SEMANTIC_ACTIONS_MATRIX[0][charToIndex('d')] = AS1_AS4;
+        SEMANTIC_ACTIONS_MATRIX[0][charToIndex('U')] = AS1_AS4;
+        SEMANTIC_ACTIONS_MATRIX[0][charToIndex('I')] = AS1_AS4;
+        SEMANTIC_ACTIONS_MATRIX[0][charToIndex('.')] = AS1_AS4;
+        SEMANTIC_ACTIONS_MATRIX[0][charToIndex('F')] = AS1_AS4;
+        SEMANTIC_ACTIONS_MATRIX[0][charToIndex('"')] = AS1_AS4;
+        SEMANTIC_ACTIONS_MATRIX[0][charToIndex(':')] = AS1;
+        SEMANTIC_ACTIONS_MATRIX[0][charToIndex('=')] = AS1;
+        SEMANTIC_ACTIONS_MATRIX[0][charToIndex('>')] = AS1;
+        SEMANTIC_ACTIONS_MATRIX[0][charToIndex('<')] = AS1;
+        SEMANTIC_ACTIONS_MATRIX[0][charToIndex('l')] = AS1;
+        SEMANTIC_ACTIONS_MATRIX[0][charToIndex('-')] = AS1;
+        SEMANTIC_ACTIONS_MATRIX[0][charToIndex('n')] = ASN;
+        SEMANTIC_ACTIONS_MATRIX[0][charToIndex('+')] = AS1_AS3;
+        SEMANTIC_ACTIONS_MATRIX[0][charToIndex('*')] = AS1_AS3;
+        SEMANTIC_ACTIONS_MATRIX[0][charToIndex('/')] = AS1_AS3;
+        SEMANTIC_ACTIONS_MATRIX[0][charToIndex('(')] = AS1_AS3;
+        SEMANTIC_ACTIONS_MATRIX[0][charToIndex(')')] = AS1_AS3;
+        SEMANTIC_ACTIONS_MATRIX[0][charToIndex('{')] = AS1_AS3;
+        SEMANTIC_ACTIONS_MATRIX[0][charToIndex('}')] = AS1_AS3;
+        SEMANTIC_ACTIONS_MATRIX[0][charToIndex('_')] = AS1_AS3;
+        SEMANTIC_ACTIONS_MATRIX[0][charToIndex(';')] = AS1_AS3;
+
+        // Estado 1
+        Arrays.fill(SEMANTIC_ACTIONS_MATRIX[1], EMPTY);
+        SEMANTIC_ACTIONS_MATRIX[1][charToIndex('L')] = AS2;
+        SEMANTIC_ACTIONS_MATRIX[1][charToIndex('l')] = AS2;
+        SEMANTIC_ACTIONS_MATRIX[1][charToIndex('d')] = AS2;
+        SEMANTIC_ACTIONS_MATRIX[1][charToIndex('U')] = AS2;
+        SEMANTIC_ACTIONS_MATRIX[1][charToIndex('.')] = AS2;
+
+        // Estado 2
+        Arrays.fill(SEMANTIC_ACTIONS_MATRIX[2], EMPTY);
+        SEMANTIC_ACTIONS_MATRIX[2][charToIndex('I')] = AS2_ASUI_AS3;
+
+        // Estado 3
+        Arrays.fill(SEMANTIC_ACTIONS_MATRIX[3], EMPTY);
+        SEMANTIC_ACTIONS_MATRIX[3][charToIndex('d')] = AS2;
+
+        // Estado 4
+        Arrays.fill(SEMANTIC_ACTIONS_MATRIX[4], ASF_AS3_ASR);
+        SEMANTIC_ACTIONS_MATRIX[4][charToIndex('d')] = AS2;
+        SEMANTIC_ACTIONS_MATRIX[4][charToIndex('F')] = AS2;
+
+        // Estado 5
+        Arrays.fill(SEMANTIC_ACTIONS_MATRIX[5], EMPTY);
+        SEMANTIC_ACTIONS_MATRIX[5][charToIndex('-')] = AS2;
+        SEMANTIC_ACTIONS_MATRIX[5][charToIndex('+')] = AS2;
+
+        // Estado 6
+        Arrays.fill(SEMANTIC_ACTIONS_MATRIX[6], EMPTY);
+        SEMANTIC_ACTIONS_MATRIX[6][charToIndex('d')] = AS2;
+
+        // Estado 7
+        Arrays.fill(SEMANTIC_ACTIONS_MATRIX[7], ASF_AS3_ASR);
+        SEMANTIC_ACTIONS_MATRIX[7][charToIndex('d')] = AS2;
+
+        // Estado 8
+        Arrays.fill(SEMANTIC_ACTIONS_MATRIX[8], AS2);
+        SEMANTIC_ACTIONS_MATRIX[8][charToIndex('"')] = AS2_AS3;
+        SEMANTIC_ACTIONS_MATRIX[8][charToIndex('n')] = ASN;
+
+        // Estado 9
+        Arrays.fill(SEMANTIC_ACTIONS_MATRIX[9], AS3_ASR);
+        SEMANTIC_ACTIONS_MATRIX[9][charToIndex('l')] = AS2;
+
+        // Estado 10
+        Arrays.fill(SEMANTIC_ACTIONS_MATRIX[10], EMPTY);
+        SEMANTIC_ACTIONS_MATRIX[10][charToIndex('=')] = AS2_AS3;
+
+        // Estado 11
+        Arrays.fill(SEMANTIC_ACTIONS_MATRIX[11], AS3_ASR);
+        SEMANTIC_ACTIONS_MATRIX[11][charToIndex('=')] = AS2_AS3;
+        SEMANTIC_ACTIONS_MATRIX[11][charToIndex('!')] = AS2_AS3;
+
+        // Estado 12
+        Arrays.fill(SEMANTIC_ACTIONS_MATRIX[12], AS3_ASR);
+        SEMANTIC_ACTIONS_MATRIX[12][charToIndex('>')] = AS2_AS3;
+
+        // Estado 13
+        Arrays.fill(SEMANTIC_ACTIONS_MATRIX[13], AS3_ASR);
+        SEMANTIC_ACTIONS_MATRIX[13][charToIndex('=')] = AS2_AS3;
+
+        // Estado 14
+        Arrays.fill(SEMANTIC_ACTIONS_MATRIX[14], AS3_ASR);
+        SEMANTIC_ACTIONS_MATRIX[14][charToIndex('=')] = AS2_AS3;
+
+        // Estado 15.
+        Arrays.fill(SEMANTIC_ACTIONS_MATRIX[15], EMPTY);
+
+        // Estado 16
+        Arrays.fill(SEMANTIC_ACTIONS_MATRIX[16], EMPTY);
+        SEMANTIC_ACTIONS_MATRIX[16][charToIndex('n')] = ASN;
+
+        // Estado 17
+        Arrays.fill(SEMANTIC_ACTIONS_MATRIX[17], EMPTY);
+        SEMANTIC_ACTIONS_MATRIX[17][charToIndex('n')] = ASN;
+
+        // Estado 18
+        Arrays.fill(SEMANTIC_ACTIONS_MATRIX[18], AS5_AS3_ASR);
+        SEMANTIC_ACTIONS_MATRIX[18][charToIndex('L')] = AS2;
+        SEMANTIC_ACTIONS_MATRIX[18][charToIndex('d')] = AS2;
+        SEMANTIC_ACTIONS_MATRIX[18][charToIndex('U')] = AS2;
+        SEMANTIC_ACTIONS_MATRIX[18][charToIndex('I')] = AS2;
+        SEMANTIC_ACTIONS_MATRIX[18][charToIndex('F')] = AS2;
+        SEMANTIC_ACTIONS_MATRIX[18][charToIndex('%')] = AS2;
     }
 
+    // --------------------------------------------------------------------------------------------
+    // Mapeos
     // --------------------------------------------------------------------------------------------
 
     /**
@@ -102,132 +347,26 @@ public final class DataManager {
     }
 
     // --------------------------------------------------------------------------------------------
-    // INNER CLASS: SEMANTIC ACTION MATRIX
-    // --------------------------------------------------------------------------------------------
 
-    private static class SemanticActionMatrix {
-        private static void loadSemanticActionsMatrix(SemanticAction[][][] matrix) {
-            load(matrix, 0, "", "L,d,U,I,.,F,\"|AS1-AS4", ":,=,>,<,l,-|AS1", "n|ASN", "+,*,/,(,),{,},_,;|AS1-AS3");
-            load(matrix, 1, "", "L,l,d,U,.|AS2");
-            load(matrix, 2, "", "I|AS2-ASUI-AS3");
-            load(matrix, 3, "", "d|AS2");
-            load(matrix, 4, "ASF-AS3-ASR", "d|AS2", "F|AS2");
-            load(matrix, 5, "", "-,+|AS2");
-            load(matrix, 6, "", "d|AS2");
-            load(matrix, 7, "ASF-AS3-ASR", "d|AS2");
-            load(matrix, 8, "AS2", "\"|AS2-AS3", "n|ASN");
-            load(matrix, 9, "AS3-ASR", "l|AS2");
-            load(matrix, 10, "", "=|AS2-AS3");
-            load(matrix, 11, "AS3-ASR", "=,!|AS2-AS3");
-            load(matrix, 12, "AS3-ASR", ">|AS2-AS3");
-            load(matrix, 13, "AS3-ASR", "=|AS2-AS3");
-            load(matrix, 14, "AS3-ASR", "=|AS2-AS3");
-            load(matrix, 15, "");
-            load(matrix, 16, "", "n|ASN");
-            load(matrix, 17, "", "n|ASN");
-            load(matrix, 18, "AS5-AS3-ASR", "L,d,U,I,F,%|AS2");
-        }
+    /**
+     * Se mapean los nombres de las acciones semánticas a sus instancias.
+     * 
+     * @param semanticAction Nombre de la acción semántica.
+     * @return Instancia de la acción semántica.
+     */
+    private static SemanticAction getSemanticAction(String semanticAction) {
 
-        private static void load(SemanticAction[][][] matrix, int state, String def, String... ex) {
-            SemanticAction[] defArr = parseActions(def);
-            for (int i = 0; i < NUM_SIMBOLOS; i++) {
-                matrix[state][i] = defArr;
-            }
-            for (String e : ex) {
-                String[] p = e.split("\\|");
-                String syms = p[0];
-                SemanticAction[] acts = parseActions(p[1]);
-                for (String s : syms.split(",")) {
-                    int idx = charToIndex(s.trim().charAt(0));
-                    matrix[state][idx] = acts;
-                }
-            }
-        }
-
-        private static SemanticAction[] parseActions(String s) {
-            if (s == null || s.isBlank())
-                return new SemanticAction[0];
-            // Evita streams, usa split y bucle tradicional
-            String[] parts = s.split("-");
-            SemanticAction[] result = new SemanticAction[parts.length];
-            int count = 0;
-            for (String part : parts) {
-                String trimmed = part.trim();
-                if (!trimmed.isEmpty()) {
-                    SemanticAction sa = getSemanticAction(trimmed);
-                    if (sa != null)
-                        result[count++] = sa;
-                }
-            }
-            return Arrays.copyOf(result, count);
-        }
-
-        /**
-         * Se mapean los nombres de las acciones semánticas a sus instancias.
-         * 
-         * @param semanticAction Nombre de la acción semántica.
-         * @return Instancia de la acción semántica.
-         */
-        private static SemanticAction getSemanticAction(String semanticAction) {
-
-            return switch (semanticAction) {
-                case "AS1" -> LexemaInitializer.getInstance();
-                case "AS2" -> LexemaAppender.getInstance();
-                case "AS3" -> LexemaFinalizer.getInstance();
-                case "AS4" -> LexemaIdentifier.getInstance();
-                case "AS5" -> IdentifierLengthChecker.getInstance();
-                case "ASUI" -> UintChecker.getInstance();
-                case "ASF" -> FloatChecker.getInstance();
-                case "ASR" -> ReturnCharacterToEntry.getInstance();
-                case "ASN" -> NewLineDetected.getInstance();
-                default -> null;
-            };
-        }
-    }
-
-    // --------------------------------------------------------------------------------------------
-    // INNER CLASS: STATE TRANSITION MATRIX
-    // --------------------------------------------------------------------------------------------
-
-    private static class StateTransitionMatrix {
-
-        // --------------------------------------------------------------------------------------------
-
-        private static void loadStateTransitionMatrix(int[][] matrix) {
-            load(matrix, 0, -1, "+,*,/,(),{},_,;|19", "L,U,I,F|18", "l|9", "d|1", ".|3", "-|12", "\"|8", ":|10", "=|11",
-                    ">|13",
-                    "<|14", "#|15", "n,s,t|0");
-            load(matrix, 1, -2, "d|1", "U|2", ".|4");
-            load(matrix, 2, -3, "I|19");
-            load(matrix, 3, -4, "d|4");
-            load(matrix, 4, 19, "d|4", "F|5");
-            load(matrix, 5, -5, "-,+|6");
-            load(matrix, 6, -6, "d|7");
-            load(matrix, 7, 19, "d|7");
-            load(matrix, 8, 8, "\"|19", "n|-8");
-            load(matrix, 9, 19, "l|9");
-            load(matrix, 10, -7, "=|19");
-            load(matrix, 11, 19);
-            load(matrix, 12, 19);
-            load(matrix, 13, 19);
-            load(matrix, 14, 19);
-            load(matrix, 15, -9, "#|16");
-            load(matrix, 16, 16, "#|17");
-            load(matrix, 17, 16, "#|0");
-            load(matrix, 18, 19, "L,d,U,I,F,%|18");
-        }
-
-        private static void load(int[][] matrix, int state, int def, String... ex) {
-            Arrays.fill(matrix[state], def);
-            for (String e : ex) {
-                String[] p = e.split("\\|");
-                String syms = p[0];
-                int val = Integer.parseInt(p[1]);
-                for (String s : syms.split(",")) {
-                    int idx = charToIndex(s.trim().charAt(0));
-                    matrix[state][idx] = val;
-                }
-            }
-        }
+        return switch (semanticAction) {
+            case "AS1" -> LexemaInitializer.getInstance();
+            case "AS2" -> LexemaAppender.getInstance();
+            case "AS3" -> LexemaFinalizer.getInstance();
+            case "AS4" -> LexemaIdentifier.getInstance();
+            case "AS5" -> IdentifierLengthChecker.getInstance();
+            case "ASUI" -> UintChecker.getInstance();
+            case "ASF" -> FloatChecker.getInstance();
+            case "ASR" -> ReturnCharacterToEntry.getInstance();
+            case "ASN" -> NewLineDetected.getInstance();
+            default -> null;
+        };
     }
 }
