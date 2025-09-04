@@ -6,13 +6,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -96,7 +91,7 @@ public final class DataLoader {
     public static int[][] loadStateTransitionMatrix() {
         int[][] matrix = new int[NUM_ESTADOS][NUM_SIMBOLOS];
 
-        // Definición de la matriz en formato similar al CSV
+        // Estado, valor por defecto, excepciones
         String[][] MATRIX_DATA = {
                 { "0", "-1",
                         "[+,*,/,(,),{,},_,;:19 | L,U,I,F:18 | l:9 | d:1 | .:3 | -:12 | \":8 | ::10 | =:11 | >:13 | <:14 | #:15 | n,s,t:0]" },
@@ -179,7 +174,7 @@ public final class DataLoader {
     public static SemanticAction[][][] loadSemanticActionsMatrix() {
         SemanticAction[][][] matrix = new SemanticAction[NUM_ESTADOS][NUM_SIMBOLOS][];
 
-        // Matriz hardcodeada en formato CSV-like
+        // Estado, valor por defecto, excepciones
         String[][] MATRIX_DATA = {
                 { "0", "", "[L,d,U,I,.,F,\",:\"AS1-AS4\" | :,=,>,<,l,-:AS1 | n:ASN | +,*,/,(,),{,},_,;:\"AS1-AS3\"]" },
                 { "1", "", "[L,l,d,U,.:AS2]" },
@@ -283,11 +278,120 @@ public final class DataLoader {
         try {
             return Files.readString(Paths.get(sourceCodePath));
         } catch (Exception e) {
-            System.err.println("Debe especificar una ruta a un código fuente.");
-            System.exit(1);
+            throw new RuntimeException("No se pudo leer el archivo: " + sourceCodePath, e);
         }
-
-        return null;
     }
 
+    private class StateTransitionMatrix {
+
+        private static int[][] MATRIX = null;
+
+        public static int[][] getStateTransitionMatrix() {
+            if (MATRIX == null) {
+                MATRIX = new int[NUM_ESTADOS][NUM_SIMBOLOS];
+                loadStateTransitionMatrix();
+            }
+            return MATRIX;
+        }
+
+        private static void load(int state, int def, String... ex) {
+            Arrays.fill(MATRIX[state], def);
+            for (String e : ex) {
+                String[] p = e.split(":");
+                String syms = p[0];
+                int val = Integer.parseInt(p[1]);
+                for (String s : syms.split(",")) {
+                    Integer idx = charToIndex(s.trim().charAt(0));
+                    if (idx != null)
+                        MATRIX[state][idx] = val;
+                }
+            }
+        }
+
+        private static void loadStateTransitionMatrix() {
+            load(0, -1, "+,*,/,(),{},_,;:19", "L,U,I,F:18", "l:9", "d:1", ".:3", "-:12", "\":8", "::10", "=:11", ">:13",
+                    "<:14", "#:15", "n,s,t:0");
+            load(1, -2, "d:1", "U:2", ".:4");
+            load(2, -3, "I:19");
+            load(3, -4, "d:4");
+            load(4, 19, "d:4", "F:5");
+            load(5, -5, "-,+:6");
+            load(6, -6, "d:7");
+            load(7, 19, "d:7");
+            load(8, 8, "\":19", "n:-8");
+            load(9, 19, "l:9");
+            load(10, -7, "=:19");
+            load(11, 19);
+            load(12, 19);
+            load(13, 19);
+            load(14, 19);
+            load(15, -9, "#:16");
+            load(16, 16, "#:17");
+            load(17, 16, "#:0");
+            load(18, 19, "L,d,U,I,F,%:18");
+        }
+    }
+
+    private class SemanticActionMatrix {
+
+        private static SemanticAction[][][] MATRIX = null;
+
+        public static SemanticAction[][][] getStateTransitionMatrix() {
+            if (MATRIX == null) {
+                MATRIX = new SemanticAction[NUM_ESTADOS][NUM_SIMBOLOS][];
+                loadStateTransitionMatrix();
+            }
+            return MATRIX;
+        }
+
+        private static void load(int state, String def, String... ex) {
+            SemanticAction[] defArr = parseActions(def);
+            for (int i = 0; i < NUM_SIMBOLOS; i++) {
+                MATRIX[state][i] = defArr;
+            }
+            for (String e : ex) {
+                String[] p = e.split(":");
+                String syms = p[0];
+                SemanticAction[] acts = parseActions(p[1]);
+                for (String s : syms.split(",")) {
+                    Integer idx = charToIndex(s.trim().charAt(0));
+                    if (idx != null)
+                        MATRIX[state][idx] = acts;
+                }
+            }
+        }
+
+        private static SemanticAction[] parseActions(String s) {
+            if (s == null || s.isBlank())
+                return new SemanticAction[0];
+            return Arrays.stream(s.split("-"))
+                    .map(String::trim)
+                    .filter(x -> !x.isEmpty())
+                    .map(DataLoader::getSemanticAction)
+                    .filter(Objects::nonNull)
+                    .toArray(SemanticAction[]::new);
+        }
+
+        static {
+            load(0, "", "L,d,U,I,.,F,\":AS1-AS4", ":,=,>,<,l,-:AS1", "n:ASN", "+,*,/,(,),{,},_,;:AS1-AS3");
+            load(1, "", "L,l,d,U,.:AS2");
+            load(2, "", "I:AS2-ASUI-AS3");
+            load(3, "", "d:AS2");
+            load(4, "ASF-AS3-ASR", "d:AS2", "F:AS2");
+            load(5, "", "-,+:AS2");
+            load(6, "", "d:AS2");
+            load(7, "ASF-AS3-ASR", "d:AS2");
+            load(8, "AS2", "\":AS2-AS3", "n:ASN");
+            load(9, "AS3-ASR", "l:AS2");
+            load(10, "", "=:AS2-AS3");
+            load(11, "AS3-ASR", "=,!:AS2-AS3");
+            load(12, "AS3-ASR", ">:AS2-AS3");
+            load(13, "AS3-ASR", "=:AS2-AS3");
+            load(14, "AS3-ASR", "=:AS2-AS3");
+            load(15, "");
+            load(16, "", "n:ASN");
+            load(17, "", "n:ASN");
+            load(18, "AS5-AS3-ASR", "L,d,U,I,F,%:AS2");
+        }
+    }
 }
