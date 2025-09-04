@@ -34,6 +34,8 @@ public class Main {
             }
 
             System.out.println("El programa tiene " + lexicalAnalyzer.getNroLinea() + " líneas.");
+            System.out.println("Se detectaron " + lexicalAnalyzer.getErrorsDetected() + " errores y "
+                    + lexicalAnalyzer.getWarningsDetected() + " warnings.");
             System.out.println();
         }
     }

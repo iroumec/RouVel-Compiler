@@ -1,2 +1,19 @@
 AMÉRICAif>==
 FARMACIA
+
+## Manejo de errores ##
+## El objetivo es que el compilador continúe para hallar el mayor número de errores posibles ##
+
+¿
+
+"Hola, Fernando 
+¿Qué tal Felipe?"
+
+#
+
+1.2F+2
+3.5F+0
+
+0.4F+
+
+A : 32

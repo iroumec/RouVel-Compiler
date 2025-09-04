@@ -11,7 +11,7 @@ digraph DFA {
     0 -> 14 [label = "\"<\" | AS1";];
     0 -> F [label = "P | AS1, AS3";];
     10 -> F [label = "\"=\" | AS2, AS3";];
-    10 -> eP [label = "Otro | ER"; style = dashed;];
+    10 -> eP [label = "Otro | -7"; style = dashed;];
     11 -> F [label = "\"=\", \"!\" | AS2, AS3";];
     11 -> F [label = "Otro | AS3, ASR";];
     12 -> F [label = "\">\" | AS2, AS3";];

@@ -7,5 +7,5 @@ digraph DFA {
     0 -> 8 [label = "\" | AS1, AS4";];
     8 -> 8 [label = "Otro | AS2";];
     8 -> F [label = "\" | AS2, AS3";];
-    8 -> eS [label = "n | ERN"; style = dashed;];
+    8 -> eS [label = "n | ERSTR (-8)"; style = dashed;];
 }

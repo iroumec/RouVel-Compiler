@@ -37,6 +37,7 @@ public class IdentifierLengthChecker implements SemanticAction {
                     + "' excede la longitud máxima de " + lexicalAnalyzer.getMaxCaracteres()
                     + " caracteres. Se truncará a '"
                     + lexema.substring(0, lexicalAnalyzer.getMaxCaracteres()) + "'.");
+            lexicalAnalyzer.incrementWarningsDetected();
             lexema = lexema.substring(0, lexicalAnalyzer.getMaxCaracteres());
 
             lexicalAnalyzer.setLexema(lexema);

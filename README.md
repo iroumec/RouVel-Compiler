@@ -88,3 +88,7 @@ Quisimos adecuarnos a la convención utilizado para la cátedra y, si bien está
 Se define P el conjunto de los siguientes símbolos de un carácter:
 P = [+, *, /, (, ), {, }, _, ;]
 \"+\", \"\*\", \"/\", \"(\", \")\", \"{\", \"}\", \"\_\", \";\"
+
+En caso de venir un solo #, ¿cómo se maneja? Podrían contarse los # que siguen y determinar si fue un intento de comentario. Pero podría haber "#" dentro de los comentarios.
+
+En InvalidAssignmentOperator podría asumirse que, si se puso :, se quiso realizar una asignación.

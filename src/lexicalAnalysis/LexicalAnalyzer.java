@@ -11,16 +11,17 @@ import java.nio.file.Paths;
 import general.Token;
 import general.TokenType;
 import general.SymbolTable;
+import lexicalAnalysis.lexicalErrors.*;
 
 public final class LexicalAnalyzer {
 
     private Token token;
-    private int nroLinea;
     private char lastCharRead;
     private String codigoFuente;
     private StringBuilder lexema;
     private TokenType detectedType;
-    private int siguienteCaracterALeer;
+    private int nroLinea, siguienteCaracterALeer;
+    private int warningsDetected, errorsDetected;
 
     private final static int ESTADO_ERROR = -1;
     private final static int ESTADO_INICIO = 0;
@@ -34,6 +35,8 @@ public final class LexicalAnalyzer {
 
     public LexicalAnalyzer(String sourceCodePath) {
         this.nroLinea = 1;
+        this.errorsDetected = 0;
+        this.warningsDetected = 0;
         this.siguienteCaracterALeer = 0;
         // Se agrega una marca para indicar el final del archivo.
         // Quizás deberpia usarse '\0'.
@@ -68,6 +71,7 @@ public final class LexicalAnalyzer {
 
         int index;
         int estadoActual = ESTADO_INICIO;
+        int siguienteEstado;
 
         while (estadoActual != ESTADO_ACEPTACION && siguienteCaracterALeer < codigoFuente.length()) {
 
@@ -76,18 +80,44 @@ public final class LexicalAnalyzer {
             index = charToIndex(lastCharRead);
 
             SemanticAction[] semanticActionsToExecute = matrizAccionesSemanticas[estadoActual][index];
-            estadoActual = matrizTransicionEstados[estadoActual][index];
+            siguienteEstado = matrizTransicionEstados[estadoActual][index];
 
-            if (estadoActual == ESTADO_ERROR) {
-                System.err.println("Error: Línea " + this.nroLinea + ": Se detectó el carácter \"" + this.lastCharRead
-                        + "\", el cual no corresponde a un símbolo válido en el lenguaje.");
-                System.exit(1);
+            // Se ha llegado a un estado de error.
+            if (siguienteEstado < ESTADO_INICIO) {
+
+                LexicalError errorHandler = this.getErrorHandler(siguienteEstado);
+                if (errorHandler != null) {
+                    errorHandler.handleError(this);
+                } else {
+                    throw new IllegalStateException("Se ha encontrado un error léxico no manejable.");
+                }
+
+                // Errores como el de un comentario mal iniciado requieren volver al estado
+                // inicial para evitar la aparición de múltiples errores dadas las transiciones.
+                // En los demás casos, basta con quedarse en el estado actual.
+                if (errorHandler.requiresReturnToStart()) {
+                    estadoActual = 0;
+                }
+
+                // Algunos manejadores dee errores realizan las acciones semánticas necesarias
+                // para dejar el token listo para ser entregado.
+                if (errorHandler.requiresFinalization()) {
+                    estadoActual = ESTADO_ACEPTACION;
+                }
+
+            } else {
+
+                // Se avanza al siguiente estado.
+                estadoActual = siguienteEstado;
+
+                // Se ejecutan las acciones semánticas asociadas.
+                for (SemanticAction action : semanticActionsToExecute) {
+                    action.execute(this);
+                }
+
             }
 
-            for (SemanticAction action : semanticActionsToExecute) {
-                action.execute(this);
-            }
-
+            // En todo caso, se avanza al siguiente carácter.
             siguienteCaracterALeer++;
         }
     }
@@ -149,6 +179,24 @@ public final class LexicalAnalyzer {
                 else
                     yield 28; // Otro.
             }
+        };
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    private LexicalError getErrorHandler(int index) {
+
+        return switch (index) {
+            case -1 -> InvalidSymbol.getInstance();
+            // case -2 -> BadUISuffix.getInstance();
+            // case -3 -> InvalidUintFormat.getInstance();
+            // case -4 -> InvalidDecimalFormat.getInstance();
+            // case -5 -> InvalidExponentSign.getInstance();
+            case -6 -> NoExponent.getInstance();
+            case -7 -> InvalidAssignmentOperator.getInstance();
+            case -8 -> NewLineInString.getInstance();
+            case -9 -> BadCommentInitialization.getInstance();
+            default -> null;
         };
     }
 
@@ -224,5 +272,29 @@ public final class LexicalAnalyzer {
 
     public void setToken(Token token) {
         this.token = token;
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    public void incrementWarningsDetected() {
+        this.warningsDetected++;
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    public int getWarningsDetected() {
+        return this.warningsDetected;
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    public void incrementErrorsDetected() {
+        this.errorsDetected++;
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    public int getErrorsDetected() {
+        return this.errorsDetected;
     }
 }
