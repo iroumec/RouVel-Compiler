@@ -182,8 +182,8 @@ public final class DataManager {
         SemanticAction[] AS1_AS3 = new SemanticAction[] { getSemanticAction("AS1"), getSemanticAction("AS3") };
         SemanticAction[] AS2 = new SemanticAction[] { getSemanticAction("AS2") };
         SemanticAction[] AS2_AS3 = new SemanticAction[] { getSemanticAction("AS2"), getSemanticAction("AS3") };
-        SemanticAction[] AS2_ASUI_AS3 = new SemanticAction[] { getSemanticAction("AS2"), getSemanticAction("AS3"),
-                getSemanticAction("ASUI") };
+        SemanticAction[] AS2_ASUI_AS3 = new SemanticAction[] { getSemanticAction("AS2"), getSemanticAction("ASUI"),
+                getSemanticAction("AS3") };
         SemanticAction[] ASN = new SemanticAction[] { getSemanticAction("ASN") };
         SemanticAction[] ASF_AS3_ASR = new SemanticAction[] { getSemanticAction("ASF"),
                 getSemanticAction("AS3"), getSemanticAction("ASR") };
