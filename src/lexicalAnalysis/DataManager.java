@@ -20,6 +20,18 @@ public final class DataManager {
     private final static int NUM_ESTADOS = 19;
     private final static int NUM_SIMBOLOS = 29;
 
+    // Matrices estáticas inicializadas una sola vez
+    private static final int[][] STATE_TRANSITION_MATRIX;
+    private static final SemanticAction[][][] SEMANTIC_ACTIONS_MATRIX;
+
+    static {
+        STATE_TRANSITION_MATRIX = new int[NUM_ESTADOS][NUM_SIMBOLOS];
+        StateTransitionMatrix.loadStateTransitionMatrix(STATE_TRANSITION_MATRIX);
+
+        SEMANTIC_ACTIONS_MATRIX = new SemanticAction[NUM_ESTADOS][NUM_SIMBOLOS][];
+        SemanticActionMatrix.loadSemanticActionsMatrix(SEMANTIC_ACTIONS_MATRIX);
+    }
+
     // --------------------------------------------------------------------------------------------
 
     /**
@@ -40,15 +52,11 @@ public final class DataManager {
     // --------------------------------------------------------------------------------------------
 
     public static int[][] getStateTransitionMatrix() {
-
-        return StateTransitionMatrix.getStateTransitionMatrix();
+        return STATE_TRANSITION_MATRIX;
     }
 
-    // --------------------------------------------------------------------------------------------
-
     public static SemanticAction[][][] getSemanticActionsMatrix() {
-
-        return SemanticActionMatrix.getSemanticActionMatrix();
+        return SEMANTIC_ACTIONS_MATRIX;
     }
 
     // --------------------------------------------------------------------------------------------
@@ -94,116 +102,65 @@ public final class DataManager {
     }
 
     // --------------------------------------------------------------------------------------------
-    // INNER CLASS: STATE TRANSITION MATRIX
-    // --------------------------------------------------------------------------------------------
-
-    private class StateTransitionMatrix {
-
-        private static int[][] MATRIX = null;
-
-        // --------------------------------------------------------------------------------------------
-
-        public static int[][] getStateTransitionMatrix() {
-            if (MATRIX == null) {
-                MATRIX = new int[NUM_ESTADOS][NUM_SIMBOLOS];
-                loadStateTransitionMatrix();
-            }
-            return MATRIX;
-        }
-
-        // --------------------------------------------------------------------------------------------
-
-        private static void load(int state, int def, String... ex) {
-            Arrays.fill(MATRIX[state], def);
-            for (String e : ex) {
-                String[] p = e.split("\\|");
-                String syms = p[0];
-                int val = Integer.parseInt(p[1]);
-                for (String s : syms.split(",")) {
-                    Integer idx = charToIndex(s.trim().charAt(0));
-                    if (idx != null)
-                        MATRIX[state][idx] = val;
-                }
-            }
-        }
-
-        // --------------------------------------------------------------------------------------------
-
-        private static void loadStateTransitionMatrix() {
-            load(0, -1, "+,*,/,(),{},_,;|19", "L,U,I,F|18", "l|9", "d|1", ".|3", "-|12", "\"|8", ":|10", "=|11", ">|13",
-                    "<|14", "#|15", "n,s,t|0");
-            load(1, -2, "d|1", "U|2", ".|4");
-            load(2, -3, "I|19");
-            load(3, -4, "d|4");
-            load(4, 19, "d|4", "F|5");
-            load(5, -5, "-,+|6");
-            load(6, -6, "d|7");
-            load(7, 19, "d|7");
-            load(8, 8, "\"|19", "n|-8");
-            load(9, 19, "l|9");
-            load(10, -7, "=|19");
-            load(11, 19);
-            load(12, 19);
-            load(13, 19);
-            load(14, 19);
-            load(15, -9, "#|16");
-            load(16, 16, "#|17");
-            load(17, 16, "#|0");
-            load(18, 19, "L,d,U,I,F,%|18");
-        }
-    }
-
-    // --------------------------------------------------------------------------------------------
     // INNER CLASS: SEMANTIC ACTION MATRIX
     // --------------------------------------------------------------------------------------------
 
-    private class SemanticActionMatrix {
-
-        private static SemanticAction[][][] MATRIX = null;
-
-        // --------------------------------------------------------------------------------------------
-
-        public static SemanticAction[][][] getSemanticActionMatrix() {
-            if (MATRIX == null) {
-                MATRIX = new SemanticAction[NUM_ESTADOS][NUM_SIMBOLOS][];
-                loadSemanticActionsMatrix();
-            }
-            return MATRIX;
+    private static class SemanticActionMatrix {
+        private static void loadSemanticActionsMatrix(SemanticAction[][][] matrix) {
+            load(matrix, 0, "", "L,d,U,I,.,F,\"|AS1-AS4", ":,=,>,<,l,-|AS1", "n|ASN", "+,*,/,(,),{,},_,;|AS1-AS3");
+            load(matrix, 1, "", "L,l,d,U,.|AS2");
+            load(matrix, 2, "", "I|AS2-ASUI-AS3");
+            load(matrix, 3, "", "d|AS2");
+            load(matrix, 4, "ASF-AS3-ASR", "d|AS2", "F|AS2");
+            load(matrix, 5, "", "-,+|AS2");
+            load(matrix, 6, "", "d|AS2");
+            load(matrix, 7, "ASF-AS3-ASR", "d|AS2");
+            load(matrix, 8, "AS2", "\"|AS2-AS3", "n|ASN");
+            load(matrix, 9, "AS3-ASR", "l|AS2");
+            load(matrix, 10, "", "=|AS2-AS3");
+            load(matrix, 11, "AS3-ASR", "=,!|AS2-AS3");
+            load(matrix, 12, "AS3-ASR", ">|AS2-AS3");
+            load(matrix, 13, "AS3-ASR", "=|AS2-AS3");
+            load(matrix, 14, "AS3-ASR", "=|AS2-AS3");
+            load(matrix, 15, "");
+            load(matrix, 16, "", "n|ASN");
+            load(matrix, 17, "", "n|ASN");
+            load(matrix, 18, "AS5-AS3-ASR", "L,d,U,I,F,%|AS2");
         }
 
-        // --------------------------------------------------------------------------------------------
-
-        private static void load(int state, String def, String... ex) {
+        private static void load(SemanticAction[][][] matrix, int state, String def, String... ex) {
             SemanticAction[] defArr = parseActions(def);
             for (int i = 0; i < NUM_SIMBOLOS; i++) {
-                MATRIX[state][i] = defArr;
+                matrix[state][i] = defArr;
             }
             for (String e : ex) {
                 String[] p = e.split("\\|");
                 String syms = p[0];
                 SemanticAction[] acts = parseActions(p[1]);
                 for (String s : syms.split(",")) {
-                    Integer idx = charToIndex(s.trim().charAt(0));
-                    if (idx != null)
-                        MATRIX[state][idx] = acts;
+                    int idx = charToIndex(s.trim().charAt(0));
+                    matrix[state][idx] = acts;
                 }
             }
         }
 
-        // --------------------------------------------------------------------------------------------
-
         private static SemanticAction[] parseActions(String s) {
             if (s == null || s.isBlank())
                 return new SemanticAction[0];
-            return Arrays.stream(s.split("-"))
-                    .map(String::trim)
-                    .filter(x -> !x.isEmpty())
-                    .map(SemanticActionMatrix::getSemanticAction)
-                    .filter(Objects::nonNull)
-                    .toArray(SemanticAction[]::new);
+            // Evita streams, usa split y bucle tradicional
+            String[] parts = s.split("-");
+            SemanticAction[] result = new SemanticAction[parts.length];
+            int count = 0;
+            for (String part : parts) {
+                String trimmed = part.trim();
+                if (!trimmed.isEmpty()) {
+                    SemanticAction sa = getSemanticAction(trimmed);
+                    if (sa != null)
+                        result[count++] = sa;
+                }
+            }
+            return Arrays.copyOf(result, count);
         }
-
-        // --------------------------------------------------------------------------------------------
 
         /**
          * Se mapean los nombres de las acciones semánticas a sus instancias.
@@ -226,29 +183,51 @@ public final class DataManager {
                 default -> null;
             };
         }
+    }
+
+    // --------------------------------------------------------------------------------------------
+    // INNER CLASS: STATE TRANSITION MATRIX
+    // --------------------------------------------------------------------------------------------
+
+    private static class StateTransitionMatrix {
 
         // --------------------------------------------------------------------------------------------
 
-        private static void loadSemanticActionsMatrix() {
-            load(0, "", "L,d,U,I,.,F,\"|AS1-AS4", ":,=,>,<,l,-|AS1", "n|ASN", "+,*,/,(,),{,},_,;|AS1-AS3");
-            load(1, "", "L,l,d,U,.|AS2");
-            load(2, "", "I|AS2-ASUI-AS3");
-            load(3, "", "d|AS2");
-            load(4, "ASF-AS3-ASR", "d|AS2", "F|AS2");
-            load(5, "", "-,+|AS2");
-            load(6, "", "d|AS2");
-            load(7, "ASF-AS3-ASR", "d|AS2");
-            load(8, "AS2", "\"|AS2-AS3", "n|ASN");
-            load(9, "AS3-ASR", "l|AS2");
-            load(10, "", "=|AS2-AS3");
-            load(11, "AS3-ASR", "=,!|AS2-AS3");
-            load(12, "AS3-ASR", ">|AS2-AS3");
-            load(13, "AS3-ASR", "=|AS2-AS3");
-            load(14, "AS3-ASR", "=|AS2-AS3");
-            load(15, "");
-            load(16, "", "n|ASN");
-            load(17, "", "n|ASN");
-            load(18, "AS5-AS3-ASR", "L,d,U,I,F,%|AS2");
+        private static void loadStateTransitionMatrix(int[][] matrix) {
+            load(matrix, 0, -1, "+,*,/,(),{},_,;|19", "L,U,I,F|18", "l|9", "d|1", ".|3", "-|12", "\"|8", ":|10", "=|11",
+                    ">|13",
+                    "<|14", "#|15", "n,s,t|0");
+            load(matrix, 1, -2, "d|1", "U|2", ".|4");
+            load(matrix, 2, -3, "I|19");
+            load(matrix, 3, -4, "d|4");
+            load(matrix, 4, 19, "d|4", "F|5");
+            load(matrix, 5, -5, "-,+|6");
+            load(matrix, 6, -6, "d|7");
+            load(matrix, 7, 19, "d|7");
+            load(matrix, 8, 8, "\"|19", "n|-8");
+            load(matrix, 9, 19, "l|9");
+            load(matrix, 10, -7, "=|19");
+            load(matrix, 11, 19);
+            load(matrix, 12, 19);
+            load(matrix, 13, 19);
+            load(matrix, 14, 19);
+            load(matrix, 15, -9, "#|16");
+            load(matrix, 16, 16, "#|17");
+            load(matrix, 17, 16, "#|0");
+            load(matrix, 18, 19, "L,d,U,I,F,%|18");
+        }
+
+        private static void load(int[][] matrix, int state, int def, String... ex) {
+            Arrays.fill(matrix[state], def);
+            for (String e : ex) {
+                String[] p = e.split("\\|");
+                String syms = p[0];
+                int val = Integer.parseInt(p[1]);
+                for (String s : syms.split(",")) {
+                    int idx = charToIndex(s.trim().charAt(0));
+                    matrix[state][idx] = val;
+                }
+            }
         }
     }
 }
