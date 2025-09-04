@@ -52,18 +52,17 @@ public final class LexicalAnalyzer {
     public Token getNextToken() {
 
         // Mientras no se haya hallado un token y queden caracteres por leer...
-        // while (this.token == null && siguienteCaracterALeer < codigoFuente.length())
-        // {
+        do {
+            // Se limpian los datos arrastrados de búsquedas anteriores.
+            // De no haber búsqueda anterior, se inicializan.
+            cleanSearch();
 
-        // Se limpian los datos arrastrados de búsquedas anteriores.
-        // De no haber búsqueda anterior, se inicializan.
-        cleanSearch();
+            // Se comienza la búsqueda de un token.
+            // Al terminar de ejecutarse, se habrá hallado un token
+            // o este será nulo (en caso de ya haberse leído todo el archivo).
+            searchToken();
 
-        // Se comienza la búsqueda de un token.
-        // Al terminar de ejecutarse, se habrá hallado un token
-        // o este será nulo (en caso de ya haberse leído todo el archivo).
-        searchToken();
-        // }
+        } while (this.token == null && siguienteCaracterALeer < codigoFuente.length());
 
         // Se devuelve un token (si se halló).
         // En otro caso, se devuelve null.
