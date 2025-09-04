@@ -96,6 +96,16 @@ En caso de venir un solo #, ¿cómo se maneja? Podrían contarse los # que sigue
 
 En InvalidAssignmentOperator podría asumirse que, si se puso :, se quiso realizar una asignación.
 
+# Instalación
+
+`sudo apt get install java`
+
+`sudo apt get install open-jdk-21`
+
+`sudo apt get install maven`
+
+Luego, se debe ejecutar el script `execute.sh`.
+
 En DataManager, muchas veces, el algoritmo de parseo del CSV terminaba siendo menos legible que el propio CSV, además de más lento.
 
 sudo apt install maven
