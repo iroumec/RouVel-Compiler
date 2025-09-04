@@ -1,5 +1,4 @@
 import general.Token;
-import lexicalAnalysis.DataLoader;
 import lexicalAnalysis.LexicalAnalyzer;
 
 import java.io.File;

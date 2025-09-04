@@ -40,10 +40,10 @@ public final class LexicalAnalyzer {
         this.siguienteCaracterALeer = 0;
         // Se agrega una marca para indicar el final del archivo.
         // Quizás deberpia usarse '\0'.
-        this.codigoFuente = DataLoader.loadSourceCode(sourceCodePath) + '\s';
-        this.matrizTransicionEstados = DataLoader.loadStateTransitionMatrix();
+        this.codigoFuente = DataManager.loadSourceCode(sourceCodePath) + '\s';
+        this.matrizTransicionEstados = DataManager.getStateTransitionMatrix();
         // System.out.println(Arrays.deepToString(matrizTransicionEstados));
-        this.matrizAccionesSemanticas = DataLoader.loadSemanticActionsMatrix();
+        this.matrizAccionesSemanticas = DataManager.getSemanticActionsMatrix();
         // System.out.println(Arrays.deepToString(matrizAccionesSemanticas));
     }
 
