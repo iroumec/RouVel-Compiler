@@ -53,7 +53,7 @@ public class LexemaFinalizer implements SemanticAction {
                 return;
             }
 
-            symbolTableEntry = SymbolTable.agregarEntrada(tokenType, lexema);
+            symbolTableEntry = SymbolTable.getInstance().agregarEntrada(tokenType, lexema);
         }
 
         if (tokenType != null) {

@@ -1,39 +1,56 @@
 package general;
 
-import java.util.HashMap;
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 
-/**
- * Cambiar a Singleton.
- */
 public final class SymbolTable {
 
-    private static int nroEntradas = 0;
-    private final static HashMap<Integer, String> tabla = new HashMap<>();
+    private static final SymbolTable INSTANCE = new SymbolTable();
+
+    // --------------------------------------------------------------------------------------------
+
+    private final BiMap<Integer, String> tabla = HashBiMap.create();
+
+    // --------------------------------------------------------------------------------------------
+
+    private int nroEntradas = 0;
+
+    // --------------------------------------------------------------------------------------------
 
     private SymbolTable() {
     }
 
-    /**
-     * El objetivo de esta función es que todas las letras mayúsculas, por ejemplo,
-     * sean mapeadas a una misma columna de requerirse.
-     * 
-     * @param simbolo
-     * @return El índice en el que se agregó la entrada.
-     */
-    public static int agregarEntrada(TokenType tokenType, String lexema) {
+    // --------------------------------------------------------------------------------------------
 
+    public static SymbolTable getInstance() {
+        return INSTANCE;
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    /**
+     * Agrega un lexema a la tabla si no existe.
+     * Devuelve el índice existente o el nuevo.
+     */
+    public synchronized int agregarEntrada(TokenType tokenType, String lexema) {
         if (!tokenType.requiereLexema()) {
-            System.err.println("Este tipo de token no es válido para agregar a la tabla.");
-            System.exit(1);
+            throw new IllegalArgumentException(
+                    "Este tipo de token no es válido para agregar a la tabla.");
         }
 
-        tabla.put(nroEntradas, lexema);
+        // Si ya existe una entrada para el lexema, se devuelve su índice.
+        if (tabla.containsValue(lexema)) {
+            return tabla.inverse().get(lexema);
+        }
 
-        return nroEntradas++;
+        int indice = nroEntradas++;
+        tabla.put(indice, lexema);
+        return indice;
     }
 
-    public static String getLexema(int indice) {
+    // --------------------------------------------------------------------------------------------
+
+    public synchronized String getLexema(int indice) {
         return tabla.get(indice);
     }
-
 }
