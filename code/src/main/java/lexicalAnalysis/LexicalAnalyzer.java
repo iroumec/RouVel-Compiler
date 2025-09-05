@@ -1,25 +1,24 @@
 package lexicalAnalysis;
 
-import java.util.Set;
-import java.util.Map;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-
 import general.Token;
 import general.TokenType;
-import general.SymbolTable;
-import lexicalAnalysis.lexicalErrors.*;
+import lexicalAnalysis.lexicalErrors.BadCommentInitialization;
+import lexicalAnalysis.lexicalErrors.BadUISuffix;
+import lexicalAnalysis.lexicalErrors.InvalidAssignmentOperator;
+import lexicalAnalysis.lexicalErrors.InvalidDecimalFormat;
+import lexicalAnalysis.lexicalErrors.InvalidSymbol;
+import lexicalAnalysis.lexicalErrors.NewLineInString;
+import lexicalAnalysis.lexicalErrors.NoExponent;
+import lexicalAnalysis.lexicalErrors.NoExponentSign;
+import lexicalAnalysis.lexicalErrors.UndeterminedNumber;
 
 public final class LexicalAnalyzer {
 
     private Token token;
     private char lastCharRead;
-    private String codigoFuente;
     private StringBuilder lexema;
     private TokenType detectedType;
+    private final String codigoFuente;
     private int nroLinea, siguienteCaracterALeer;
     private int warningsDetected, errorsDetected;
 

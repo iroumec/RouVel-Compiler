@@ -1,20 +1,19 @@
 package lexicalAnalysis;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
-import java.util.Objects;
-import java.util.function.Function;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-import lexicalAnalysis.semanticActions.*;
+import lexicalAnalysis.semanticActions.FloatChecker;
+import lexicalAnalysis.semanticActions.IdentifierLengthChecker;
+import lexicalAnalysis.semanticActions.LexemaAppender;
+import lexicalAnalysis.semanticActions.LexemaFinalizer;
+import lexicalAnalysis.semanticActions.LexemaIdentifier;
+import lexicalAnalysis.semanticActions.LexemaInitializer;
+import lexicalAnalysis.semanticActions.NewLineDetected;
+import lexicalAnalysis.semanticActions.ReturnCharacterToEntry;
+import lexicalAnalysis.semanticActions.UintChecker;
 
 public final class DataManager {
 
@@ -50,7 +49,7 @@ public final class DataManager {
 
         try {
             return Files.readString(Paths.get(sourceCodePath));
-        } catch (Exception e) {
+        } catch (IOException e) {
             throw new RuntimeException("No se pudo leer el archivo: " + sourceCodePath, e);
         }
     }

@@ -58,8 +58,8 @@ public enum TokenType {
 
     // --------------------------------------------------------------------------------------------
 
-    private String symbol;
-    private Category category;
+    private final String symbol;
+    private final Category category;
 
     // --------------------------------------------------------------------------------------------
 
@@ -88,7 +88,6 @@ public enum TokenType {
 
     // --------------------------------------------------------------------------------------------
 
-    private static final Map<Integer, TokenType> integerLookup = new HashMap<>();
     private static final Map<String, TokenType> symbolLookup = new HashMap<>();
 
     static {

@@ -3,7 +3,6 @@ package lexicalAnalysis.lexicalErrors;
 import lexicalAnalysis.LexicalAnalyzer;
 import lexicalAnalysis.LexicalError;
 import lexicalAnalysis.semanticActions.FloatChecker;
-import lexicalAnalysis.semanticActions.LexemaAppender;
 import lexicalAnalysis.semanticActions.LexemaFinalizer;
 
 /**
@@ -75,6 +74,7 @@ public class NoExponentSign implements LexicalError {
 
     // --------------------------------------------------------------------------------------------
 
+    @Override
     public String toString() {
         return "Estado de error: -5. NoExponentSign.";
     }

@@ -1,8 +1,5 @@
 package lexicalAnalysis.lexicalErrors;
 
-import lexicalAnalysis.LexicalAnalyzer;
-import lexicalAnalysis.LexicalError;
-
 /**
  * Estado de error -7.
  * InvalidAssignmentOperator.
@@ -46,6 +43,7 @@ public class InvalidAssignmentOperator implements lexicalAnalysis.LexicalError {
 
     // --------------------------------------------------------------------------------------------
 
+    @Override
     public String toString() {
         return "Estado de Error: -7. InvalidAssignmentOperator.";
     }
