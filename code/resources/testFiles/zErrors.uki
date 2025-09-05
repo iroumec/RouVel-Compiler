@@ -1,0 +1,45 @@
+## Manejo de errores ##
+## El objetivo es que el compilador continúe para hallar el mayor número de errores posibles ##
+
+## -1 ##
+¿
+
+## -2 y -7 ##
+A : 32
+
+## -3 ##
+
+B := -30U
+
+## -8 ##
+
+"Hola, Fernando 
+¿Qué tal Felipe?"
+
+## -9 ##
+
+#
+
+## -6 ##
+1.2F+2
+3.5F+0
+0.4F+
+0.4F-
+
+## -5 ##
+
+1.3F12
+0.2F 1
+0.3F
+
+## -4 ##
+
+1.3
+.
+0.
+.0
+
+## Invalid Reserved Word ##
+if
+FI
+fi

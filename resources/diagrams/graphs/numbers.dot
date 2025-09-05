@@ -1,0 +1,26 @@
+digraph DFA {
+    rankdir = LR;
+    node [shape = circle;];
+    F [shape = doublecircle;];
+    eN [shape = doublecircle;style = dashed;color = red;label = "e";];
+    
+    0 -> 1 [label = "d | AS1, AS4";];
+    0 -> 3 [label = "\".\" | AS1, AS4";];
+    1 -> 1 [label = "d | AS2";];
+    1 -> 2 [label = "\"U\" | AS2";];
+    1 -> 4 [label = "\".\" | AS2";];
+    1 -> eN [label = "Otro | -2"; style = dashed;];
+    2 -> eN [label = "Otro | -3";];
+    2 -> F [label = "\"I\" | AS2, ASUI, AS3";];
+    3 -> 4 [label = "d | AS2";];
+    3 -> eN [label = "Otro | -4"; style = dashed;];
+    4 -> 4 [label = "d | AS2";];
+    4 -> F [label = "Otro | ASF, AS3, ASR";];
+    4 -> 5 [label = "\"F\" | AS2";];
+    5 -> 6 [label = "\"+\", \"-\" | AS2";];
+    5 -> eN [label = "Otro | -5"; style = dashed;];
+    6 -> 7 [label = "d | AS2";];
+    6 -> eN [label = "Otro | -6"; style = dashed;];
+    7 -> 7 [label = "d | AS2";];
+    7 -> F [label = "Otro | ASF, AS3, ASR";];
+}

@@ -1,0 +1,11 @@
+digraph DFA {
+    rankdir = LR;
+    node [shape = circle;];
+    F [shape = doublecircle;];
+    eS [shape = doublecircle;style = dashed;color = red;label = "e";];
+    
+    0 -> 8 [label = "\" | AS1, AS4";];
+    8 -> 8 [label = "Otro | AS2";];
+    8 -> F [label = "\" | AS2, AS3";];
+    8 -> eS [label = "n | -8"; style = dashed;];
+}
