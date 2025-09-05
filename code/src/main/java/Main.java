@@ -3,8 +3,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 
-import general.Token;
-import lexicalAnalysis.LexicalAnalyzer;
+import common.Token;
+import lexer.LexicalAnalyzer;
 
 public class Main {
 
