@@ -23,9 +23,7 @@ public final class LexicalAnalyzer {
     private int nroLinea, siguienteCaracterALeer;
     private int warningsDetected, errorsDetected;
 
-    private final static int ESTADO_ERROR = -1;
     private final static int ESTADO_INICIO = 0;
-    private final static int MAX_CARACTERES = 20;
     private final static int ESTADO_ACEPTACION = 19;
 
     private final int[][] matrizTransicionEstados;
@@ -38,11 +36,9 @@ public final class LexicalAnalyzer {
         this.errorsDetected = 0;
         this.warningsDetected = 0;
         this.siguienteCaracterALeer = 0;
-        this.codigoFuente = DataManager.loadSourceCode(sourceCodePath) + '\s';
+        this.codigoFuente = DataManager.loadSourceCode(sourceCodePath);
         this.matrizTransicionEstados = DataManager.getStateTransitionMatrix();
-        // System.out.println(Arrays.deepToString(matrizTransicionEstados));
         this.matrizAccionesSemanticas = DataManager.getSemanticActionsMatrix();
-        // System.out.println(Arrays.deepToString(matrizAccionesSemanticas));
     }
 
     // --------------------------------------------------------------------------------------------
@@ -60,7 +56,7 @@ public final class LexicalAnalyzer {
             // o este será nulo (en caso de ya haberse leído todo el archivo).
             searchToken();
 
-        } while (this.token == null && siguienteCaracterALeer < codigoFuente.length());
+        } while (this.token == null && siguienteCaracterALeer <= codigoFuente.length());
 
         // Se devuelve un token (si se halló).
         // En otro caso, se devuelve null.
@@ -75,52 +71,56 @@ public final class LexicalAnalyzer {
         int estadoActual = ESTADO_INICIO;
         int siguienteEstado;
 
-        while (estadoActual != ESTADO_ACEPTACION && siguienteCaracterALeer < codigoFuente.length()) {
+        while (estadoActual != ESTADO_ACEPTACION && siguienteCaracterALeer <= codigoFuente.length()) {
 
-            this.lastCharRead = codigoFuente.charAt(siguienteCaracterALeer);
+            this.lastCharRead = this.readNextChar();
 
             index = charToIndex(lastCharRead);
 
             SemanticAction[] semanticActionsToExecute = matrizAccionesSemanticas[estadoActual][index];
             siguienteEstado = matrizTransicionEstados[estadoActual][index];
 
-            // Se ha llegado a un estado de error.
+            // Si se ha llegado a un estado de error...
             if (siguienteEstado < ESTADO_INICIO) {
-
-                LexicalError errorHandler = this.getErrorHandler(siguienteEstado);
-                if (errorHandler != null) {
-                    errorHandler.handleError(this);
-                } else {
-                    throw new IllegalStateException("Se ha encontrado un error léxico no manejable.");
-                }
-
-                // Errores como el de un comentario mal iniciado requieren volver al estado
-                // inicial para evitar la aparición de múltiples errores dadas las transiciones.
-                // En los demás casos, basta con quedarse en el estado actual.
-                if (errorHandler.requiresReturnToStart()) {
-                    estadoActual = 0;
-                }
-
-                // Algunos manejadores dee errores realizan las acciones semánticas necesarias
-                // para dejar el token listo para ser entregado.
-                if (errorHandler.requiresFinalization()) {
-                    estadoActual = ESTADO_ACEPTACION;
-                }
-
+                estadoActual = this.handleError(estadoActual, siguienteEstado);
             } else {
-
                 // Se avanza al siguiente estado.
                 estadoActual = siguienteEstado;
-
-                // Se ejecutan las acciones semánticas asociadas.
-                for (SemanticAction action : semanticActionsToExecute) {
-                    action.execute(this);
-                }
-
             }
 
-            siguienteCaracterALeer++;
+            // Se ejecutan las acciones semánticas asociadas.
+            // De llegar a un estado de error, estas estarán vacías.
+            for (SemanticAction action : semanticActionsToExecute) {
+                action.execute(this);
+            }
         }
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    private int handleError(int currentState, int nextState) {
+
+        LexicalError errorHandler = this.getErrorHandler(nextState);
+
+        if (errorHandler == null) {
+            throw new IllegalStateException("Se ha encontrado un error léxico no manejable.");
+        }
+
+        errorHandler.handleError(this);
+
+        // Errores como el de un comentario mal iniciado requieren volver al estado
+        // inicial para evitar la aparición de múltiples errores dadas las transiciones.
+        // En los demás casos, basta con quedarse en el estado actual.
+        if (errorHandler.requiresReturnToStart()) {
+            return ESTADO_INICIO;
+        }
+
+        // Algunos manejadores dee errores realizan las acciones semánticas necesarias
+        // para dejar el token listo para ser entregado.
+        if (errorHandler.requiresFinalization()) {
+            return ESTADO_ACEPTACION;
+        }
+        return currentState;
     }
 
     // --------------------------------------------------------------------------------------------
@@ -168,7 +168,8 @@ public final class LexicalAnalyzer {
             case '%' -> 23;
             case '#' -> 24;
             case '\n' -> 25;
-            case ' ' -> 26;
+            // '\0' se comporta igual a que si hubiese un espacio.
+            case ' ', '\0' -> 26;
             case '\t' -> 27;
             default -> {
                 if (Character.isUpperCase(c))
@@ -204,24 +205,17 @@ public final class LexicalAnalyzer {
     // --------------------------------------------------------------------------------------------
 
     public char readNextChar() {
-        if (siguienteCaracterALeer + 1 < codigoFuente.length()) {
-            siguienteCaracterALeer++;
-            return codigoFuente.charAt(siguienteCaracterALeer);
-        } else {
-            return '\0';
+        if (siguienteCaracterALeer < codigoFuente.length()) {
+            return codigoFuente.charAt(siguienteCaracterALeer++);
         }
+        siguienteCaracterALeer++;
+        return '\0';
     }
 
     // --------------------------------------------------------------------------------------------
 
     public char getLastCharRead() {
         return this.lastCharRead;
-    }
-
-    // --------------------------------------------------------------------------------------------
-
-    public int getMaxCaracteres() {
-        return MAX_CARACTERES;
     }
 
     // --------------------------------------------------------------------------------------------
