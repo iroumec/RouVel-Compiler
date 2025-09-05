@@ -38,7 +38,7 @@ public class NoExponentSign implements LexicalError {
         char currentChar = lexicalAnalyzer.getLastCharRead();
         while (Character.isDigit(currentChar)) {
             number.append(currentChar);
-            currentChar = lexicalAnalyzer.getCharInAdvance();
+            currentChar = lexicalAnalyzer.readNextChar();
         }
         lexicalAnalyzer.decrementarSiguienteCaracterALeer();
 

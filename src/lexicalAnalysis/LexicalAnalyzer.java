@@ -38,8 +38,6 @@ public final class LexicalAnalyzer {
         this.errorsDetected = 0;
         this.warningsDetected = 0;
         this.siguienteCaracterALeer = 0;
-        // Se agrega una marca para indicar el final del archivo.
-        // Quizás deberpia usarse '\0'.
         this.codigoFuente = DataManager.loadSourceCode(sourceCodePath) + '\s';
         this.matrizTransicionEstados = DataManager.getStateTransitionMatrix();
         // System.out.println(Arrays.deepToString(matrizTransicionEstados));
@@ -121,7 +119,6 @@ public final class LexicalAnalyzer {
 
             }
 
-            // En todo caso, se avanza al siguiente carácter.
             siguienteCaracterALeer++;
         }
     }
@@ -206,7 +203,7 @@ public final class LexicalAnalyzer {
 
     // --------------------------------------------------------------------------------------------
 
-    public char getCharInAdvance() {
+    public char readNextChar() {
         if (siguienteCaracterALeer + 1 < codigoFuente.length()) {
             siguienteCaracterALeer++;
             return codigoFuente.charAt(siguienteCaracterALeer);
