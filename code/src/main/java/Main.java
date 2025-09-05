@@ -1,14 +1,16 @@
-import general.Token;
-import lexicalAnalysis.LexicalAnalyzer;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 
+import general.Token;
+import lexicalAnalysis.LexicalAnalyzer;
+
 public class Main {
+
     public static void main(String[] args) throws IOException {
 
-        File folder = new File("../resources/testFiles");
+        File folder = new File("resources/testFiles");
         File[] files = folder.listFiles((dir, name) -> name.endsWith(".uki"));
 
         if (files == null || files.length == 0) {

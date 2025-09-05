@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DIR="$(dirname "$0")/src"
+DIR="$(dirname "$0")/code"
 cd "$DIR" || exit 1
 
 # Se compila y ejecuta el programa.
