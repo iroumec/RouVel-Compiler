@@ -1,25 +1,26 @@
-package lexer.lexicalErrors;
+package lexer.errors;
 
+import lexer.LexicalAnalyzer;
 import lexer.LexicalError;
 
 /**
- * Estado de error -9.
- * BadCommentInitialization.
+ * Estado de error -4.
+ * InvalidDecimalFormat.
  */
-public class BadCommentInitialization implements LexicalError {
+public class InvalidDecimalFormat implements LexicalError {
 
-    private static BadCommentInitialization INSTANCE;
+    private static InvalidDecimalFormat INSTANCE;
 
     // --------------------------------------------------------------------------------------------
 
-    private BadCommentInitialization() {
+    private InvalidDecimalFormat() {
     }
 
     // --------------------------------------------------------------------------------------------
 
-    public static BadCommentInitialization getInstance() {
+    public static InvalidDecimalFormat getInstance() {
         if (INSTANCE == null) {
-            INSTANCE = new BadCommentInitialization();
+            INSTANCE = new InvalidDecimalFormat();
         }
         return INSTANCE;
     }
@@ -27,11 +28,11 @@ public class BadCommentInitialization implements LexicalError {
     // --------------------------------------------------------------------------------------------
 
     @Override
-    public void handleError(lexer.LexicalAnalyzer lexicalAnalyzer) {
+    public void handleError(LexicalAnalyzer lexicalAnalyzer) {
         System.err.println("ERROR: Línea "
                 + lexicalAnalyzer.getNroLinea()
-                + ": Los comentarios deben comenzar con '##' y terminar con '##'. Se encontró un único carácter '#'. "
-                + "El símbolo será descartado. Esto puede traer errores en la interpretación del código si el carácter tenía la intención de comenzar un comentario.");
+                + ": El símbolo '.' es inválido a menos de que le siga la parte decimal de un número. "
+                + "Este será omitido.");
         lexicalAnalyzer.incrementErrorsDetected();
     }
 
@@ -46,7 +47,7 @@ public class BadCommentInitialization implements LexicalError {
 
     @Override
     public String toString() {
-        return "Estado de Error: -9. BadCommentInitialization.";
+        return "Estado de Error: -4. InvalidDecimalFormat.";
     }
 
 }

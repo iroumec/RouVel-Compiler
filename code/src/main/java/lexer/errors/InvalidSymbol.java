@@ -1,26 +1,26 @@
-package lexer.lexicalErrors;
+package lexer.errors;
 
 import lexer.LexicalAnalyzer;
 import lexer.LexicalError;
 
 /**
- * Estado de error -4.
- * InvalidDecimalFormat.
+ * Estado de error -1.
+ * InvalidSymbol.
  */
-public class InvalidDecimalFormat implements LexicalError {
+public class InvalidSymbol implements LexicalError {
 
-    private static InvalidDecimalFormat INSTANCE;
+    private static InvalidSymbol INSTANCE;
 
     // --------------------------------------------------------------------------------------------
 
-    private InvalidDecimalFormat() {
+    private InvalidSymbol() {
     }
 
     // --------------------------------------------------------------------------------------------
 
-    public static InvalidDecimalFormat getInstance() {
+    public static InvalidSymbol getInstance() {
         if (INSTANCE == null) {
-            INSTANCE = new InvalidDecimalFormat();
+            INSTANCE = new InvalidSymbol();
         }
         return INSTANCE;
     }
@@ -31,23 +31,17 @@ public class InvalidDecimalFormat implements LexicalError {
     public void handleError(LexicalAnalyzer lexicalAnalyzer) {
         System.err.println("ERROR: Línea "
                 + lexicalAnalyzer.getNroLinea()
-                + ": El símbolo '.' es inválido a menos de que le siga la parte decimal de un número. "
-                + "Este será omitido.");
+                + ": Símbolo inválido '"
+                + lexicalAnalyzer.getLastCharRead() + "'. "
+                + "El símbolo será descartado.");
         lexicalAnalyzer.incrementErrorsDetected();
     }
 
     // --------------------------------------------------------------------------------------------
 
     @Override
-    public boolean requiresReturnToStart() {
-        return true;
-    }
-
-    // --------------------------------------------------------------------------------------------
-
-    @Override
     public String toString() {
-        return "Estado de Error: -4. InvalidDecimalFormat.";
+        return "Estado de Error: -1. InvalidSymbol.";
     }
 
 }

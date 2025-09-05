@@ -1,26 +1,26 @@
-package lexer.semanticActions;
+package lexer.actions;
 
 import lexer.LexicalAnalyzer;
 import lexer.SemanticAction;
 
 /**
- * ASR:
- * Devuelve el último caracter leído a la entrada.
+ * AS1:
+ * Inicializa el string del lexema y agrega caracter leido.
  */
-public class ReturnCharacterToEntry implements SemanticAction {
+public class LexemaInitializer implements SemanticAction {
 
-    private static ReturnCharacterToEntry INSTANCE;
+    private static LexemaInitializer INSTANCE;
 
     // --------------------------------------------------------------------------------------------
 
-    private ReturnCharacterToEntry() {
+    private LexemaInitializer() {
     }
 
     // --------------------------------------------------------------------------------------------
 
-    public static ReturnCharacterToEntry getInstance() {
+    public static LexemaInitializer getInstance() {
         if (INSTANCE == null) {
-            INSTANCE = new ReturnCharacterToEntry();
+            INSTANCE = new LexemaInitializer();
         }
         return INSTANCE;
     }
@@ -29,14 +29,14 @@ public class ReturnCharacterToEntry implements SemanticAction {
 
     @Override
     public void execute(LexicalAnalyzer lexicalAnalyzer) {
-        lexicalAnalyzer.decrementarSiguienteCaracterALeer();
+        lexicalAnalyzer.initializeLexema(lexicalAnalyzer.getLastCharRead());
     }
 
     // --------------------------------------------------------------------------------------------
 
     @Override
     public String toString() {
-        return "ASR";
+        return "AS1";
     }
 
 }

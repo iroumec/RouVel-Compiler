@@ -1,23 +1,25 @@
-package lexer.lexicalErrors;
+package lexer.errors;
+
+import lexer.LexicalError;
 
 /**
- * Estado de error -7.
- * InvalidAssignmentOperator.
+ * Estado de error -9.
+ * BadCommentInitialization.
  */
-public class InvalidAssignmentOperator implements lexer.LexicalError {
+public class BadCommentInitialization implements LexicalError {
 
-    private static InvalidAssignmentOperator INSTANCE;
+    private static BadCommentInitialization INSTANCE;
 
     // --------------------------------------------------------------------------------------------
 
-    private InvalidAssignmentOperator() {
+    private BadCommentInitialization() {
     }
 
     // --------------------------------------------------------------------------------------------
 
-    public static InvalidAssignmentOperator getInstance() {
+    public static BadCommentInitialization getInstance() {
         if (INSTANCE == null) {
-            INSTANCE = new InvalidAssignmentOperator();
+            INSTANCE = new BadCommentInitialization();
         }
         return INSTANCE;
     }
@@ -28,9 +30,8 @@ public class InvalidAssignmentOperator implements lexer.LexicalError {
     public void handleError(lexer.LexicalAnalyzer lexicalAnalyzer) {
         System.err.println("ERROR: Línea "
                 + lexicalAnalyzer.getNroLinea()
-                + ": Operador de asignación inválido '"
-                + lexicalAnalyzer.getLexema() + "'. "
-                + "El operador correcto es ':='. Se descartará el símbolo ':'.");
+                + ": Los comentarios deben comenzar con '##' y terminar con '##'. Se encontró un único carácter '#'. "
+                + "El símbolo será descartado. Esto puede traer errores en la interpretación del código si el carácter tenía la intención de comenzar un comentario.");
         lexicalAnalyzer.incrementErrorsDetected();
     }
 
@@ -45,7 +46,7 @@ public class InvalidAssignmentOperator implements lexer.LexicalError {
 
     @Override
     public String toString() {
-        return "Estado de Error: -7. InvalidAssignmentOperator.";
+        return "Estado de Error: -9. BadCommentInitialization.";
     }
 
 }

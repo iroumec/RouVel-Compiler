@@ -1,4 +1,4 @@
-package lexer.semanticActions;
+package lexer.actions;
 
 import common.TokenType;
 import lexer.LexicalAnalyzer;

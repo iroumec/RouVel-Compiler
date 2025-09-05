@@ -1,9 +1,9 @@
-package lexer.lexicalErrors;
+package lexer.errors;
 
 import lexer.LexicalAnalyzer;
 import lexer.LexicalError;
-import lexer.semanticActions.FloatChecker;
-import lexer.semanticActions.LexemaFinalizer;
+import lexer.actions.FloatChecker;
+import lexer.actions.LexemaFinalizer;
 
 /**
  * Estado de error -5.

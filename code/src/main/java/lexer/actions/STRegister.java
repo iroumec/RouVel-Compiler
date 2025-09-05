@@ -1,4 +1,4 @@
-package lexer.semanticActions;
+package lexer.actions;
 /*
  * package lexicalAnalysis.semanticActions;
  * //AS6

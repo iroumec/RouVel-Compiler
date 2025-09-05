@@ -1,29 +1,29 @@
-package lexer.lexicalErrors;
+package lexer.errors;
 
 import lexer.LexicalAnalyzer;
 import lexer.LexicalError;
-import lexer.semanticActions.LexemaFinalizer;
-import lexer.semanticActions.ReturnCharacterToEntry;
-import lexer.semanticActions.UintChecker;
+import lexer.actions.LexemaFinalizer;
+import lexer.actions.ReturnCharacterToEntry;
+import lexer.actions.UintChecker;
 
 /**
- * Estado de Error: -2.
- * UndeterminedNumber.
+ * Estado de Error: -3.
+ * BadUISuffix.
  */
-public class UndeterminedNumber implements LexicalError {
+public class BadUISuffix implements LexicalError {
 
-    private static UndeterminedNumber INSTANCE;
+    private static BadUISuffix INSTANCE;
 
     // --------------------------------------------------------------------------------------------
 
-    private UndeterminedNumber() {
+    private BadUISuffix() {
     }
 
     // --------------------------------------------------------------------------------------------
 
-    public static UndeterminedNumber getInstance() {
+    public static BadUISuffix getInstance() {
         if (INSTANCE == null) {
-            INSTANCE = new UndeterminedNumber();
+            INSTANCE = new BadUISuffix();
         }
         return INSTANCE;
     }
@@ -34,16 +34,13 @@ public class UndeterminedNumber implements LexicalError {
     public void handleError(LexicalAnalyzer lexicalAnalyzer) {
         System.err.println("ERROR: Línea "
                 + lexicalAnalyzer.getNroLinea()
-                + ": Número mal formado: '"
-                + lexicalAnalyzer.getLexema() + "''."
-                + "\n\t - De ser un entero, debe terminar con el sufijo 'UI'."
-                + "\n\t - De ser un flotante y no tener parte decimal, se debe especificar un punto '.' al final."
-                + "\nSe asumirá que es un entero y se agregará el sufijo 'UI'.");
+                + ": El número: '"
+                + lexicalAnalyzer.getLexema() + "' posee un sufijo inválido. "
+                + "Se añadirá el sufijo 'I'.");
         lexicalAnalyzer.incrementErrorsDetected();
 
-        // Se realiza el agregado del sufijo y las acciones semánticas
-        // necesarias para entregar el token.
-        lexicalAnalyzer.appendToLexema("UI");
+        // Agregado del sufijo y finalización del lexema.
+        lexicalAnalyzer.appendToLexema('I');
         UintChecker.getInstance().execute(lexicalAnalyzer);
         LexemaFinalizer.getInstance().execute(lexicalAnalyzer);
         ReturnCharacterToEntry.getInstance().execute(lexicalAnalyzer);
@@ -60,7 +57,7 @@ public class UndeterminedNumber implements LexicalError {
 
     @Override
     public String toString() {
-        return "Estado de Error: -2. UndeterminedNumber.";
+        return "Estado de Error: -3. BadUISuffix.";
     }
 
 }

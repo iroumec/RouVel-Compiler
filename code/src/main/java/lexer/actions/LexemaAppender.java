@@ -1,26 +1,27 @@
-package lexer.semanticActions;
+package lexer.actions;
+//AS2
 
 import lexer.LexicalAnalyzer;
 import lexer.SemanticAction;
 
 /**
- * ASN:
- * Incrementa el número de línea.
+ * AS2:
+ * Agrega el caracter leído al string del lexema.
  */
-public class NewLineDetected implements SemanticAction {
+public class LexemaAppender implements SemanticAction {
 
-    private static NewLineDetected INSTANCE;
+    private static LexemaAppender INSTANCE;
 
     // --------------------------------------------------------------------------------------------
 
-    private NewLineDetected() {
+    private LexemaAppender() {
     }
 
     // --------------------------------------------------------------------------------------------
 
-    public static NewLineDetected getInstance() {
+    public static LexemaAppender getInstance() {
         if (INSTANCE == null) {
-            INSTANCE = new NewLineDetected();
+            INSTANCE = new LexemaAppender();
         }
         return INSTANCE;
     }
@@ -29,13 +30,14 @@ public class NewLineDetected implements SemanticAction {
 
     @Override
     public void execute(LexicalAnalyzer lexicalAnalyzer) {
-        lexicalAnalyzer.incrementarNroLinea();
+        lexicalAnalyzer.appendToLexema(lexicalAnalyzer.getLastCharRead());
     }
 
     // --------------------------------------------------------------------------------------------
 
     @Override
     public String toString() {
-        return "ASN";
+        return "AS2";
     }
+
 }

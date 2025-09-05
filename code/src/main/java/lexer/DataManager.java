@@ -5,15 +5,15 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
 
-import lexer.semanticActions.FloatChecker;
-import lexer.semanticActions.IdentifierLengthChecker;
-import lexer.semanticActions.LexemaAppender;
-import lexer.semanticActions.LexemaFinalizer;
-import lexer.semanticActions.LexemaIdentifier;
-import lexer.semanticActions.LexemaInitializer;
-import lexer.semanticActions.NewLineDetected;
-import lexer.semanticActions.ReturnCharacterToEntry;
-import lexer.semanticActions.UintChecker;
+import lexer.actions.FloatChecker;
+import lexer.actions.IdentifierLengthChecker;
+import lexer.actions.LexemaAppender;
+import lexer.actions.LexemaFinalizer;
+import lexer.actions.LexemaIdentifier;
+import lexer.actions.LexemaInitializer;
+import lexer.actions.NewLineDetected;
+import lexer.actions.ReturnCharacterToEntry;
+import lexer.actions.UintChecker;
 
 public final class DataManager {
 

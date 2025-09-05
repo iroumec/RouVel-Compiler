@@ -1,4 +1,4 @@
-package lexer.semanticActions;
+package lexer.actions;
 
 import lexer.LexicalAnalyzer;
 import lexer.SemanticAction;

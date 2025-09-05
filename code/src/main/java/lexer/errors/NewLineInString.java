@@ -1,24 +1,25 @@
-package lexer.lexicalErrors;
+package lexer.errors;
 
 import lexer.LexicalError;
 
 /**
- * UnknownToken.
+ * Estado de error -8.
+ * NewLineInString.
  */
-public class UnknownToken implements LexicalError {
+public class NewLineInString implements LexicalError {
 
-    private static UnknownToken INSTANCE;
+    private static NewLineInString INSTANCE;
 
     // --------------------------------------------------------------------------------------------
 
-    private UnknownToken() {
+    private NewLineInString() {
     }
 
     // --------------------------------------------------------------------------------------------
 
-    public static UnknownToken getInstance() {
+    public static NewLineInString getInstance() {
         if (INSTANCE == null) {
-            INSTANCE = new UnknownToken();
+            INSTANCE = new NewLineInString();
         }
         return INSTANCE;
     }
@@ -27,9 +28,10 @@ public class UnknownToken implements LexicalError {
 
     @Override
     public void handleError(lexer.LexicalAnalyzer lexicalAnalyzer) {
-        System.out.println("ERROR: Línea " + lexicalAnalyzer.getNroLinea()
-            + ": El lexema '" + lexicalAnalyzer.getLexema()
-            + "' no corresponde a una palabra reservada del lenguaje. Este se omitirá.");
+        System.err.println("ERROR: Línea "
+                + lexicalAnalyzer.getNroLinea()
+                + ": Las cadenas no pueden contener saltos de línea. "
+                + "Este se omitirá.");
         lexicalAnalyzer.incrementErrorsDetected();
     }
 
@@ -37,7 +39,7 @@ public class UnknownToken implements LexicalError {
 
     @Override
     public String toString() {
-        return "Estado de Error. UnknownToken";
+        return "Estado de Error: -8. NewLineInString.";
     }
 
 }

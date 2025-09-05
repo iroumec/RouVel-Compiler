@@ -1,11 +1,11 @@
-package lexer.semanticActions;
+package lexer.actions;
 
 import common.SymbolTable;
 import common.Token;
 import common.TokenType;
 import lexer.LexicalAnalyzer;
 import lexer.SemanticAction;
-import lexer.lexicalErrors.UnknownToken;
+import lexer.errors.UnknownToken;
 
 /**
  * AS3:

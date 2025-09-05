@@ -1,4 +1,4 @@
-package lexer.semanticActions;
+package lexer.actions;
 //AS3
 
 import lexer.LexicalAnalyzer;

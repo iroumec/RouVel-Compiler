@@ -2,15 +2,15 @@ package lexer;
 
 import common.Token;
 import common.TokenType;
-import lexer.lexicalErrors.BadCommentInitialization;
-import lexer.lexicalErrors.BadUISuffix;
-import lexer.lexicalErrors.InvalidAssignmentOperator;
-import lexer.lexicalErrors.InvalidDecimalFormat;
-import lexer.lexicalErrors.InvalidSymbol;
-import lexer.lexicalErrors.NewLineInString;
-import lexer.lexicalErrors.NoExponent;
-import lexer.lexicalErrors.NoExponentSign;
-import lexer.lexicalErrors.UndeterminedNumber;
+import lexer.errors.BadCommentInitialization;
+import lexer.errors.BadUISuffix;
+import lexer.errors.InvalidAssignmentOperator;
+import lexer.errors.InvalidDecimalFormat;
+import lexer.errors.InvalidSymbol;
+import lexer.errors.NewLineInString;
+import lexer.errors.NoExponent;
+import lexer.errors.NoExponentSign;
+import lexer.errors.UndeterminedNumber;
 
 public final class LexicalAnalyzer {
 
