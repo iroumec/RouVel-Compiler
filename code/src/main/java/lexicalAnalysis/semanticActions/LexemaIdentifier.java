@@ -32,7 +32,6 @@ public class LexemaIdentifier implements SemanticAction {
     @Override
     public void execute(LexicalAnalyzer lexicalAnalyzer) {
         char lastChar = lexicalAnalyzer.getLastCharRead();
-        TokenType tokenType;
         if (Character.isUpperCase(lastChar)) {
             lexicalAnalyzer.setDetectedType(TokenType.ID);
         } else if (Character.isDigit(lastChar) || lastChar == '.') {

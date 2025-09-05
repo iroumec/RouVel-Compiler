@@ -1,8 +1,6 @@
 package lexicalAnalysis.semanticActions;
 
 import general.TokenType;
-import general.Token;
-import general.SymbolTable;
 import lexicalAnalysis.LexicalAnalyzer;
 import lexicalAnalysis.SemanticAction;
 
