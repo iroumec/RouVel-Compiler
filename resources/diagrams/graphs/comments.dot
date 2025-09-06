@@ -8,6 +8,6 @@ digraph DFA {
     15 -> 16 [label = "\"#\"";];
     16 -> 16 [label = "n | ASN";];
     16 -> 17 [label = "\"#\"";];
-    17 -> 16 [label = "C, n [ASN]"; tailport = n;];
+    17 -> 16 [label = "C, n [ASN]";];
     17 -> 0 [label = "\"#\"";];
 }

@@ -100,7 +100,7 @@ digraph DFA {
     1 -> 2 [label = "\"U\" | AS2";];
     1 -> 4 [label = "\".\" | AS2";];
     1 -> eN [label = "Otro | -2"; style = dashed;];
-    2 -> eN [label = "Otro | -3";];
+    2 -> eN [label = "Otro | -3"; style = dashed;];
     2 -> F [label = "\"I\" | AS2, ASUI, AS3";];
     3 -> 4 [label = "d | AS2";];
     3 -> eN [label = "Otro | -4"; style = dashed;];
@@ -133,7 +133,7 @@ digraph DFA {
     16 -> 16 [label = "n | ASN";];
     16 -> 17 [label = "\"#\"";];
     17 -> 0 [label = "\"#\"";];
-    17 -> 16 [label = "C, n [ASN]"; tailport = n;];
+    17 -> 16 [label = "C, n [ASN]";];
     18 -> 18 [label = "L, d, \"%\" | AS2";];
     18 -> F [label = "Otro | AS5, AS3, ASR";];
 }

@@ -10,7 +10,7 @@ digraph DFA {
     1 -> 2 [label = "\"U\" | AS2";];
     1 -> 4 [label = "\".\" | AS2";];
     1 -> eN [label = "Otro | -2"; style = dashed;];
-    2 -> eN [label = "Otro | -3";];
+    2 -> eN [label = "Otro | -3"; style = dashed;];
     2 -> F [label = "\"I\" | AS2, ASUI, AS3";];
     3 -> 4 [label = "d | AS2";];
     3 -> eN [label = "Otro | -4"; style = dashed;];
