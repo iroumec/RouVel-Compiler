@@ -2,8 +2,8 @@ package lexer.errors;
 
 import lexer.LexicalAnalyzer;
 import lexer.LexicalError;
-import lexer.actions.LexemaFinalizer;
 import lexer.actions.ReturnCharacterToEntry;
+import lexer.actions.VariableTokenFinalizer;
 import lexer.actions.UintChecker;
 
 /**
@@ -42,7 +42,7 @@ public class BadUISuffix implements LexicalError {
         // Agregado del sufijo y finalización del lexema.
         lexicalAnalyzer.appendToLexema('I');
         UintChecker.getInstance().execute(lexicalAnalyzer);
-        LexemaFinalizer.getInstance().execute(lexicalAnalyzer);
+        VariableTokenFinalizer.getInstance().execute(lexicalAnalyzer);
         ReturnCharacterToEntry.getInstance().execute(lexicalAnalyzer);
     }
 

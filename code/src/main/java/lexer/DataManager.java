@@ -359,7 +359,6 @@ public final class DataManager {
             case "AS1" -> LexemaInitializer.getInstance();
             case "AS2" -> LexemaAppender.getInstance();
             case "AS3" -> LexemaFinalizer.getInstance();
-            case "AS4" -> LexemaIdentifier.getInstance();
             case "AS5" -> IdentifierLengthChecker.getInstance();
             case "ASUI" -> UintChecker.getInstance();
             case "ASF" -> FloatChecker.getInstance();

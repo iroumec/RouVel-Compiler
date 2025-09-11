@@ -5,7 +5,7 @@ import lexer.LexicalAnalyzer;
 import lexer.SemanticAction;
 
 /**
- * AS2:
+ * LA:
  * Agrega el caracter leído al string del lexema.
  */
 public class LexemaAppender implements SemanticAction {
@@ -37,7 +37,7 @@ public class LexemaAppender implements SemanticAction {
 
     @Override
     public String toString() {
-        return "AS2";
+        return "LA";
     }
 
 }

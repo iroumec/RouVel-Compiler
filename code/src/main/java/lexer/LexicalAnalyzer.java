@@ -1,5 +1,7 @@
 package lexer;
 
+import java.util.function.Function;
+
 import common.Token;
 import common.TokenType;
 import lexer.errors.BadCommentInitialization;
@@ -17,7 +19,6 @@ public final class LexicalAnalyzer {
     private Token token;
     private char lastCharRead;
     private StringBuilder lexema;
-    private TokenType detectedType;
     private final String codigoFuente;
     private int nroLinea, siguienteCaracterALeer;
     private int warningsDetected, errorsDetected;
@@ -208,6 +209,7 @@ public final class LexicalAnalyzer {
             return codigoFuente.charAt(siguienteCaracterALeer++);
         }
         siguienteCaracterALeer++;
+
         return '\0';
     }
 
@@ -265,18 +267,6 @@ public final class LexicalAnalyzer {
 
     public String getLexema() {
         return this.lexema.toString();
-    }
-
-    // --------------------------------------------------------------------------------------------
-
-    public void setDetectedType(TokenType type) {
-        this.detectedType = type;
-    }
-
-    // --------------------------------------------------------------------------------------------
-
-    public TokenType getDetectedType() {
-        return this.detectedType;
     }
 
     // --------------------------------------------------------------------------------------------

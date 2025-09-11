@@ -106,6 +106,16 @@ public enum TokenType {
      * @return NULL if it doesn't exist.
      */
     public static TokenType fromSymbol(String symbol) {
+
+        char firstChar = symbol.charAt(0);
+        if (Character.isUpperCase(firstChar)) {
+            return TokenType.ID;
+        } else if (Character.isDigit(firstChar) || firstChar == '.') {
+            return TokenType.CTE;
+        } else if (firstChar == '\"') {
+            return TokenType.STR;
+        }
+
         return symbolLookup.get(symbol);
     }
 }

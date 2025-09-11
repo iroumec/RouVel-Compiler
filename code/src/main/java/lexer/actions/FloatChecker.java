@@ -6,7 +6,7 @@ import lexer.LexicalAnalyzer;
 import lexer.SemanticAction;
 
 /**
- * ASF:
+ * FC:
  * 
  */
 public class FloatChecker implements SemanticAction {
@@ -150,7 +150,7 @@ public class FloatChecker implements SemanticAction {
 
     @Override
     public String toString() {
-        return "ASF";
+        return "FC";
     }
 
 }

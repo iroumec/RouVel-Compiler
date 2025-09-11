@@ -4,7 +4,7 @@ import lexer.LexicalAnalyzer;
 import lexer.SemanticAction;
 
 /**
- * AS1:
+ * LI:
  * Inicializa el string del lexema y agrega caracter leido.
  */
 public class LexemaInitializer implements SemanticAction {
@@ -36,7 +36,7 @@ public class LexemaInitializer implements SemanticAction {
 
     @Override
     public String toString() {
-        return "AS1";
+        return "LI";
     }
 
 }

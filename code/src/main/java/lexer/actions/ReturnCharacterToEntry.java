@@ -4,7 +4,7 @@ import lexer.LexicalAnalyzer;
 import lexer.SemanticAction;
 
 /**
- * ASR:
+ * RCE:
  * Devuelve el último caracter leído a la entrada.
  */
 public class ReturnCharacterToEntry implements SemanticAction {
@@ -36,7 +36,7 @@ public class ReturnCharacterToEntry implements SemanticAction {
 
     @Override
     public String toString() {
-        return "ASR";
+        return "RCE";
     }
 
 }

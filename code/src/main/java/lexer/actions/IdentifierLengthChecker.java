@@ -5,7 +5,7 @@ import lexer.LexicalAnalyzer;
 import lexer.SemanticAction;
 
 /**
- * AS5
+ * IDL
  */
 public class IdentifierLengthChecker implements SemanticAction {
 
@@ -49,6 +49,6 @@ public class IdentifierLengthChecker implements SemanticAction {
 
     @Override
     public String toString() {
-        return "AS5";
+        return "IDL";
     }
 }

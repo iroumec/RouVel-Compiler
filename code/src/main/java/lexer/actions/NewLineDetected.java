@@ -4,7 +4,7 @@ import lexer.LexicalAnalyzer;
 import lexer.SemanticAction;
 
 /**
- * ASN:
+ * NLD:
  * Incrementa el número de línea.
  */
 public class NewLineDetected implements SemanticAction {
@@ -36,6 +36,6 @@ public class NewLineDetected implements SemanticAction {
 
     @Override
     public String toString() {
-        return "ASN";
+        return "NLD";
     }
 }

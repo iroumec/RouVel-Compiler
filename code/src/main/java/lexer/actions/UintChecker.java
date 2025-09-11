@@ -4,7 +4,7 @@ import lexer.LexicalAnalyzer;
 import lexer.SemanticAction;
 
 /**
- * ASUI:
+ * UIC:
  * Se verifica que el número está dentro del rango de uint.
  */
 public class UintChecker implements SemanticAction {
@@ -79,7 +79,7 @@ public class UintChecker implements SemanticAction {
 
     @Override
     public String toString() {
-        return "ASUI";
+        return "UIC";
     }
 
 }

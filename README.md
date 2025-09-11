@@ -103,3 +103,10 @@ En DataManager, muchas veces, el algoritmo de parseo del CSV terminaba siendo me
 `sudo apt get install maven`
 
 Luego, se debe ejecutar el script `execute.sh`.
+
+## Dudas
+
+- ¿Muchas AS en un mismo arco?
+- ¿Escalable o fijo y adecuado al problema?
+
+TokenType identifica todos los tipos de tokens.
