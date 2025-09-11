@@ -94,6 +94,8 @@ En InvalidAssignmentOperator podría asumirse que, si se puso :, se quiso realiz
 
 En DataManager, muchas veces, el algoritmo de parseo del CSV terminaba siendo menos legible que el propio CSV, además de más lento.
 
+31.2UI ---> No vamos a hacernos casos de este error.
+
 ## Instalación
 
 `sudo apt get install java`
@@ -110,3 +112,5 @@ Luego, se debe ejecutar el script `execute.sh`.
 - ¿Escalable o fijo y adecuado al problema?
 
 TokenType identifica todos los tipos de tokens.
+
+El sintáctico, además de poder acceder al token, debe poder acceder a la línea. El semántico ya no va a necesitar el número de línea.

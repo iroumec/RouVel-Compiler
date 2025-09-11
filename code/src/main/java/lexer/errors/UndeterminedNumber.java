@@ -2,9 +2,9 @@ package lexer.errors;
 
 import lexer.LexicalAnalyzer;
 import lexer.LexicalError;
-import lexer.actions.LexemaFinalizer;
 import lexer.actions.ReturnCharacterToEntry;
 import lexer.actions.UintChecker;
+import lexer.actions.VariableTokenFinalizer;
 
 /**
  * Estado de Error: -2.
@@ -45,7 +45,7 @@ public class UndeterminedNumber implements LexicalError {
         // necesarias para entregar el token.
         lexicalAnalyzer.appendToLexema("UI");
         UintChecker.getInstance().execute(lexicalAnalyzer);
-        LexemaFinalizer.getInstance().execute(lexicalAnalyzer);
+        VariableTokenFinalizer.getInstance().execute(lexicalAnalyzer);
         ReturnCharacterToEntry.getInstance().execute(lexicalAnalyzer);
     }
 

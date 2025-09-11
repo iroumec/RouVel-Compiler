@@ -3,7 +3,8 @@ package lexer.errors;
 import lexer.LexicalAnalyzer;
 import lexer.LexicalError;
 import lexer.actions.FloatChecker;
-import lexer.actions.LexemaFinalizer;
+import lexer.actions.ReturnCharacterToEntry;
+import lexer.actions.VariableTokenFinalizer;
 
 /**
  * Estado de error -6.
@@ -43,7 +44,8 @@ public class NoExponent implements LexicalError {
         // Se invocan a las acciones semánticas correspondientes.
         lexicalAnalyzer.appendToLexema('0');
         FloatChecker.getInstance().execute(lexicalAnalyzer);
-        LexemaFinalizer.getInstance().execute(lexicalAnalyzer);
+        VariableTokenFinalizer.getInstance().execute(lexicalAnalyzer);
+        ReturnCharacterToEntry.getInstance().execute(lexicalAnalyzer);
     }
 
     // --------------------------------------------------------------------------------------------

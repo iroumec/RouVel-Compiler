@@ -10,7 +10,7 @@ public class Token {
     public Token(TokenType tokenType, Integer symbolTableIndex) {
 
         if (tokenType.requiereLexema() && symbolTableIndex == null) {
-            System.err.println("El tipo de token especificado no requiere de una entrada en la tabla.");
+            System.err.println("El tipo de token especificado requiere de una entrada en la tabla.");
             System.exit(1);
         }
 

@@ -5,15 +5,15 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
 
+import lexer.actions.FixedTokenFinalizer;
 import lexer.actions.FloatChecker;
 import lexer.actions.IdentifierLengthChecker;
 import lexer.actions.LexemaAppender;
-import lexer.actions.LexemaFinalizer;
-import lexer.actions.LexemaIdentifier;
 import lexer.actions.LexemaInitializer;
 import lexer.actions.NewLineDetected;
 import lexer.actions.ReturnCharacterToEntry;
 import lexer.actions.UintChecker;
+import lexer.actions.VariableTokenFinalizer;
 
 public final class DataManager {
 
@@ -176,129 +176,128 @@ public final class DataManager {
 
         // Se definen objetos comunes para no tener múltiples instancias iguales.
         SemanticAction[] EMPTY = new SemanticAction[0];
-        SemanticAction[] AS1_AS4 = new SemanticAction[] { getSemanticAction("AS1"), getSemanticAction("AS4") };
-        SemanticAction[] AS1 = new SemanticAction[] { getSemanticAction("AS1") };
-        SemanticAction[] AS1_AS3 = new SemanticAction[] { getSemanticAction("AS1"), getSemanticAction("AS3") };
-        SemanticAction[] AS2 = new SemanticAction[] { getSemanticAction("AS2") };
-        SemanticAction[] AS2_AS3 = new SemanticAction[] { getSemanticAction("AS2"), getSemanticAction("AS3") };
-        SemanticAction[] AS2_ASUI_AS3 = new SemanticAction[] { getSemanticAction("AS2"), getSemanticAction("ASUI"),
-                getSemanticAction("AS3") };
-        SemanticAction[] ASN = new SemanticAction[] { getSemanticAction("ASN") };
-        SemanticAction[] ASF_AS3_ASR = new SemanticAction[] { getSemanticAction("ASF"),
-                getSemanticAction("AS3"), getSemanticAction("ASR") };
-        SemanticAction[] AS3_ASR = new SemanticAction[] { getSemanticAction("AS3"), getSemanticAction("ASR") };
-        SemanticAction[] AS5_AS3_ASR = new SemanticAction[] { getSemanticAction("AS5"),
-                getSemanticAction("AS3"), getSemanticAction("ASR") };
+        SemanticAction[] LI = new SemanticAction[] { getSemanticAction("LI") };
+        SemanticAction[] LI_FTF = new SemanticAction[] { getSemanticAction("LI"), getSemanticAction("FTF") };
+        SemanticAction[] LA = new SemanticAction[] { getSemanticAction("LA") };
+        SemanticAction[] LA_FTF = new SemanticAction[] { getSemanticAction("LA"), getSemanticAction("FTF") };
+        SemanticAction[] LA_UIC_VTF = new SemanticAction[] { getSemanticAction("LA"), getSemanticAction("UIC"),
+                getSemanticAction("VTF") };
+        SemanticAction[] NLD = new SemanticAction[] { getSemanticAction("NLD") };
+        SemanticAction[] FC_VTF_RCE = new SemanticAction[] { getSemanticAction("FC"),
+                getSemanticAction("VTF"), getSemanticAction("RCE") };
+        SemanticAction[] FTF_RCE = new SemanticAction[] { getSemanticAction("FTF"), getSemanticAction("RCE") };
+        SemanticAction[] ILC_FTF_RCE = new SemanticAction[] { getSemanticAction("ILC"),
+                getSemanticAction("FTF"), getSemanticAction("RCE") };
 
         // Estado 0
         Arrays.fill(SEMANTIC_ACTIONS_MATRIX[0], EMPTY);
-        SEMANTIC_ACTIONS_MATRIX[0][charToIndex('L')] = AS1_AS4;
-        SEMANTIC_ACTIONS_MATRIX[0][charToIndex('d')] = AS1_AS4;
-        SEMANTIC_ACTIONS_MATRIX[0][charToIndex('U')] = AS1_AS4;
-        SEMANTIC_ACTIONS_MATRIX[0][charToIndex('I')] = AS1_AS4;
-        SEMANTIC_ACTIONS_MATRIX[0][charToIndex('.')] = AS1_AS4;
-        SEMANTIC_ACTIONS_MATRIX[0][charToIndex('F')] = AS1_AS4;
-        SEMANTIC_ACTIONS_MATRIX[0][charToIndex('"')] = AS1_AS4;
-        SEMANTIC_ACTIONS_MATRIX[0][charToIndex(':')] = AS1;
-        SEMANTIC_ACTIONS_MATRIX[0][charToIndex('=')] = AS1;
-        SEMANTIC_ACTIONS_MATRIX[0][charToIndex('>')] = AS1;
-        SEMANTIC_ACTIONS_MATRIX[0][charToIndex('<')] = AS1;
-        SEMANTIC_ACTIONS_MATRIX[0][charToIndex('l')] = AS1;
-        SEMANTIC_ACTIONS_MATRIX[0][charToIndex('-')] = AS1;
-        SEMANTIC_ACTIONS_MATRIX[0][charToIndex('n')] = ASN;
-        SEMANTIC_ACTIONS_MATRIX[0][charToIndex('+')] = AS1_AS3;
-        SEMANTIC_ACTIONS_MATRIX[0][charToIndex('*')] = AS1_AS3;
-        SEMANTIC_ACTIONS_MATRIX[0][charToIndex('/')] = AS1_AS3;
-        SEMANTIC_ACTIONS_MATRIX[0][charToIndex('(')] = AS1_AS3;
-        SEMANTIC_ACTIONS_MATRIX[0][charToIndex(')')] = AS1_AS3;
-        SEMANTIC_ACTIONS_MATRIX[0][charToIndex('{')] = AS1_AS3;
-        SEMANTIC_ACTIONS_MATRIX[0][charToIndex('}')] = AS1_AS3;
-        SEMANTIC_ACTIONS_MATRIX[0][charToIndex('_')] = AS1_AS3;
-        SEMANTIC_ACTIONS_MATRIX[0][charToIndex(';')] = AS1_AS3;
+        SEMANTIC_ACTIONS_MATRIX[0][charToIndex('L')] = LI;
+        SEMANTIC_ACTIONS_MATRIX[0][charToIndex('d')] = LI;
+        SEMANTIC_ACTIONS_MATRIX[0][charToIndex('U')] = LI;
+        SEMANTIC_ACTIONS_MATRIX[0][charToIndex('I')] = LI;
+        SEMANTIC_ACTIONS_MATRIX[0][charToIndex('.')] = LI;
+        SEMANTIC_ACTIONS_MATRIX[0][charToIndex('F')] = LI;
+        SEMANTIC_ACTIONS_MATRIX[0][charToIndex('"')] = LI;
+        SEMANTIC_ACTIONS_MATRIX[0][charToIndex(':')] = LI;
+        SEMANTIC_ACTIONS_MATRIX[0][charToIndex('=')] = LI;
+        SEMANTIC_ACTIONS_MATRIX[0][charToIndex('>')] = LI;
+        SEMANTIC_ACTIONS_MATRIX[0][charToIndex('<')] = LI;
+        SEMANTIC_ACTIONS_MATRIX[0][charToIndex('l')] = LI;
+        SEMANTIC_ACTIONS_MATRIX[0][charToIndex('-')] = LI;
+        SEMANTIC_ACTIONS_MATRIX[0][charToIndex('n')] = NLD;
+        SEMANTIC_ACTIONS_MATRIX[0][charToIndex('+')] = LI_FTF;
+        SEMANTIC_ACTIONS_MATRIX[0][charToIndex('*')] = LI_FTF;
+        SEMANTIC_ACTIONS_MATRIX[0][charToIndex('/')] = LI_FTF;
+        SEMANTIC_ACTIONS_MATRIX[0][charToIndex('(')] = LI_FTF;
+        SEMANTIC_ACTIONS_MATRIX[0][charToIndex(')')] = LI_FTF;
+        SEMANTIC_ACTIONS_MATRIX[0][charToIndex('{')] = LI_FTF;
+        SEMANTIC_ACTIONS_MATRIX[0][charToIndex('}')] = LI_FTF;
+        SEMANTIC_ACTIONS_MATRIX[0][charToIndex('_')] = LI_FTF;
+        SEMANTIC_ACTIONS_MATRIX[0][charToIndex(';')] = LI_FTF;
 
         // Estado 1
         Arrays.fill(SEMANTIC_ACTIONS_MATRIX[1], EMPTY);
-        SEMANTIC_ACTIONS_MATRIX[1][charToIndex('L')] = AS2;
-        SEMANTIC_ACTIONS_MATRIX[1][charToIndex('l')] = AS2;
-        SEMANTIC_ACTIONS_MATRIX[1][charToIndex('d')] = AS2;
-        SEMANTIC_ACTIONS_MATRIX[1][charToIndex('U')] = AS2;
-        SEMANTIC_ACTIONS_MATRIX[1][charToIndex('.')] = AS2;
+        SEMANTIC_ACTIONS_MATRIX[1][charToIndex('L')] = LA;
+        SEMANTIC_ACTIONS_MATRIX[1][charToIndex('l')] = LA;
+        SEMANTIC_ACTIONS_MATRIX[1][charToIndex('d')] = LA;
+        SEMANTIC_ACTIONS_MATRIX[1][charToIndex('U')] = LA;
+        SEMANTIC_ACTIONS_MATRIX[1][charToIndex('.')] = LA;
 
         // Estado 2
         Arrays.fill(SEMANTIC_ACTIONS_MATRIX[2], EMPTY);
-        SEMANTIC_ACTIONS_MATRIX[2][charToIndex('I')] = AS2_ASUI_AS3;
+        SEMANTIC_ACTIONS_MATRIX[2][charToIndex('I')] = LA_UIC_VTF;
 
         // Estado 3
         Arrays.fill(SEMANTIC_ACTIONS_MATRIX[3], EMPTY);
-        SEMANTIC_ACTIONS_MATRIX[3][charToIndex('d')] = AS2;
+        SEMANTIC_ACTIONS_MATRIX[3][charToIndex('d')] = LA;
 
         // Estado 4
-        Arrays.fill(SEMANTIC_ACTIONS_MATRIX[4], ASF_AS3_ASR);
-        SEMANTIC_ACTIONS_MATRIX[4][charToIndex('d')] = AS2;
-        SEMANTIC_ACTIONS_MATRIX[4][charToIndex('F')] = AS2;
+        Arrays.fill(SEMANTIC_ACTIONS_MATRIX[4], FC_VTF_RCE);
+        SEMANTIC_ACTIONS_MATRIX[4][charToIndex('d')] = LA;
+        SEMANTIC_ACTIONS_MATRIX[4][charToIndex('F')] = LA;
 
         // Estado 5
         Arrays.fill(SEMANTIC_ACTIONS_MATRIX[5], EMPTY);
-        SEMANTIC_ACTIONS_MATRIX[5][charToIndex('-')] = AS2;
-        SEMANTIC_ACTIONS_MATRIX[5][charToIndex('+')] = AS2;
+        SEMANTIC_ACTIONS_MATRIX[5][charToIndex('-')] = LA;
+        SEMANTIC_ACTIONS_MATRIX[5][charToIndex('+')] = LA;
 
         // Estado 6
         Arrays.fill(SEMANTIC_ACTIONS_MATRIX[6], EMPTY);
-        SEMANTIC_ACTIONS_MATRIX[6][charToIndex('d')] = AS2;
+        SEMANTIC_ACTIONS_MATRIX[6][charToIndex('d')] = LA;
 
         // Estado 7
-        Arrays.fill(SEMANTIC_ACTIONS_MATRIX[7], ASF_AS3_ASR);
-        SEMANTIC_ACTIONS_MATRIX[7][charToIndex('d')] = AS2;
+        Arrays.fill(SEMANTIC_ACTIONS_MATRIX[7], FC_VTF_RCE);
+        SEMANTIC_ACTIONS_MATRIX[7][charToIndex('d')] = LA;
 
         // Estado 8
-        Arrays.fill(SEMANTIC_ACTIONS_MATRIX[8], AS2);
-        SEMANTIC_ACTIONS_MATRIX[8][charToIndex('"')] = AS2_AS3;
-        SEMANTIC_ACTIONS_MATRIX[8][charToIndex('n')] = ASN;
+        Arrays.fill(SEMANTIC_ACTIONS_MATRIX[8], LA);
+        SEMANTIC_ACTIONS_MATRIX[8][charToIndex('"')] = LA_FTF;
+        SEMANTIC_ACTIONS_MATRIX[8][charToIndex('n')] = NLD;
 
         // Estado 9
-        Arrays.fill(SEMANTIC_ACTIONS_MATRIX[9], AS3_ASR);
-        SEMANTIC_ACTIONS_MATRIX[9][charToIndex('l')] = AS2;
+        Arrays.fill(SEMANTIC_ACTIONS_MATRIX[9], FTF_RCE);
+        SEMANTIC_ACTIONS_MATRIX[9][charToIndex('l')] = LA;
 
         // Estado 10
         Arrays.fill(SEMANTIC_ACTIONS_MATRIX[10], EMPTY);
-        SEMANTIC_ACTIONS_MATRIX[10][charToIndex('=')] = AS2_AS3;
+        SEMANTIC_ACTIONS_MATRIX[10][charToIndex('=')] = LA_FTF;
 
         // Estado 11
-        Arrays.fill(SEMANTIC_ACTIONS_MATRIX[11], AS3_ASR);
-        SEMANTIC_ACTIONS_MATRIX[11][charToIndex('=')] = AS2_AS3;
-        SEMANTIC_ACTIONS_MATRIX[11][charToIndex('!')] = AS2_AS3;
+        Arrays.fill(SEMANTIC_ACTIONS_MATRIX[11], FTF_RCE);
+        SEMANTIC_ACTIONS_MATRIX[11][charToIndex('=')] = LA_FTF;
+        SEMANTIC_ACTIONS_MATRIX[11][charToIndex('!')] = LA_FTF;
 
         // Estado 12
-        Arrays.fill(SEMANTIC_ACTIONS_MATRIX[12], AS3_ASR);
-        SEMANTIC_ACTIONS_MATRIX[12][charToIndex('>')] = AS2_AS3;
+        Arrays.fill(SEMANTIC_ACTIONS_MATRIX[12], FTF_RCE);
+        SEMANTIC_ACTIONS_MATRIX[12][charToIndex('>')] = LA_FTF;
 
         // Estado 13
-        Arrays.fill(SEMANTIC_ACTIONS_MATRIX[13], AS3_ASR);
-        SEMANTIC_ACTIONS_MATRIX[13][charToIndex('=')] = AS2_AS3;
+        Arrays.fill(SEMANTIC_ACTIONS_MATRIX[13], FTF_RCE);
+        SEMANTIC_ACTIONS_MATRIX[13][charToIndex('=')] = LA_FTF;
 
         // Estado 14
-        Arrays.fill(SEMANTIC_ACTIONS_MATRIX[14], AS3_ASR);
-        SEMANTIC_ACTIONS_MATRIX[14][charToIndex('=')] = AS2_AS3;
+        Arrays.fill(SEMANTIC_ACTIONS_MATRIX[14], FTF_RCE);
+        SEMANTIC_ACTIONS_MATRIX[14][charToIndex('=')] = LA_FTF;
 
         // Estado 15.
         Arrays.fill(SEMANTIC_ACTIONS_MATRIX[15], EMPTY);
 
         // Estado 16
         Arrays.fill(SEMANTIC_ACTIONS_MATRIX[16], EMPTY);
-        SEMANTIC_ACTIONS_MATRIX[16][charToIndex('n')] = ASN;
+        SEMANTIC_ACTIONS_MATRIX[16][charToIndex('n')] = NLD;
 
         // Estado 17
         Arrays.fill(SEMANTIC_ACTIONS_MATRIX[17], EMPTY);
-        SEMANTIC_ACTIONS_MATRIX[17][charToIndex('n')] = ASN;
+        SEMANTIC_ACTIONS_MATRIX[17][charToIndex('n')] = NLD;
 
         // Estado 18
-        Arrays.fill(SEMANTIC_ACTIONS_MATRIX[18], AS5_AS3_ASR);
-        SEMANTIC_ACTIONS_MATRIX[18][charToIndex('L')] = AS2;
-        SEMANTIC_ACTIONS_MATRIX[18][charToIndex('d')] = AS2;
-        SEMANTIC_ACTIONS_MATRIX[18][charToIndex('U')] = AS2;
-        SEMANTIC_ACTIONS_MATRIX[18][charToIndex('I')] = AS2;
-        SEMANTIC_ACTIONS_MATRIX[18][charToIndex('F')] = AS2;
-        SEMANTIC_ACTIONS_MATRIX[18][charToIndex('%')] = AS2;
+        Arrays.fill(SEMANTIC_ACTIONS_MATRIX[18], ILC_FTF_RCE);
+        SEMANTIC_ACTIONS_MATRIX[18][charToIndex('L')] = LA;
+        SEMANTIC_ACTIONS_MATRIX[18][charToIndex('d')] = LA;
+        SEMANTIC_ACTIONS_MATRIX[18][charToIndex('U')] = LA;
+        SEMANTIC_ACTIONS_MATRIX[18][charToIndex('I')] = LA;
+        SEMANTIC_ACTIONS_MATRIX[18][charToIndex('F')] = LA;
+        SEMANTIC_ACTIONS_MATRIX[18][charToIndex('%')] = LA;
     }
 
     // --------------------------------------------------------------------------------------------
@@ -356,14 +355,15 @@ public final class DataManager {
     private static SemanticAction getSemanticAction(String semanticAction) {
 
         return switch (semanticAction) {
-            case "AS1" -> LexemaInitializer.getInstance();
-            case "AS2" -> LexemaAppender.getInstance();
-            case "AS3" -> LexemaFinalizer.getInstance();
-            case "AS5" -> IdentifierLengthChecker.getInstance();
-            case "ASUI" -> UintChecker.getInstance();
-            case "ASF" -> FloatChecker.getInstance();
-            case "ASR" -> ReturnCharacterToEntry.getInstance();
-            case "ASN" -> NewLineDetected.getInstance();
+            case "FTF" -> FixedTokenFinalizer.getInstance();
+            case "FC" -> FloatChecker.getInstance();
+            case "ILC" -> IdentifierLengthChecker.getInstance();
+            case "LA" -> LexemaAppender.getInstance();
+            case "LI" -> LexemaInitializer.getInstance();
+            case "NLD" -> NewLineDetected.getInstance();
+            case "RCE" -> ReturnCharacterToEntry.getInstance();
+            case "UIC" -> UintChecker.getInstance();
+            case "VTF" -> VariableTokenFinalizer.getInstance();
             default -> null;
         };
     }

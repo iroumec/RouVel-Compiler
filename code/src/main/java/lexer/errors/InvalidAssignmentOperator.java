@@ -1,6 +1,7 @@
 package lexer.errors;
 
 import lexer.actions.FixedTokenFinalizer;
+import lexer.actions.ReturnCharacterToEntry;
 
 /**
  * Estado de error -7.
@@ -33,10 +34,10 @@ public class InvalidAssignmentOperator implements lexer.LexicalError {
                 + ": Operador de asignación inválido '"
                 + lexicalAnalyzer.getLexema() + "'. "
                 + "El operador correcto es ':='. Se insertará el caracter '='.");
-        
+
         lexicalAnalyzer.appendToLexema("=");
         FixedTokenFinalizer.getInstance().execute(lexicalAnalyzer);
-        ReturnCharacterToEntry.getInstace().execute(lexicalAnalyzer)
+        ReturnCharacterToEntry.getInstance().execute(lexicalAnalyzer);
 
         lexicalAnalyzer.incrementErrorsDetected();
     }

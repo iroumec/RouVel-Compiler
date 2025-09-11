@@ -1,6 +1,7 @@
 package lexer.errors;
 
 import lexer.LexicalError;
+import lexer.actions.ReturnCharacterToEntry;
 
 /**
  * Estado de error -9.
@@ -33,6 +34,7 @@ public class BadCommentInitialization implements LexicalError {
                 + ": Los comentarios deben comenzar con '##' y terminar con '##'. Se encontró un único carácter '#'. "
                 + "El símbolo será descartado. Esto puede traer errores en la interpretación del código si el carácter tenía la intención de comenzar un comentario.");
         lexicalAnalyzer.incrementErrorsDetected();
+        ReturnCharacterToEntry.getInstance().execute(lexicalAnalyzer);
     }
 
     // --------------------------------------------------------------------------------------------

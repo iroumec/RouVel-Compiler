@@ -2,6 +2,7 @@ package lexer.errors;
 
 import lexer.LexicalAnalyzer;
 import lexer.LexicalError;
+import lexer.actions.ReturnCharacterToEntry;
 
 /**
  * Estado de error -4.
@@ -34,6 +35,7 @@ public class InvalidDecimalFormat implements LexicalError {
                 + ": El símbolo '.' es inválido a menos de que le siga la parte decimal de un número. "
                 + "Este será omitido.");
         lexicalAnalyzer.incrementErrorsDetected();
+        ReturnCharacterToEntry.getInstance().execute(lexicalAnalyzer);
     }
 
     // --------------------------------------------------------------------------------------------

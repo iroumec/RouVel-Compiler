@@ -1,9 +1,6 @@
 package lexer;
 
-import java.util.function.Function;
-
 import common.Token;
-import common.TokenType;
 import lexer.errors.BadCommentInitialization;
 import lexer.errors.BadUISuffix;
 import lexer.errors.InvalidAssignmentOperator;
@@ -130,7 +127,6 @@ public final class LexicalAnalyzer {
      */
     private void cleanSearch() {
         this.token = null;
-        this.detectedType = null;
         if (this.lexema == null)
             this.lexema = new StringBuilder();
         else

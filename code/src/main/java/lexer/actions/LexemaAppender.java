@@ -1,5 +1,4 @@
 package lexer.actions;
-//AS2
 
 import lexer.LexicalAnalyzer;
 import lexer.SemanticAction;

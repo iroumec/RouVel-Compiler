@@ -4,6 +4,7 @@ import lexer.LexicalAnalyzer;
 import lexer.LexicalError;
 import lexer.actions.FixedTokenFinalizer;
 import lexer.actions.FloatChecker;
+import lexer.actions.ReturnCharacterToEntry;
 
 /**
  * Estado de error -5.
@@ -39,14 +40,13 @@ public class NoExponentSign implements LexicalError {
             number.append(currentChar);
             currentChar = lexicalAnalyzer.readNextChar();
         }
-        lexicalAnalyzer.decrementarSiguienteCaracterALeer();
 
         // Si no prosigue con un dígito, se asume exponente 0 positivo.
-        // Si prosigue con dígito, se asume exponente positivo.
         if (number.length() == 0) {
             number.append('0');
         }
 
+        // Se asume exponente positivo.
         System.err.println("ERROR: Línea "
                 + lexicalAnalyzer.getNroLinea()
                 + ": Se debe especificar un signo para el exponente."
@@ -59,6 +59,7 @@ public class NoExponentSign implements LexicalError {
         lexicalAnalyzer.appendToLexema(number.toString());
         FloatChecker.getInstance().execute(lexicalAnalyzer);
         FixedTokenFinalizer.getInstance().execute(lexicalAnalyzer);
+        ReturnCharacterToEntry.getInstance().execute(lexicalAnalyzer);
     }
 
     // --------------------------------------------------------------------------------------------

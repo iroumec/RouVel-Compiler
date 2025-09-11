@@ -1,11 +1,10 @@
 package lexer.actions;
-//AS3
 
 import lexer.LexicalAnalyzer;
 import lexer.SemanticAction;
 
 /**
- * IDL
+ * ILC
  */
 public class IdentifierLengthChecker implements SemanticAction {
 
@@ -49,6 +48,6 @@ public class IdentifierLengthChecker implements SemanticAction {
 
     @Override
     public String toString() {
-        return "IDL";
+        return "ILC";
     }
 }

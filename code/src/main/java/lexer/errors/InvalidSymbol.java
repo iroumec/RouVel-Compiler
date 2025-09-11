@@ -33,7 +33,7 @@ public class InvalidSymbol implements LexicalError {
                 + lexicalAnalyzer.getNroLinea()
                 + ": Símbolo inválido '"
                 + lexicalAnalyzer.getLastCharRead() + "'. "
-                + "El símbolo será descartado.");
+                + "El símbolo se omitirá.");
         lexicalAnalyzer.incrementErrorsDetected();
     }
 
