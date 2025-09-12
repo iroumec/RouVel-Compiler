@@ -1,10 +1,7 @@
 package lexer.errors;
 
-import javax.lang.model.element.VariableElement;
-
 import lexer.LexicalAnalyzer;
 import lexer.LexicalError;
-import lexer.actions.FixedTokenFinalizer;
 import lexer.actions.FloatChecker;
 import lexer.actions.ReturnCharacterToEntry;
 import lexer.actions.VariableTokenFinalizer;
