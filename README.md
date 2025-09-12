@@ -4,7 +4,9 @@ Trabajo práctico de cursada para la materia Compiladores e Intérpretes.
 
 A partir de un lenguaje simple proporcionado por la cátedra, se implementó su compilador lenguaje. Las características del lenguaje son las siguientes:
 
-## Autómata Finito
+## Anaizador Léxico
+
+### Autómata Finito
 
 ![Finite Automatom](resources/diagrams/finiteAutomatom.png)
 
@@ -17,43 +19,20 @@ Se define:
 - s: indica un espacio en blanco.
 - t: indica una tabulación.
 - n: indica un salto de línea.
+- Se define P el conjunto de los siguientes símbolos de un carácter. P = {+, \*, /, (, ), {, }, \_, ;}.
 - Otro: representa a un carácter que no está comprendido en los demás arcos.
 
-Además, se definen las siguientes acciones semánticas (AS):
+Además, se definen las siguientes acciones semánticas (AS), en orden alfabérico:
 
-AS1: LexemaInitializer:
--Inicializa el string del lexema y agrega caracter leido.
-
-AS2: LexemaAppender:
--Agrega caracter leído al string del lexema.
-
-AS3: LexemaFinalizer:
--Se obtiene el lexema y el TokenType (será nulo para todo aquello que no sea palabra reservada o literal).
--Si el TokenType era nulo y el lexema no es vacío:
---Se obtiene el TokenType detectado (es el caso de identificadores, constantes y cadenas de caracteres).
---Si el TokenType es vacío:
----Error (Se toma como palabra reservada inexistente)
--Se da de alta en la tabla de símbolos.
-
-AS4: LexemaIdentifier:
--Se obtiene el último caracter leído (que es el primero del lexema).
--Si es letra mayúscula, define el TokenType como ID (identificador).
--Si es dígito o punto, define el TokenType como CTE (constante).
--Si es comillas, define el TokenType como STR (cadena de caracteres).
-
-ASN: NewLineDetected:
--Incrementa el número de linea.
-
-ASR: ReturnCharacterToEntry:
--Decrementa la referencia al siguiente caracter a leer (devolviendo así el último caracter leído a la entrada).
-
-ASUI: UintChecker:
--Se eliminan los trailing zeros.
--Se verifica que el número está dentro del rango de uint.
---Si no, entonces se le da el valor máximo del rango.
-
-ASF: FloatChecker:
--?
+- `FixedTokenFinalizer` (FTF):
+- `FloatChecker` (FC):
+- `IdentifierLengthChecker` (ILC):
+- `LexemaAppender` (LA): agrega caracter leído al string del lexema.
+- `LexemaInitializer` (LI): inicializa el string del lexema y agrega caracter leido.
+- `NewLineDetected` (NLD): incrementa el número de línea.
+- `ReturnCharacterToEntry` (RCE): decrementa la referencia al siguiente caracter a leer (devolviendo así el último caracter leído a la entrada).
+- `UintChecker` (UIC): se eliminan los trailing zeros, se verifica que el número está dentro del rango de uint. Si no, entonces se le da el valor máximo del rango.
+- `VariableTokenFinalizer` (VTF):
 
 ## Decisiones
 
@@ -84,27 +63,15 @@ Estando en el estado 1 es distinto el error si se quiere escribir un UINT a si s
 
 Quisimos adecuarnos a la convención utilizado para la cátedra y, si bien está buena para ejemplos concretos, en un grafo grande puede ser algo tedioso. Por eso, definimos nuestra convención como sigue:
 
-Se define P el conjunto de los siguientes símbolos de un carácter:
-P = [+, *, /, (, ), {, }, _, ;]
-\"+\", \"\*\", \"/\", \"(\", \")\", \"{\", \"}\", \"\_\", \";\"
-
 En caso de venir un solo #, ¿cómo se maneja? Podrían contarse los # que siguen y determinar si fue un intento de comentario. Pero podría haber "#" dentro de los comentarios.
 
 En InvalidAssignmentOperator podría asumirse que, si se puso :, se quiso realizar una asignación.
-
-En DataManager, muchas veces, el algoritmo de parseo del CSV terminaba siendo menos legible que el propio CSV, además de más lento.
 
 31.2UI ---> No vamos a hacernos casos de este error.
 
 ## Instalación
 
-`sudo apt get install java`
-
-`sudo apt get install open-jdk-21`
-
-`sudo apt get install maven`
-
-Luego, se debe ejecutar el script `execute.sh`.
+Ejecute el _script_ correspondiente a su sistema operativo en el directorio `resources/install` del proyecto. Esto instalará automáticamente las versiones necesarias de Java, OpenJDK y Maven. Luego, ejecute el _script_ de `run.sh` para correr el programa.
 
 ## Dudas
 
