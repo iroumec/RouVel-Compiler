@@ -1,10 +1,13 @@
 package lexer.errors;
 
+import javax.lang.model.element.VariableElement;
+
 import lexer.LexicalAnalyzer;
 import lexer.LexicalError;
 import lexer.actions.FixedTokenFinalizer;
 import lexer.actions.FloatChecker;
 import lexer.actions.ReturnCharacterToEntry;
+import lexer.actions.VariableTokenFinalizer;
 
 /**
  * Estado de error -5.
@@ -58,7 +61,7 @@ public class NoExponentSign implements LexicalError {
         // Se invocan a las acciones semánticas correspondientes.
         lexicalAnalyzer.appendToLexema(number.toString());
         FloatChecker.getInstance().execute(lexicalAnalyzer);
-        FixedTokenFinalizer.getInstance().execute(lexicalAnalyzer);
+        VariableTokenFinalizer.getInstance().execute(lexicalAnalyzer);
         ReturnCharacterToEntry.getInstance().execute(lexicalAnalyzer);
     }
 

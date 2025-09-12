@@ -35,11 +35,12 @@ public class InvalidAssignmentOperator implements lexer.LexicalError {
                 + lexicalAnalyzer.getLexema() + "'. "
                 + "El operador correcto es ':='. Se insertará el caracter '='.");
 
+        lexicalAnalyzer.incrementErrorsDetected();
+
+        // Ejecución de acciones semánticas reparadores.
         lexicalAnalyzer.appendToLexema("=");
         FixedTokenFinalizer.getInstance().execute(lexicalAnalyzer);
         ReturnCharacterToEntry.getInstance().execute(lexicalAnalyzer);
-
-        lexicalAnalyzer.incrementErrorsDetected();
     }
 
     // --------------------------------------------------------------------------------------------

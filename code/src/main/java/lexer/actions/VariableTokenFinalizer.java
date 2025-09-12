@@ -40,7 +40,6 @@ public class VariableTokenFinalizer implements SemanticAction {
         TokenType tokenType = TokenType.fromSymbol(lexema);
         Integer symbolTableEntry = SymbolTable.getInstance().agregarEntrada(tokenType, lexema);
         lexicalAnalyzer.setToken(new Token(tokenType, symbolTableEntry));
-
     }
 
     // --------------------------------------------------------------------------------------------

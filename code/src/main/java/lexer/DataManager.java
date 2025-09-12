@@ -180,14 +180,15 @@ public final class DataManager {
         SemanticAction[] LI_FTF = new SemanticAction[] { getSemanticAction("LI"), getSemanticAction("FTF") };
         SemanticAction[] LA = new SemanticAction[] { getSemanticAction("LA") };
         SemanticAction[] LA_FTF = new SemanticAction[] { getSemanticAction("LA"), getSemanticAction("FTF") };
+        SemanticAction[] LA_VTF = new SemanticAction[] { getSemanticAction("LA"), getSemanticAction("VTF") };
         SemanticAction[] LA_UIC_VTF = new SemanticAction[] { getSemanticAction("LA"), getSemanticAction("UIC"),
                 getSemanticAction("VTF") };
         SemanticAction[] NLD = new SemanticAction[] { getSemanticAction("NLD") };
         SemanticAction[] FC_VTF_RCE = new SemanticAction[] { getSemanticAction("FC"),
                 getSemanticAction("VTF"), getSemanticAction("RCE") };
         SemanticAction[] FTF_RCE = new SemanticAction[] { getSemanticAction("FTF"), getSemanticAction("RCE") };
-        SemanticAction[] ILC_FTF_RCE = new SemanticAction[] { getSemanticAction("ILC"),
-                getSemanticAction("FTF"), getSemanticAction("RCE") };
+        SemanticAction[] ILC_VTF_RCE = new SemanticAction[] { getSemanticAction("ILC"),
+                getSemanticAction("VTF"), getSemanticAction("RCE") };
 
         // Estado 0
         Arrays.fill(SEMANTIC_ACTIONS_MATRIX[0], EMPTY);
@@ -251,7 +252,7 @@ public final class DataManager {
 
         // Estado 8
         Arrays.fill(SEMANTIC_ACTIONS_MATRIX[8], LA);
-        SEMANTIC_ACTIONS_MATRIX[8][charToIndex('"')] = LA_FTF;
+        SEMANTIC_ACTIONS_MATRIX[8][charToIndex('"')] = LA_VTF;
         SEMANTIC_ACTIONS_MATRIX[8][charToIndex('n')] = NLD;
 
         // Estado 9
@@ -291,7 +292,7 @@ public final class DataManager {
         SEMANTIC_ACTIONS_MATRIX[17][charToIndex('n')] = NLD;
 
         // Estado 18
-        Arrays.fill(SEMANTIC_ACTIONS_MATRIX[18], ILC_FTF_RCE);
+        Arrays.fill(SEMANTIC_ACTIONS_MATRIX[18], ILC_VTF_RCE);
         SEMANTIC_ACTIONS_MATRIX[18][charToIndex('L')] = LA;
         SEMANTIC_ACTIONS_MATRIX[18][charToIndex('d')] = LA;
         SEMANTIC_ACTIONS_MATRIX[18][charToIndex('U')] = LA;
