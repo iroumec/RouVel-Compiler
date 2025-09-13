@@ -77,10 +77,10 @@ public final class DataManager {
         STATE_TRANSITION_MATRIX[0][charToIndex('<')] = 14;
         STATE_TRANSITION_MATRIX[0][charToIndex('#')] = 15;
         for (char c : new char[] { 'L', 'U', 'I', 'F' }) {
-            STATE_TRANSITION_MATRIX[0][charToIndex(c)] = 0;
+            STATE_TRANSITION_MATRIX[0][charToIndex(c)] = 18;
         }
         for (char c : new char[] { '+', '*', '/', '(', ')', '{', '}', '_', ';' }) {
-            STATE_TRANSITION_MATRIX[0][charToIndex(c)] = 18;
+            STATE_TRANSITION_MATRIX[0][charToIndex(c)] = 19;
         }
 
         // Estado 1
@@ -189,7 +189,6 @@ public final class DataManager {
         SEMANTIC_ACTIONS_MATRIX[0][charToIndex('n')] = NLD;
         for (char c : new char[] { '+', '*', '/', '(', ')', '{', '}', '_', ';' }) {
             SEMANTIC_ACTIONS_MATRIX[0][charToIndex(c)] = LI_FTF;
-
         }
 
         // Estado 1
