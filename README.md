@@ -16,6 +16,8 @@ A partir de un lenguaje simple proporcionado por la cátedra, se implementó su 
 
 Los binarios ya incluyen todo lo necesario para ejecutar el compilador. Funciona tanto con rutas absolutas como relativas. En `resources/testFiles` hay códigos de ejemplo.
 
+Requisito: [Docker](https://docs.docker.com/engine/install/).
+
 ### Linux
 
 ```sh
