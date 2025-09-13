@@ -10,42 +10,32 @@ A partir de un lenguaje simple proporcionado por la cátedra, se implementó su 
 
 - [Características del lenguaje](resources/markdown/language.md)
 - [Analizador léxico](resources/markdown/lexer.md)
-- [Analziador sintáctico](resources/markdown/parser.md)
+- [Analizador sintáctico](resources/markdown/parser.md)
 
-## Instalación
+## Ejecución
 
-### Construcción de la Imagen
+Los binarios ya incluyen todo lo necesario para ejecutar el compilador. Funciona tanto con rutas absolutas como relativas. En `resources/testFiles` hay códigos de ejemplo.
 
-A esto solo debe hacerlo una vez y puede que tarde unos pocos minutos.
-
-```bash
-docker build -t tpe-compiler .
-```
-
-### Levantamiento del Contenedor
-
-Debe especificar la ruta del archivo `.uki` a compilar. Dichos archivos deben hallarse en un subdirectorio de la carpeta del proyecto (si se copia el comando tal y como se especifica debajo) o remplazar lo previo a `:/data` con el directorio a montar.
-
-#### Linux/macOS
+### Linux
 
 ```sh
-docker run --rm -v "$(pwd)":/data tpe-compiler /data/archivo.uki
+./rouvel-linux resources/testFiles/example1.uki
 ```
 
-Ejemplo utilizando los archivos de prueba proporcionados:
+### macOS
 
 ```sh
-docker run --rm -v "$(pwd)":/data tpe-compiler /data/resources/testFiles/test1.uki
+./rouvel-macos resources/testFiles/example1.uki
 ```
 
-#### Windows (CMD)
+### Windows
 
 ```sh
-docker run --rm -v "%cd%":/data tpe-compiler /data/archivo.uki
+rouvel.exe resources/testFiles/example1.uki
 ```
 
-#### Windows (PowerShell)
+## Eliminación de la Imagen (opcional)
 
 ```sh
-docker run --rm -v "${PWD}:/data" tpe-compiler /data/archivo.uki
+docker rmi rouvel-compiler
 ```

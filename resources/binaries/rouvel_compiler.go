@@ -2,11 +2,47 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"runtime"
 )
+
+const (
+	imageName = "rouvel-compiler"
+)
+
+// checkOrBuildImage verifica si la imagen existe y si no, la construye.
+func checkOrBuildImage() error {
+	// Se verifica si la imagen ya existe.
+	checkCmd := exec.Command("docker", "image", "inspect", imageName)
+	if err := checkCmd.Run(); err == nil {
+		return nil // Imagen ya existe.
+	}
+
+	fmt.Printf("La imagen '%s' no existe. Construyendo con Docker...\n", imageName)
+
+	// Directorio actual donde se ejecuta el binario.
+	exePath, err := os.Executable()
+	if err != nil {
+		return fmt.Errorf("no se pudo obtener la ruta del ejecutable: %w", err)
+	}
+	exeDir := filepath.Dir(exePath)
+
+	// Se asume que el Dockerfile está en el mismo directorio que el ejecutable.
+	buildCmd := exec.Command("docker", "build", "-t", imageName, exeDir)
+	buildCmd.Stdout = io.Discard
+	buildCmd.Stderr = io.Discard
+	buildCmd.Stdin = os.Stdin
+
+	// Ejecución del comando de construcción.
+	if err := buildCmd.Run(); err != nil {
+		return fmt.Errorf("falló la construcción de la imagen Docker: %w", err)
+	}
+
+	return nil
+}
 
 func main() {
 	if len(os.Args) < 2 {
@@ -20,26 +56,31 @@ func main() {
 		os.Exit(1)
 	}
 
-	// Comprobar que el archivo existe
+	// Se comprueba que el archivo exista.
 	if _, err := os.Stat(filePath); os.IsNotExist(err) {
 		fmt.Println("El archivo no existe:", filePath)
+		os.Exit(1)
+	}
+
+	// Se construye la imagen si no existe.
+	if err := checkOrBuildImage(); err != nil {
+		fmt.Println("Error preparando Docker:", err)
 		os.Exit(1)
 	}
 
 	dir := filepath.Dir(filePath)
 	file := filepath.Base(filePath)
 
-	// Ajuste de ruta para Windows Docker (si es necesario)
+	// Ajuste de la ruta para Windows Docker.
 	if runtime.GOOS == "windows" {
-		// Convertir C:\path a /c/path
 		drive := filepath.VolumeName(dir)
 		path := dir[len(drive):]
 		driveLetter := string(drive[0])
 		dir = fmt.Sprintf("/%s%s", driveLetter, filepath.ToSlash(path))
 	}
 
-	// Ejecutar Docker
-	cmd := exec.Command("docker", "run", "--rm", "-v", fmt.Sprintf("%s:/data", dir), "tpe-compiler", fmt.Sprintf("/data/%s", file))
+	// Ejecución del contenedor Docker con el archivo.
+	cmd := exec.Command("docker", "run", "--rm", "-v", fmt.Sprintf("%s:/data", dir), imageName, fmt.Sprintf("/data/%s", file))
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	cmd.Stdin = os.Stdin
