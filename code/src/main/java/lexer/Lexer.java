@@ -1,17 +1,19 @@
 package lexer;
 
 import common.Token;
-import lexer.errors.BadCommentInitialization;
-import lexer.errors.BadUISuffix;
-import lexer.errors.InvalidAssignmentOperator;
-import lexer.errors.InvalidDecimalFormat;
-import lexer.errors.InvalidSymbol;
-import lexer.errors.NewLineInString;
-import lexer.errors.NoExponent;
-import lexer.errors.NoExponentSign;
-import lexer.errors.UndeterminedNumber;
+import lexer.actions.SemanticAction;
+import lexer.errors.LexicalError;
+import lexer.errors.implementations.BadCommentInitialization;
+import lexer.errors.implementations.BadUISuffix;
+import lexer.errors.implementations.InvalidAssignmentOperator;
+import lexer.errors.implementations.InvalidDecimalFormat;
+import lexer.errors.implementations.InvalidSymbol;
+import lexer.errors.implementations.NewLineInString;
+import lexer.errors.implementations.NoExponent;
+import lexer.errors.implementations.NoExponentSign;
+import lexer.errors.implementations.UndeterminedNumber;
 
-public final class LexicalAnalyzer {
+public final class Lexer {
 
     private Token token;
     private char lastCharRead;
@@ -28,7 +30,7 @@ public final class LexicalAnalyzer {
 
     // --------------------------------------------------------------------------------------------
 
-    public LexicalAnalyzer(String sourceCodePath) {
+    public Lexer(String sourceCodePath) {
         this.nroLinea = 1;
         this.errorsDetected = 0;
         this.warningsDetected = 0;

@@ -1,10 +1,10 @@
-package lexer.errors;
+package lexer.errors.implementations;
 
-import lexer.LexicalAnalyzer;
-import lexer.LexicalError;
-import lexer.actions.ReturnCharacterToEntry;
-import lexer.actions.VariableTokenFinalizer;
-import lexer.actions.UintChecker;
+import lexer.Lexer;
+import lexer.errors.LexicalError;
+import lexer.actions.implementations.ReturnCharacterToEntry;
+import lexer.actions.implementations.UintChecker;
+import lexer.actions.implementations.VariableTokenFinalizer;
 
 /**
  * Estado de Error: -3.
@@ -31,7 +31,7 @@ public class BadUISuffix implements LexicalError {
     // --------------------------------------------------------------------------------------------
 
     @Override
-    public void handleError(LexicalAnalyzer lexicalAnalyzer) {
+    public void handleError(Lexer lexicalAnalyzer) {
         System.err.println("ERROR: Línea "
                 + lexicalAnalyzer.getNroLinea()
                 + ": El número: '"

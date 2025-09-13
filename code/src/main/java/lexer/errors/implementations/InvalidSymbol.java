@@ -1,25 +1,26 @@
-package lexer.errors;
+package lexer.errors.implementations;
 
-import lexer.LexicalError;
+import lexer.Lexer;
+import lexer.errors.LexicalError;
 
 /**
- * Estado de error -8.
- * NewLineInString.
+ * Estado de error -1.
+ * InvalidSymbol.
  */
-public class NewLineInString implements LexicalError {
+public class InvalidSymbol implements LexicalError {
 
-    private static NewLineInString INSTANCE;
+    private static InvalidSymbol INSTANCE;
 
     // --------------------------------------------------------------------------------------------
 
-    private NewLineInString() {
+    private InvalidSymbol() {
     }
 
     // --------------------------------------------------------------------------------------------
 
-    public static NewLineInString getInstance() {
+    public static InvalidSymbol getInstance() {
         if (INSTANCE == null) {
-            INSTANCE = new NewLineInString();
+            INSTANCE = new InvalidSymbol();
         }
         return INSTANCE;
     }
@@ -27,11 +28,12 @@ public class NewLineInString implements LexicalError {
     // --------------------------------------------------------------------------------------------
 
     @Override
-    public void handleError(lexer.LexicalAnalyzer lexicalAnalyzer) {
+    public void handleError(Lexer lexicalAnalyzer) {
         System.err.println("ERROR: Línea "
                 + lexicalAnalyzer.getNroLinea()
-                + ": Las cadenas no pueden contener saltos de línea. "
-                + "Este se omitirá.");
+                + ": Símbolo inválido '"
+                + lexicalAnalyzer.getLastCharRead() + "'. "
+                + "El símbolo se omitirá.");
         lexicalAnalyzer.incrementErrorsDetected();
     }
 
@@ -39,7 +41,7 @@ public class NewLineInString implements LexicalError {
 
     @Override
     public String toString() {
-        return "Estado de Error: -8. NewLineInString.";
+        return "Estado de Error: -1. InvalidSymbol.";
     }
 
 }

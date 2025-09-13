@@ -1,26 +1,26 @@
-package lexer.actions;
+package lexer.actions.implementations;
 
-import lexer.LexicalAnalyzer;
-import lexer.SemanticAction;
+import lexer.Lexer;
+import lexer.actions.SemanticAction;
 
 /**
- * RCE:
- * Devuelve el último caracter leído a la entrada.
+ * NLD:
+ * Incrementa el número de línea.
  */
-public class ReturnCharacterToEntry implements SemanticAction {
+public class NewLineDetected implements SemanticAction {
 
-    private static ReturnCharacterToEntry INSTANCE;
+    private static NewLineDetected INSTANCE;
 
     // --------------------------------------------------------------------------------------------
 
-    private ReturnCharacterToEntry() {
+    private NewLineDetected() {
     }
 
     // --------------------------------------------------------------------------------------------
 
-    public static ReturnCharacterToEntry getInstance() {
+    public static NewLineDetected getInstance() {
         if (INSTANCE == null) {
-            INSTANCE = new ReturnCharacterToEntry();
+            INSTANCE = new NewLineDetected();
         }
         return INSTANCE;
     }
@@ -28,15 +28,14 @@ public class ReturnCharacterToEntry implements SemanticAction {
     // --------------------------------------------------------------------------------------------
 
     @Override
-    public void execute(LexicalAnalyzer lexicalAnalyzer) {
-        lexicalAnalyzer.decrementarSiguienteCaracterALeer();
+    public void execute(Lexer lexicalAnalyzer) {
+        lexicalAnalyzer.incrementarNroLinea();
     }
 
     // --------------------------------------------------------------------------------------------
 
     @Override
     public String toString() {
-        return "RCE";
+        return "NLD";
     }
-
 }

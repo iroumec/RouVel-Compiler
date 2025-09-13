@@ -3,7 +3,7 @@ import java.io.File;
 import java.io.IOException;
 
 import common.Token;
-import lexer.LexicalAnalyzer;
+import lexer.Lexer;
 
 public class Main {
 
@@ -22,7 +22,7 @@ public class Main {
 
         System.out.println("=== Resultados de la Compilación del Archivo: " + file.getName() + " ===");
 
-        LexicalAnalyzer lexicalAnalyzer = new LexicalAnalyzer(file.getPath());
+        Lexer lexicalAnalyzer = new Lexer(file.getPath());
 
         System.out.println("Tokens identificados en el programa:");
 

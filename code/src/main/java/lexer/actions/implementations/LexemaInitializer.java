@@ -1,26 +1,26 @@
-package lexer.actions;
+package lexer.actions.implementations;
 
-import lexer.LexicalAnalyzer;
-import lexer.SemanticAction;
+import lexer.Lexer;
+import lexer.actions.SemanticAction;
 
 /**
- * LA:
- * Agrega el caracter leído al string del lexema.
+ * LI:
+ * Inicializa el string del lexema y agrega caracter leido.
  */
-public class LexemaAppender implements SemanticAction {
+public class LexemaInitializer implements SemanticAction {
 
-    private static LexemaAppender INSTANCE;
+    private static LexemaInitializer INSTANCE;
 
     // --------------------------------------------------------------------------------------------
 
-    private LexemaAppender() {
+    private LexemaInitializer() {
     }
 
     // --------------------------------------------------------------------------------------------
 
-    public static LexemaAppender getInstance() {
+    public static LexemaInitializer getInstance() {
         if (INSTANCE == null) {
-            INSTANCE = new LexemaAppender();
+            INSTANCE = new LexemaInitializer();
         }
         return INSTANCE;
     }
@@ -28,15 +28,15 @@ public class LexemaAppender implements SemanticAction {
     // --------------------------------------------------------------------------------------------
 
     @Override
-    public void execute(LexicalAnalyzer lexicalAnalyzer) {
-        lexicalAnalyzer.appendToLexema(lexicalAnalyzer.getLastCharRead());
+    public void execute(Lexer lexicalAnalyzer) {
+        lexicalAnalyzer.initializeLexema(lexicalAnalyzer.getLastCharRead());
     }
 
     // --------------------------------------------------------------------------------------------
 
     @Override
     public String toString() {
-        return "LA";
+        return "LI";
     }
 
 }

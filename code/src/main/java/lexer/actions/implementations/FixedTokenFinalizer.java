@@ -1,10 +1,10 @@
-package lexer.actions;
+package lexer.actions.implementations;
 
 import common.Token;
 import common.TokenType;
-import lexer.LexicalAnalyzer;
-import lexer.SemanticAction;
-import lexer.errors.UnknownToken;
+import lexer.Lexer;
+import lexer.actions.SemanticAction;
+import lexer.errors.implementations.UnknownToken;
 
 /**
  * FTF:
@@ -34,7 +34,7 @@ public class FixedTokenFinalizer implements SemanticAction {
     // --------------------------------------------------------------------------------------------
 
     @Override
-    public void execute(LexicalAnalyzer lexicalAnalyzer) {
+    public void execute(Lexer lexicalAnalyzer) {
 
         String lexema = lexicalAnalyzer.getLexema();
         TokenType tokenType = TokenType.fromSymbol(lexema);

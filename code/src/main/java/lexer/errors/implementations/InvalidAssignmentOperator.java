@@ -1,13 +1,13 @@
-package lexer.errors;
+package lexer.errors.implementations;
 
-import lexer.actions.FixedTokenFinalizer;
-import lexer.actions.ReturnCharacterToEntry;
+import lexer.actions.implementations.FixedTokenFinalizer;
+import lexer.actions.implementations.ReturnCharacterToEntry;
 
 /**
  * Estado de error -7.
  * InvalidAssignmentOperator.
  */
-public class InvalidAssignmentOperator implements lexer.LexicalError {
+public class InvalidAssignmentOperator implements lexer.errors.LexicalError {
 
     private static InvalidAssignmentOperator INSTANCE;
 
@@ -28,7 +28,7 @@ public class InvalidAssignmentOperator implements lexer.LexicalError {
     // --------------------------------------------------------------------------------------------
 
     @Override
-    public void handleError(lexer.LexicalAnalyzer lexicalAnalyzer) {
+    public void handleError(lexer.Lexer lexicalAnalyzer) {
         System.err.println("ERROR: Línea "
                 + lexicalAnalyzer.getNroLinea()
                 + ": Operador de asignación inválido '"

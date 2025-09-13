@@ -1,26 +1,26 @@
-package lexer.actions;
+package lexer.actions.implementations;
 
-import lexer.LexicalAnalyzer;
-import lexer.SemanticAction;
+import lexer.Lexer;
+import lexer.actions.SemanticAction;
 
 /**
- * LI:
- * Inicializa el string del lexema y agrega caracter leido.
+ * RCE:
+ * Devuelve el último caracter leído a la entrada.
  */
-public class LexemaInitializer implements SemanticAction {
+public class ReturnCharacterToEntry implements SemanticAction {
 
-    private static LexemaInitializer INSTANCE;
+    private static ReturnCharacterToEntry INSTANCE;
 
     // --------------------------------------------------------------------------------------------
 
-    private LexemaInitializer() {
+    private ReturnCharacterToEntry() {
     }
 
     // --------------------------------------------------------------------------------------------
 
-    public static LexemaInitializer getInstance() {
+    public static ReturnCharacterToEntry getInstance() {
         if (INSTANCE == null) {
-            INSTANCE = new LexemaInitializer();
+            INSTANCE = new ReturnCharacterToEntry();
         }
         return INSTANCE;
     }
@@ -28,15 +28,15 @@ public class LexemaInitializer implements SemanticAction {
     // --------------------------------------------------------------------------------------------
 
     @Override
-    public void execute(LexicalAnalyzer lexicalAnalyzer) {
-        lexicalAnalyzer.initializeLexema(lexicalAnalyzer.getLastCharRead());
+    public void execute(Lexer lexicalAnalyzer) {
+        lexicalAnalyzer.decrementarSiguienteCaracterALeer();
     }
 
     // --------------------------------------------------------------------------------------------
 
     @Override
     public String toString() {
-        return "LI";
+        return "RCE";
     }
 
 }

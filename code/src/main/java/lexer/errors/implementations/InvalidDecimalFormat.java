@@ -1,8 +1,8 @@
-package lexer.errors;
+package lexer.errors.implementations;
 
-import lexer.LexicalAnalyzer;
-import lexer.LexicalError;
-import lexer.actions.ReturnCharacterToEntry;
+import lexer.Lexer;
+import lexer.actions.implementations.ReturnCharacterToEntry;
+import lexer.errors.LexicalError;
 
 /**
  * Estado de error -4.
@@ -29,7 +29,7 @@ public class InvalidDecimalFormat implements LexicalError {
     // --------------------------------------------------------------------------------------------
 
     @Override
-    public void handleError(LexicalAnalyzer lexicalAnalyzer) {
+    public void handleError(Lexer lexicalAnalyzer) {
         System.err.println("ERROR: Línea "
                 + lexicalAnalyzer.getNroLinea()
                 + ": El símbolo '.' es inválido a menos de que le siga la parte decimal de un número. "

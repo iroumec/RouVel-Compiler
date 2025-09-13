@@ -1,10 +1,10 @@
-package lexer.errors;
+package lexer.errors.implementations;
 
-import lexer.LexicalAnalyzer;
-import lexer.LexicalError;
-import lexer.actions.FloatChecker;
-import lexer.actions.ReturnCharacterToEntry;
-import lexer.actions.VariableTokenFinalizer;
+import lexer.Lexer;
+import lexer.actions.implementations.FloatChecker;
+import lexer.actions.implementations.ReturnCharacterToEntry;
+import lexer.actions.implementations.VariableTokenFinalizer;
+import lexer.errors.LexicalError;
 
 /**
  * Estado de error -5.
@@ -31,7 +31,7 @@ public class NoExponentSign implements LexicalError {
     // --------------------------------------------------------------------------------------------
 
     @Override
-    public void handleError(LexicalAnalyzer lexicalAnalyzer) {
+    public void handleError(Lexer lexicalAnalyzer) {
 
         // Se obtienen los siguientes caracteres para ver si hay un dígito.
         StringBuilder number = new StringBuilder();

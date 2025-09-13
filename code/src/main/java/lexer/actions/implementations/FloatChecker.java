@@ -1,9 +1,9 @@
-package lexer.actions;
+package lexer.actions.implementations;
 
 import java.math.BigDecimal;
 
-import lexer.LexicalAnalyzer;
-import lexer.SemanticAction;
+import lexer.Lexer;
+import lexer.actions.SemanticAction;
 
 /**
  * FC:
@@ -35,7 +35,7 @@ public class FloatChecker implements SemanticAction {
     // --------------------------------------------------------------------------------------------
 
     @Override
-    public void execute(LexicalAnalyzer lexicalAnalyzer) {
+    public void execute(Lexer lexicalAnalyzer) {
 
         String lexema = lexicalAnalyzer.getLexema();
 
@@ -79,7 +79,7 @@ public class FloatChecker implements SemanticAction {
 
     // --------------------------------------------------------------------------------------------
 
-    private String parseToFloat(String lexema, LexicalAnalyzer lexicalAnalyzer) {
+    private String parseToFloat(String lexema, Lexer lexicalAnalyzer) {
 
         String number = transformToScientific(lexema);
 

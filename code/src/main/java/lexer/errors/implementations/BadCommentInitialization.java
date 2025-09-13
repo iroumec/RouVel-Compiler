@@ -1,7 +1,8 @@
-package lexer.errors;
+package lexer.errors.implementations;
 
-import lexer.LexicalError;
-import lexer.actions.ReturnCharacterToEntry;
+import lexer.Lexer;
+import lexer.errors.LexicalError;
+import lexer.actions.implementations.ReturnCharacterToEntry;
 
 /**
  * Estado de error -9.
@@ -28,7 +29,7 @@ public class BadCommentInitialization implements LexicalError {
     // --------------------------------------------------------------------------------------------
 
     @Override
-    public void handleError(lexer.LexicalAnalyzer lexicalAnalyzer) {
+    public void handleError(Lexer lexicalAnalyzer) {
         System.err.println("ERROR: Línea "
                 + lexicalAnalyzer.getNroLinea()
                 + ": Los comentarios deben comenzar con '##' y terminar con '##'. Se encontró un único carácter '#'. "

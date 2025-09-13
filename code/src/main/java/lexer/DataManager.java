@@ -5,15 +5,16 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
 
-import lexer.actions.FixedTokenFinalizer;
-import lexer.actions.FloatChecker;
-import lexer.actions.IdentifierLengthChecker;
-import lexer.actions.LexemaAppender;
-import lexer.actions.LexemaInitializer;
-import lexer.actions.NewLineDetected;
-import lexer.actions.ReturnCharacterToEntry;
-import lexer.actions.UintChecker;
-import lexer.actions.VariableTokenFinalizer;
+import lexer.actions.SemanticAction;
+import lexer.actions.implementations.FixedTokenFinalizer;
+import lexer.actions.implementations.FloatChecker;
+import lexer.actions.implementations.IdentifierLengthChecker;
+import lexer.actions.implementations.LexemaAppender;
+import lexer.actions.implementations.LexemaInitializer;
+import lexer.actions.implementations.NewLineDetected;
+import lexer.actions.implementations.ReturnCharacterToEntry;
+import lexer.actions.implementations.UintChecker;
+import lexer.actions.implementations.VariableTokenFinalizer;
 
 public final class DataManager {
 
@@ -43,7 +44,7 @@ public final class DataManager {
      * Se lee el código fuente y se lo convierte a String.
      * 
      * @param sourceCodePath Ruta al archivo del código fuente.
-     * @return Código fuente en formato String.
+     * @return Código fuente en formato {@code String}.
      */
     public static String loadSourceCode(String sourceCodePath) {
 
@@ -62,9 +63,9 @@ public final class DataManager {
 
         // Estado 0
         Arrays.fill(STATE_TRANSITION_MATRIX[0], -1);
-        STATE_TRANSITION_MATRIX[0][charToIndex('n')] = 0;
-        STATE_TRANSITION_MATRIX[0][charToIndex('s')] = 0;
-        STATE_TRANSITION_MATRIX[0][charToIndex('t')] = 0;
+        for (char c : new char[] { 'n', 's', 't' }) {
+            STATE_TRANSITION_MATRIX[0][charToIndex(c)] = 0;
+        }
         STATE_TRANSITION_MATRIX[0][charToIndex('d')] = 1;
         STATE_TRANSITION_MATRIX[0][charToIndex('.')] = 3;
         STATE_TRANSITION_MATRIX[0][charToIndex('"')] = 8;
@@ -75,19 +76,12 @@ public final class DataManager {
         STATE_TRANSITION_MATRIX[0][charToIndex('>')] = 13;
         STATE_TRANSITION_MATRIX[0][charToIndex('<')] = 14;
         STATE_TRANSITION_MATRIX[0][charToIndex('#')] = 15;
-        STATE_TRANSITION_MATRIX[0][charToIndex('L')] = 18;
-        STATE_TRANSITION_MATRIX[0][charToIndex('U')] = 18;
-        STATE_TRANSITION_MATRIX[0][charToIndex('I')] = 18;
-        STATE_TRANSITION_MATRIX[0][charToIndex('F')] = 18;
-        STATE_TRANSITION_MATRIX[0][charToIndex('+')] = 19;
-        STATE_TRANSITION_MATRIX[0][charToIndex('*')] = 19;
-        STATE_TRANSITION_MATRIX[0][charToIndex('/')] = 19;
-        STATE_TRANSITION_MATRIX[0][charToIndex('(')] = 19;
-        STATE_TRANSITION_MATRIX[0][charToIndex(')')] = 19;
-        STATE_TRANSITION_MATRIX[0][charToIndex('{')] = 19;
-        STATE_TRANSITION_MATRIX[0][charToIndex('}')] = 19;
-        STATE_TRANSITION_MATRIX[0][charToIndex('_')] = 19;
-        STATE_TRANSITION_MATRIX[0][charToIndex(';')] = 19;
+        for (char c : new char[] { 'L', 'U', 'I', 'F' }) {
+            STATE_TRANSITION_MATRIX[0][charToIndex(c)] = 0;
+        }
+        for (char c : new char[] { '+', '*', '/', '(', ')', '{', '}', '_', ';' }) {
+            STATE_TRANSITION_MATRIX[0][charToIndex(c)] = 18;
+        }
 
         // Estado 1
         Arrays.fill(STATE_TRANSITION_MATRIX[1], -2);
@@ -160,12 +154,9 @@ public final class DataManager {
 
         // Estado 18
         Arrays.fill(STATE_TRANSITION_MATRIX[18], 19);
-        STATE_TRANSITION_MATRIX[18][charToIndex('L')] = 18;
-        STATE_TRANSITION_MATRIX[18][charToIndex('d')] = 18;
-        STATE_TRANSITION_MATRIX[18][charToIndex('U')] = 18;
-        STATE_TRANSITION_MATRIX[18][charToIndex('I')] = 18;
-        STATE_TRANSITION_MATRIX[18][charToIndex('F')] = 18;
-        STATE_TRANSITION_MATRIX[18][charToIndex('%')] = 18;
+        for (char c : new char[] { 'L', 'd', 'U', 'I', 'F', '%' }) {
+            STATE_TRANSITION_MATRIX[18][charToIndex(c)] = 18;
+        }
     }
 
     // --------------------------------------------------------------------------------------------
@@ -192,37 +183,20 @@ public final class DataManager {
 
         // Estado 0
         Arrays.fill(SEMANTIC_ACTIONS_MATRIX[0], EMPTY);
-        SEMANTIC_ACTIONS_MATRIX[0][charToIndex('L')] = LI;
-        SEMANTIC_ACTIONS_MATRIX[0][charToIndex('d')] = LI;
-        SEMANTIC_ACTIONS_MATRIX[0][charToIndex('U')] = LI;
-        SEMANTIC_ACTIONS_MATRIX[0][charToIndex('I')] = LI;
-        SEMANTIC_ACTIONS_MATRIX[0][charToIndex('.')] = LI;
-        SEMANTIC_ACTIONS_MATRIX[0][charToIndex('F')] = LI;
-        SEMANTIC_ACTIONS_MATRIX[0][charToIndex('"')] = LI;
-        SEMANTIC_ACTIONS_MATRIX[0][charToIndex(':')] = LI;
-        SEMANTIC_ACTIONS_MATRIX[0][charToIndex('=')] = LI;
-        SEMANTIC_ACTIONS_MATRIX[0][charToIndex('>')] = LI;
-        SEMANTIC_ACTIONS_MATRIX[0][charToIndex('<')] = LI;
-        SEMANTIC_ACTIONS_MATRIX[0][charToIndex('l')] = LI;
-        SEMANTIC_ACTIONS_MATRIX[0][charToIndex('-')] = LI;
+        for (char c : new char[] { 'L', 'l', 'd', 'U', 'I', '.', 'F', '"', ':', '=', '>', '<', '-' }) {
+            SEMANTIC_ACTIONS_MATRIX[0][charToIndex(c)] = LI;
+        }
         SEMANTIC_ACTIONS_MATRIX[0][charToIndex('n')] = NLD;
-        SEMANTIC_ACTIONS_MATRIX[0][charToIndex('+')] = LI_FTF;
-        SEMANTIC_ACTIONS_MATRIX[0][charToIndex('*')] = LI_FTF;
-        SEMANTIC_ACTIONS_MATRIX[0][charToIndex('/')] = LI_FTF;
-        SEMANTIC_ACTIONS_MATRIX[0][charToIndex('(')] = LI_FTF;
-        SEMANTIC_ACTIONS_MATRIX[0][charToIndex(')')] = LI_FTF;
-        SEMANTIC_ACTIONS_MATRIX[0][charToIndex('{')] = LI_FTF;
-        SEMANTIC_ACTIONS_MATRIX[0][charToIndex('}')] = LI_FTF;
-        SEMANTIC_ACTIONS_MATRIX[0][charToIndex('_')] = LI_FTF;
-        SEMANTIC_ACTIONS_MATRIX[0][charToIndex(';')] = LI_FTF;
+        for (char c : new char[] { '+', '*', '/', '(', ')', '{', '}', '_', ';' }) {
+            SEMANTIC_ACTIONS_MATRIX[0][charToIndex(c)] = LI_FTF;
+
+        }
 
         // Estado 1
         Arrays.fill(SEMANTIC_ACTIONS_MATRIX[1], EMPTY);
-        SEMANTIC_ACTIONS_MATRIX[1][charToIndex('L')] = LA;
-        SEMANTIC_ACTIONS_MATRIX[1][charToIndex('l')] = LA;
-        SEMANTIC_ACTIONS_MATRIX[1][charToIndex('d')] = LA;
-        SEMANTIC_ACTIONS_MATRIX[1][charToIndex('U')] = LA;
-        SEMANTIC_ACTIONS_MATRIX[1][charToIndex('.')] = LA;
+        for (char c : new char[] { 'L', 'l', 'd', 'U', '.' }) {
+            SEMANTIC_ACTIONS_MATRIX[1][charToIndex(c)] = LA;
+        }
 
         // Estado 2
         Arrays.fill(SEMANTIC_ACTIONS_MATRIX[2], EMPTY);
@@ -293,12 +267,9 @@ public final class DataManager {
 
         // Estado 18
         Arrays.fill(SEMANTIC_ACTIONS_MATRIX[18], ILC_VTF_RCE);
-        SEMANTIC_ACTIONS_MATRIX[18][charToIndex('L')] = LA;
-        SEMANTIC_ACTIONS_MATRIX[18][charToIndex('d')] = LA;
-        SEMANTIC_ACTIONS_MATRIX[18][charToIndex('U')] = LA;
-        SEMANTIC_ACTIONS_MATRIX[18][charToIndex('I')] = LA;
-        SEMANTIC_ACTIONS_MATRIX[18][charToIndex('F')] = LA;
-        SEMANTIC_ACTIONS_MATRIX[18][charToIndex('%')] = LA;
+        for (char c : new char[] { 'L', 'd', 'U', 'I', 'F', '%' }) {
+            SEMANTIC_ACTIONS_MATRIX[18][charToIndex(c)] = LA;
+        }
     }
 
     // --------------------------------------------------------------------------------------------

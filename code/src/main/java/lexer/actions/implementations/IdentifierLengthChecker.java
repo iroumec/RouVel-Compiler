@@ -1,7 +1,7 @@
-package lexer.actions;
+package lexer.actions.implementations;
 
-import lexer.LexicalAnalyzer;
-import lexer.SemanticAction;
+import lexer.Lexer;
+import lexer.actions.SemanticAction;
 
 /**
  * ILC
@@ -28,7 +28,7 @@ public class IdentifierLengthChecker implements SemanticAction {
     // --------------------------------------------------------------------------------------------
 
     @Override
-    public void execute(LexicalAnalyzer lexicalAnalyzer) {
+    public void execute(Lexer lexicalAnalyzer) {
 
         String lexema = lexicalAnalyzer.getLexema();
 
