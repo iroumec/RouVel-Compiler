@@ -14,7 +14,7 @@ A partir de un lenguaje simple proporcionado por la cátedra, se implementó su 
 
 ## Requisitos
 
-Debe tener instalado [Docker](https://docs.docker.com/engine/install/) en su sistema.
+El único requisito del compilador es Docker.
 
 ### Docker en Linux
 
