@@ -2,6 +2,34 @@
 
 ## Características Generales
 
+### Identificadores
+
+Cuyos nombres pueden tener hasta 20 caracteres de longitud. El primer caracter sólo puede ser una letra, y el resto pueden ser letras, dígitos y “%”. Los identificadores con longitud mayor serán truncados y esto se informará como Warning. Las letras utilizadas en los nombres de identificador sólo pueden ser mayúsculas.
+
+### Operadores
+
+Operadores aritméticos: “+”, “-” , “\*”, “/”.
+
+Operadores de asignación: “=” , “:=”
+
+Comparadores: “>=”, “<=”, “>”, “<”, “==”, “=!”
+
+Otros símbolos: “(”, “)”, “{”, “}”, ”\_”, “;” y “->”
+
+### Palabras Reservadas
+
+Estas deben escribirse con minúscula.
+
+If, else, endif, print, return
+
+### Descarte
+
+El [analizador léxico](lexer.md) elimina de la entrada (reconoce, pero no informa como _tokens_ al Analizador Sintáctico), los siguientes elementos:
+
+- Comentarios correspondientes al tema particular de cada grupo.
+
+- Caracteres en blanco, tabulaciones y saltos de línea, que pueden aparecer en cualquier lugar de una sentencia.
+
 ## Temas Asignados
 
 Las características del lenguaje se corresponderse con los temas pertenecientes al conjunto {2, 5, 7, 14, 17, 22, 26, 27, 30, 33}, los cuales se detallan a continuación:
