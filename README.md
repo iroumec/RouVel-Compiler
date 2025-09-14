@@ -18,6 +18,8 @@ Los binarios ya incluyen todo lo necesario para ejecutar el compilador. Funciona
 
 Requisito: [Docker](https://docs.docker.com/engine/install/).
 
+Posiblemente deba ejecutarse el ejecutable con permisos de administrador.
+
 ### Linux
 
 ```sh
