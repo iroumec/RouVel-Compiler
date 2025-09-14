@@ -31,7 +31,7 @@ public class Token {
                 + this.tokenType.name()
                 + (symbolTableIndex == null
                         ? ""
-                        : ", " + SymbolTable.getInstance().getLexema(symbolTableIndex))
+                        : ", " + symbolTableIndex + ", " + SymbolTable.getInstance().getLexema(symbolTableIndex))
                 + "]";
     }
 
