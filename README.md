@@ -28,7 +28,7 @@ sudo usermod -aG docker $USER \
 ```
 
 > [!TIP]
-> Estos comandos funcionan en la mayoría de las distribuciones (Debian, Ubuntu, Fedora, Arch, openSUSE, etc.). Si el grupo docker no existe, créelo manualmente con sudo groupadd docker.
+> Estos comandos funcionan en la mayoría de las distribuciones (Debian, Ubuntu, Fedora, Arch, openSUSE, etc.). Si el grupo docker no existe, créelo manualmente con `sudo groupadd docker`.
 
 Estos comandos deben ejecutarse **una sola vez** después de instalar Docker Engine.
 
@@ -54,7 +54,7 @@ El programa funciona tanto con rutas absolutas como relativas. En `resources/tes
 ```
 
 > [!WARNING]
-> De no haberle otorgado permisos de administrador a Docker, o haber ejecutado el _script_ con `sudo`, el ejecutable podría dar un error. Se recomienda realizar la primera acción, explicada en la sección de requisitos.
+> De no haberle otorgado permisos de administrador a Docker, o no haber ejecutado el _script_ con `sudo`, el ejecutable podría dar un error. Se recomienda realizar la primera acción, explicada en la sección de requisitos.
 
 ### macOS
 
