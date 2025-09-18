@@ -65,15 +65,31 @@ Incorporar a la lista de palabras reservadas, las palabras do y while.
 
 ### Tema 17
 
+![alt text](image1.png)
+
 ### Tema 22
+
+![alt text](image2.png)
 
 ### Tema 26
 
+![alt text](image3.png)
+
 ### Tema 27
 
+![alt text](image4.png)
+
 ### Tema 30
+
+![alt text](image5.png)
 
 ### Tema 33
 
 Comentarios multilínea: Comentarios que comiencen con “##” y terminen con “##” (estos comentarios pueden
 ocupar más de una línea).
+
+![alt text](image6.png)
+
+Nota: En la descripción de los temas generales y particulares puede aparecer el agregado o eliminación de algún
+símbolo / palabra reservada durante el Análisis Léxico.
+Para todos los grupos: Agregar el reconocimiento del token “,”

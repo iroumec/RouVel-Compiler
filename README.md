@@ -73,3 +73,6 @@ rouvel.exe resources/testFiles/example1.uki
 ```sh
 docker rmi rouvel-compiler
 ```
+
+Con similar se refiere a que use parsing ascendente y demás.
+Diferentes entradas para 3 y -3.
