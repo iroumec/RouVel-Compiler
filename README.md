@@ -76,3 +76,5 @@ docker rmi rouvel-compiler
 
 Con similar se refiere a que use parsing ascendente y demás.
 Diferentes entradas para 3 y -3.
+
+Sí constantes de tipo float, pero NO VARIABLES.

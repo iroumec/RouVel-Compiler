@@ -63,6 +63,8 @@ Ejemplo: “¡Hola mundo !”
 
 Incorporar a la lista de palabras reservadas, las palabras do y while.
 
+![alt text](image.png)
+
 ### Tema 17
 
 ![alt text](image1.png)

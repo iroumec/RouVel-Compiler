@@ -13,7 +13,7 @@ Se define:
 - s: indica un espacio en blanco.
 - t: indica una tabulación.
 - n: indica un salto de línea.
-- Se define P el conjunto de los siguientes símbolos de un carácter. P = {+, \*, /, (, ), {, }, \_, ;}.
+- Se define P el conjunto de los siguientes símbolos de un carácter. P = {'+', '\*', '/', '(', ')', '{', '}', ';', ','}.
 - Otro: representa a un carácter que no está comprendido en los demás arcos.
 
 Además, se definen las siguientes acciones semánticas (AS), en orden alfabérico:

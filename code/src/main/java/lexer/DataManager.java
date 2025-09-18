@@ -19,7 +19,7 @@ import lexer.actions.implementations.VariableTokenFinalizer;
 public final class DataManager {
 
     private final static int NUM_ESTADOS = 19;
-    private final static int NUM_SIMBOLOS = 29;
+    private final static int NUM_SIMBOLOS = 21;
 
     // --------------------------------------------------------------------------------------------
 
@@ -79,7 +79,7 @@ public final class DataManager {
         for (char c : new char[] { 'L', 'U', 'I', 'F' }) {
             STATE_TRANSITION_MATRIX[0][charToIndex(c)] = 18;
         }
-        for (char c : new char[] { '+', '*', '/', '(', ')', '{', '}', '_', ';' }) {
+        for (char c : new char[] { '+', '*', '/', '(', ')', '{', '}', '_', ';', ',' }) {
             STATE_TRANSITION_MATRIX[0][charToIndex(c)] = 19;
         }
 
@@ -187,7 +187,7 @@ public final class DataManager {
             SEMANTIC_ACTIONS_MATRIX[0][charToIndex(c)] = LI;
         }
         SEMANTIC_ACTIONS_MATRIX[0][charToIndex('n')] = NLD;
-        for (char c : new char[] { '+', '*', '/', '(', ')', '{', '}', '_', ';' }) {
+        for (char c : new char[] { '+', '*', '/', '(', ')', '{', '}', '_', ';', ',' }) {
             SEMANTIC_ACTIONS_MATRIX[0][charToIndex(c)] = LI_FTF;
         }
 
@@ -291,27 +291,19 @@ public final class DataManager {
             case '.' -> 5;
             case 'F' -> 6;
             case '-' -> 7;
-            case '+' -> 8;
+            case '+', '*', '/', '(', ')', '{', '}', '_', ',', ';' -> 8;
             case '"' -> 9;
-            case '*' -> 10;
-            case '/' -> 11;
-            case '(' -> 12;
-            case ')' -> 13;
-            case '{' -> 14;
-            case '}' -> 15;
-            case '_' -> 16;
-            case ';' -> 17;
-            case ':' -> 18;
-            case '=' -> 19;
-            case '!' -> 20;
-            case '>' -> 21;
-            case '<' -> 22;
-            case '%' -> 23;
-            case '#' -> 24;
-            case 'n' -> 25;
-            case 's' -> 26;
-            case 't' -> 27;
-            default -> 28;
+            case ':' -> 10;
+            case '=' -> 11;
+            case '!' -> 12;
+            case '>' -> 13;
+            case '<' -> 14;
+            case '%' -> 15;
+            case '#' -> 16;
+            case 'n' -> 17;
+            case 's' -> 18;
+            case 't' -> 19;
+            default -> 20;
         };
     }
 
