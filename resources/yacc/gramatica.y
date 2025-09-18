@@ -1,83 +1,138 @@
-declaraciones
+/* Declaraciones */
 
-%token ID, CTE, STR, PRNT, IF, ELSE, EIF
+%token ID, CTE, STR, PRNT, IF, ELSE, ENDIF, UINT, EQ, LEQ, GEQ, NEQ, CVR, DO, WHILE
 
 %%
 
-programa                : nombre_programa '{' conjunto_sentencias '}'
-                        ;
-
-nombre_programa         : ID 
-igual no seria identificador, pero como el ejemplo el nombre de programa esta en minusculas, no se que deberíamos hacer ahí
+programa                    : ID '{' conjunto_sentencias '}'
+                            ;
                     
-conjunto_sentencias     : sentencia ';' 
-                        | sentencia ';' conjunto_sentencias
-                        ;
+conjunto_sentencias         : sentencia ';' 
+                            | sentencia ';' conjunto_sentencias
+                            ;
 
-sentencia               : sentencia_control 
-                        | sentencia_declarativa
-                        ;
+sentencia                   : sentencia_ejecutable
+                            | sentencia_declarativa
+                            ;
 
-bloque_ejecutable       : '{' conjunto_sentencias_ejecutables '}'
+/* --------------------------------------------------------------------------------------------- */
+/* Sentencias declarativas                                                                      */
+/* --------------------------------------------------------------------------------------------- */
 
-sentencia_control       : if
-                        | while
-                        ;
+sentencia_declarativa           : UINT lista_variables
+                                | asignacion
+                                ;
 
-condicion               :
+lista_variables                 : ID
+                                | ID ',' lista_variables
+                                ;
 
-sentencia_declarativa   :
+asignacion                      : identificador_multiple '=' expresion_multiple
+                                ;
 
-asignacion              : identificador_multiple '=' expresion_multiple
-                        ;
+identificador_multiple          : identificador
+                                | identificador_multiple ',' identificador_multiple
+                                ;
 
-identificador_multiple  : identificador
-                        | identificador_multiple ',' identificador_multiple
-                        ;
+expresion_multiple              : CTE
+                                | expresion_multiple ',' expresion_multiple
+                                ;
 
-expresion_multiple      : CTE
-                        | expresion_multiple ',' expresion_multiple
-                        ;
+lambda                          : parametro conjunto_sentencias_ejecutables '(' factor ')'
+                                ;
 
-lambda                  : parametro cuerpo '(' factor ')'
-                        ;
+parametro                       : UINT ID
+                                ;
 
-parametro               : tipo ID
-                        ;
+argumento                       : factor // revisar luego
+                                ;
+                            
 
-tipo                    : UINT
-                        ;
+/* --------------------------------------------------------------------------------------------- */
+/* Sentencias ejecutables                                                                        */
+/* --------------------------------------------------------------------------------------------- */
 
-argumento               : factor // revisar luego
-                        ;
+bloque_ejecutable               : '{' conjunto_sentencias_ejecutables '}'
 
-if                      : IF '(' condicion ')' bloque_sentencias_ejecutable EIF
-                        | IF '(' condicion ')' bloque_sentencias_ejecutable ELSE bloque_sentencias_ejecutable EIF
-                        ;
+conjunto_sentencias_ejecutables : sentencia_ejecutable
+                                | sentencia_ejecutable ';' conjunto_sentencias_ejecutables
+                                ;
 
-while                   : DO bloque_sentencias_ejecutable WHILE '(' condicion ')'
+sentencia_ejecutable            : invocacion_funcion
+                                | sentencia_control
+                                ;
 
-impresion               : PRNT '(' STR ')'
-                        | PRNT '(' expresion ')'
+sentencia_control               : if
+                                | while
+                                ;
 
-expresion               : expresion '+' termino
-                        | expresion '-' termino
-                        | termino
-                        ;
+condicion                       : expresion comparador expresion
+                                ;
+                        
+comparador                      : '>'
+                                | '<'
+                                | EQ
+                                | LEQ
+                                | GEQ
+                                | NEQ
+                                ;
 
-termino                 : termino '/' factor 
-                        | termino '*' fector
-                        | factor
-                        ;
+if                              : IF '(' condicion ')' conjunto_sentencias_ejecutables ENDIF
+                                | IF '(' condicion ')' conjunto_sentencias_ejecutables ELSE conjunto_sentencias_ejecutables ENDIF
+                                ;
 
-factor                  : identificador
-                        | CTE
-                        ;
+while                           : DO conjunto_sentencias_ejecutables WHILE '(' condicion ')'
+                                ;
 
-identificador           : ID
-                        | ID '.' ID
-                        ;
+impresion                       : PRNT '(' STR ')'
+                                | PRNT '(' expresion ')'
+
+/* --------------------------------------------------------------------------------------------- */
+/* Expresiones                                                                                   */
+/* --------------------------------------------------------------------------------------------- */
+
+expresion                       : expresion '+' termino
+                                | expresion '-' termino
+                                | termino
+                                ;
+
+termino                         : termino '/' factor 
+                                | termino '*' factor
+                                | factor
+                                ;
+
+factor                          : ID
+                                | ID '.' ID
+                                | CTE
+                                | '-' CTE /* Luego debe revisarse que la CTE no sea un entero */
+                                ;
+
+identificador                   : ID
+                                | ID '.' ID
+                                ;
+
+/* --------------------------------------------------------------------------------------------- */
+/* Funciones, llamadas y parametros                                                              */
+/* --------------------------------------------------------------------------------------------- */
+
+funcion                     : UINT identificador '(' lista_parametros ')' '{' conjunto_sentencias '}'
+                            ;
+                            
+lista_parametros            : parametro_formal 
+                            | parametro_formal ',' lista_parametros
+                            ;
+
+invocacion_funcion          : identificador '(' lista_parametros_formales ')' 
+                            ;
+
+lista_parametros_formales   : parametro_formal 
+                            | parametro_formal ',' lista_parametros_formales
+                            ;
+
+parametro_formal            : CVR UINT lista_variables 
+                            | UINT lista_variables
+                            ; 
 
 %%
 
-código (opcional)
+/* código (opcional) */

@@ -17,13 +17,13 @@ public enum TokenType {
 
     IF("if"),
     DO("do"),
+    CVR("cvr"),
     ELSE("else"),
-    EIF("endif"),
     UINT("uint"),
     PRNT("print"),
     RET("return"),
-    FLOAT("float"),
     WHILE("while"),
+    ENDIF("endif"),
 
     // --------------------------------------------------------------------------------------------
     // Literales.
@@ -45,6 +45,7 @@ public enum TokenType {
     KEY("{"),
     YEK("}"),
     SLSH("_"),
+    COMMA(","),
     DASIG(":="),
     FLECHA("->");
 
