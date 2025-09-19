@@ -31,7 +31,7 @@ func checkOrBuildImage() error {
 	exeDir := filepath.Dir(exePath)
 
 	// Se asume que el Dockerfile está en el mismo directorio que el ejecutable.
-	buildCmd := exec.Command("docker", "build", "-t", imageName, exeDir)
+	buildCmd := exec.Command("docker", "build", "-t", imageName, exeDir /*, "--no-cache"*/)
 	buildCmd.Stdout = io.Discard
 	buildCmd.Stderr = io.Discard
 	buildCmd.Stdin = os.Stdin

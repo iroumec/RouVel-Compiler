@@ -76,7 +76,7 @@ public enum TokenType {
     private TokenType(String symbol, Short identificationCode) {
         this.symbol = symbol;
 
-        if (symbol.length() == 1) {
+        if (symbol != null && symbol.length() == 1) {
 
             if (identificationCode != null) {
                 throw new IllegalArgumentException(

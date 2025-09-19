@@ -52,9 +52,11 @@ public class Token {
     public String toString() {
         return "["
                 + this.tokenType.name()
+                + "(" + this.getIdentificationCode() + ")"
                 + (symbolTableIndex == null
                         ? ""
-                        : ", " + symbolTableIndex + ", " + SymbolTable.getInstance().getLexema(symbolTableIndex))
+                        : ", " + SymbolTable.getInstance().getLexema(symbolTableIndex)
+                                + ", ST(" + symbolTableIndex + ")")
                 + "]";
     }
 

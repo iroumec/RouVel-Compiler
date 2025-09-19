@@ -148,20 +148,19 @@ public final class Lexer {
             case '.' -> 5;
             case 'F' -> 6;
             case '-' -> 7;
-            case '+' -> 8;
+            case '+', '*', '/', '(', ')', '{', '}', '_', ',', ';' -> 8;
             case '"' -> 9;
-            case '*', '/', '(', ')', '{', '}', '_', ',', ';' -> 10;
-            case ':' -> 11;
-            case '=' -> 12;
-            case '!' -> 13;
-            case '>' -> 14;
-            case '<' -> 15;
-            case '%' -> 16;
-            case '#' -> 17;
-            case '\n' -> 18;
+            case ':' -> 10;
+            case '=' -> 11;
+            case '!' -> 12;
+            case '>' -> 13;
+            case '<' -> 14;
+            case '%' -> 15;
+            case '#' -> 16;
+            case '\n' -> 17;
             // '\0' se comporta igual a que si hubiese un espacio.
-            case ' ', '\0' -> 19;
-            case '\t' -> 20;
+            case ' ', '\0' -> 18;
+            case '\t' -> 19;
             default -> {
                 if (Character.isUpperCase(c))
                     yield 0;
@@ -170,7 +169,7 @@ public final class Lexer {
                 else if (Character.isDigit(c))
                     yield 2;
                 else
-                    yield 21; // Otro.
+                    yield 20; // Otro.
             }
         };
     }
