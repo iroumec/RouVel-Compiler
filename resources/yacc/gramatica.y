@@ -32,31 +32,27 @@ sentencia                       : sentencia_ejecutable
 /* --------------------------------------------------------------------------------------------- */
 
 sentencia_declarativa           : UINT lista_variables
-                                | asignacion
+                                | declaracion_funcion
                                 ;
 
 lista_variables                 : ID
                                 | ID ',' lista_variables
                                 ;
 
-asignacion                      : identificador_multiple '=' expresion_multiple
+/* Estas asignaciones pueden tener un menor número de elementos del lado izquierdo (tema 17). */
+asignacion_multiple             : variable termino_asignacion_multiple expresion
                                 ;
 
-identificador_multiple          : identificador
-                                | identificador ',' identificador_multiple
+/* De esta forma, siempre se controla que el lado derecho tenga, al menos, tanto elementos como el izquierdo. */
+termino_asignacion_multiple     : ',' variable termino_asignacion_multiple expresion ','
+                                | termino_asignacion_multiple expresion ','
+                                | '='
                                 ;
 
-expresion_multiple              : CTE
-                                | CTE ',' expresion_multiple
-                                ;
-
-lambda                          : parametro conjunto_sentencias_ejecutables '(' factor ')'
+lambda                          : parametro conjunto_sentencias_ejecutables '(' factor /*argumento*/ ')'
                                 ;
 
 parametro                       : UINT ID
-                                ;
-
-argumento                       : factor // revisar luego
                                 ;
                             
 
@@ -71,8 +67,14 @@ conjunto_sentencias_ejecutables : sentencia_ejecutable
                                 ;
 
 sentencia_ejecutable            : invocacion_funcion
+                                | asignacion_simple
+                                | asignacion_multiple
                                 | sentencia_control
                                 | impresion
+                                | lambda
+                                ;
+
+asignacion_simple               : variable DASIG expresion
                                 ;
 
 sentencia_control               : if
@@ -118,13 +120,12 @@ termino                         : termino '/' factor
                                 | factor
                                 ;
 
-factor                          : ID
-                                | ID '.' ID
+factor                          : variable
                                 | CTE
                                 | '-' CTE /* Luego debe revisarse que la CTE no sea un entero */
                                 ;
 
-identificador                   : ID
+variable                        : ID
                                 | ID '.' ID
                                 ;
 
@@ -132,23 +133,28 @@ identificador                   : ID
 /* Funciones, llamadas y parametros                                                              */
 /* --------------------------------------------------------------------------------------------- */
 
-funcion                         : UINT identificador '(' lista_parametros ')' '{' conjunto_sentencias '}'
+declaracion_funcion             : UINT ID '(' lista_parametros ')' '{' cuerpo_funcion '}'
+                                /* REGLAS DE ERROR */
+                                | UINT ID '(' ')' '{' cuerpo_funcion '}'                    { System.out.println("Error: toda función debe recibir al menos un parámetro.")}
+                                ;
+
+cuerpo_funcion                  : conjunto_sentencias RETURN expresion ';'
                                 ;
                             
 lista_parametros                : parametro_formal 
                                 | parametro_formal ',' lista_parametros
                                 ;
 
-invocacion_funcion              : identificador '(' lista_parametros_formales ')' 
-                                ;
-
-lista_parametros_formales       : parametro_formal 
-                                | parametro_formal ',' lista_parametros_formales
-                                ;
-
 parametro_formal                : CVR UINT lista_variables 
                                 | UINT lista_variables
                                 ; 
+
+invocacion_funcion              : ID '(' lista_argumentos ')' 
+                                ;
+
+lista_argumentos                : expresion FLECHA parametro_formal
+                                | expresion ',' lista_argumentos
+                                ;
 
 /* --------------------------------------------------------------------------------------------- */
 /* FIN DE REGLAS                                                                                 */
