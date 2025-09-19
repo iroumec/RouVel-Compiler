@@ -8,6 +8,18 @@ SCRIPT_DIR="$(dirname "$0")"
 
 cd "$SCRIPT_DIR" || { echo "No se pudo cambiar a $SCRIPT_DIR"; exit 1; }
 
-./yacc -J -v gramatica.y
+./yacc -J -Jnoconstruct -Jnorun -v gramatica.y
+
+# Se agrega "package parser;" al inicio de ambos archivos.
+# Esto para que sea coherente con nuestra estructura de código.
+sed -i '1ipackage parser;\n' Parser.java
+sed -i '1ipackage parser;\n' ParserVal.java
+
+# Se agregan las importaciones necesarias a Parser.java.
+sed -i '2iimport lexer.Lexer;\nimport common.Token;' Parser.java
+
+# Se mueven los arhcivos .java a la sección de código.
+mv Parser.java "$CALL_DIR"/code/src/main/java/parser
+mv ParserVal.java "$CALL_DIR"/code/src/main/java/parser
 
 cd "$CALL_DIR" || exit 1

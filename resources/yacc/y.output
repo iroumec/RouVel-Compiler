@@ -12,7 +12,7 @@
    7                        | asignacion
 
    8  lista_variables : ID
-   9                  | lista_variables ',' lista_variables
+   9                  | ID ',' lista_variables
 
   10  asignacion : identificador_multiple '=' expresion_multiple
 
@@ -304,18 +304,20 @@ state 23
 	termino  goto 42
 
 
+24: shift/reduce conflict (shift 45, reduce 8) on ','
 state 24
 	lista_variables : ID .  (8)
+	lista_variables : ID . ',' lista_variables  (9)
 
-	.  reduce 8
+	','  shift 45
+	';'  reduce 8
+	')'  reduce 8
 
 
 state 25
 	sentencia_declarativa : UINT lista_variables .  (6)
-	lista_variables : lista_variables . ',' lista_variables  (9)
 
-	','  shift 45
-	';'  reduce 6
+	.  reduce 6
 
 
 state 26
@@ -414,8 +416,8 @@ state 35
 
 	'.'  shift 57
 	EQ  reduce 45
-	LEQ  reduce 45
 	GEQ  reduce 45
+	LEQ  reduce 45
 	NEQ  reduce 45
 	')'  reduce 45
 	'>'  reduce 45
@@ -476,8 +478,8 @@ state 42
 	'/'  shift 62
 	'*'  shift 63
 	EQ  reduce 41
-	LEQ  reduce 41
 	GEQ  reduce 41
+	LEQ  reduce 41
 	NEQ  reduce 41
 	')'  reduce 41
 	'>'  reduce 41
@@ -500,8 +502,8 @@ state 44
 	expresion : expresion . '-' termino  (40)
 
 	EQ  shift 65
-	LEQ  shift 66
-	GEQ  shift 67
+	GEQ  shift 66
+	LEQ  shift 67
 	NEQ  shift 68
 	'>'  shift 69
 	'<'  shift 70
@@ -513,7 +515,7 @@ state 44
 
 
 state 45
-	lista_variables : lista_variables ',' . lista_variables  (9)
+	lista_variables : ID ',' . lista_variables  (9)
 
 	ID  shift 24
 	.  error
@@ -694,15 +696,15 @@ state 65
 
 
 state 66
-	comparador : LEQ .  (30)
-
-	.  reduce 30
-
-
-state 67
 	comparador : GEQ .  (31)
 
 	.  reduce 31
+
+
+state 67
+	comparador : LEQ .  (30)
+
+	.  reduce 30
 
 
 state 68
@@ -736,14 +738,10 @@ state 71
 	termino  goto 42
 
 
-72: shift/reduce conflict (shift 45, reduce 9) on ','
 state 72
-	lista_variables : lista_variables . ',' lista_variables  (9)
-	lista_variables : lista_variables ',' lista_variables .  (9)
+	lista_variables : ID ',' lista_variables .  (9)
 
-	','  shift 45
-	';'  reduce 9
-	')'  reduce 9
+	.  reduce 9
 
 
 state 73
@@ -775,13 +773,10 @@ state 75
 	expresion_multiple  goto 89
 
 
-76: shift/reduce conflict (shift 45, reduce 58) on ','
 state 76
-	lista_variables : lista_variables . ',' lista_variables  (9)
 	parametro_formal : UINT lista_variables .  (58)
 
-	','  shift 45
-	')'  reduce 58
+	.  reduce 58
 
 
 state 77
@@ -824,8 +819,8 @@ state 81
 	'/'  shift 62
 	'*'  shift 63
 	EQ  reduce 39
-	LEQ  reduce 39
 	GEQ  reduce 39
+	LEQ  reduce 39
 	NEQ  reduce 39
 	')'  reduce 39
 	'>'  reduce 39
@@ -842,8 +837,8 @@ state 82
 	'/'  shift 62
 	'*'  shift 63
 	EQ  reduce 40
-	LEQ  reduce 40
 	GEQ  reduce 40
+	LEQ  reduce 40
 	NEQ  reduce 40
 	')'  reduce 40
 	'>'  reduce 40
@@ -915,13 +910,10 @@ state 89
 	.  reduce 14
 
 
-90: shift/reduce conflict (shift 45, reduce 57) on ','
 state 90
-	lista_variables : lista_variables . ',' lista_variables  (9)
 	parametro_formal : CVR UINT lista_variables .  (57)
 
-	','  shift 45
-	')'  reduce 57
+	.  reduce 57
 
 
 state 91
@@ -986,10 +978,8 @@ Rules never reduced:
 	lista_parametros : parametro_formal ',' lista_parametros  (53)
 
 
-State 72 contains 1 shift/reduce conflict.
-State 76 contains 1 shift/reduce conflict.
-State 90 contains 1 shift/reduce conflict.
+State 24 contains 1 shift/reduce conflict.
 
 
-31 terminals, 31 nonterminals
+34 terminals, 31 nonterminals
 59 grammar rules, 99 states

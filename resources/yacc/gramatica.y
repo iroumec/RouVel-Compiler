@@ -2,7 +2,9 @@
 /* INICIO DE DECLARACIONES                                                                       */
 /* --------------------------------------------------------------------------------------------- */
 
-%token ID, CTE, STR, PRINT, IF, ELSE, ENDIF, UINT, EQ, LEQ, GEQ, NEQ, CVR, DO, WHILE
+%token ID, CTE, STR
+%token EQ, GEQ, LEQ, NEQ, DASIG, FLECHA
+%token PRINT, IF, ELSE, ENDIF, UINT, CVR, DO, WHILE, RETURN
 
 /* --------------------------------------------------------------------------------------------- */
 /* FIN DE DECLARACIONES                                                                       */
@@ -155,5 +157,39 @@ parametro_formal                : CVR UINT lista_variables
 %%
 
 /* --------------------------------------------------------------------------------------------- */
-/* CÓDIGO (opcional)                                                                             */
+/* INICIO DE CÓDIGO (opcional)                                                                   */
+/* --------------------------------------------------------------------------------------------- */
+
+// Lexer.
+private final Lexer lexer;
+
+/**
+* Constructor que recibe un Lexer.
+*/
+public Parser(Lexer lexer) {
+    this.lexer = lexer;
+}
+
+// Método yylex() invocado durante yyparse().
+int yylex() {
+
+    if (lexer == null) {
+        throw new IllegalStateException("No hay un analizador léxico asignado.");
+    }
+
+    Token token = lexer.getNextToken();
+
+    this.yylval = (token.hasSymbolTableIndex()) ?
+        new ParserVal(token.getSymbolTableIndex())
+        : new ParserVal();
+
+    return token.getIdentificationCode();
+}
+
+void yyerror(String message) {
+    System.out.println(message);
+}
+
+/* --------------------------------------------------------------------------------------------- */
+/* FIN DE CÓDIGO                                                                                 */
 /* --------------------------------------------------------------------------------------------- */

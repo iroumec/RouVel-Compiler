@@ -25,6 +25,29 @@ public class Token {
 
     // --------------------------------------------------------------------------------------------
 
+    public int getSymbolTableIndex() {
+
+        if (symbolTableIndex == null) {
+            throw new IllegalStateException("El token no tiene una entrada en la tabla de símbolos.");
+        }
+
+        return symbolTableIndex;
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    public int getIdentificationCode() {
+        return tokenType.getIdentificationCode();
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    public boolean hasSymbolTableIndex() {
+        return symbolTableIndex != null;
+    }
+
+    // --------------------------------------------------------------------------------------------
+
     @Override
     public String toString() {
         return "["

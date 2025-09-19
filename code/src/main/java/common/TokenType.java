@@ -3,6 +3,8 @@ package common;
 import java.util.HashMap;
 import java.util.Map;
 
+import parser.Parser;
+
 public enum TokenType {
 
     // --------------------------------------------------------------------------------------------
@@ -10,36 +12,18 @@ public enum TokenType {
     // indica la ausencia de lexema, sino la posibilidad de varios.
     // --------------------------------------------------------------------------------------------
 
-    ID(null),
-    CTE(null),
-    STR(null),
+    ID(null, Parser.ID),
+    CTE(null, Parser.CTE),
+    STR(null, Parser.STR),
 
     // --------------------------------------------------------------------------------------------
-    // Palabras reservadas.
-    // --------------------------------------------------------------------------------------------
-
-    IF("if"),
-    DO("do"),
-    CVR("cvr"),
-    ELSE("else"),
-    UINT("uint"),
-    PRINT("print"),
-    RET("return"),
-    WHILE("while"),
-    ENDIF("endif"),
-
-    // --------------------------------------------------------------------------------------------
-    // Literales.
+    // Operadores multicarácteres.
     // --------------------------------------------------------------------------------------------
 
     GT(">"),
     LT("<"),
-    GE(">="),
-    LE("<="),
-    EQ("=="),
-    PC(";"),
+    PyC(";"),
     ASIG("="),
-    NEQ("!="),
     SUM("+"),
     RES("-"),
     MUL("*"),
@@ -50,23 +34,71 @@ public enum TokenType {
     YEK("}"),
     SLSH("_"),
     COMMA(","),
-    DASIG(":="),
-    FLECHA("->");
+
+    // --------------------------------------------------------------------------------------------
+    // Operadores monocarácter.
+    // --------------------------------------------------------------------------------------------
+
+    EQ("==", Parser.EQ),
+    GEQ(">=", Parser.GEQ),
+    LEQ("<=", Parser.LEQ),
+    NEQ("!=", Parser.NEQ),
+    DASIG(":=", Parser.DASIG),
+    FLECHA("->", Parser.FLECHA),
+
+    // --------------------------------------------------------------------------------------------
+    // Palabras reservadas.
+    // --------------------------------------------------------------------------------------------
+
+    IF("if", Parser.IF),
+    DO("do", Parser.DO),
+    CVR("cvr", Parser.CVR),
+    ELSE("else", Parser.ELSE),
+    UINT("uint", Parser.UINT),
+    PRINT("print", Parser.PRINT),
+    WHILE("while", Parser.WHILE),
+    ENDIF("endif", Parser.ENDIF),
+    RETURN("return", Parser.RETURN);
 
     // --------------------------------------------------------------------------------------------
 
     private final String symbol;
+    private final short identificationCode;
 
     // --------------------------------------------------------------------------------------------
 
     private TokenType(String symbol) {
+        this(symbol, null);
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    private TokenType(String symbol, Short identificationCode) {
         this.symbol = symbol;
+
+        if (symbol.length() == 1) {
+
+            if (identificationCode != null) {
+                throw new IllegalArgumentException(
+                        "El código de identificación para tokens de un único carácter se establece de forma automática mediante su código ASCII.");
+            }
+
+            identificationCode = (short) symbol.charAt(0); // Se obtiene el código ASCII del carácter.
+        }
+
+        this.identificationCode = identificationCode;
     }
 
     // --------------------------------------------------------------------------------------------
 
     public String getSymbol() {
         return this.symbol;
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    public Short getIdentificationCode() {
+        return this.identificationCode;
     }
 
     // --------------------------------------------------------------------------------------------
