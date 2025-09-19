@@ -1,19 +1,29 @@
-/* Declaraciones */
+/* --------------------------------------------------------------------------------------------- */
+/* INICIO DE DECLARACIONES                                                                       */
+/* --------------------------------------------------------------------------------------------- */
 
-%token ID, CTE, STR, PRNT, IF, ELSE, ENDIF, UINT, EQ, LEQ, GEQ, NEQ, CVR, DO, WHILE
+%token ID, CTE, STR, PRINT, IF, ELSE, ENDIF, UINT, EQ, LEQ, GEQ, NEQ, CVR, DO, WHILE
+
+/* --------------------------------------------------------------------------------------------- */
+/* FIN DE DECLARACIONES                                                                       */
+/* --------------------------------------------------------------------------------------------- */
 
 %%
 
-programa                    : ID '{' conjunto_sentencias '}'
-                            ;
-                    
-conjunto_sentencias         : sentencia ';' 
-                            | sentencia ';' conjunto_sentencias
-                            ;
+/* --------------------------------------------------------------------------------------------- */
+/* INICIO DE REGLAS                                                                                 */
+/* --------------------------------------------------------------------------------------------- */
 
-sentencia                   : sentencia_ejecutable
-                            | sentencia_declarativa
-                            ;
+programa                        : ID '{' conjunto_sentencias '}'
+                                ;
+                    
+conjunto_sentencias             : sentencia ';' 
+                                | sentencia ';' conjunto_sentencias
+                                ;
+
+sentencia                       : sentencia_ejecutable
+                                | sentencia_declarativa
+                                ;
 
 /* --------------------------------------------------------------------------------------------- */
 /* Sentencias declarativas                                                                      */
@@ -31,11 +41,11 @@ asignacion                      : identificador_multiple '=' expresion_multiple
                                 ;
 
 identificador_multiple          : identificador
-                                | identificador_multiple ',' identificador_multiple
+                                | identificador ',' identificador_multiple
                                 ;
 
 expresion_multiple              : CTE
-                                | expresion_multiple ',' expresion_multiple
+                                | CTE ',' expresion_multiple
                                 ;
 
 lambda                          : parametro conjunto_sentencias_ejecutables '(' factor ')'
@@ -60,6 +70,7 @@ conjunto_sentencias_ejecutables : sentencia_ejecutable
 
 sentencia_ejecutable            : invocacion_funcion
                                 | sentencia_control
+                                | impresion
                                 ;
 
 sentencia_control               : if
@@ -77,15 +88,19 @@ comparador                      : '>'
                                 | NEQ
                                 ;
 
-if                              : IF '(' condicion ')' conjunto_sentencias_ejecutables ENDIF
-                                | IF '(' condicion ')' conjunto_sentencias_ejecutables ELSE conjunto_sentencias_ejecutables ENDIF
+if                              : IF '(' condicion ')' bloque_ejecutable ENDIF
+                                | IF '(' condicion ')' bloque_ejecutable ELSE bloque_ejecutable ENDIF
                                 ;
 
 while                           : DO conjunto_sentencias_ejecutables WHILE '(' condicion ')'
                                 ;
 
-impresion                       : PRNT '(' STR ')'
-                                | PRNT '(' expresion ')'
+impresion                       : PRINT '(' imprimible ')'
+                                ;
+
+imprimible                      : STR
+                                | expresion
+                                ;
 
 /* --------------------------------------------------------------------------------------------- */
 /* Expresiones                                                                                   */
@@ -115,24 +130,30 @@ identificador                   : ID
 /* Funciones, llamadas y parametros                                                              */
 /* --------------------------------------------------------------------------------------------- */
 
-funcion                     : UINT identificador '(' lista_parametros ')' '{' conjunto_sentencias '}'
-                            ;
+funcion                         : UINT identificador '(' lista_parametros ')' '{' conjunto_sentencias '}'
+                                ;
                             
-lista_parametros            : parametro_formal 
-                            | parametro_formal ',' lista_parametros
-                            ;
+lista_parametros                : parametro_formal 
+                                | parametro_formal ',' lista_parametros
+                                ;
 
-invocacion_funcion          : identificador '(' lista_parametros_formales ')' 
-                            ;
+invocacion_funcion              : identificador '(' lista_parametros_formales ')' 
+                                ;
 
-lista_parametros_formales   : parametro_formal 
-                            | parametro_formal ',' lista_parametros_formales
-                            ;
+lista_parametros_formales       : parametro_formal 
+                                | parametro_formal ',' lista_parametros_formales
+                                ;
 
-parametro_formal            : CVR UINT lista_variables 
-                            | UINT lista_variables
-                            ; 
+parametro_formal                : CVR UINT lista_variables 
+                                | UINT lista_variables
+                                ; 
+
+/* --------------------------------------------------------------------------------------------- */
+/* FIN DE REGLAS                                                                                 */
+/* --------------------------------------------------------------------------------------------- */
 
 %%
 
-/* código (opcional) */
+/* --------------------------------------------------------------------------------------------- */
+/* CÓDIGO (opcional)                                                                             */
+/* --------------------------------------------------------------------------------------------- */

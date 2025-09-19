@@ -6,7 +6,9 @@ import java.util.Map;
 public enum TokenType {
 
     // --------------------------------------------------------------------------------------------
-    // Tokens que pueden corresponder a más de un lexema.
+    // Tokens que pueden corresponder a más de un lexema. En este sentido, "null" no
+    // indica la ausencia de lexema, sino la posibilidad de varios.
+    // --------------------------------------------------------------------------------------------
 
     ID(null),
     CTE(null),
@@ -14,19 +16,21 @@ public enum TokenType {
 
     // --------------------------------------------------------------------------------------------
     // Palabras reservadas.
+    // --------------------------------------------------------------------------------------------
 
     IF("if"),
     DO("do"),
     CVR("cvr"),
     ELSE("else"),
     UINT("uint"),
-    PRNT("print"),
+    PRINT("print"),
     RET("return"),
     WHILE("while"),
     ENDIF("endif"),
 
     // --------------------------------------------------------------------------------------------
     // Literales.
+    // --------------------------------------------------------------------------------------------
 
     GT(">"),
     LT("<"),
