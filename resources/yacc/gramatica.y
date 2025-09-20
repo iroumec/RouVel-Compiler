@@ -35,24 +35,18 @@ sentencia_declarativa           : UINT lista_variables
                                 | declaracion_funcion
                                 ;
 
-lista_variables                 : ID 
-                                | ID ',' lista_variables
+lista_variables                 : ID
+                                | lista_variables ',' ID
                                 ;
 
 /* Estas asignaciones pueden tener un menor número de elementos del lado izquierdo (tema 17). */
-asignacion_multiple             : variable '=' constante
-                                | variable ',' asignacion_multiple ',' constante
-                                | asignacion_multiple ',' constante
-                                ;
-
 /* De esta forma, siempre se controla que el lado derecho tenga, al menos, tanto elementos como el izquierdo. */
 /* Los elementos del lado derecho sólo pueden ser constantes. */
-/*
-termino_asignacion_multiple     : ',' variable termino_asignacion_multiple constante ','
-                                | '=' constante
-                                | termino_asignacion_multiple constante ','
-                                | '='
-*/
+asignacion_multiple             : lista_variables '=' lista_constantes  {  } /* Acción semántica para comprobar número. Se requiere gramática de turing*/
+                                ;
+                                
+lista_constantes                : constante
+                                | constante ',' lista_constantes
                                 ;
 
 lambda                          : parametro conjunto_sentencias_ejecutables '(' factor /*argumento*/ ')'
@@ -138,6 +132,7 @@ constante                       : CTE
 variable                        : ID
                                 | ID '.' ID
                                 ;
+
 /* --------------------------------------------------------------------------------------------- */
 /* Funciones, llamadas y parametros                                                              */
 /* --------------------------------------------------------------------------------------------- */
@@ -151,12 +146,15 @@ cuerpo_funcion                  : conjunto_sentencias RETURN expresion ';'
                                 ;
                             
 lista_parametros                : parametro_formal 
-                                | parametro_formal ',' lista_parametros
+                                | lista_parametros ',' parametro_formal 
                                 ;
 
-parametro_formal                : CVR UINT lista_variables 
-                                | UINT lista_variables
+parametro_formal                : semantica_pasaje UINT variable /* lista_variables */
                                 ; 
+
+semantica_pasaje                : /* épsilon */
+                                | CVR
+                                ;
 
 invocacion_funcion              : ID '(' lista_argumentos ')' 
                                 ;
