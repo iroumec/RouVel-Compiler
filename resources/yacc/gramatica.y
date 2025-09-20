@@ -35,18 +35,24 @@ sentencia_declarativa           : UINT lista_variables
                                 | declaracion_funcion
                                 ;
 
-lista_variables                 : ID
+lista_variables                 : ID 
                                 | ID ',' lista_variables
                                 ;
 
 /* Estas asignaciones pueden tener un menor número de elementos del lado izquierdo (tema 17). */
-asignacion_multiple             : variable termino_asignacion_multiple expresion
+asignacion_multiple             : variable '=' constante
+                                | variable ',' asignacion_multiple ',' constante
+                                | asignacion_multiple ',' constante
                                 ;
 
 /* De esta forma, siempre se controla que el lado derecho tenga, al menos, tanto elementos como el izquierdo. */
-termino_asignacion_multiple     : ',' variable termino_asignacion_multiple expresion ','
-                                | termino_asignacion_multiple expresion ','
+/* Los elementos del lado derecho sólo pueden ser constantes. */
+/*
+termino_asignacion_multiple     : ',' variable termino_asignacion_multiple constante ','
+                                | '=' constante
+                                | termino_asignacion_multiple constante ','
                                 | '='
+*/
                                 ;
 
 lambda                          : parametro conjunto_sentencias_ejecutables '(' factor /*argumento*/ ')'
@@ -121,21 +127,24 @@ termino                         : termino '/' factor
                                 ;
 
 factor                          : variable
-                                | CTE
+                                | constante
+                                ;
+
+/* Separado para contemplar la posibilidad de CTE negativa. */
+constante                       : CTE
                                 | '-' CTE /* Luego debe revisarse que la CTE no sea un entero */
                                 ;
 
 variable                        : ID
                                 | ID '.' ID
                                 ;
-
 /* --------------------------------------------------------------------------------------------- */
 /* Funciones, llamadas y parametros                                                              */
 /* --------------------------------------------------------------------------------------------- */
 
 declaracion_funcion             : UINT ID '(' lista_parametros ')' '{' cuerpo_funcion '}'
                                 /* REGLAS DE ERROR */
-                                | UINT ID '(' ')' '{' cuerpo_funcion '}'                    { System.out.println("Error: toda función debe recibir al menos un parámetro.")}
+                                | UINT ID '(' ')' '{' cuerpo_funcion '}'                    { System.out.println("Error: toda función debe recibir al menos un parámetro.");}
                                 ;
 
 cuerpo_funcion                  : conjunto_sentencias RETURN expresion ';'

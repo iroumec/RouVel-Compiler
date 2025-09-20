@@ -14,7 +14,7 @@ Operadores de asignación: “=” , “:=”
 
 Comparadores: “>=”, “<=”, “>”, “<”, “==”, “=!”
 
-Otros símbolos: “(”, “)”, “{”, “}”, ”\_”, “;” y “->”
+Otros símbolos: “(”, “)”, “{”, “}”, ”\_”, ",", “;” y “->”
 
 ### Palabras Reservadas
 
