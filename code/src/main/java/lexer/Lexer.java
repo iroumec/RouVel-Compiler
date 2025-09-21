@@ -201,12 +201,10 @@ public final class Lexer {
     // --------------------------------------------------------------------------------------------
 
     public char readNextChar() {
-        if (siguienteCaracterALeer < codigoFuente.length()) {
-            return codigoFuente.charAt(siguienteCaracterALeer++);
+        if (siguienteCaracterALeer >= codigoFuente.length()) {
+            return '\0';
         }
-        siguienteCaracterALeer++;
-
-        return '\0';
+        return codigoFuente.charAt(siguienteCaracterALeer++);
     }
 
     // --------------------------------------------------------------------------------------------

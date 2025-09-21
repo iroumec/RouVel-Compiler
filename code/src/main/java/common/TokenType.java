@@ -137,6 +137,9 @@ public enum TokenType {
      */
     public static TokenType fromSymbol(String symbol) {
 
+        if (symbol == null || symbol.isEmpty())
+            return null;
+
         // Se verifica primero que no sea un identificador, constante o cadena.
         char firstChar = symbol.charAt(0);
         if (Character.isUpperCase(firstChar)) {

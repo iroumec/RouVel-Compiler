@@ -1,74 +1,85 @@
-/* --------------------------------------------------------------------------------------------- */
-/* INICIO DE DECLARACIONES                                                                       */
-/* --------------------------------------------------------------------------------------------- */
+/* ---------------------------------------------------------------------------------------------------- */
+/* INICIO DE DECLARACIONES                                                                              */
+/* ---------------------------------------------------------------------------------------------------- */
 
 %token ID, CTE, STR
 %token EQ, GEQ, LEQ, NEQ, DASIG, FLECHA
 %token PRINT, IF, ELSE, ENDIF, UINT, CVR, DO, WHILE, RETURN
 
-/* --------------------------------------------------------------------------------------------- */
-/* FIN DE DECLARACIONES                                                                       */
-/* --------------------------------------------------------------------------------------------- */
+/* ---------------------------------------------------------------------------------------------------- */
+/* FIN DE DECLARACIONES                                                                                 */
+/* ---------------------------------------------------------------------------------------------------- */
 
 %%
 
-/* error: cualquier cosa que en ese punto no cumpla ninguna de las alternativas válidas. */
+// error: token especial que representa cualquier cosa que en ese punto no cumpla ninguna
+// de las alternativas válidas.
 
-/* --------------------------------------------------------------------------------------------- */
-/* INICIO DE REGLAS                                                                              */
-/* --------------------------------------------------------------------------------------------- */
+/* ---------------------------------------------------------------------------------------------------- */
+/* INICIO DE REGLAS                                                                                     */
+/* ---------------------------------------------------------------------------------------------------- */
 
-programa                        : ID '{' conjunto_sentencias '}'                                    { notifyDetection("Programa."); }
+programa                        : ID '{' conjunto_sentencias '}'
+                                { notifyDetection("Programa."); }
                                 ;
                     
 conjunto_sentencias             : sentencia ';' 
-                                | sentencia ';' conjunto_sentencias
+                                | conjunto_sentencias sentencia ';'
                                 ;
 
 sentencia                       : sentencia_ejecutable
                                 | sentencia_declarativa
                                 ;
 
-/* --------------------------------------------------------------------------------------------- */
-/* Sentencias declarativas                                                                       */
-/* --------------------------------------------------------------------------------------------- */
+/* ---------------------------------------------------------------------------------------------------- */
+/* Sentencias declarativas                                                                              */
+/* ---------------------------------------------------------------------------------------------------- */
 
-sentencia_declarativa           : UINT lista_variables                                              { notifyDetection("Declaración de variable."); }
+sentencia_declarativa           : UINT lista_variables
+                                { notifyDetection("Declaración de variable."); }
                                 | declaracion_funcion
+                                { notifyDetection("Declaración de función."); }
                                 ;
 
 lista_variables                 : ID
                                 | lista_variables ',' ID
                                 ;
 
-/* Estas asignaciones pueden tener un menor número de elementos del lado izquierdo (tema 17). */
-/* De esta forma, siempre se controla que el lado derecho tenga, al menos, tanto elementos como el izquierdo. */
-/* Los elementos del lado derecho sólo pueden ser constantes. */
-asignacion_multiple             : lista_variables '=' lista_constantes  {  } /* Acción semántica para comprobar número. Se requiere gramática de turing*/
+/*
+Estas asignaciones pueden tener un menor número de elementos del lado izquierdo (tema 17).
+
+No es posible chequear utilizando únicamente las reglas que el lado derecho pueda tener más elementos
+que el izquierdo. Se requería un autómata de Turing. Por eso, se utilizan acciones semánticas.
+
+Los elementos del lado derecho sólo pueden ser constantes.
+*/
+asignacion_multiple             : lista_variables '=' lista_constantes
+                                { notifyDetection("Asignación múltiple."); }
                                 ;
                                 
 lista_constantes                : constante
-                                | constante ',' lista_constantes
+                                | lista_constantes ',' constante
                                 ;
 
-lambda                          : parametro conjunto_sentencias_ejecutables '(' factor /*argumento*/ ')'
+// El factor representa al argumento.
+lambda                          : '(' UINT ID ')' bloque_ejecutable '(' factor ')'
+                                { notifyDetection("Expresión lambda."); }
                                 ;
 
-parametro                       : UINT ID
-                                ;
-                            
-
-/* --------------------------------------------------------------------------------------------- */
-/* Sentencias ejecutables                                                                        */
-/* --------------------------------------------------------------------------------------------- */
+/* ---------------------------------------------------------------------------------------------------- */
+/* Sentencias ejecutables                                                                               */
+/* ---------------------------------------------------------------------------------------------------- */
 
 bloque_ejecutable               : '{' conjunto_sentencias_ejecutables '}'
+                                // --------------- //
+                                // REGLAS DE ERROR //
+                                // --------------- //
+                                | '{' '}'
+                                { notifyError("El cuerpo de la sentencia no puede estar vacío."); }
+                                ;
 
 conjunto_sentencias_ejecutables : sentencia_ejecutable ';'
-                                | sentencia_ejecutable ';' conjunto_sentencias_ejecutables
-                                /* REGLAS DE ERROR */
-                                /*| /* epsilon - cadena vacía (shift/reduce si se coloca esto)
-                                { notifyError("El cuerpo del IF no puede estar vacío."); } */
+                                | conjunto_sentencias_ejecutables sentencia_ejecutable ';'
                                 ;
 
 sentencia_ejecutable            : invocacion_funcion
@@ -83,10 +94,10 @@ asignacion_simple               : variable DASIG expresion
                                 { notifyDetection("Asignación simple."); }
                                 ;
 
+// Separada por legibilidad.
 sentencia_control               : if                                                                
-                                { notifyDetection("Setencia IF."); }
-                                | while                                                            
-                                { notifyDetection("Setencia WHILE."); }
+                                | while         
+                                { notifyDetection("Setencia WHILE."); }                                                   
                                 ;
 
 condicion                       : expresion comparador expresion
@@ -101,9 +112,16 @@ comparador                      : '>'
                                 ;
 
 if                              : IF '(' condicion ')' bloque_ejecutable ENDIF
+                                { notifyDetection("Setencia IF."); }
                                 | IF '(' condicion ')' bloque_ejecutable ELSE bloque_ejecutable ENDIF
-                                /* REGLAS DE ERROR */
-                                | IF '(' condicion ')' bloque_ejecutable error                          { notifyError("La sentencia IF debe finalizarse con 'endif'."); }
+                                { notifyDetection("Setencia IF-ELSE."); }
+                                // --------------- //
+                                // REGLAS DE ERROR //
+                                // --------------- //
+                                | IF '(' condicion ')' bloque_ejecutable error
+                                { notifyError("La sentencia IF debe finalizarse con 'endif'."); }
+                                | IF '(' condicion ')' bloque_ejecutable ELSE bloque_ejecutable error
+                                { notifyError("La sentencia IF-ELSE debe finalizarse con 'endif'."); }
                                 ;
 
 while                           : DO sentencia_ejecutable WHILE '(' condicion ')'
@@ -113,51 +131,69 @@ while                           : DO sentencia_ejecutable WHILE '(' condicion ')
 impresion                       : PRINT '(' imprimible ')'                                          
                                 ;
 
-imprimible                      : STR                                                               { notifyDetection("Impresión de cadena."); }
-                                | expresion                                                         { notifyDetection("Impresión de expresión."); }
+imprimible                      : STR
+                                { notifyDetection("Impresión de cadena."); }
+                                | expresion
+                                { notifyDetection("Impresión de expresión."); }
                                 ;
 
-/* --------------------------------------------------------------------------------------------- */
-/* Expresiones                                                                                   */
-/* --------------------------------------------------------------------------------------------- */
+/* ---------------------------------------------------------------------------------------------------- */
+/* Expresiones                                                                                          */
+/* ---------------------------------------------------------------------------------------------------- */
 
-expresion                       : expresion '+' termino
-                                | expresion '-' termino
+// Podría simplificarse con un "operador_expresion" creo.
+expresion                       : expresion operador_suma termino
                                 | termino
-                                /* REGLAS DE ERROR */
-                                | expresion '+' error
-                                | expresion '-' error
+                                // --------------- //
+                                // REGLAS DE ERROR //
+                                // --------------- //
+                                | expresion operador_suma error
                                 ;
 
-termino                         : termino '/' factor 
-                                | termino '*' factor
+// Esta separación se realiza en libros como "Compilers: Principles, Techniques, and Tools”
+// para aclarar la estructura y reducir la duplicación.
+operador_suma                   : '+'
+                                | '-'
+                                ;
+
+termino                         : termino operador_multiplicacion factor 
                                 | factor
-                                /* REGLAS DE ERROR */
-                                | termino '/' error
-                                | termino '*' error
+                                // --------------- //
+                                // REGLAS DE ERROR //
+                                // --------------- //
+                                | termino operador_multiplicacion error
                                 ;
 
+// Esta separación se realiza en libros como "Compilers: Principles, Techniques, and Tools”
+// para aclarar la estructura y reducir la duplicación.
+operador_multiplicacion         : '/'
+                                | '*'
+                                ;
 
 factor                          : variable
                                 | constante
                                 ;
 
-/* Separado para contemplar la posibilidad de CTE negativa. */
+// Separados para contemplar la posibilidad de CTE negativa.
 constante                       : CTE
-                                | '-' CTE /* Luego debe revisarse que la CTE no sea un entero */
+                                | '-' CTE // Luego debe revisarse que la CTE no sea entera.
                                 ;
 
+// Separado para contemplar la posibilidad de identificador prefijado.
 variable                        : ID
                                 | ID '.' ID
                                 ;
 
-/* --------------------------------------------------------------------------------------------- */
-/* Funciones, llamadas y parametros                                                              */
-/* --------------------------------------------------------------------------------------------- */
+/* ---------------------------------------------------------------------------------------------------- */
+/* Funciones, llamadas y parametros                                                                     */
+/* ---------------------------------------------------------------------------------------------------- */
 
 declaracion_funcion             : UINT ID '(' lista_parametros ')' '{' cuerpo_funcion '}'
-                                /* REGLAS DE ERROR */
-                                | UINT ID '(' ')' '{' cuerpo_funcion '}'                    { notifyError("Toda función debe recibir al menos un parámetro."); }
+                                // --------------- //
+                                // REGLAS DE ERROR //
+                                // --------------- //
+                                | UINT ID '(' ')' '{' cuerpo_funcion '}'
+                                { notifyError("Toda función debe recibir al menos un parámetro."); }
                                 ;
 
 cuerpo_funcion                  : conjunto_sentencias RETURN expresion ';'
@@ -167,29 +203,36 @@ lista_parametros                : parametro_formal
                                 | lista_parametros ',' parametro_formal 
                                 ;
 
-parametro_formal                : semantica_pasaje UINT variable /* lista_variables */
+// Separado por legibilidad.
+parametro_formal                : semantica_pasaje UINT variable
                                 ; 
 
-semantica_pasaje                : /* épsilon - cadena vacía */
+// Separado para evitar un reduce/reduce.
+semantica_pasaje                : // épsilon - cadena vacía.
                                 | CVR
                                 ;
 
 invocacion_funcion              : ID '(' lista_argumentos ')' 
+                                { notifyDetection("Invocación de función."); }
                                 ;
 
-lista_argumentos                : expresion FLECHA parametro_formal
-                                | expresion ',' lista_argumentos
+lista_argumentos                : argumento
+                                | lista_argumentos ',' argumento
                                 ;
 
-/* --------------------------------------------------------------------------------------------- */
-/* FIN DE REGLAS                                                                                 */
-/* --------------------------------------------------------------------------------------------- */
+// Separado por legibilidad.
+argumento                       : expresion FLECHA parametro_formal
+                                ;
+
+/* ---------------------------------------------------------------------------------------------------- */
+/* FIN DE REGLAS                                                                                        */
+/* ---------------------------------------------------------------------------------------------------- */
 
 %%
 
-/* --------------------------------------------------------------------------------------------- */
-/* INICIO DE CÓDIGO (opcional)                                                                   */
-/* --------------------------------------------------------------------------------------------- */
+/* ---------------------------------------------------------------------------------------------------- */
+/* INICIO DE CÓDIGO (opcional)                                                                          */
+/* ---------------------------------------------------------------------------------------------------- */
 
 // End of File.
 public final static short EOF = 0;
@@ -197,11 +240,15 @@ public final static short EOF = 0;
 // Lexer.
 private final Lexer lexer;
 
+private int errorsDetected;
+private int warningsDetected;
+
 /**
 * Constructor que recibe un Lexer.
 */
 public Parser(Lexer lexer) {
     this.lexer = lexer;
+    this.errorsDetected = this.warningsDetected = 0;
 }
 
 // Método público para llamar a yyparse(), ya que, por defecto,
@@ -210,12 +257,18 @@ public void execute() {
     yyparse();
 }
 
-void notifyError(String errorMessage) {
-    System.out.println("\nERROR SINTÁCTICO: " + errorMessage + '\n');
+void notifyDetection(String message) {
+    System.out.printf("%nDETECCIÓN SEMÁNTICA: %s%n%n", message);
 }
 
-void notifyDetection(String message) {
-    System.out.println("\nDETECCIÓN SEMÁNTICA: " + message + '\n');
+void notifyWarning(String warningMessage) {
+    System.err.printf("%WARNING SINTÁCTICA: Línea %d: %s%n%n", lexer.getNroLinea(), warningMessage);
+    this.warningsDetected++;
+}
+
+void notifyError(String errorMessage) {
+    System.err.printf("%nERROR SINTÁCTICO: Línea %d: %s%n%n", lexer.getNroLinea(), errorMessage);
+    this.errorsDetected++;
 }
 
 // Método yylex() invocado durante yyparse().
@@ -241,6 +294,6 @@ void yyerror(String message) {
     System.out.println(message);
 }
 
-/* --------------------------------------------------------------------------------------------- */
-/* FIN DE CÓDIGO                                                                                 */
-/* --------------------------------------------------------------------------------------------- */
+/* ---------------------------------------------------------------------------------------------------- */
+/* FIN DE CÓDIGO                                                                                        */
+/* ---------------------------------------------------------------------------------------------------- */
