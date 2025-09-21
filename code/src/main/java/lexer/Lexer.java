@@ -56,7 +56,7 @@ public final class Lexer {
             // o este será nulo (en caso de ya haberse leído todo el archivo).
             searchToken();
 
-        } while (this.token == null && siguienteCaracterALeer <= codigoFuente.length());
+        } while (this.token == null && siguienteCaracterALeer < codigoFuente.length());
 
         // Si el token es null, es porque no hay más tokens reconocibles.
         // Esto es, se llegó al final del archivo.
@@ -76,7 +76,7 @@ public final class Lexer {
         int estadoActual = ESTADO_INICIO;
         int siguienteEstado;
 
-        while (estadoActual != ESTADO_ACEPTACION && siguienteCaracterALeer <= codigoFuente.length()) {
+        while (estadoActual != ESTADO_ACEPTACION && siguienteCaracterALeer < codigoFuente.length()) {
 
             this.lastCharRead = this.readNextChar();
 

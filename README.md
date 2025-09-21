@@ -50,7 +50,7 @@ El programa funciona tanto con rutas absolutas como relativas. En `resources/tes
 ### Linux
 
 ```sh
-./rouvel-linux resources/testFiles/example1.uki
+./rouvel-linux resources/testFiles/example0.uki
 ```
 
 > [!WARNING]
@@ -59,13 +59,13 @@ El programa funciona tanto con rutas absolutas como relativas. En `resources/tes
 ### macOS
 
 ```sh
-./rouvel-macos resources/testFiles/example1.uki
+./rouvel-macos resources/testFiles/example0.uki
 ```
 
 ### Windows
 
 ```sh
-rouvel.exe resources/testFiles/example1.uki
+rouvel.exe resources/testFiles/example0.uki
 ```
 
 ## Eliminación de la Imagen (opcional)
