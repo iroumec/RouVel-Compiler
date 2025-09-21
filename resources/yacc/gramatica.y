@@ -112,13 +112,25 @@ imprimible                      : STR
 
 expresion                       : expresion '+' termino
                                 | expresion '-' termino
+                                | expresion '+' '+' termino  
                                 | termino
                                 ;
+
+/*
+operador_duplicado              :
+                                /* Reglas de Error - Operador Doble 
+                                | '+'                                               {}
+                                | '-'
+                                | '/'
+                                | '*'
+                                ;
+*/
 
 termino                         : termino '/' factor 
                                 | termino '*' factor
                                 | factor
                                 ;
+
 
 factor                          : variable
                                 | constante
