@@ -273,10 +273,6 @@ public final class Lexer {
 
     // --------------------------------------------------------------------------------------------
 
-    public void incrementWarningsDetected() {
-        this.warningsDetected++;
-    }
-
     public void notifyWarning(String warningMessage) {
         System.err.println("\nWARNING LÉXICO: LÍNEA " + this.getNroLinea() + ": " + warningMessage + '\n');
         this.warningsDetected++;

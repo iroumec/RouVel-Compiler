@@ -30,11 +30,12 @@ public class InvalidDecimalFormat implements LexicalError {
 
     @Override
     public void handleError(Lexer lexicalAnalyzer) {
-        System.err.println("ERROR: Línea "
-                + lexicalAnalyzer.getNroLinea()
-                + ": El símbolo '.' es inválido a menos de que le siga la parte decimal de un número. "
-                + "Este será omitido.");
-        lexicalAnalyzer.incrementErrorsDetected();
+        lexicalAnalyzer.notifyError("""
+                El símbolo '.' es inválido a menos de que \
+                le siga la parte decimal de un número. \
+                Este será omitido.
+                """);
+
         ReturnCharacterToEntry.getInstance().execute(lexicalAnalyzer);
     }
 

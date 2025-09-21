@@ -84,10 +84,11 @@ public class FloatChecker implements SemanticAction {
         String number = transformToScientific(lexema);
 
         if (!isInRange(number)) {
-            System.out.println("WARNING: Línea: " + lexicalAnalyzer.getNroLinea() + ": El número flotante " + number
-                    + " está fuera del rango de representación. Se asignará el valor 0.0.");
-            lexicalAnalyzer.incrementWarningsDetected();
-            return "0.0";
+            lexicalAnalyzer.notifyWarning("""
+                    El número flotante %s está fuera del rango de representación. \
+                    Se asignará el valor 0.0.
+                    """.formatted(number));
+
         }
 
         return number.replace("E", "F");

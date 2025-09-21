@@ -33,14 +33,15 @@ public class IdentifierLengthChecker implements SemanticAction {
         String lexema = lexicalAnalyzer.getLexema();
 
         if (lexema.length() > MAX_IDENTIFIER_LENGTH) {
-            System.out.println("WARNING: Línea " + lexicalAnalyzer.getNroLinea() + ": El identificador '" + lexema
-                    + "' excede la longitud máxima de " + MAX_IDENTIFIER_LENGTH
-                    + " caracteres. Se truncará a '"
-                    + lexema.substring(0, MAX_IDENTIFIER_LENGTH) + "'.");
-            lexicalAnalyzer.incrementWarningsDetected();
-            lexema = lexema.substring(0, MAX_IDENTIFIER_LENGTH);
 
-            lexicalAnalyzer.setLexema(lexema);
+            String truncatedLexema = lexema.substring(0, MAX_IDENTIFIER_LENGTH);
+
+            lexicalAnalyzer.notifyWarning("""
+                    El identificador %s excede la longitud máxima de %d \
+                    caracteres. Se truncará a %s.
+                    """.formatted(lexema, MAX_IDENTIFIER_LENGTH, truncatedLexema));
+
+            lexicalAnalyzer.setLexema(truncatedLexema);
         }
     }
 

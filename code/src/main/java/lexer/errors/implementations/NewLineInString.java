@@ -29,11 +29,10 @@ public class NewLineInString implements LexicalError {
 
     @Override
     public void handleError(Lexer lexicalAnalyzer) {
-        System.err.println("ERROR: Línea "
-                + lexicalAnalyzer.getNroLinea()
-                + ": Las cadenas no pueden contener saltos de línea. "
-                + "Este se omitirá.");
-        lexicalAnalyzer.incrementErrorsDetected();
+        lexicalAnalyzer.notifyError("""
+                Las cadenas no pueden contener saltos de línea. \
+                Este se descarta.
+                """);
     }
 
     // --------------------------------------------------------------------------------------------

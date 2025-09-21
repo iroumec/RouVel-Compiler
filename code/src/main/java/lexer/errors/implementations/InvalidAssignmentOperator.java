@@ -29,13 +29,9 @@ public class InvalidAssignmentOperator implements lexer.errors.LexicalError {
 
     @Override
     public void handleError(lexer.Lexer lexicalAnalyzer) {
-        System.err.println("ERROR: Línea "
-                + lexicalAnalyzer.getNroLinea()
-                + ": Operador de asignación inválido '"
+        lexicalAnalyzer.notifyError("Operador de asignación inválido '"
                 + lexicalAnalyzer.getLexema() + "'. "
                 + "El operador correcto es ':='. Se insertará el caracter '='.");
-
-        lexicalAnalyzer.incrementErrorsDetected();
 
         // Ejecución de acciones semánticas reparadores.
         lexicalAnalyzer.appendToLexema("=");

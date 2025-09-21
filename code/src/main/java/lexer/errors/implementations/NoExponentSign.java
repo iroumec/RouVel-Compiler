@@ -47,13 +47,11 @@ public class NoExponentSign implements LexicalError {
         }
 
         // Se asume exponente positivo.
-        System.err.println("ERROR: Línea "
-                + lexicalAnalyzer.getNroLinea()
-                + ": Se debe especificar un signo para el exponente."
+        lexicalAnalyzer.notifyError("Se debe especificar un signo para el exponente."
                 + " Se asumirá que el exponente de interés es positivo: F+"
-                + number + ".");
+                + number + '.');
+
         number.insert(0, '+');
-        lexicalAnalyzer.incrementErrorsDetected();
 
         // Se invocan a las acciones semánticas correspondientes.
         lexicalAnalyzer.appendToLexema(number.toString());

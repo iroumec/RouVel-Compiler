@@ -33,14 +33,11 @@ public class UndeterminedNumber implements LexicalError {
 
     @Override
     public void handleError(Lexer lexicalAnalyzer) {
-        System.err.println("ERROR: Línea "
-                + lexicalAnalyzer.getNroLinea()
-                + ": Número mal formado: '"
+        lexicalAnalyzer.notifyError("Número mal formado: '"
                 + lexicalAnalyzer.getLexema() + "''."
                 + "\n\t - De ser un entero, debe terminar con el sufijo 'UI'."
                 + "\n\t - De ser un flotante y no tener parte decimal, se debe especificar un punto '.' al final."
                 + "\nSe asumirá que es un entero y se agregará el sufijo 'UI'.");
-        lexicalAnalyzer.incrementErrorsDetected();
 
         // Se realiza el agregado del sufijo y las acciones semánticas
         // necesarias para entregar el token.

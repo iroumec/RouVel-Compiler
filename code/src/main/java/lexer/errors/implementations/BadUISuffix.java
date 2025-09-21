@@ -32,12 +32,9 @@ public class BadUISuffix implements LexicalError {
 
     @Override
     public void handleError(Lexer lexicalAnalyzer) {
-        System.err.println("ERROR: Línea "
-                + lexicalAnalyzer.getNroLinea()
-                + ": El número: '"
+        lexicalAnalyzer.notifyError("El número: '"
                 + lexicalAnalyzer.getLexema() + "' posee un sufijo inválido. "
                 + "Se añadirá el sufijo 'I'.");
-        lexicalAnalyzer.incrementErrorsDetected();
 
         // Agregado del sufijo y finalización del lexema.
         lexicalAnalyzer.appendToLexema('I');

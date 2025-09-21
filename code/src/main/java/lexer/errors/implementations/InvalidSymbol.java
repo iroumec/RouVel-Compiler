@@ -29,12 +29,9 @@ public class InvalidSymbol implements LexicalError {
 
     @Override
     public void handleError(Lexer lexicalAnalyzer) {
-        System.err.println("ERROR: Línea "
-                + lexicalAnalyzer.getNroLinea()
-                + ": Símbolo inválido '"
+        lexicalAnalyzer.notifyError("Símbolo inválido '"
                 + lexicalAnalyzer.getLastCharRead() + "'. "
                 + "El símbolo se omitirá.");
-        lexicalAnalyzer.incrementErrorsDetected();
     }
 
     // --------------------------------------------------------------------------------------------
