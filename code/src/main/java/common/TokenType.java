@@ -149,4 +149,11 @@ public enum TokenType {
 
         return symbolLookup.get(symbol);
     }
+
+    // --------------------------------------------------------------------------------------------
+
+    @Override
+    public String toString() {
+        return (this.symbol == null) ? this.name() : this.symbol;
+    }
 }

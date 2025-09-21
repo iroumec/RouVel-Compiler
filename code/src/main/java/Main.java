@@ -20,17 +20,15 @@ public class Main {
             return;
         }
 
-        System.out.println("=== Resultados de la Compilación del Archivo: " + file.getName() + " ===");
+        System.out.println("\n=== Resultados de la Compilación del Archivo: " + file.getName() + " ===\n");
 
         Lexer lexicalAnalyzer = new Lexer(file.getPath());
 
         Parser sintacticalAnalyzer = new Parser(lexicalAnalyzer);
 
-        System.out.println("Tokens y estructuras sintácticas identificadas en el programa:");
-
         sintacticalAnalyzer.execute();
 
-        System.out.println("El programa tiene " + lexicalAnalyzer.getNroLinea() + " líneas.");
+        System.out.println("\nEl programa tiene " + lexicalAnalyzer.getNroLinea() + " líneas.");
         System.out.println("Se detectaron " + lexicalAnalyzer.getErrorsDetected() + " errores y "
                 + lexicalAnalyzer.getWarningsDetected() + " warnings.");
         System.out.println();

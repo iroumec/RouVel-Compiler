@@ -18,7 +18,7 @@
 /* INICIO DE REGLAS                                                                              */
 /* --------------------------------------------------------------------------------------------- */
 
-programa                        : ID '{' conjunto_sentencias '}'                                    { System.out.println("\nPrograma.\n")}
+programa                        : ID '{' conjunto_sentencias '}'                                    { notifyDetection("Programa."); }
                                 ;
                     
 conjunto_sentencias             : sentencia ';' 
@@ -33,7 +33,7 @@ sentencia                       : sentencia_ejecutable
 /* Sentencias declarativas                                                                       */
 /* --------------------------------------------------------------------------------------------- */
 
-sentencia_declarativa           : UINT lista_variables                                              { System.out.println("\nDeclaración de variable.\n"); }
+sentencia_declarativa           : UINT lista_variables                                              { notifyDetection("Declaración de variable."); }
                                 | declaracion_funcion
                                 ;
 
@@ -148,7 +148,7 @@ variable                        : ID
 
 declaracion_funcion             : UINT ID '(' lista_parametros ')' '{' cuerpo_funcion '}'
                                 /* REGLAS DE ERROR */
-                                | UINT ID '(' ')' '{' cuerpo_funcion '}'                    { System.out.println("Error: toda función debe recibir al menos un parámetro.");}
+                                | UINT ID '(' ')' '{' cuerpo_funcion '}'                    { notifyError("Toda función debe recibir al menos un parámetro."); }
                                 ;
 
 cuerpo_funcion                  : conjunto_sentencias RETURN expresion ';'
@@ -199,6 +199,14 @@ public Parser(Lexer lexer) {
 // su modificador de visibilidad es package.
 public void execute() {
     yyparse();
+}
+
+void notifyError(String errorMessage) {
+    System.out.println("\nERROR SINTÁCTICO: " + errorMessage + '\n');
+}
+
+void notifyDetection(String message) {
+    System.out.println("\nDETECCIÓN SEMÁNTICA: " + message + '\n');
 }
 
 // Método yylex() invocado durante yyparse().

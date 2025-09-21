@@ -30,11 +30,13 @@ public class BadCommentInitialization implements LexicalError {
 
     @Override
     public void handleError(Lexer lexicalAnalyzer) {
-        System.err.println("ERROR: Línea "
-                + lexicalAnalyzer.getNroLinea()
-                + ": Los comentarios deben comenzar con '##' y terminar con '##'. Se encontró un único carácter '#'. "
-                + "El símbolo será descartado. Esto puede traer errores en la interpretación del código si el carácter tenía la intención de comenzar un comentario.");
-        lexicalAnalyzer.incrementErrorsDetected();
+        lexicalAnalyzer.notifyError("""
+                Los comentarios deben comenzar con '##' y terminar con '##'. \
+                Se encontró un único carácter '#'. \
+                El símbolo será descartado. \
+                Esto puede traer errores en la interpretación del código \
+                si el carácter tenía la intención de comenzar un comentario.
+                """);
         ReturnCharacterToEntry.getInstance().execute(lexicalAnalyzer);
     }
 

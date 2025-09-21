@@ -48,22 +48,32 @@ public class Token {
 
     // --------------------------------------------------------------------------------------------
 
-    public boolean isEndOfFile() {
-        return tokenType == TokenType.EOF;
-    }
-
-    // --------------------------------------------------------------------------------------------
-
     @Override
     public String toString() {
-        return "["
-                + this.tokenType.name()
-                + "(" + this.getIdentificationCode() + ")"
-                + (symbolTableIndex == null
-                        ? ""
-                        : ", " + SymbolTable.getInstance().getLexema(symbolTableIndex)
-                                + ", ST(" + symbolTableIndex + ")")
-                + "]";
+
+        String lexema = "";
+        String symbolTableEntry = "";
+
+        if (symbolTableIndex != null) {
+            lexema = SymbolTable.getInstance().getLexema(symbolTableIndex);
+            symbolTableEntry = "ST(" + symbolTableIndex + ")";
+        }
+
+        // Formateo de las columnas.
+        String columnas = String.format(
+                // Caracteres máximos.
+                // 6 caracteres para el tipo de token.
+                // 4 para el código de identificación.
+                // 20 para el lexema.
+                // 6 para la entrada en la tabla de símbolos.
+                "%-6s %-4s %-20s %-6s",
+                this.tokenType.toString(),
+                this.getIdentificationCode(),
+                lexema,
+                symbolTableEntry);
+
+        // Se añaden corchetes al inicio y al final.
+        return "[ " + columnas + " ]";
     }
 
 }
