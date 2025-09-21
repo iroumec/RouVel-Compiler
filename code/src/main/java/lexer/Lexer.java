@@ -1,6 +1,7 @@
 package lexer;
 
 import common.Token;
+import common.TokenType;
 import lexer.actions.SemanticAction;
 import lexer.errors.LexicalError;
 import lexer.errors.implementations.BadCommentInitialization;
@@ -57,8 +58,13 @@ public final class Lexer {
 
         } while (this.token == null && siguienteCaracterALeer <= codigoFuente.length());
 
-        // Se devuelve un token (si se halló).
-        // En otro caso, se devuelve null.
+        // Si el token es null, es porque no hay más tokens reconocibles.
+        // Esto es, se llegó al final del archivo.
+        if (this.token == null) {
+            this.token = new Token(TokenType.EOF, null);
+        }
+
+        // Se devuelve el token.
         return this.token;
     }
 

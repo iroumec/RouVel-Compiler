@@ -2,8 +2,8 @@
 import java.io.File;
 import java.io.IOException;
 
-import common.Token;
 import lexer.Lexer;
+import parser.Parser;
 
 public class Main {
 
@@ -24,13 +24,11 @@ public class Main {
 
         Lexer lexicalAnalyzer = new Lexer(file.getPath());
 
-        System.out.println("Tokens identificados en el programa:");
+        Parser sintacticalAnalyzer = new Parser(lexicalAnalyzer);
 
-        Token token = lexicalAnalyzer.getNextToken();
-        while (token != null) {
-            System.out.println(token);
-            token = lexicalAnalyzer.getNextToken();
-        }
+        System.out.println("Tokens y estructuras sintácticas identificadas en el programa:");
+
+        sintacticalAnalyzer.execute();
 
         System.out.println("El programa tiene " + lexicalAnalyzer.getNroLinea() + " líneas.");
         System.out.println("Se detectaron " + lexicalAnalyzer.getErrorsDetected() + " errores y "

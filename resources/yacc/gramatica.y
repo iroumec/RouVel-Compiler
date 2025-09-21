@@ -12,11 +12,13 @@
 
 %%
 
+/* error: cualquier cosa que en ese punto no cumpla ninguna de las alternativas válidas. */
+
 /* --------------------------------------------------------------------------------------------- */
-/* INICIO DE REGLAS                                                                                 */
+/* INICIO DE REGLAS                                                                              */
 /* --------------------------------------------------------------------------------------------- */
 
-programa                        : ID '{' conjunto_sentencias '}'
+programa                        : ID '{' conjunto_sentencias '}'                                    { System.out.println("\nPrograma.\n")}
                                 ;
                     
 conjunto_sentencias             : sentencia ';' 
@@ -28,10 +30,10 @@ sentencia                       : sentencia_ejecutable
                                 ;
 
 /* --------------------------------------------------------------------------------------------- */
-/* Sentencias declarativas                                                                      */
+/* Sentencias declarativas                                                                       */
 /* --------------------------------------------------------------------------------------------- */
 
-sentencia_declarativa           : UINT lista_variables
+sentencia_declarativa           : UINT lista_variables                                              { System.out.println("\nDeclaración de variable.\n"); }
                                 | declaracion_funcion
                                 ;
 
@@ -112,23 +114,18 @@ imprimible                      : STR
 
 expresion                       : expresion '+' termino
                                 | expresion '-' termino
-                                | expresion '+' '+' termino  
                                 | termino
+                                /* REGLAS DE ERROR */
+                                | expresion '+' error
+                                | expresion '-' error
                                 ;
-
-/*
-operador_duplicado              :
-                                /* Reglas de Error - Operador Doble 
-                                | '+'                                               {}
-                                | '-'
-                                | '/'
-                                | '*'
-                                ;
-*/
 
 termino                         : termino '/' factor 
                                 | termino '*' factor
                                 | factor
+                                /* REGLAS DE ERROR */
+                                | termino '/' error
+                                | termino '*' error
                                 ;
 
 
@@ -164,7 +161,7 @@ lista_parametros                : parametro_formal
 parametro_formal                : semantica_pasaje UINT variable /* lista_variables */
                                 ; 
 
-semantica_pasaje                : /* épsilon */
+semantica_pasaje                : /* épsilon - cadena vacía */
                                 | CVR
                                 ;
 
@@ -185,6 +182,9 @@ lista_argumentos                : expresion FLECHA parametro_formal
 /* INICIO DE CÓDIGO (opcional)                                                                   */
 /* --------------------------------------------------------------------------------------------- */
 
+// End of File.
+public final static short EOF = 0;
+
 // Lexer.
 private final Lexer lexer;
 
@@ -193,6 +193,12 @@ private final Lexer lexer;
 */
 public Parser(Lexer lexer) {
     this.lexer = lexer;
+}
+
+// Método público para llamar a yyparse(), ya que, por defecto,
+// su modificador de visibilidad es package.
+public void execute() {
+    yyparse();
 }
 
 // Método yylex() invocado durante yyparse().
@@ -207,6 +213,9 @@ int yylex() {
     this.yylval = (token.hasSymbolTableIndex()) ?
         new ParserVal(token.getSymbolTableIndex())
         : new ParserVal();
+
+    // Se muestra el token.
+    System.out.println(token);
 
     return token.getIdentificationCode();
 }

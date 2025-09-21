@@ -48,6 +48,12 @@ public class Token {
 
     // --------------------------------------------------------------------------------------------
 
+    public boolean isEndOfFile() {
+        return tokenType == TokenType.EOF;
+    }
+
+    // --------------------------------------------------------------------------------------------
+
     @Override
     public String toString() {
         return "["
