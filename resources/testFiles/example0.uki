@@ -1,4 +1,11 @@
 PROGRAMA {
     uint PALABRAHIPERLARGUISIMA;
     uint X;
+
+    print(X);
+
+    if (32UI > 14UI) {
+        do print("Hola") while (11UI >= 12UI);
+        X := 21UI;
+    } endif;
 }

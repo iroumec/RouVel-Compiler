@@ -64,8 +64,11 @@ parametro                       : UINT ID
 
 bloque_ejecutable               : '{' conjunto_sentencias_ejecutables '}'
 
-conjunto_sentencias_ejecutables : sentencia_ejecutable
+conjunto_sentencias_ejecutables : sentencia_ejecutable ';'
                                 | sentencia_ejecutable ';' conjunto_sentencias_ejecutables
+                                /* REGLAS DE ERROR */
+                                /*| /* epsilon - cadena vacía (shift/reduce si se coloca esto)
+                                { notifyError("El cuerpo del IF no puede estar vacío."); } */
                                 ;
 
 sentencia_ejecutable            : invocacion_funcion
@@ -76,11 +79,14 @@ sentencia_ejecutable            : invocacion_funcion
                                 | lambda
                                 ;
 
-asignacion_simple               : variable DASIG expresion
+asignacion_simple               : variable DASIG expresion                                          
+                                { notifyDetection("Asignación simple."); }
                                 ;
 
-sentencia_control               : if
-                                | while
+sentencia_control               : if                                                                
+                                { notifyDetection("Setencia IF."); }
+                                | while                                                            
+                                { notifyDetection("Setencia WHILE."); }
                                 ;
 
 condicion                       : expresion comparador expresion
@@ -96,16 +102,19 @@ comparador                      : '>'
 
 if                              : IF '(' condicion ')' bloque_ejecutable ENDIF
                                 | IF '(' condicion ')' bloque_ejecutable ELSE bloque_ejecutable ENDIF
+                                /* REGLAS DE ERROR */
+                                | IF '(' condicion ')' bloque_ejecutable error                          { notifyError("La sentencia IF debe finalizarse con 'endif'."); }
                                 ;
 
-while                           : DO conjunto_sentencias_ejecutables WHILE '(' condicion ')'
+while                           : DO sentencia_ejecutable WHILE '(' condicion ')'
+                                | DO bloque_ejecutable WHILE '(' condicion ')'
                                 ;
 
-impresion                       : PRINT '(' imprimible ')'
+impresion                       : PRINT '(' imprimible ')'                                          
                                 ;
 
-imprimible                      : STR
-                                | expresion
+imprimible                      : STR                                                               { notifyDetection("Impresión de cadena."); }
+                                | expresion                                                         { notifyDetection("Impresión de expresión."); }
                                 ;
 
 /* --------------------------------------------------------------------------------------------- */

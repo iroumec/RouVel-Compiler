@@ -78,3 +78,6 @@ Con similar se refiere a que use parsing ascendente y demás.
 Diferentes entradas para 3 y -3.
 
 Sí constantes de tipo float, pero NO VARIABLES.
+
+// 2>&1 es para redirigir la salida de error (warnings y errores) a la salida estándar.
+./rouvel-linux resources/testFiles/example0.uki > text.txt 2>&1
