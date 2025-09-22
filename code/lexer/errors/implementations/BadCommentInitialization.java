@@ -35,7 +35,7 @@ public class BadCommentInitialization implements LexicalError {
                 Se encontró un único carácter '#'. \
                 El símbolo será descartado. \
                 Esto puede traer errores en la interpretación del código \
-                si el carácter tenía la intención de comenzar un comentario.
+                si el carácter tenía la intención de comenzar un comentario. \
                 """);
         ReturnCharacterToEntry.getInstance().execute(lexicalAnalyzer);
     }

@@ -38,7 +38,7 @@ public class IdentifierLengthChecker implements SemanticAction {
 
             lexicalAnalyzer.notifyWarning("""
                     El identificador %s excede la longitud máxima de %d \
-                    caracteres. Se truncará a %s.
+                    caracteres. Se truncará a %s. \
                     """.formatted(lexema, MAX_IDENTIFIER_LENGTH, truncatedLexema));
 
             lexicalAnalyzer.setLexema(truncatedLexema);

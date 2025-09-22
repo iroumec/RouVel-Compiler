@@ -33,7 +33,7 @@ public class InvalidDecimalFormat implements LexicalError {
         lexicalAnalyzer.notifyError("""
                 El símbolo '.' es inválido a menos de que \
                 le siga la parte decimal de un número. \
-                Este será omitido.
+                Este será omitido. \
                 """);
 
         ReturnCharacterToEntry.getInstance().execute(lexicalAnalyzer);

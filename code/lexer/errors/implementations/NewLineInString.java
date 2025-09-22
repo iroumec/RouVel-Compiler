@@ -31,7 +31,7 @@ public class NewLineInString implements LexicalError {
     public void handleError(Lexer lexicalAnalyzer) {
         lexicalAnalyzer.notifyError("""
                 Las cadenas no pueden contener saltos de línea. \
-                Este se descarta.
+                Este se descarta. \
                 """);
     }
 

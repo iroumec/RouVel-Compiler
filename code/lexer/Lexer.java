@@ -272,7 +272,9 @@ public final class Lexer {
     // --------------------------------------------------------------------------------------------
 
     public void notifyWarning(String warningMessage) {
-        System.err.println("\nWARNING LÉXICO: LÍNEA " + this.getNroLinea() + ": " + warningMessage + '\n');
+        System.err.println("------------------------------------");
+        System.err.printf("WARNING LÉXICO: LÍNEA %d: %s\n", this.nroLinea, warningMessage);
+        System.err.println("------------------------------------");
         this.warningsDetected++;
     }
 
@@ -285,7 +287,9 @@ public final class Lexer {
     // --------------------------------------------------------------------------------------------
 
     public void notifyError(String errorMessage) {
-        System.err.println("\nERROR LÉXICO: LÍNEA " + this.getNroLinea() + ": " + errorMessage + '\n');
+        System.err.println("------------------------------------");
+        System.err.printf("ERROR LÉXICO: LÍNEA %d: %s%n", this.nroLinea, errorMessage);
+        System.err.println("------------------------------------");
         this.errorsDetected++;
     }
 

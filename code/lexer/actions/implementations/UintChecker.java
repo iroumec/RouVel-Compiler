@@ -42,7 +42,7 @@ public class UintChecker implements SemanticAction {
             lexicalAnalyzer.notifyWarning("""
                     El número %s está fuera del rango de uint. \
                     Se ajustará al máximo en el rango permitido \
-                    [0, %d].
+                    [0, %d]. \
                     """.formatted(lexema, MAX_UINT));
             lexema = MAX_UINT + "UI";
         }

@@ -257,20 +257,6 @@ public void execute() {
     yyparse();
 }
 
-void notifyDetection(String message) {
-    System.out.printf("%nDETECCIÓN SEMÁNTICA: %s%n%n", message);
-}
-
-void notifyWarning(String warningMessage) {
-    System.err.printf("%WARNING SINTÁCTICA: Línea %d: %s%n%n", lexer.getNroLinea(), warningMessage);
-    this.warningsDetected++;
-}
-
-void notifyError(String errorMessage) {
-    System.err.printf("%nERROR SINTÁCTICO: Línea %d: %s%n%n", lexer.getNroLinea(), errorMessage);
-    this.errorsDetected++;
-}
-
 // Método yylex() invocado durante yyparse().
 int yylex() {
 
@@ -290,6 +276,34 @@ int yylex() {
 
 void yyerror(String message) {
     System.out.println(message);
+}
+
+void notifyDetection(String message) {
+    System.err.println("------------------------------------");
+    System.err.printf("DETECCIÓN SEMÁNTICA: %s\n", message);
+    System.err.println("------------------------------------");
+}
+
+void notifyWarning(String warningMessage) {
+    System.err.println("------------------------------------");
+    System.err.printf("WARNING SINTÁCTICA: Línea %d: %s\n", lexer.getNroLinea(), warningMessage);
+    System.err.println("------------------------------------");
+    this.warningsDetected++;
+}
+
+void notifyError(String errorMessage) {
+    System.err.println("------------------------------------");
+    System.err.printf("ERROR SINTÁCTICO: Línea %d: %s\n", lexer.getNroLinea(), errorMessage);
+    System.err.println("------------------------------------");
+    this.errorsDetected++;
+}
+
+public int getWarningsDetected() {
+    return this.warningsDetected;
+}
+
+public int getErrorsDetected() {
+    return this.errorsDetected;
 }
 
 /* ---------------------------------------------------------------------------------------------------- */

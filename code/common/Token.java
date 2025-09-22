@@ -52,18 +52,16 @@ public class Token {
     public String toString() {
 
         String lexema = (this.symbolTableKey == null) ? "" : this.symbolTableKey;
-        String symbolTableEntry = "";
 
         // Formateo de las columnas.
         String columnas = String.format(
                 // Caracteres máximos.
-                // 6 caracteres para el tipo de token.
                 // 4 para el código de identificación.
+                // 6 para el tipo de token.
                 // 20 para el lexema.
-                // 6 para la entrada en la tabla de símbolos.
-                "%-6s %-4s %-20s",
-                this.tokenType.toString(),
+                "%-4s %-6s %-20s",
                 this.getIdentificationCode(),
+                this.tokenType.toString(),
                 lexema);
 
         // Se añaden corchetes al inicio y al final.

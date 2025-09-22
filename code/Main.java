@@ -20,17 +20,26 @@ public class Main {
             return;
         }
 
+        // Redirección del error estándar a la salida estándar.
+        // Esto solo tiene el objetivo de que la salida se vea bien.
+        // TODO: implementar un sistema de logging más robusto.
+        System.setErr(System.out);
+
         System.out.println("\n=== Resultados de la Compilación del Archivo: " + file.getName() + " ===\n");
 
         Lexer lexicalAnalyzer = new Lexer(file.getPath());
 
         Parser sintacticalAnalyzer = new Parser(lexicalAnalyzer);
 
+        System.err.println("------------------------------------");
         sintacticalAnalyzer.execute();
+        System.err.println("------------------------------------");
 
         System.out.println("\nEl programa tiene " + lexicalAnalyzer.getNroLinea() + " líneas.");
-        System.out.println("Se detectaron " + lexicalAnalyzer.getErrorsDetected() + " errores y "
-                + lexicalAnalyzer.getWarningsDetected() + " warnings.");
-        System.out.println();
+
+        int warningsDetected = lexicalAnalyzer.getWarningsDetected() + sintacticalAnalyzer.getErrorsDetected();
+        int errorsDetected = lexicalAnalyzer.getErrorsDetected() + sintacticalAnalyzer.getErrorsDetected();
+
+        System.out.printf("\nSe detectaron %d warnings y %d errores.\n", warningsDetected, errorsDetected);
     }
 }

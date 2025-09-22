@@ -8,4 +8,6 @@ PROGRAMA {
         do print("Hola") while (11UI >= 12UI);
         X := 21UI;
     } endif;
+
+    X := 1U;
 }

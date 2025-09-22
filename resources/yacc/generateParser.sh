@@ -19,7 +19,7 @@ sed -i '1ipackage parser;\n' ParserVal.java
 sed -i '2iimport lexer.Lexer;\nimport common.Token;' Parser.java
 
 # Se mueven los arhcivos .java a la sección de código.
-mv Parser.java "$CALL_DIR"/code/src/main/java/parser
-mv ParserVal.java "$CALL_DIR"/code/src/main/java/parser
+mv Parser.java "$CALL_DIR"/code/parser
+mv ParserVal.java "$CALL_DIR"/code/parser
 
 cd "$CALL_DIR" || exit 1

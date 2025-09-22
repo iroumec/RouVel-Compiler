@@ -2,7 +2,6 @@ package lexer.actions.implementations;
 
 import lexer.Lexer;
 import lexer.actions.SemanticAction;
-import common.SymbolTable;
 import common.TokenType;
 import common.Token;
 
