@@ -3,34 +3,35 @@ package common;
 public class Token {
 
     private final TokenType tokenType;
-    private final Integer symbolTableIndex;
+    private final String symbolTableKey;
 
     // --------------------------------------------------------------------------------------------
 
-    public Token(TokenType tokenType, Integer symbolTableIndex) {
-        if (tokenType.requiereLexema() && symbolTableIndex == null) {
+    public Token(TokenType tokenType, String lexema) {
+        if (tokenType.requiereLexema() && lexema == null) {
             throw new IllegalArgumentException(
                     "El tipo de token especificado requiere de una entrada en la tabla.");
         }
 
-        if (!tokenType.requiereLexema() && symbolTableIndex != null) {
+        if (!tokenType.requiereLexema() && lexema != null) {
             throw new IllegalArgumentException(
                     "El tipo de token especificado no requiere de una entrada en la tabla.");
         }
 
         this.tokenType = tokenType;
-        this.symbolTableIndex = symbolTableIndex;
+
+        // Se agrega el lexema a la tabla de símbolos.
+        if (lexema != null) {
+            SymbolTable.getInstance().agregarEntrada(lexema);
+        }
+
+        this.symbolTableKey = lexema;
     }
 
     // --------------------------------------------------------------------------------------------
 
-    public int getSymbolTableIndex() {
-
-        if (symbolTableIndex == null) {
-            throw new IllegalStateException("El token no tiene una entrada en la tabla de símbolos.");
-        }
-
-        return symbolTableIndex;
+    public String getSymbolTableKey() {
+        return this.symbolTableKey;
     }
 
     // --------------------------------------------------------------------------------------------
@@ -50,13 +51,8 @@ public class Token {
     @Override
     public String toString() {
 
-        String lexema = "";
+        String lexema = (this.symbolTableKey == null) ? "" : this.symbolTableKey;
         String symbolTableEntry = "";
-
-        if (symbolTableIndex != null) {
-            lexema = SymbolTable.getInstance().getLexema(symbolTableIndex);
-            symbolTableEntry = "ST(" + symbolTableIndex + ")";
-        }
 
         // Formateo de las columnas.
         String columnas = String.format(
@@ -65,11 +61,10 @@ public class Token {
                 // 4 para el código de identificación.
                 // 20 para el lexema.
                 // 6 para la entrada en la tabla de símbolos.
-                "%-6s %-4s %-20s %-6s",
+                "%-6s %-4s %-20s",
                 this.tokenType.toString(),
                 this.getIdentificationCode(),
-                lexema,
-                symbolTableEntry);
+                lexema);
 
         // Se añaden corchetes al inicio y al final.
         return "[ " + columnas + " ]";

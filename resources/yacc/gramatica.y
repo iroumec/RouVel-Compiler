@@ -280,9 +280,7 @@ int yylex() {
 
     Token token = lexer.getNextToken();
 
-    this.yylval = (token.hasSymbolTableIndex()) ?
-        new ParserVal(token.getSymbolTableIndex())
-        : new ParserVal();
+    this.yylval = new ParserVal(token.getSymbolTableKey());
 
     // Se muestra el token.
     System.out.println(token);
