@@ -9,39 +9,53 @@ import (
 	"runtime"
 )
 
-const (
-	imageName = "rouvel-compiler"
-)
+const imageName = "rouvel-compiler"
 
-// checkOrBuildImage verifica si la imagen existe y si no, la construye.
+// checkOrBuildImage verifica si la imagen Docker existe y la construye si no.
 func checkOrBuildImage() error {
-	// Se verifica si la imagen ya existe.
-	checkCmd := exec.Command("docker", "image", "inspect", imageName)
-	if err := checkCmd.Run(); err == nil {
-		return nil // Imagen ya existe.
+	// Verificar si la imagen ya existe.
+	if err := exec.Command("docker", "image", "inspect", imageName).Run(); err == nil {
+		return nil // Imagen ya existe
 	}
 
 	fmt.Printf("La imagen '%s' no existe. Construyendo con Docker...\n", imageName)
 
-	// Directorio actual donde se ejecuta el binario.
-	exePath, err := os.Executable()
+	exeDir, err := getExecutableDir()
 	if err != nil {
 		return fmt.Errorf("no se pudo obtener la ruta del ejecutable: %w", err)
 	}
-	exeDir := filepath.Dir(exePath)
 
-	// Se asume que el Dockerfile está en el mismo directorio que el ejecutable.
-	buildCmd := exec.Command("docker", "build", "-t", imageName, exeDir /*, "--no-cache"*/)
+	buildCmd := exec.Command("docker", "build", "-t", imageName, exeDir)
 	buildCmd.Stdout = io.Discard
 	buildCmd.Stderr = io.Discard
 	buildCmd.Stdin = os.Stdin
 
-	// Ejecución del comando de construcción.
 	if err := buildCmd.Run(); err != nil {
 		return fmt.Errorf("falló la construcción de la imagen Docker: %w", err)
 	}
 
 	return nil
+}
+
+// getExecutableDir devuelve el directorio donde se encuentra el ejecutable.
+func getExecutableDir() (string, error) {
+	exePath, err := os.Executable()
+	if err != nil {
+		return "", err
+	}
+	return filepath.Dir(exePath), nil
+}
+
+// adaptPathForWindows convierte rutas de Windows a formato compatible con Docker.
+func adaptPathForWindows(path string) string {
+	if runtime.GOOS != "windows" {
+		return path
+	}
+
+	drive := filepath.VolumeName(path)
+	rest := path[len(drive):]
+	driveLetter := string(drive[0])
+	return fmt.Sprintf("/%s%s", driveLetter, filepath.ToSlash(rest))
 }
 
 func main() {
@@ -56,30 +70,22 @@ func main() {
 		os.Exit(1)
 	}
 
-	// Se comprueba que el archivo exista.
+	// Comprobar que el archivo existe.
 	if _, err := os.Stat(filePath); os.IsNotExist(err) {
 		fmt.Println("El archivo no existe:", filePath)
 		os.Exit(1)
 	}
 
-	// Se construye la imagen si no existe.
+	// Construir la imagen si no existe.
 	if err := checkOrBuildImage(); err != nil {
 		fmt.Println("Error preparando Docker:", err)
 		os.Exit(1)
 	}
 
-	dir := filepath.Dir(filePath)
+	dir := adaptPathForWindows(filepath.Dir(filePath))
 	file := filepath.Base(filePath)
 
-	// Ajuste de la ruta para Windows Docker.
-	if runtime.GOOS == "windows" {
-		drive := filepath.VolumeName(dir)
-		path := dir[len(drive):]
-		driveLetter := string(drive[0])
-		dir = fmt.Sprintf("/%s%s", driveLetter, filepath.ToSlash(path))
-	}
-
-	// Ejecución del contenedor Docker con el archivo.
+	// Ejecutar el contenedor Docker con el archivo.
 	cmd := exec.Command("docker", "run", "--rm", "-v", fmt.Sprintf("%s:/data", dir), imageName, fmt.Sprintf("/data/%s", file))
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr

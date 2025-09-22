@@ -1,23 +1,24 @@
-# Etapa 1: Build con Maven
-FROM maven:3.9.6-eclipse-temurin-21 AS build
+# Etapa 1: Build con JDK
+FROM eclipse-temurin:21-jdk-alpine AS build
 WORKDIR /app
+
 COPY code /app
-RUN mvn clean package shade:shade -DskipTests
+
+# Compilar todo el código
+RUN mkdir -p bin && \
+    javac -d bin $(find . -name "*.java")
 
 # Etapa 2: Solo ejecución con Java
 FROM eclipse-temurin:21-jre-alpine
-
 WORKDIR /app
 
-# Creación de un usuario y grupo no root.
 RUN addgroup -S rouvel && adduser -S rouvel -G rouvel
 
-COPY --from=build /app/target/RouVel-Compiler-1.0.jar /app/app.jar
+# Copiamos las clases compiladas
+COPY --from=build /app/bin /app/bin
 
-# Se brinda al usuario no root permisos para ejecutar la app.
 RUN chown -R rouvel:rouvel /app
-
-# Se cambia al usuario no root.
 USER rouvel
 
-ENTRYPOINT ["java", "-jar", "/app/app.jar"]
+# Ejecutar directamente la clase Main
+ENTRYPOINT ["java", "-cp", "/app/bin", "Main"]
