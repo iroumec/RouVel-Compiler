@@ -92,7 +92,7 @@ public class FloatChecker implements SemanticAction {
 
         // Para números muy grandes o muy pequeños, se utiliza notación científica.
         if ((Math.abs(value) > 1e7 || (Math.abs(value) < 1e-3 && value != 0.0))) {
-            return String.format("%eF", value).replace("e", "F");
+            return String.format("%e", value).replace("e", "F");
         }
 
         return String.valueOf(value);
