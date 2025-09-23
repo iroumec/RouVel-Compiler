@@ -32,10 +32,11 @@ public class NoExponent implements LexicalError {
 
     @Override
     public void handleError(Lexer lexicalAnalyzer) {
-        lexicalAnalyzer.notifyError("Se debe especificar un número entero como exponente. "
-                + "Se asumirá que el exponente de interés es: F"
-                + lexicalAnalyzer.getLexema().split("F", 2)[1] // Obtención del signo.
-                + "0.");
+        lexicalAnalyzer.notifyError("""
+                Se debe especificar un número entero como exponente. \
+                Se asumirá que el exponente de interés es: F%s0. \
+                """.formatted(lexicalAnalyzer.getLexema().split("F",
+                2)[1])); // Obtención del signo.
 
         // Se invocan a las acciones semánticas correspondientes.
         lexicalAnalyzer.appendToLexema('0');

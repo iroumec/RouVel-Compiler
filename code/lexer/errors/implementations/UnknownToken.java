@@ -28,8 +28,10 @@ public class UnknownToken implements LexicalError {
 
     @Override
     public void handleError(Lexer lexicalAnalyzer) {
-        lexicalAnalyzer.notifyError("El lexema '" + lexicalAnalyzer.getLexema()
-                + "' no corresponde a una palabra reservada del lenguaje. Este se omitirá.");
+        lexicalAnalyzer.notifyError("""
+                El lexema '%s' no corresponde a una palabra reservada del lenguaje. \
+                Este se omitirá. \
+                """.formatted(lexicalAnalyzer.getLexema()));
     }
 
     // --------------------------------------------------------------------------------------------

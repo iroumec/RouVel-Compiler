@@ -29,9 +29,10 @@ public class InvalidSymbol implements LexicalError {
 
     @Override
     public void handleError(Lexer lexicalAnalyzer) {
-        lexicalAnalyzer.notifyError("Símbolo inválido '"
-                + lexicalAnalyzer.getLastCharRead() + "'. "
-                + "El símbolo se omitirá.");
+        lexicalAnalyzer.notifyError("""
+                Símbolo inválido '%s'. \
+                Este se omitirá. \
+                """.formatted(lexicalAnalyzer.getLastCharRead()));
     }
 
     // --------------------------------------------------------------------------------------------
