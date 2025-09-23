@@ -10,10 +10,12 @@ public class FloatChecker implements SemanticAction {
 
     private static FloatChecker INSTANCE;
 
-    private static final double MIN_POS_VAL = 1.17549435e-38;
-    private static final double MAX_POS_VAL = 3.40282347e+38;
-    private static final double MIN_NEG_VAL = -3.40282347e+38;
-    private static final double MAX_NEG_VAL = -1.17549435e-38;
+    // La f le especifica a Java que el literal es un float ya que, por defecto,
+    // los literales de punto flotante son double.
+    private static final float MIN_POS_VAL = 1.17549435e-38f;
+    private static final float MAX_POS_VAL = 3.40282347e+38f;
+    private static final float MIN_NEG_VAL = -3.40282347e+38f;
+    private static final float MAX_NEG_VAL = -1.17549435e-38f;
 
     // El número podría no venir en notación científica. El peor caso:
     // 1 cero antes del punto.
@@ -46,23 +48,23 @@ public class FloatChecker implements SemanticAction {
         // double.
         String lexema = lexicalAnalyzer.getLexema().replace("F", "e");
 
-        double value;
+        float value;
         boolean outOfRange = false;
 
         // Si el número es demasiado grande para parsearlo
         if (lexema.length() > MAX_CARACTERES) {
             outOfRange = true;
-            value = 0.0;
+            value = 0.0f;
         } else {
             try {
-                value = Double.parseDouble(lexema);
+                value = Float.parseFloat(lexema);
                 if (!isInRange(value)) {
                     outOfRange = true;
-                    value = 0.0;
+                    value = 0.0f;
                 }
             } catch (NumberFormatException e) {
                 outOfRange = true;
-                value = 0.0;
+                value = 0.0f;
             }
         }
 
