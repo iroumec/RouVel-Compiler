@@ -7,4 +7,6 @@ reduce y reduce-reduce, etc.
  Lista de errores léxicos y sintácticos considerados por el compilador.
  Conclusiones.
 
-#
+## Errores Sintácticos
+
+sd

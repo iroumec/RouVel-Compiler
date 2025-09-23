@@ -448,3 +448,5 @@ FodyWeavers.xsd
 
 # End of https://www.toptal.com/developers/gitignore/api/visualstudio,java,maven
 
+# Usado en la generación automática de matrices en Python.
+venv
