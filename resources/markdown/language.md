@@ -30,7 +30,7 @@ El [analizador léxico](lexer.md) elimina de la entrada (reconoce, pero no infor
 
 ## Temas Asignados
 
-Las características del lenguaje se corresponderse con los temas pertenecientes al conjunto {2, 5, 7, 14, 17, 22, 26, 27, 30, 33}, los cuales se detallan a continuación:
+Las características del lenguaje se corresponderse con los temas pertenecientes al conjunto `{2, 5, 7, 14, 17, 22, 26, 27, 30, 33}`, los cuales se detallan a continuación:
 
 ### Tema 2
 
@@ -59,11 +59,15 @@ El rango a considerar es:
 
 ### Tema 7
 
-Cadenas de 1 línea: Cadenas de caracteres delimitadas por comillas dobles. Estas cadenas no pueden ocupar
-más de una línea).
-Ejemplo: “¡Hola mundo !”
+_Cadenas de una línea_.
 
-### Tema 14 - **_do while_**
+Se debe incorporar al lenguaje cadenas que no puedan ocupar más de una línea. Estas deben estar delimitadas por comillas dobles. Ejemplo: "Hola Mundo".
+
+### Tema 14
+
+_do while_.
+
+Se debe incorporar al lenguaje la siguiente estructura:
 
 `do <bloque_de_sentencias_ejecutables> while ( <condicion> );`
 
@@ -72,7 +76,7 @@ Donde:
 - `<condicion>` posee la misma definición que la condición de las sentencias IF.
 - `<bloque_de_sentencias_ejecutables>` podrá contener una sentencia, o un grupo de sentencias ejecutables delimitados por **{}**.
 
-Como consecuencia de esta estructura, se incorporaron a la lista de palabras reservadas las palabras `do` y `while`.
+Como consecuencia de esta estructura, se debe incorporar a la lista de palabras reservadas las palabras `do` y `while`.
 
 ### Tema 17
 

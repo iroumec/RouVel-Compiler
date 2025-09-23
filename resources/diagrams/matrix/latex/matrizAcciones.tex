@@ -1,0 +1,32 @@
+\documentclass{standalone}
+\usepackage{tikz}
+\usetikzlibrary{matrix}
+\usepackage{graphicx}
+\begin{document}
+\resizebox{\textwidth}{!}{
+\begin{tikzpicture}
+\matrix[matrix of nodes, nodes={draw, minimum size=0.6cm, anchor=center}, column sep=-\pgflinewidth, row sep=-\pgflinewidth] (m) {
+ & \verb|L| & \verb|l| & \verb|d| & \verb|U| & \verb|I| & \verb|.| & \verb|F| & \verb|-| & \verb|P| & \verb|"| & \verb|:| & \verb|=| & \verb|!| & \verb|>| & \verb|<| & \verb|\%| & \verb|#| & \verb|n| & \verb|s| & \verb|t| & \verb|Otro| \\
+0 & \verb|LI| & \verb|LI| & \verb|LI| & \verb|LI| & \verb|LI| & \verb|LI| & \verb|LI| & \verb|LI| & \verb|LI, FTF| & \verb|LI| & \verb|LI| & \verb|LI| & \verb|| & \verb|LI| & \verb|LI| & \verb|| & \verb|| & \verb|NLD| & \verb|| & \verb|| & \verb|| \\
+1 & \verb|LA| & \verb|LA| & \verb|LA| & \verb|LA| & \verb|| & \verb|LA| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| \\
+2 & \verb|| & \verb|| & \verb|| & \verb|| & \verb|LA, UIC, VTF| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| \\
+3 & \verb|| & \verb|| & \verb|LA| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| \\
+4 & \verb|FC, VTF, RCE| & \verb|FC, VTF, RCE| & \verb|LA| & \verb|FC, VTF, RCE| & \verb|FC, VTF, RCE| & \verb|FC, VTF, RCE| & \verb|LA| & \verb|FC, VTF, RCE| & \verb|FC, VTF, RCE| & \verb|FC, VTF, RCE| & \verb|FC, VTF, RCE| & \verb|FC, VTF, RCE| & \verb|FC, VTF, RCE| & \verb|FC, VTF, RCE| & \verb|FC, VTF, RCE| & \verb|FC, VTF, RCE| & \verb|FC, VTF, RCE| & \verb|FC, VTF, RCE| & \verb|FC, VTF, RCE| & \verb|FC, VTF, RCE| & \verb|FC, VTF, RCE| \\
+5 & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|LA| & \verb|LA| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| \\
+6 & \verb|| & \verb|| & \verb|LA| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| \\
+7 & \verb|FC, VTF, RCE| & \verb|FC, VTF, RCE| & \verb|LA| & \verb|FC, VTF, RCE| & \verb|FC, VTF, RCE| & \verb|FC, VTF, RCE| & \verb|FC, VTF, RCE| & \verb|FC, VTF, RCE| & \verb|FC, VTF, RCE| & \verb|FC, VTF, RCE| & \verb|FC, VTF, RCE| & \verb|FC, VTF, RCE| & \verb|FC, VTF, RCE| & \verb|FC, VTF, RCE| & \verb|FC, VTF, RCE| & \verb|FC, VTF, RCE| & \verb|FC, VTF, RCE| & \verb|FC, VTF, RCE| & \verb|FC, VTF, RCE| & \verb|FC, VTF, RCE| & \verb|FC, VTF, RCE| \\
+8 & \verb|LA| & \verb|LA| & \verb|LA| & \verb|LA| & \verb|LA| & \verb|LA| & \verb|LA| & \verb|LA| & \verb|LA| & \verb|LA, VTF| & \verb|LA| & \verb|LA| & \verb|LA| & \verb|LA| & \verb|LA| & \verb|LA| & \verb|LA| & \verb|NLD| & \verb|LA| & \verb|LA| & \verb|LA| \\
+9 & \verb|FTF, RCE| & \verb|LA| & \verb|FTF, RCE| & \verb|FTF, RCE| & \verb|FTF, RCE| & \verb|FTF, RCE| & \verb|FTF, RCE| & \verb|FTF, RCE| & \verb|FTF, RCE| & \verb|FTF, RCE| & \verb|FTF, RCE| & \verb|FTF, RCE| & \verb|FTF, RCE| & \verb|FTF, RCE| & \verb|FTF, RCE| & \verb|FTF, RCE| & \verb|FTF, RCE| & \verb|FTF, RCE| & \verb|FTF, RCE| & \verb|FTF, RCE| & \verb|FTF, RCE| \\
+10 & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|LA, FTF| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| \\
+11 & \verb|FTF, RCE| & \verb|FTF, RCE| & \verb|FTF, RCE| & \verb|FTF, RCE| & \verb|FTF, RCE| & \verb|FTF, RCE| & \verb|FTF, RCE| & \verb|FTF, RCE| & \verb|FTF, RCE| & \verb|FTF, RCE| & \verb|FTF, RCE| & \verb|LA, FTF| & \verb|LA, FTF| & \verb|FTF, RCE| & \verb|FTF, RCE| & \verb|FTF, RCE| & \verb|FTF, RCE| & \verb|FTF, RCE| & \verb|FTF, RCE| & \verb|FTF, RCE| & \verb|FTF, RCE| \\
+12 & \verb|FTF, RCE| & \verb|FTF, RCE| & \verb|FTF, RCE| & \verb|FTF, RCE| & \verb|FTF, RCE| & \verb|FTF, RCE| & \verb|FTF, RCE| & \verb|FTF, RCE| & \verb|FTF, RCE| & \verb|FTF, RCE| & \verb|FTF, RCE| & \verb|FTF, RCE| & \verb|FTF, RCE| & \verb|LA, FTF| & \verb|FTF, RCE| & \verb|FTF, RCE| & \verb|FTF, RCE| & \verb|FTF, RCE| & \verb|FTF, RCE| & \verb|FTF, RCE| & \verb|FTF, RCE| \\
+13 & \verb|FTF, RCE| & \verb|FTF, RCE| & \verb|FTF, RCE| & \verb|FTF, RCE| & \verb|FTF, RCE| & \verb|FTF, RCE| & \verb|FTF, RCE| & \verb|FTF, RCE| & \verb|FTF, RCE| & \verb|FTF, RCE| & \verb|FTF, RCE| & \verb|LA, FTF| & \verb|FTF, RCE| & \verb|FTF, RCE| & \verb|FTF, RCE| & \verb|FTF, RCE| & \verb|FTF, RCE| & \verb|FTF, RCE| & \verb|FTF, RCE| & \verb|FTF, RCE| & \verb|FTF, RCE| \\
+14 & \verb|FTF, RCE| & \verb|FTF, RCE| & \verb|FTF, RCE| & \verb|FTF, RCE| & \verb|FTF, RCE| & \verb|FTF, RCE| & \verb|FTF, RCE| & \verb|FTF, RCE| & \verb|FTF, RCE| & \verb|FTF, RCE| & \verb|FTF, RCE| & \verb|LA, FTF| & \verb|FTF, RCE| & \verb|FTF, RCE| & \verb|FTF, RCE| & \verb|FTF, RCE| & \verb|FTF, RCE| & \verb|FTF, RCE| & \verb|FTF, RCE| & \verb|FTF, RCE| & \verb|FTF, RCE| \\
+15 & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| \\
+16 & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|NLD| & \verb|| & \verb|| & \verb|| \\
+17 & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|| & \verb|NLD| & \verb|| & \verb|| & \verb|| \\
+18 & \verb|LA| & \verb|ILC, VTF, RCE| & \verb|LA| & \verb|LA| & \verb|LA| & \verb|ILC, VTF, RCE| & \verb|LA| & \verb|ILC, VTF, RCE| & \verb|ILC, VTF, RCE| & \verb|ILC, VTF, RCE| & \verb|ILC, VTF, RCE| & \verb|ILC, VTF, RCE| & \verb|ILC, VTF, RCE| & \verb|ILC, VTF, RCE| & \verb|ILC, VTF, RCE| & \verb|LA| & \verb|ILC, VTF, RCE| & \verb|ILC, VTF, RCE| & \verb|ILC, VTF, RCE| & \verb|ILC, VTF, RCE| & \verb|ILC, VTF, RCE| \\
+};
+\end{tikzpicture}
+}
+\end{document}

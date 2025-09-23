@@ -3,6 +3,7 @@ package lexer.actions.implementations;
 import lexer.Lexer;
 import lexer.actions.SemanticAction;
 import common.TokenType;
+import common.SymbolTable;
 import common.Token;
 
 /**
@@ -37,6 +38,10 @@ public class VariableTokenFinalizer implements SemanticAction {
 
         String lexema = lexicalAnalyzer.getLexema();
         TokenType tokenType = TokenType.fromSymbol(lexema);
+
+        // Se agrega el lexema a la tabla de símbolos.
+        SymbolTable.getInstance().agregarEntrada(lexema);
+
         lexicalAnalyzer.setToken(new Token(tokenType, lexema));
     }
 

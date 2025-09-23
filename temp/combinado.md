@@ -53,3 +53,6 @@ Sí constantes de tipo float, pero NO VARIABLES.
 
 // 2>&1 es para redirigir la salida de error (warnings y errores) a la salida estándar.
 ./rouvel-linux resources/testFiles/example0.uki > text.txt 2>&1
+
+
+

@@ -19,12 +19,6 @@ public class Token {
         }
 
         this.tokenType = tokenType;
-
-        // Se agrega el lexema a la tabla de símbolos.
-        if (lexema != null) {
-            SymbolTable.getInstance().agregarEntrada(lexema);
-        }
-
         this.symbolTableKey = lexema;
     }
 
