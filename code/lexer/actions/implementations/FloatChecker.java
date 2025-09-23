@@ -1,22 +1,27 @@
 package lexer.actions.implementations;
 
-import java.math.BigDecimal;
-
 import lexer.Lexer;
 import lexer.actions.SemanticAction;
 
 /**
  * FC:
- * 
  */
 public class FloatChecker implements SemanticAction {
 
     private static FloatChecker INSTANCE;
 
-    private static final BigDecimal MIN_POS_VAL = new BigDecimal("1.17549435E-38");
-    private static final BigDecimal MAX_POS_VAL = new BigDecimal("3.40282347E38");
-    private static final BigDecimal MIN_NEG_VAL = new BigDecimal("-3.40282347E38");
-    private static final BigDecimal MAX_NEG_VAL = new BigDecimal("-1.17549435E-38");
+    private static final double MIN_POS_VAL = 1.17549435e-38;
+    private static final double MAX_POS_VAL = 3.40282347e+38;
+    private static final double MIN_NEG_VAL = -3.40282347e+38;
+    private static final double MAX_NEG_VAL = -1.17549435e-38;
+
+    // El número podría no venir en notación científica. El peor caso:
+    // 1 cero antes del punto.
+    // 1 punto.
+    // 37 ceros después del punto.
+    // 9 números después del último cero después del punto.
+    // TOTAL: 48 caracteres.
+    private static final int MAX_CARACTERES = 48;
 
     // --------------------------------------------------------------------------------------------
 
@@ -37,114 +42,58 @@ public class FloatChecker implements SemanticAction {
     @Override
     public void execute(Lexer lexicalAnalyzer) {
 
-        String lexema = lexicalAnalyzer.getLexema();
+        // Se remplaza la "F" por la "e" para que pueda ser tomado el número como
+        // double.
+        String lexema = lexicalAnalyzer.getLexema().replace("F", "e");
 
-        lexema = cleanFloat(lexema);
+        double value;
+        boolean outOfRange = false;
 
-        lexicalAnalyzer.setLexema(parseToFloat(lexema, lexicalAnalyzer));
-    }
-
-    // --------------------------------------------------------------------------------------------
-
-    private String cleanFloat(String lexema) {
-        if (lexema.matches(".*F.*")) {
-            String[] parts = lexema.split("F", 2);
-            String number = parts[0].replaceFirst("^0+(?!\\.)", ""); // Elimina ceros a la izquierda.
-            if (number.isEmpty() || number.equals("."))
-                number = "0.0";
-            String exponent = parts.length > 1 ? parts[1].replaceFirst("^0+", "") : "0";
-            lexema = number + "E" + exponent;
+        // Si el número es demasiado grande para parsearlo
+        if (lexema.length() > MAX_CARACTERES) {
+            outOfRange = true;
+            value = 0.0;
         } else {
-            // Se eliminan ceros a la derecha.
-            lexema = lexema.replaceFirst("^0+(?!\\.)", "");
-            // Si termina en punto, agrega un cero.
-            if (lexema.endsWith("."))
-                lexema += "0";
-            // Si empieza con punto, agrega un cero al inicio.
-            if (lexema.startsWith("."))
-                lexema = "0" + lexema;
-            // Si está vacío o es solo un punto, es 0.0.
-            if (lexema.isEmpty() || lexema.equals("."))
-                lexema = "0.0";
-        }
-        // Elimina ceros a la derecha del decimal, a menos de que sea el único dígito.
-        if (lexema.contains(".")) {
-            lexema = lexema.replaceFirst("(\\.\\d*?)0+$", "$1");
-            // Si termina en punto, agrega un cero
-            if (lexema.endsWith("."))
-                lexema += "0";
-        }
-        return lexema;
-    }
-
-    // --------------------------------------------------------------------------------------------
-
-    private String parseToFloat(String lexema, Lexer lexicalAnalyzer) {
-
-        String number = transformToScientific(lexema);
-
-        if (!isInRange(number)) {
-            lexicalAnalyzer.notifyWarning("""
-                    El número flotante %s está fuera del rango de representación. \
-                    Se asignará el valor 0.0.
-                    """.formatted(number));
-
-        }
-
-        return number.replace("E", "F");
-    }
-
-    // --------------------------------------------------------------------------------------------
-
-    private String transformToScientific(String number) {
-
-        if (number.equals("0") || number.equals("0.0")) {
-            return "0.0";
-        }
-
-        // Ya está en notación científica.
-        if (number.contains("E") || number.contains("e")) {
-            return number.toUpperCase();
-        }
-
-        // La parte entera del número debe ser 0 para convertirlo en notación
-        // científica.
-        if (number.startsWith("0.")) {
-            String decPart = number.substring(2); // Parte después del "0.".
-            int zeroCount = 0;
-            int firstDigitIndex = -1;
-
-            for (int i = 0; i < decPart.length(); i++) {
-                if (decPart.charAt(i) == '0') {
-                    zeroCount++;
-                } else {
-                    firstDigitIndex = i;
-                    break;
+            try {
+                value = Double.parseDouble(lexema);
+                if (!isInRange(value)) {
+                    outOfRange = true;
+                    value = 0.0;
                 }
+            } catch (NumberFormatException e) {
+                outOfRange = true;
+                value = 0.0;
             }
-
-            // Si solo hay ceros...
-            if (firstDigitIndex == -1) {
-                return "0.0";
-            }
-
-            char firstDigit = decPart.charAt(firstDigitIndex);
-            int exponent = zeroCount + 1; // Cantidad de ceros antes del primer dígito.
-            return firstDigit + ".0E-" + exponent;
         }
 
-        return number;
+        if (outOfRange) {
+            lexicalAnalyzer.notifyWarning(
+                    "Número flotante '%s' fuera de rango. Se asignará 0.0.".formatted(lexema));
+        }
+
+        // Se convierte a la notación del lenguaje.
+        lexicalAnalyzer.setLexema(formatFloat(value));
     }
 
     // --------------------------------------------------------------------------------------------
 
-    private boolean isInRange(String number) {
+    private boolean isInRange(double value) {
 
-        BigDecimal value = new BigDecimal(number);
+        return (value >= MIN_POS_VAL && value <= MAX_POS_VAL)
+                || (value <= MAX_NEG_VAL && value >= MIN_NEG_VAL)
+                || value == 0.0;
+    }
 
-        return (value.compareTo(MIN_POS_VAL) >= 0 && value.compareTo(MAX_POS_VAL) <= 0)
-                || (value.compareTo(MAX_NEG_VAL) <= 0 && value.compareTo(MIN_NEG_VAL) >= 0)
-                || value.compareTo(BigDecimal.ZERO) == 0;
+    // --------------------------------------------------------------------------------------------
+
+    private String formatFloat(double value) {
+
+        // Para números muy grandes o muy pequeños, se utiliza notación científica.
+        if ((Math.abs(value) > 1e7 || (Math.abs(value) < 1e-3 && value != 0.0))) {
+            return String.format("%eF", value).replace("e", "F");
+        }
+
+        return String.valueOf(value);
     }
 
     // --------------------------------------------------------------------------------------------
