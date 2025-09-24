@@ -5,7 +5,7 @@ PROGRAMA {
     print(X);
 
     if (32UI > 14UI) {
-        do print("Hola") while (11UI >= 12UI);
+        do print("Hola"); while (11UI >= 12UI);
         X := 21UI;
     } endif;
 
@@ -31,4 +31,18 @@ PROGRAMA {
     U := 00000.0;
     U := .0000000000;
     U := 0.000000000001;
+
+    uint FUNC1 (cvr uint UKI) {
+        uint X;
+        return 32UI;
+    };
+
+    (uint A) { if (A > 1UI) print ("¡Hola!"); endif; } (3UI);
+
+    uint FUNC2 (uint ALEJO, uint BARTOLOME, uint YES) {
+        ## Cuerpo vacío ##
+        return 32UI;
+    }
+
+    uint A, B, C, D;
 }

@@ -23,8 +23,8 @@ programa                        : ID '{' conjunto_sentencias '}'
                                 { notifyDetection("Programa."); }
                                 ;
                     
-conjunto_sentencias             : sentencia ';' 
-                                | conjunto_sentencias sentencia ';'
+conjunto_sentencias             : sentencia
+                                | conjunto_sentencias sentencia
                                 ;
 
 sentencia                       : sentencia_ejecutable
@@ -35,10 +35,14 @@ sentencia                       : sentencia_ejecutable
 /* Sentencias declarativas                                                                              */
 /* ---------------------------------------------------------------------------------------------------- */
 
-sentencia_declarativa           : UINT lista_variables
+sentencia_declarativa           : UINT lista_variables ';'
                                 { notifyDetection("Declaración de variable."); }
-                                | declaracion_funcion
+                                | declaracion_funcion punto_y_coma_opcional
                                 { notifyDetection("Declaración de función."); }
+                                ;
+
+punto_y_coma_opcional           : // épsilon
+                                | ';'
                                 ;
 
 lista_variables                 : ID
@@ -70,6 +74,10 @@ lambda                          : '(' UINT ID ')' bloque_ejecutable '(' factor '
 /* Sentencias ejecutables                                                                               */
 /* ---------------------------------------------------------------------------------------------------- */
 
+cuerpo_ejecutable               : bloque_ejecutable
+                                | sentencia_ejecutable
+                                ;
+
 bloque_ejecutable               : '{' conjunto_sentencias_ejecutables '}'
                                 // --------------- //
                                 // REGLAS DE ERROR //
@@ -78,11 +86,19 @@ bloque_ejecutable               : '{' conjunto_sentencias_ejecutables '}'
                                 { notifyError("El cuerpo de la sentencia no puede estar vacío."); }
                                 ;
 
-conjunto_sentencias_ejecutables : sentencia_ejecutable ';'
-                                | conjunto_sentencias_ejecutables sentencia_ejecutable ';'
+conjunto_sentencias_ejecutables : sentencia_ejecutable
+                                | conjunto_sentencias_ejecutables sentencia_ejecutable
                                 ;
 
-sentencia_ejecutable            : invocacion_funcion
+sentencia_ejecutable            : operacion_ejecutable ';'
+                                // --------------- //
+                                // REGLAS DE ERROR //
+                                // --------------- //
+                                | operacion_ejecutable error
+                                { notifyError("Toda sentencia ejecutable debe terminar con punto y coma."); }
+                                ;
+
+operacion_ejecutable            : invocacion_funcion
                                 | asignacion_simple
                                 | asignacion_multiple
                                 | sentencia_control
@@ -101,6 +117,11 @@ sentencia_control               : if
                                 ;
 
 condicion                       : expresion comparador expresion
+                                // --------------- //
+                                // REGLAS DE ERROR //
+                                // --------------- //
+                                | // éspilon
+                                { notifyError("La condición no puede estar vacía."); }
                                 ;
                         
 comparador                      : '>'
@@ -111,21 +132,22 @@ comparador                      : '>'
                                 | NEQ
                                 ;
 
-if                              : IF '(' condicion ')' bloque_ejecutable ENDIF
-                                { notifyDetection("Setencia IF."); }
-                                | IF '(' condicion ')' bloque_ejecutable ELSE bloque_ejecutable ENDIF
-                                { notifyDetection("Setencia IF-ELSE."); }
+if                              : IF '(' condicion ')' cuerpo_ejecutable rama_else ENDIF
                                 // --------------- //
                                 // REGLAS DE ERROR //
                                 // --------------- //
-                                | IF '(' condicion ')' bloque_ejecutable error
+                                | IF '(' condicion ')' cuerpo_ejecutable rama_else error
                                 { notifyError("La sentencia IF debe finalizarse con 'endif'."); }
-                                | IF '(' condicion ')' bloque_ejecutable ELSE bloque_ejecutable error
-                                { notifyError("La sentencia IF-ELSE debe finalizarse con 'endif'."); }
                                 ;
 
-while                           : DO sentencia_ejecutable WHILE '(' condicion ')'
-                                | DO bloque_ejecutable WHILE '(' condicion ')'
+rama_else                       : // épsilon
+                                { notifyDetection("Setencia IF."); }
+                                | ELSE cuerpo_ejecutable
+                                { notifyDetection("Setencia IF-ELSE."); }
+                                ;
+
+
+while                           : DO cuerpo_ejecutable WHILE '(' condicion ')'
                                 ;
 
 impresion                       : PRINT '(' imprimible ')'                                          
@@ -196,7 +218,29 @@ declaracion_funcion             : UINT ID '(' lista_parametros ')' '{' cuerpo_fu
                                 { notifyError("Toda función debe recibir al menos un parámetro."); }
                                 ;
 
+cuerpo_funcion                  : sentencia_funcion
+                                // --------------- //
+                                // REGLAS DE ERROR //
+                                // --------------- //
+                                | // Épsilon
+                                { notifyError("El cuerpo de la función no puede estar vacío."); }
+                                ;
+
+sentencia_funcion               : sentencia_declarativa
+                                | sentencia_ejecutable
+                                | sentencia_retorno
+                                ;
+
+sentencia_retorno               : RETURN expresion ';'
+
 cuerpo_funcion                  : conjunto_sentencias RETURN expresion ';'
+                                // --------------- //
+                                // REGLAS DE ERROR //
+                                // --------------- //
+                                | RETURN expresion ';'
+                                { notifyError("El cuerpo de la función no puede estar vacío."); }
+                                | conjunto_sentencias error
+                                { notifyError("La función necesita de un retorno."); }
                                 ;
                             
 lista_parametros                : parametro_formal 
@@ -209,7 +253,17 @@ parametro_formal                : semantica_pasaje UINT variable
 
 // Separado para evitar un reduce/reduce.
 semantica_pasaje                : // épsilon - cadena vacía.
+                                //{ $$ = Pasaje.DEFECTO; }
                                 | CVR
+                                //{ $$ = Pasaje.COPIA_VALOR_RESULTADO; }
+                                // --------------- //
+                                // REGLAS DE ERROR //
+                                // --------------- //
+                                | error
+                                {
+                                    notifyError("Semántica de pasaje de parámetro inválida. Se asumirá pasaje de parámetro por defecto.");
+                                    //$ $ = Pasaje.COPIA_VALOR_RESULTADO;
+                                }
                                 ;
 
 invocacion_funcion              : ID '(' lista_argumentos ')' 
