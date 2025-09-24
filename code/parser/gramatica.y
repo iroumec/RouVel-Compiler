@@ -102,6 +102,7 @@ operacion_ejecutable            : invocacion_funcion
                                 | asignacion_simple
                                 | asignacion_multiple
                                 | sentencia_control
+                                | sentencia_retorno
                                 | impresion
                                 | lambda
                                 ;
@@ -210,15 +211,10 @@ variable                        : ID
 /* Funciones, llamadas y parametros                                                                     */
 /* ---------------------------------------------------------------------------------------------------- */
 
-declaracion_funcion             : UINT ID '(' lista_parametros ')' '{' cuerpo_funcion '}'
-                                // --------------- //
-                                // REGLAS DE ERROR //
-                                // --------------- //
-                                | UINT ID '(' ')' '{' cuerpo_funcion '}'
-                                { notifyError("Toda función debe recibir al menos un parámetro."); }
+declaracion_funcion             : UINT ID '(' conjunto_parametros ')' '{' cuerpo_funcion '}'
                                 ;
 
-cuerpo_funcion                  : sentencia_funcion
+cuerpo_funcion                  : conjunto_sentencias
                                 // --------------- //
                                 // REGLAS DE ERROR //
                                 // --------------- //
@@ -226,25 +222,23 @@ cuerpo_funcion                  : sentencia_funcion
                                 { notifyError("El cuerpo de la función no puede estar vacío."); }
                                 ;
 
-sentencia_funcion               : sentencia_declarativa
-                                | sentencia_ejecutable
-                                | sentencia_retorno
-                                ;
+sentencia_retorno               : RETURN expresion
 
-sentencia_retorno               : RETURN expresion ';'
-
-cuerpo_funcion                  : conjunto_sentencias RETURN expresion ';'
+conjunto_parametros             : lista_parametros
                                 // --------------- //
                                 // REGLAS DE ERROR //
                                 // --------------- //
-                                | RETURN expresion ';'
-                                { notifyError("El cuerpo de la función no puede estar vacío."); }
-                                | conjunto_sentencias error
-                                { notifyError("La función necesita de un retorno."); }
+                                | // épsilon
+                                { notifyError("Toda función debe recibir al menos un parámetro."); }
                                 ;
                             
 lista_parametros                : parametro_formal 
                                 | lista_parametros ',' parametro_formal 
+                                // --------------- //
+                                // REGLAS DE ERROR //
+                                // --------------- //
+                                | error
+                                { notifyError("$1 no es un parámetro formal válido."); }
                                 ;
 
 // Separado por legibilidad.

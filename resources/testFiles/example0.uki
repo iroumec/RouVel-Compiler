@@ -40,9 +40,12 @@ PROGRAMA {
     (uint A) { if (A > 1UI) print ("¡Hola!"); endif; } (3UI);
 
     uint FUNC2 (uint ALEJO, uint BARTOLOME, uint YES) {
-        ## Cuerpo vacío ##
         return 32UI;
     }
 
     uint A, B, C, D;
+
+    uint FUNC2 ( ## Lista de parámetros vacía ## ) {
+        ## Cuerpo vacío ##
+    }
 }
