@@ -48,4 +48,22 @@ PROGRAMA {
     uint FUNC2 ( ## Lista de parámetros vacía ## ) {
         ## Cuerpo vacío ##
     }
+
+    ## Parámetro vacío al final ##
+    uint FUNC3 ( uint N, uint JAJA, ) {
+        
+        return 32UI;
+    }
+
+    ## Parámetro vacío al comienzo ##
+    uint FUNC4 ( , uint JAJA, uint N) {
+        
+        return 32UI;
+    }
+
+    ## Parámetro vacío al medio ##
+    uint FUNC5 ( uint N, , uint JAJA) {
+        
+        return 32UI;
+    }
 }

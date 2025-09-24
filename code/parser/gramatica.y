@@ -237,12 +237,20 @@ lista_parametros                : parametro_formal
                                 // --------------- //
                                 // REGLAS DE ERROR //
                                 // --------------- //
-                                | error
-                                { notifyError("$1 no es un parámetro formal válido."); }
+                                | parametro_vacio
+                                { notifyError("Se halló un parámetro formal vacío."); }
+                                // No puede agregarse directamente épsilon porque daría reduce/reduce con la regla de arriba.
+                                ;
+
+parametro_vacio                 : lista_parametros ','
+                                | ',' parametro_formal
                                 ;
 
 // Separado por legibilidad.
 parametro_formal                : semantica_pasaje UINT variable
+                                // --------------- //
+                                // REGLAS DE ERROR //
+                                // --------------- //
                                 ; 
 
 // Separado para evitar un reduce/reduce.
