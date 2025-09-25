@@ -1,7 +1,5 @@
 package lexer.actions.implementations;
 
-import java.util.Locale;
-
 import lexer.Lexer;
 import lexer.actions.SemanticAction;
 
@@ -18,7 +16,6 @@ public class FloatChecker implements SemanticAction {
     private static final float MAX_POS_VAL = 3.40282347e+38f;
     private static final float MIN_NEG_VAL = -3.40282347e+38f;
     private static final float MAX_NEG_VAL = -1.17549435e-38f;
-    private static final float A = 12333333333333334354444444444444.0f;
 
     // El número podría no venir en notación científica. El peor caso:
     // 1 cero antes del punto.
@@ -27,6 +24,9 @@ public class FloatChecker implements SemanticAction {
     // 9 números después del último cero después del punto.
     // TOTAL: 48 caracteres.
     private static final int MAX_CARACTERES = 48;
+
+    // java solo permite siete dígitos significativos en un float. Más de eso, se
+    // acorta.
 
     // --------------------------------------------------------------------------------------------
 
@@ -76,10 +76,8 @@ public class FloatChecker implements SemanticAction {
                     "Número flotante '%s' fuera de rango. Se asignará 0.0.".formatted(lexema));
         }
 
-        System.out.println(A);
-
         // Se convierte a la notación del lenguaje.
-        lexicalAnalyzer.setLexema(String.valueOf(value).replace("E", "F"));
+        lexicalAnalyzer.setLexema(formatFloat(value));
     }
 
     // --------------------------------------------------------------------------------------------
@@ -100,20 +98,12 @@ public class FloatChecker implements SemanticAction {
         }
 
         // Para números muy grandes o muy pequeños.
-        if (Math.abs(value) > 1e7 || Math.abs(value) < 1e-3) {
+        if ((Math.abs(value) > 1e7 || (Math.abs(value) < 1e-3 && value != 0.0))) {
 
-            // Locale.ROOT ---> Idioma neutro. Siempre se separan los decimales con ".".
-            // Se asegura de que la representación no cambie según la máquina.
-
-            // "%.ne" muestra hasta n decimales después del punto y antes del exponente.
-            return String.format(Locale.ROOT, "%.38e", value)
-                    .replace("e", "F")
-                    .replaceAll("0+F", "F") // Se quitan ceros antes de F.
-                    .replace(".F", ".0F") // Se deja siempre .0 si no hay decimales.
-                    .replaceAll("F([+-])0+(\\d)", "F$1$2"); // Se quitan ceros del valor del exponente (09 -> 9).
+            return String.format("%e", value).replace("e", "F");
         }
 
-        return String.valueOf(value).replace("e", "F");
+        return String.valueOf(value);
     }
 
     // --------------------------------------------------------------------------------------------

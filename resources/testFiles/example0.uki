@@ -30,10 +30,10 @@ PROGRAMA {
     U := .0;
     U := 00000.0;
     U := .0000000000;
-    U := 0.000000000001;
+    U := 0.000000000001; ## Agrega ceros de más al final el parser ##
     U := 15.0;
     U := 12122.0;
-    U := 1234353434.0;
+    U := 1234353434.0; ## El floatFormat acorta este número ##
 
     uint FUNC1 (cvr uint UKI) {
         uint X;
