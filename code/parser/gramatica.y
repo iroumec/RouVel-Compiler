@@ -41,6 +41,7 @@ sentencia_declarativa           : UINT lista_variables ';'
                                 { notifyDetection("Declaración de función."); }
                                 ;
 
+// Permite la opcionalidad de la coma al final de las funciones.
 punto_y_coma_opcional           : // épsilon
                                 | ';'
                                 ;
@@ -248,9 +249,6 @@ parametro_vacio                 : lista_parametros ','
 
 // Separado por legibilidad.
 parametro_formal                : semantica_pasaje UINT variable
-                                // --------------- //
-                                // REGLAS DE ERROR //
-                                // --------------- //
                                 ; 
 
 // Separado para evitar un reduce/reduce.
