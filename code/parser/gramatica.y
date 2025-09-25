@@ -15,6 +15,9 @@
 // error: token especial que representa cualquier cosa que en ese punto no cumpla ninguna
 // de las alternativas válidas.
 
+// El token error no consume automáticamente el token incorrecto. Para descartar un símbolo, se debe
+// explícitamente incluir un token que el analizador debería esperar y luego descartar.
+
 /* ---------------------------------------------------------------------------------------------------- */
 /* INICIO DE REGLAS                                                                                     */
 /* ---------------------------------------------------------------------------------------------------- */
@@ -38,7 +41,6 @@ sentencia                       : sentencia_ejecutable
 sentencia_declarativa           : UINT lista_variables ';'
                                 { notifyDetection("Declaración de variable."); }
                                 | declaracion_funcion punto_y_coma_opcional
-                                { notifyDetection("Declaración de función."); }
                                 ;
 
 // Permite la opcionalidad de la coma al final de las funciones.
@@ -132,6 +134,14 @@ comparador                      : '>'
                                 | LEQ
                                 | GEQ
                                 | NEQ
+                                // --------------- //
+                                // REGLAS DE ERROR //
+                                // --------------- //
+                                | error
+                                {
+                                    notifyError("El token leído no corresponde a un operador de comparación válido. Este se descartará.");
+                                    descartarTokenError(); 
+                                }
                                 ;
 
 if                              : IF '(' condicion ')' cuerpo_ejecutable rama_else ENDIF
@@ -213,6 +223,7 @@ variable                        : ID
 /* ---------------------------------------------------------------------------------------------------- */
 
 declaracion_funcion             : UINT ID '(' conjunto_parametros ')' '{' cuerpo_funcion '}'
+                                { notifyDetection("Declaración de función."); }
                                 ;
 
 cuerpo_funcion                  : conjunto_sentencias
@@ -252,17 +263,12 @@ parametro_formal                : semantica_pasaje UINT variable
                                 ; 
 
 // Separado para evitar un reduce/reduce.
-semantica_pasaje                : // épsilon - cadena vacía.
-                                //{ $$ = Pasaje.DEFECTO; }
+semantica_pasaje                : // épsilon
                                 | CVR
-                                //{ $$ = Pasaje.COPIA_VALOR_RESULTADO; }
-                                // --------------- //
-                                // REGLAS DE ERROR //
-                                // --------------- //
                                 | error
                                 {
                                     notifyError("Semántica de pasaje de parámetro inválida. Se asumirá pasaje de parámetro por defecto.");
-                                    //$ $ = Pasaje.COPIA_VALOR_RESULTADO;
+                                    descartarTokenError();
                                 }
                                 ;
 
@@ -275,7 +281,7 @@ lista_argumentos                : argumento
                                 ;
 
 // Separado por legibilidad.
-argumento                       : expresion FLECHA parametro_formal
+argumento                       : expresion FLECHA ID
                                 ;
 
 /* ---------------------------------------------------------------------------------------------------- */
@@ -329,7 +335,18 @@ int yylex() {
 }
 
 void yyerror(String message) {
-    System.out.println(message);
+    // Silenciar esto permite que mensajes como "syntax error", al utilizar
+    // un token de error, no se muestren.
+    // En su lugar, se presentan los mensajes que nosotros brindamos,
+    // diferenciando entre error y warning.
+}
+
+void descartarTokenError() {
+    // Se fuerza a que en la próxima iteración se llame a yylex(), leyendo otro token.
+    yychar = -1;
+
+    // Se limpia el estado de error.
+    yyerrflag = 0;
 }
 
 void notifyDetection(String message) {

@@ -66,4 +66,21 @@ PROGRAMA {
         
         return 32UI;
     }
+
+    ## Probando Semántica de Pasaje de Parámetros ##
+
+    ## Semántica por defecto ##
+    uint FUNC6 (uint Y) {
+        return 1UI;
+    }
+
+    ## Semántica por copia-valor-resultado ##
+    uint FUNC7 (cvr uint Y) {
+        return 1UI;
+    }
+
+    ## Semántica inválida ##
+    uint FUNC8 (J uint Y) {
+        return 1UI;
+    }
 }
