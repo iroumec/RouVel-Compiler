@@ -109,7 +109,7 @@ digraph DFA {
     2 -> eN [label = "Otro | -3"; style = dashed;];
     2 -> fI [label = "\"I\" | LA, UIC, VTF";];
     3 -> 4 [label = "d | LA";];
-    3 -> fI [label = "Otro | FTF";];
+    3 -> fI [label = "Otro | FTF, RCE";];
     4 -> 4 [label = "d | LA";];
     4 -> 5 [label = "\"F\" | LA";];
     4 -> fI [label = "Otro | FC, VTF, RCE";];
