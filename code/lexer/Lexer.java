@@ -21,9 +21,7 @@ public final class Lexer {
     private final String codigoFuente;
     private int nroLinea, siguienteCaracterALeer;
     private int warningsDetected, errorsDetected;
-
-    private final static int ESTADO_INICIO = 0;
-    private final static int ESTADO_ACEPTACION = 19;
+    private final int estadoInicio, estadoAceptacion;
 
     private final int[][] matrizTransicionEstados;
     private final SemanticAction[][][] matrizAccionesSemanticas;
@@ -35,6 +33,8 @@ public final class Lexer {
         this.errorsDetected = 0;
         this.warningsDetected = 0;
         this.siguienteCaracterALeer = 0;
+        this.estadoInicio = DataManager.getEstadoInicio();
+        this.estadoAceptacion = DataManager.getEstadoAceptacion();
         this.codigoFuente = DataManager.loadSourceCode(sourceCodePath);
         this.matrizTransicionEstados = DataManager.getStateTransitionMatrix();
         this.matrizAccionesSemanticas = DataManager.getSemanticActionsMatrix();
@@ -72,10 +72,10 @@ public final class Lexer {
     private void searchToken() {
 
         int index;
-        int estadoActual = ESTADO_INICIO;
+        int estadoActual = estadoInicio;
         int siguienteEstado;
 
-        while (estadoActual != ESTADO_ACEPTACION && siguienteCaracterALeer < codigoFuente.length()) {
+        while (estadoActual != estadoAceptacion && siguienteCaracterALeer < codigoFuente.length()) {
 
             this.lastCharRead = this.readNextChar();
 
@@ -85,7 +85,7 @@ public final class Lexer {
             siguienteEstado = matrizTransicionEstados[estadoActual][index];
 
             // Si se ha llegado a un estado de error...
-            if (siguienteEstado < ESTADO_INICIO) {
+            if (siguienteEstado < estadoInicio) {
                 estadoActual = this.handleError(estadoActual, siguienteEstado);
             } else {
                 // Se avanza al siguiente estado.
@@ -116,13 +116,13 @@ public final class Lexer {
         // inicial para evitar la aparición de múltiples errores dadas las transiciones.
         // En los demás casos, basta con quedarse en el estado actual.
         if (errorHandler.requiresReturnToStart()) {
-            return ESTADO_INICIO;
+            return estadoInicio;
         }
 
         // Algunos manejadores dee errores realizan las acciones semánticas necesarias
         // para dejar el token listo para ser entregado.
         if (errorHandler.requiresFinalization()) {
-            return ESTADO_ACEPTACION;
+            return estadoAceptacion;
         }
         return currentState;
     }

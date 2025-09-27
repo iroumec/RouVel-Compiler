@@ -6,8 +6,8 @@ digraph DFA {
     0 -> 15 [label = "\"#\"";];
     15 -> eC [label = "Otro | -8"; style = dashed;];
     15 -> 16 [label = "\"#\"";];
-    16 -> 16 [label = "n | NLD";];
+    16 -> 16 [label = "Otro, n [NLD]";];
     16 -> 17 [label = "\"#\"";];
-    17 -> 16 [label = "C, n [NLD]";];
+    17 -> 16 [label = "Otro, n [NLD]";];
     17 -> 0 [label = "\"#\"";];
 }

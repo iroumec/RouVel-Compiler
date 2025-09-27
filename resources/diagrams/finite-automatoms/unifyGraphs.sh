@@ -31,11 +31,23 @@ digraph DFA {
     // Estado de aceptación
     // Se definen varios para que el autómata quede más claro.
     // Todos referencian al mismo estado de aceptación.
-    // ACEPTACIÓN DE TOKEN VARIABLES.
-    // TOKEN VARIABLE: token al que le corresponde más de un lexema.
+    // ACEPTACIÓN DE IDENTIFICADORES, PALABRAS RESERVADAS Y CADENAS.
     fI [shape = doublecircle;style = dashed;color = "#8a048a"; label = "F";];
+    fR [shape = doublecircle;style = dashed;color = "#8a048a"; label = "F";];
+    fS [shape = doublecircle;style = dashed;color = "#8a048a"; label = "F";];
+    // ACEPTACIÓN DE NÚMEROS.
+    // Separados en varios por orden.
+    fN1 [shape = doublecircle;style = dashed;color = "#8a048a"; label = "F";];
+    fN2 [shape = doublecircle;style = dashed;color = "#8a048a"; label = "F";];
+    fN3 [shape = doublecircle;style = dashed;color = "#8a048a"; label = "F";];
+    fN4 [shape = doublecircle;style = dashed;color = "#8a048a"; label = "F";];
     // ACEPTACIÓN DE OPERADORES.
-    fP [shape = doublecircle;style = dashed;color = "#8a048a"; label = "F";];
+    // Separados en varios por orden.
+    fP1 [shape = doublecircle;style = dashed;color = "#8a048a"; label = "F";];
+    fP2 [shape = doublecircle;style = dashed;color = "#8a048a"; label = "F";];
+    fP3 [shape = doublecircle;style = dashed;color = "#8a048a"; label = "F";];
+    fP4 [shape = doublecircle;style = dashed;color = "#8a048a"; label = "F";];
+    fP5 [shape = doublecircle;style = dashed;color = "#8a048a"; label = "F";];
     
     // Estados de error.
     // Se definen varios para que el autómata quede más claro.
@@ -47,7 +59,11 @@ digraph DFA {
     // ERROR DE OPERADOR.
     eP [shape = doublecircle;style = dashed;color = red;label = "e";];
     // ERROR DE NÚMERO.
-    eN [shape = doublecircle;style = dashed;color = red;label = "e";];
+    // Separados en varios por orden.
+    eN1 [shape = doublecircle;style = dashed;color = red;label = "e";];
+    eN2 [shape = doublecircle;style = dashed;color = red;label = "e";];
+    eN3 [shape = doublecircle;style = dashed;color = red;label = "e";];
+    eN4 [shape = doublecircle;style = dashed;color = red;label = "e";];
     // ERROR DE CADENA.
     eS [shape = doublecircle;style = dashed;color = red;label = "e";];
     
@@ -82,7 +98,7 @@ digraph DFA {
         node [fillcolor = lightyellow;];
         8;
         9;
-        18;
+        10;
     }
     
     // Agrupación operadores
@@ -90,7 +106,6 @@ digraph DFA {
         label = "Operadores";
         style = dashed;
         node [fillcolor = lightpink;];
-        10;
         11;
         12;
         13;

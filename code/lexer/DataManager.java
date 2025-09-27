@@ -18,8 +18,10 @@ import lexer.actions.implementations.VariableTokenFinalizer;
 
 public final class DataManager {
 
-    private final static int NUM_ESTADOS = 19;
+    private final static int NUM_ESTADOS = 18;
     private final static int NUM_SIMBOLOS = 21;
+    private final static int ESTADO_INICIO = 0;
+    private final static int ESTADO_ACEPTACION = 18;
 
     // --------------------------------------------------------------------------------------------
 
@@ -70,17 +72,17 @@ public final class DataManager {
         STATE_TRANSITION_MATRIX[0][charToIndex('.')] = 3;
         STATE_TRANSITION_MATRIX[0][charToIndex('"')] = 8;
         STATE_TRANSITION_MATRIX[0][charToIndex('l')] = 9;
-        STATE_TRANSITION_MATRIX[0][charToIndex(':')] = 10;
-        STATE_TRANSITION_MATRIX[0][charToIndex('=')] = 11;
-        STATE_TRANSITION_MATRIX[0][charToIndex('-')] = 12;
-        STATE_TRANSITION_MATRIX[0][charToIndex('>')] = 13;
+        STATE_TRANSITION_MATRIX[0][charToIndex(':')] = 11;
+        STATE_TRANSITION_MATRIX[0][charToIndex('=')] = 12;
+        STATE_TRANSITION_MATRIX[0][charToIndex('-')] = 13;
+        STATE_TRANSITION_MATRIX[0][charToIndex('>')] = 14;
         STATE_TRANSITION_MATRIX[0][charToIndex('<')] = 14;
         STATE_TRANSITION_MATRIX[0][charToIndex('#')] = 15;
         for (char c : new char[] { 'L', 'U', 'I', 'F' }) {
-            STATE_TRANSITION_MATRIX[0][charToIndex(c)] = 18;
+            STATE_TRANSITION_MATRIX[0][charToIndex(c)] = 10;
         }
         for (char c : new char[] { '+', '*', '/', '(', ')', '{', '}', '_', ';', ',' }) {
-            STATE_TRANSITION_MATRIX[0][charToIndex(c)] = 19;
+            STATE_TRANSITION_MATRIX[0][charToIndex(c)] = ESTADO_ACEPTACION;
         }
 
         // Estado 1
@@ -91,54 +93,57 @@ public final class DataManager {
 
         // Estado 2
         Arrays.fill(STATE_TRANSITION_MATRIX[2], -3);
-        STATE_TRANSITION_MATRIX[2][charToIndex('I')] = 19;
+        STATE_TRANSITION_MATRIX[2][charToIndex('I')] = ESTADO_ACEPTACION;
 
         // Estado 3
-        Arrays.fill(STATE_TRANSITION_MATRIX[3], 19);
+        Arrays.fill(STATE_TRANSITION_MATRIX[3], ESTADO_ACEPTACION);
         STATE_TRANSITION_MATRIX[3][charToIndex('d')] = 4;
 
         // Estado 4
-        Arrays.fill(STATE_TRANSITION_MATRIX[4], 19);
+        Arrays.fill(STATE_TRANSITION_MATRIX[4], ESTADO_ACEPTACION);
         STATE_TRANSITION_MATRIX[4][charToIndex('d')] = 4;
         STATE_TRANSITION_MATRIX[4][charToIndex('F')] = 5;
 
         // Estado 5
-        Arrays.fill(STATE_TRANSITION_MATRIX[5], -5);
+        Arrays.fill(STATE_TRANSITION_MATRIX[5], -4);
         STATE_TRANSITION_MATRIX[5][charToIndex('-')] = 6;
         STATE_TRANSITION_MATRIX[5][charToIndex('+')] = 6;
 
         // Estado 6
-        Arrays.fill(STATE_TRANSITION_MATRIX[6], -6);
+        Arrays.fill(STATE_TRANSITION_MATRIX[6], -5);
         STATE_TRANSITION_MATRIX[6][charToIndex('d')] = 7;
 
         // Estado 7
-        Arrays.fill(STATE_TRANSITION_MATRIX[7], 19);
+        Arrays.fill(STATE_TRANSITION_MATRIX[7], ESTADO_ACEPTACION);
         STATE_TRANSITION_MATRIX[7][charToIndex('d')] = 7;
 
         // Estado 8
         Arrays.fill(STATE_TRANSITION_MATRIX[8], 8);
-        STATE_TRANSITION_MATRIX[8][charToIndex('"')] = 19;
+        STATE_TRANSITION_MATRIX[8][charToIndex('"')] = ESTADO_ACEPTACION;
         STATE_TRANSITION_MATRIX[8][charToIndex('n')] = -8;
 
         // Estado 9
-        Arrays.fill(STATE_TRANSITION_MATRIX[9], 19);
+        Arrays.fill(STATE_TRANSITION_MATRIX[9], ESTADO_ACEPTACION);
         STATE_TRANSITION_MATRIX[9][charToIndex('l')] = 9;
 
         // Estado 10
-        Arrays.fill(STATE_TRANSITION_MATRIX[10], -7);
-        STATE_TRANSITION_MATRIX[10][charToIndex('=')] = 19;
+        Arrays.fill(STATE_TRANSITION_MATRIX[10], ESTADO_ACEPTACION);
+        for (char c : new char[] { 'L', 'd', 'U', 'I', 'F', '%' }) {
+            STATE_TRANSITION_MATRIX[10][charToIndex(c)] = 10;
+        }
 
         // Estado 11
-        Arrays.fill(STATE_TRANSITION_MATRIX[11], 19);
+        Arrays.fill(STATE_TRANSITION_MATRIX[11], -6);
+        STATE_TRANSITION_MATRIX[11][charToIndex('=')] = ESTADO_ACEPTACION;
 
         // Estado 12
-        Arrays.fill(STATE_TRANSITION_MATRIX[12], 19);
+        Arrays.fill(STATE_TRANSITION_MATRIX[11], ESTADO_ACEPTACION);
 
         // Estado 13
-        Arrays.fill(STATE_TRANSITION_MATRIX[13], 19);
+        Arrays.fill(STATE_TRANSITION_MATRIX[13], ESTADO_ACEPTACION);
 
         // Estado 14
-        Arrays.fill(STATE_TRANSITION_MATRIX[14], 19);
+        Arrays.fill(STATE_TRANSITION_MATRIX[14], ESTADO_ACEPTACION);
 
         // Estado 15
         Arrays.fill(STATE_TRANSITION_MATRIX[15], -9);
@@ -151,12 +156,6 @@ public final class DataManager {
         // Estado 17
         Arrays.fill(STATE_TRANSITION_MATRIX[17], 16);
         STATE_TRANSITION_MATRIX[17][charToIndex('#')] = 0;
-
-        // Estado 18
-        Arrays.fill(STATE_TRANSITION_MATRIX[18], 19);
-        for (char c : new char[] { 'L', 'd', 'U', 'I', 'F', '%' }) {
-            STATE_TRANSITION_MATRIX[18][charToIndex(c)] = 18;
-        }
     }
 
     // --------------------------------------------------------------------------------------------
@@ -233,21 +232,23 @@ public final class DataManager {
         SEMANTIC_ACTIONS_MATRIX[9][charToIndex('l')] = LA;
 
         // Estado 10
-        Arrays.fill(SEMANTIC_ACTIONS_MATRIX[10], EMPTY);
-        SEMANTIC_ACTIONS_MATRIX[10][charToIndex('=')] = LA_FTF;
+        Arrays.fill(SEMANTIC_ACTIONS_MATRIX[10], ILC_VTF_RCE);
+        for (char c : new char[] { 'L', 'd', 'U', 'I', 'F', '%' }) {
+            SEMANTIC_ACTIONS_MATRIX[10][charToIndex(c)] = LA;
+        }
 
         // Estado 11
-        Arrays.fill(SEMANTIC_ACTIONS_MATRIX[11], FTF_RCE);
+        Arrays.fill(SEMANTIC_ACTIONS_MATRIX[11], EMPTY);
         SEMANTIC_ACTIONS_MATRIX[11][charToIndex('=')] = LA_FTF;
-        SEMANTIC_ACTIONS_MATRIX[11][charToIndex('!')] = LA_FTF;
 
         // Estado 12
         Arrays.fill(SEMANTIC_ACTIONS_MATRIX[12], FTF_RCE);
-        SEMANTIC_ACTIONS_MATRIX[12][charToIndex('>')] = LA_FTF;
+        SEMANTIC_ACTIONS_MATRIX[12][charToIndex('=')] = LA_FTF;
+        SEMANTIC_ACTIONS_MATRIX[12][charToIndex('!')] = LA_FTF;
 
         // Estado 13
         Arrays.fill(SEMANTIC_ACTIONS_MATRIX[13], FTF_RCE);
-        SEMANTIC_ACTIONS_MATRIX[13][charToIndex('=')] = LA_FTF;
+        SEMANTIC_ACTIONS_MATRIX[13][charToIndex('>')] = LA_FTF;
 
         // Estado 14
         Arrays.fill(SEMANTIC_ACTIONS_MATRIX[14], FTF_RCE);
@@ -263,12 +264,6 @@ public final class DataManager {
         // Estado 17
         Arrays.fill(SEMANTIC_ACTIONS_MATRIX[17], EMPTY);
         SEMANTIC_ACTIONS_MATRIX[17][charToIndex('n')] = NLD;
-
-        // Estado 18
-        Arrays.fill(SEMANTIC_ACTIONS_MATRIX[18], ILC_VTF_RCE);
-        for (char c : new char[] { 'L', 'd', 'U', 'I', 'F', '%' }) {
-            SEMANTIC_ACTIONS_MATRIX[18][charToIndex(c)] = LA;
-        }
     }
 
     // --------------------------------------------------------------------------------------------
@@ -329,5 +324,17 @@ public final class DataManager {
             case "VTF" -> VariableTokenFinalizer.getInstance();
             default -> null;
         };
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    public static int getEstadoInicio() {
+        return ESTADO_INICIO;
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    public static int getEstadoAceptacion() {
+        return ESTADO_ACEPTACION;
     }
 }
