@@ -4,7 +4,7 @@ import lexer.actions.implementations.FixedTokenFinalizer;
 import lexer.actions.implementations.ReturnCharacterToEntry;
 
 /**
- * Estado de error -7.
+ * Estado de error -6.
  * InvalidAssignmentOperator.
  */
 public class InvalidAssignmentOperator implements lexer.errors.LexicalError {
@@ -50,7 +50,7 @@ public class InvalidAssignmentOperator implements lexer.errors.LexicalError {
 
     @Override
     public String toString() {
-        return "Estado de Error: -7. InvalidAssignmentOperator.";
+        return "Estado de Error: -6. InvalidAssignmentOperator.";
     }
 
 }

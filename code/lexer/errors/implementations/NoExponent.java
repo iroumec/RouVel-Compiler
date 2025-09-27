@@ -7,7 +7,7 @@ import lexer.actions.implementations.VariableTokenFinalizer;
 import lexer.errors.LexicalError;
 
 /**
- * Estado de error -6.
+ * Estado de error -5.
  * NoExponent.
  */
 public class NoExponent implements LexicalError {
@@ -60,6 +60,6 @@ public class NoExponent implements LexicalError {
 
     @Override
     public String toString() {
-        return "Estado de error: -6. NoExponent.";
+        return "Estado de error: -5. NoExponent.";
     }
 }

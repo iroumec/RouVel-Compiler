@@ -4,7 +4,7 @@ import lexer.Lexer;
 import lexer.errors.LexicalError;
 
 /**
- * Estado de error -8.
+ * Estado de error -7.
  * NewLineInString.
  */
 public class NewLineInString implements LexicalError {
@@ -39,7 +39,7 @@ public class NewLineInString implements LexicalError {
 
     @Override
     public String toString() {
-        return "Estado de Error: -8. NewLineInString.";
+        return "Estado de Error: -7. NewLineInString.";
     }
 
 }

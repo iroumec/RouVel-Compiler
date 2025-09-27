@@ -9,6 +9,7 @@ public class Token {
 
     public Token(TokenType tokenType, String lexema) {
         if (tokenType.requiereLexema() && lexema == null) {
+            System.out.println(tokenType);
             throw new IllegalArgumentException(
                     "El tipo de token especificado requiere de una entrada en la tabla.");
         }

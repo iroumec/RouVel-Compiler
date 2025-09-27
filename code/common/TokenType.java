@@ -29,7 +29,6 @@ public enum TokenType {
     GT(">"),
     LT("<"),
     PyC(";"),
-    ASIG("="),
     SUM("+"),
     RES("-"),
     MUL("*"),
@@ -38,7 +37,9 @@ public enum TokenType {
     RAP(")"),
     KEY("{"),
     YEK("}"),
+    ASIG("="),
     SLSH("_"),
+    PUNTO("."),
     COMMA(","),
 
     // --------------------------------------------------------------------------------------------
@@ -144,7 +145,7 @@ public enum TokenType {
         char firstChar = symbol.charAt(0);
         if (Character.isUpperCase(firstChar)) {
             return TokenType.ID;
-        } else if (Character.isDigit(firstChar) || firstChar == '.') {
+        } else if (Character.isDigit(firstChar) || (firstChar == '.' && symbol.length() > 1)) {
             return TokenType.CTE;
         } else if (firstChar == '\"') {
             return TokenType.STR;

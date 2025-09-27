@@ -1,6 +1,12 @@
 #!/bin/bash
-BASE_DIR="$(dirname "$0")/graphs"
+
+# Directorio desde el que se llamó al script,
+CALL_DIR="$PWD"
+
+BASE_DIR="$(dirname "$0")/individual-units"
 cd "$BASE_DIR" || exit 1
+
+# Lugar en el que se guardará el grafo final.
 SALIDA="$(dirname "$0")/finiteAutomatom.dot"
 
 # Verificar si existen archivos .dot
@@ -23,11 +29,17 @@ digraph DFA {
     node [shape = circle; style = filled;];
     
     // Estado de aceptación
-    F [shape = doublecircle;style = dashed;color = "#8a048a";];
+    // Se definen varios para que el autómata quede más claro.
+    // Todos referencian al mismo estado de aceptación.
+    // ACEPTACIÓN DE TOKEN VARIABLES.
+    // TOKEN VARIABLE: token al que le corresponde más de un lexema.
+    fI [shape = doublecircle;style = dashed;color = "#8a048a"; label = "F";];
+    // ACEPTACIÓN DE OPERADORES.
+    fP [shape = doublecircle;style = dashed;color = "#8a048a"; label = "F";];
     
     // Estados de error.
     // Se definen varios para que el autómata quede más claro.
-    // Todos referencias al mismo estado de error.
+    // Todos referencias al mismo estado de error o estado sumidero.
     // ERROR GENERAL.
     eG [shape = doublecircle;style = dashed;color = red;label = "e";];
     // ERROR DE COMENTARIO.
@@ -107,4 +119,4 @@ grep -h -E '\->' *.dot 2>/dev/null | sort -n -k1,1 | uniq >> "$SALIDA"
 echo "}" >> "$SALIDA"
 
 # Se genera una versión .png del grafo.
-dot -Tpng "$SALIDA" -o "$(dirname "$0")"/finiteAutomatom.png
+dot -Tpng "$SALIDA" -o "$CALL_DIR/resources/images/finiteAutomatom.png"

@@ -1,7 +1,7 @@
 digraph DFA {
     rankdir = LR;
     node [shape = circle;];
-    F [shape = doublecircle;];
+    fI [shape = doublecircle;];
     eN [shape = doublecircle;style = dashed;color = red;label = "e";];
     
     0 -> 1 [label = "d | LI";];
@@ -11,16 +11,16 @@ digraph DFA {
     1 -> 4 [label = "\".\" | LA";];
     1 -> eN [label = "Otro | -2"; style = dashed;];
     2 -> eN [label = "Otro | -3"; style = dashed;];
-    2 -> F [label = "\"I\" | LA, UIC, VTF";];
+    2 -> fI [label = "\"I\" | LA, UIC, VTF";];
     3 -> 4 [label = "d | LA";];
-    3 -> eN [label = "Otro | -4"; style = dashed;];
+    3 -> fI [label = "Otro | FTF";];
     4 -> 4 [label = "d | LA";];
-    4 -> F [label = "Otro | FC, VTF, RCE";];
+    4 -> fI [label = "Otro | FC, VTF, RCE";];
     4 -> 5 [label = "\"F\" | LA";];
     5 -> 6 [label = "\"+\", \"-\" | LA";];
-    5 -> eN [label = "Otro | -5"; style = dashed;];
+    5 -> eN [label = "Otro | -4"; style = dashed;];
     6 -> 7 [label = "d | LA";];
-    6 -> eN [label = "Otro | -6"; style = dashed;];
+    6 -> eN [label = "Otro | -5"; style = dashed;];
     7 -> 7 [label = "d | LA";];
-    7 -> F [label = "Otro | FC, VTF, RCE";];
+    7 -> fI [label = "Otro | FC, VTF, RCE";];
 }

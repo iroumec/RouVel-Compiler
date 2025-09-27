@@ -1,0 +1,23 @@
+digraph DfPA {
+    rankdir = LR;
+    node [shape = circle;];
+    fP [shape = doublecircle;];
+    eP [shape = doublecircle;style = dashed;color = red;label = "e";];
+    
+    0 -> 10 [label = "\":\" | LI";];
+    0 -> 11 [label = "\"=\" | LI";];
+    0 -> 12 [label = "\"-\" | LI";];
+    0 -> 13 [label = "\">\" | LI";];
+    0 -> 14 [label = "\"<\" | LI";];
+    0 -> fP [label = "P | LI, FTF";];
+    10 -> fP [label = "\"=\" | LA, FTF";];
+    10 -> eP [label = "Otro | -6"; style = dashed;];
+    11 -> fP [label = "\"=\", \"!\" | LA, FTF";];
+    11 -> fP [label = "Otro | FTF, RCE";];
+    12 -> fP [label = "\">\" | LA, FTF";];
+    12 -> fP [label = "Otro | FTF, RCE";];
+    13 -> fP [label = "\"=\" | LA, FTF";];
+    13 -> fP [label = "Otro | FTF, RCE";];
+    14 -> fP [label = "\"=\" | LA, FTF";];
+    14 -> fP [label = "Otro | FTF, RCE";];
+}

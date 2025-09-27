@@ -5,7 +5,7 @@ import lexer.errors.LexicalError;
 import lexer.actions.implementations.ReturnCharacterToEntry;
 
 /**
- * Estado de error -9.
+ * Estado de error -8.
  * BadCommentInitialization.
  */
 public class BadCommentInitialization implements LexicalError {
@@ -51,7 +51,7 @@ public class BadCommentInitialization implements LexicalError {
 
     @Override
     public String toString() {
-        return "Estado de Error: -9. BadCommentInitialization.";
+        return "Estado de Error: -8. BadCommentInitialization.";
     }
 
 }

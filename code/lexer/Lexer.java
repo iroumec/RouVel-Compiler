@@ -7,7 +7,6 @@ import lexer.errors.LexicalError;
 import lexer.errors.implementations.BadCommentInitialization;
 import lexer.errors.implementations.BadUISuffix;
 import lexer.errors.implementations.InvalidAssignmentOperator;
-import lexer.errors.implementations.InvalidDecimalFormat;
 import lexer.errors.implementations.InvalidSymbol;
 import lexer.errors.implementations.NewLineInString;
 import lexer.errors.implementations.NoExponent;
@@ -188,12 +187,11 @@ public final class Lexer {
             case -1 -> InvalidSymbol.getInstance();
             case -2 -> UndeterminedNumber.getInstance();
             case -3 -> BadUISuffix.getInstance();
-            case -4 -> InvalidDecimalFormat.getInstance();
-            case -5 -> NoExponentSign.getInstance();
-            case -6 -> NoExponent.getInstance();
-            case -7 -> InvalidAssignmentOperator.getInstance();
-            case -8 -> NewLineInString.getInstance();
-            case -9 -> BadCommentInitialization.getInstance();
+            case -4 -> NoExponentSign.getInstance();
+            case -5 -> NoExponent.getInstance();
+            case -6 -> InvalidAssignmentOperator.getInstance();
+            case -7 -> NewLineInString.getInstance();
+            case -8 -> BadCommentInitialization.getInstance();
             default -> null;
         };
     }

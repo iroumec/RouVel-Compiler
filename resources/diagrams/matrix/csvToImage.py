@@ -77,7 +77,7 @@ states = leer_csv("resources/diagrams/matrix/csv/matrizEstados.csv")
 actions = leer_csv("resources/diagrams/matrix/csv/matrizAcciones.csv", is_actions=True)
 
 # Usamos layout='fixed' para la tabla de estados
-generar_imagen_matplotlib(states, column_headers, "resources/diagrams/matrix/images/matrizEstados.png", layout='fixed')
+generar_imagen_matplotlib(states, column_headers, "resources/images/matrizEstados.png", layout='fixed')
 
 # Usamos layout='auto' para la tabla de acciones
-generar_imagen_matplotlib(actions, column_headers, "resources/diagrams/matrix/images/matrizAcciones.png", layout='auto')
+generar_imagen_matplotlib(actions, column_headers, "resources/images/matrizAcciones.png", layout='auto')

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Directorio desde el que se llamó al script
+# Directorio desde el que se llamó al script.
 CALL_DIR="$PWD"
 
 # Carpeta donde está el script

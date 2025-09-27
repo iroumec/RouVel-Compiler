@@ -89,7 +89,7 @@ PROGRAMA {
 
     ## Probando Identificadores ##
 
-    ## AS.ND := 12UI; ##
+    AS.ND := 12UI;
 
     ## Probando expresiones lambda ##
 

@@ -10,11 +10,17 @@ digraph DFA {
     node [shape = circle; style = filled;];
     
     // Estado de aceptación
-    F [shape = doublecircle;style = dashed;color = "#8a048a";];
+    // Se definen varios para que el autómata quede más claro.
+    // Todos referencian al mismo estado de aceptación.
+    // ACEPTACIÓN DE TOKEN VARIABLES.
+    // TOKEN VARIABLE: token al que le corresponde más de un lexema.
+    fI [shape = doublecircle;style = dashed;color = "#8a048a"; label = "F";];
+    // ACEPTACIÓN DE OPERADORES.
+    fP [shape = doublecircle;style = dashed;color = "#8a048a"; label = "F";];
     
     // Estados de error.
     // Se definen varios para que el autómata quede más claro.
-    // Todos referencias al mismo estado de error.
+    // Todos referencias al mismo estado de error o estado sumidero.
     // ERROR GENERAL.
     eG [shape = doublecircle;style = dashed;color = red;label = "e";];
     // ERROR DE COMENTARIO.
@@ -95,45 +101,45 @@ digraph DFA {
     0 -> 8 [label = "\" | LI";];
     0 -> 9 [label = "l | LI";];
     0 -> eG [label = "Otro | -1"; style = dashed;];
-    0 -> F [label = "P | LI, FTF";];
+    0 -> fP [label = "P | LI, FTF";];
     1 -> 1 [label = "d | LA";];
     1 -> 2 [label = "\"U\" | LA";];
     1 -> 4 [label = "\".\" | LA";];
     1 -> eN [label = "Otro | -2"; style = dashed;];
     2 -> eN [label = "Otro | -3"; style = dashed;];
-    2 -> F [label = "\"I\" | LA, UIC, VTF";];
+    2 -> fI [label = "\"I\" | LA, UIC, VTF";];
     3 -> 4 [label = "d | LA";];
-    3 -> eN [label = "Otro | -4"; style = dashed;];
+    3 -> fI [label = "Otro | FTF";];
     4 -> 4 [label = "d | LA";];
     4 -> 5 [label = "\"F\" | LA";];
-    4 -> F [label = "Otro | FC, VTF, RCE";];
+    4 -> fI [label = "Otro | FC, VTF, RCE";];
     5 -> 6 [label = "\"+\", \"-\" | LA";];
-    5 -> eN [label = "Otro | -5"; style = dashed;];
+    5 -> eN [label = "Otro | -4"; style = dashed;];
     6 -> 7 [label = "d | LA";];
-    6 -> eN [label = "Otro | -6"; style = dashed;];
+    6 -> eN [label = "Otro | -5"; style = dashed;];
     7 -> 7 [label = "d | LA";];
-    7 -> F [label = "Otro | FC, VTF, RCE";];
+    7 -> fI [label = "Otro | FC, VTF, RCE";];
     8 -> 8 [label = "Otro | LA";];
-    8 -> eS [label = "n | -8"; style = dashed;];
-    8 -> F [label = "\" | LA, VTF";];
+    8 -> eS [label = "n | -7"; style = dashed;];
+    8 -> fI [label = "\" | LA, VTF";];
     9 -> 9 [label = "l | LA";];
-    9 -> F [label = "Otro | FTF, RCE";];
-    10 -> eP [label = "Otro | -7"; style = dashed;];
-    10 -> F [label = "\"=\" | LA, FTF";];
-    11 -> F [label = "\"=\", \"!\" | LA, FTF";];
-    11 -> F [label = "Otro | FTF, RCE";];
-    12 -> F [label = "\">\" | LA, FTF";];
-    12 -> F [label = "Otro | FTF, RCE";];
-    13 -> F [label = "\"=\" | LA, FTF";];
-    13 -> F [label = "Otro | FTF, RCE";];
-    14 -> F [label = "\"=\" | LA, FTF";];
-    14 -> F [label = "Otro | FTF, RCE";];
+    9 -> fI [label = "Otro | FTF, RCE";];
+    10 -> eP [label = "Otro | -6"; style = dashed;];
+    10 -> fP [label = "\"=\" | LA, FTF";];
+    11 -> fP [label = "\"=\", \"!\" | LA, FTF";];
+    11 -> fP [label = "Otro | FTF, RCE";];
+    12 -> fP [label = "\">\" | LA, FTF";];
+    12 -> fP [label = "Otro | FTF, RCE";];
+    13 -> fP [label = "\"=\" | LA, FTF";];
+    13 -> fP [label = "Otro | FTF, RCE";];
+    14 -> fP [label = "\"=\" | LA, FTF";];
+    14 -> fP [label = "Otro | FTF, RCE";];
     15 -> 16 [label = "\"#\"";];
-    15 -> eC [label = "Otro | -9"; style = dashed;];
+    15 -> eC [label = "Otro | -8"; style = dashed;];
     16 -> 16 [label = "n | NLD";];
     16 -> 17 [label = "\"#\"";];
     17 -> 0 [label = "\"#\"";];
     17 -> 16 [label = "C, n [NLD]";];
     18 -> 18 [label = "L, d, \"%\" | LP";];
-    18 -> F [label = "Otro | ILC, VTF, RCE";];
+    18 -> fI [label = "Otro | ILC, VTF, RCE";];
 }

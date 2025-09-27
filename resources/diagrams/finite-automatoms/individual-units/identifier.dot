@@ -1,10 +1,10 @@
 digraph DFA {
     rankdir = LR;
     node [shape = circle;];
-    F [shape = doublecircle;];
+    fI [shape = doublecircle;];
     // No hay posible error.
     
     0 -> 18 [label = "L | LI";];
     18 -> 18 [label = "L, d, \"%\" | LP";];
-    18 -> F [label = "Otro | ILC, VTF, RCE";];
+    18 -> fI [label = "Otro | ILC, VTF, RCE";];
 }

@@ -94,7 +94,7 @@ public final class DataManager {
         STATE_TRANSITION_MATRIX[2][charToIndex('I')] = 19;
 
         // Estado 3
-        Arrays.fill(STATE_TRANSITION_MATRIX[3], -4);
+        Arrays.fill(STATE_TRANSITION_MATRIX[3], 19);
         STATE_TRANSITION_MATRIX[3][charToIndex('d')] = 4;
 
         // Estado 4
@@ -202,7 +202,7 @@ public final class DataManager {
         SEMANTIC_ACTIONS_MATRIX[2][charToIndex('I')] = LA_UIC_VTF;
 
         // Estado 3
-        Arrays.fill(SEMANTIC_ACTIONS_MATRIX[3], EMPTY);
+        Arrays.fill(SEMANTIC_ACTIONS_MATRIX[3], FTF_RCE);
         SEMANTIC_ACTIONS_MATRIX[3][charToIndex('d')] = LA;
 
         // Estado 4
