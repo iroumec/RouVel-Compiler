@@ -4,7 +4,7 @@ Trabajo práctico de cursada para la materia Compiladores e Intérpretes.
 
 A partir de un lenguaje simple proporcionado por la cátedra, se implementó su compilador.
 
-![Ícono](resources/icon.png)
+![Ícono](resources/images/logo.png)
 
 ## Requisitos
 
