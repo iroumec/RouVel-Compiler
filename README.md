@@ -2,7 +2,7 @@
 
 Trabajo práctico de cursada para la materia Compiladores e Intérpretes.
 
-A partir de un lenguaje simple proporcionado por la cátedra, se implementó su compilador.
+A partir de un lenguaje simple proporcionado por la cátedra, al que se denominó UKI, se implementó su compilador.
 
 ![Ícono](resources/images/logo.png)
 
