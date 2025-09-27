@@ -86,4 +86,19 @@ PROGRAMA {
     uint FUNC8 (J uint Y) {
         return 1UI;
     }
+
+    ## Probando Identificadores ##
+
+    ## AS.ND := 12UI; ##
+
+    ## Probando expresiones lambda ##
+
+    ## Cuerpo vacío ##
+    (uint A) {} (3UI);
+
+    ## Cuerpo faltante ##
+    (uint A) (3UI);
+
+    ## No parámetros ##
+    () { if (A > 1UI) print ("¡Hola!"); endif; } (3UI);
 }

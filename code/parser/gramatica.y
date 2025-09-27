@@ -69,8 +69,17 @@ lista_constantes                : constante
                                 ;
 
 // El factor representa al argumento.
-lambda                          : '(' UINT ID ')' bloque_ejecutable '(' factor ')'
+lambda                          : '(' parametro_lambda ')' bloque_ejecutable '(' factor ')'
                                 { notifyDetection("Expresión lambda."); }
+                                ;
+
+// Separado por legibilidad y para contemplar los casos de error.
+parametro_lambda                : UINT ID
+                                // --------------- //
+                                // REGLAS DE ERROR //
+                                // --------------- //
+                                | // épsilon
+                                { notifyError("La expresión lambda requiere de un parámetro."); }
                                 ;
 
 /* ---------------------------------------------------------------------------------------------------- */
@@ -87,6 +96,8 @@ bloque_ejecutable               : '{' conjunto_sentencias_ejecutables '}'
                                 // --------------- //
                                 | '{' '}'
                                 { notifyError("El cuerpo de la sentencia no puede estar vacío."); }
+                                | // épsilon
+                                { notifyError("Debe especificarse un cuerpo para la sentencia."); }
                                 ;
 
 conjunto_sentencias_ejecutables : sentencia_ejecutable
