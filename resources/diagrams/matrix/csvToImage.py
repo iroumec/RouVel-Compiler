@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 column_headers = ["L", "l", "d", "U", "I", ".", "F", "-", "P", '"', ":", "=", "!", ">", "<", "%", "#", "n", "s", "t", "Otro"]
 
 # -----------------------------
-# Leer CSV (sin cambios)
+# Lectura del CSV
 # -----------------------------
 def leer_csv(file_path, is_actions=False):
     matrix = []
@@ -19,7 +19,7 @@ def leer_csv(file_path, is_actions=False):
     return matrix
 
 # ---------------------------------------------
-# Generador de imagen (ahora con parámetro 'layout')
+# Generación de la imagen
 # ---------------------------------------------
 def generar_imagen_matplotlib(matrix, headers, filename, layout='auto'):
     """
@@ -46,18 +46,18 @@ def generar_imagen_matplotlib(matrix, headers, filename, layout='auto'):
 
     # --- LÓGICA DE DISEÑO CONDICIONAL ---
     if layout == 'auto':
-        # Para la tabla de ACCIONES
+        # Para la tabla de ACCIONES.
         print(f"Usando layout automático para '{filename}'...")
         tabla.auto_set_column_width(col=list(range(len(full_headers))))
     else: # layout == 'fixed'
-        # Para la tabla de ESTADOS
+        # Para la tabla de ESTADOS.
         print(f"Usando layout fijo para '{filename}'...")
-        # Puedes ajustar este valor para hacer las columnas más anchas o estrechas
+        # Este valor puede ajustarse para hacer las tablas más anchas o estrechas.
         ancho_fijo = 0.04 
         for key, cell in tabla.get_celld().items():
             cell.set_width(ancho_fijo)
 
-    # Estilo común para ambas tablas
+    # Estilo común para ambas tablas.
     for key, cell in tabla.get_celld().items():
         cell.set_text_props(va='center')
         cell.set_height(0.05)
@@ -66,18 +66,18 @@ def generar_imagen_matplotlib(matrix, headers, filename, layout='auto'):
             cell.set_facecolor("#f0f0f0")
             cell.set_text_props(weight='bold', va='center')
 
-    # Guardado de imagen final...
+    # Se guarda la imagen final...
     plt.savefig(filename, bbox_inches='tight', dpi=300, pad_inches=0.4)
     plt.close(fig)
 
 # -----------------------------
-# Ejecución Principal (con el nuevo parámetro 'layout')
+# Ejecución Principal
 # -----------------------------
 states = leer_csv("resources/diagrams/matrix/csv/matrizEstados.csv")
 actions = leer_csv("resources/diagrams/matrix/csv/matrizAcciones.csv", is_actions=True)
 
-# Usamos layout='fixed' para la tabla de estados
+# Se usa layout='fixed' para la tabla de estados.
 generar_imagen_matplotlib(states, column_headers, "resources/images/matrizEstados.png", layout='fixed')
 
-# Usamos layout='auto' para la tabla de acciones
+# Se usa layout='auto' para la tabla de acciones
 generar_imagen_matplotlib(actions, column_headers, "resources/images/matrizAcciones.png", layout='auto')
