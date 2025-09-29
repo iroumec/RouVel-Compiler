@@ -165,129 +165,137 @@ public class Parser {
   public final static short RETURN = 274;
   public final static short YYERRCODE = 256;
   final static short yylhs[] = { -1,
-      0, 1, 1, 2, 2, 4, 4, 7, 7, 5,
-      5, 8, 9, 9, 11, 12, 12, 15, 15, 13,
-      13, 13, 16, 16, 3, 3, 17, 17, 17, 17,
-      17, 17, 17, 19, 20, 20, 27, 27, 28, 28,
-      28, 28, 28, 28, 28, 25, 25, 29, 29, 26,
-      22, 30, 30, 24, 24, 24, 31, 31, 32, 32,
-      32, 33, 33, 14, 14, 10, 10, 23, 23, 6,
-      35, 35, 21, 34, 34, 36, 36, 36, 38, 38,
-      37, 39, 39, 39, 18, 40, 40, 41,
+      0, 1, 1, 2, 2, 4, 4, 5, 5, 5,
+      5, 7, 7, 8, 8, 9, 10, 10, 12, 13,
+      13, 16, 16, 14, 14, 14, 17, 17, 3, 3,
+      18, 18, 18, 18, 18, 18, 18, 20, 21, 21,
+      28, 28, 29, 29, 29, 29, 29, 29, 29, 26,
+      31, 31, 30, 30, 27, 23, 32, 32, 25, 25,
+      33, 33, 34, 34, 35, 35, 15, 15, 15, 11,
+      11, 24, 24, 6, 37, 37, 22, 36, 36, 38,
+      38, 38, 40, 40, 39, 41, 41, 41, 19, 42,
+      42, 43,
   };
   final static short yylen[] = { 2,
-      4, 1, 2, 1, 1, 3, 2, 0, 1, 1,
-      3, 3, 1, 3, 7, 2, 0, 1, 1, 3,
-      2, 0, 1, 2, 2, 2, 1, 1, 1, 1,
-      1, 1, 1, 3, 1, 1, 3, 0, 1, 1,
-      1, 1, 1, 1, 1, 7, 7, 0, 2, 6,
-      4, 1, 1, 3, 1, 3, 1, 1, 3, 1,
-      3, 1, 1, 1, 1, 1, 2, 1, 3, 8,
-      1, 0, 2, 1, 0, 1, 3, 1, 2, 2,
-      3, 0, 1, 1, 4, 1, 3, 3,
+      4, 1, 2, 1, 1, 1, 2, 3, 4, 5,
+      4, 0, 1, 1, 3, 3, 1, 3, 7, 2,
+      0, 1, 1, 3, 2, 0, 1, 2, 2, 2,
+      1, 1, 1, 1, 1, 1, 1, 3, 1, 1,
+      3, 0, 1, 1, 1, 1, 1, 1, 1, 7,
+      1, 1, 0, 2, 6, 4, 1, 1, 3, 1,
+      1, 1, 3, 1, 1, 1, 1, 1, 1, 1,
+      2, 1, 3, 8, 1, 0, 2, 1, 0, 1,
+      3, 1, 2, 2, 3, 0, 1, 1, 4, 1,
+      3, 3,
   };
   final static short yydefred[] = { 0,
       0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-      0, 2, 4, 5, 0, 0, 29, 33, 0, 27,
-      28, 30, 31, 32, 0, 35, 36, 0, 0, 0,
-      0, 0, 0, 0, 19, 18, 0, 0, 66, 0,
-      65, 60, 64, 0, 0, 0, 0, 1, 3, 0,
-      0, 9, 7, 26, 25, 0, 0, 0, 86, 69,
-      52, 0, 0, 0, 0, 0, 6, 21, 23, 0,
-      0, 67, 57, 58, 0, 62, 63, 0, 16, 0,
-      11, 0, 13, 0, 0, 0, 85, 51, 45, 41,
-      43, 42, 44, 39, 40, 0, 0, 84, 83, 0,
-      0, 0, 76, 78, 0, 20, 24, 0, 56, 0,
-      61, 59, 0, 0, 88, 87, 0, 0, 80, 0,
-      0, 0, 0, 0, 14, 0, 0, 0, 77, 81,
-      50, 0, 49, 47, 46, 0, 0, 15, 70,
+      0, 0, 2, 4, 5, 6, 0, 0, 33, 37,
+      0, 31, 32, 34, 35, 36, 0, 39, 40, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 23, 22,
+      0, 69, 0, 70, 0, 68, 64, 67, 0, 0,
+      0, 0, 1, 3, 13, 7, 0, 0, 30, 29,
+      0, 0, 14, 0, 0, 0, 90, 73, 57, 0,
+      0, 0, 0, 0, 0, 8, 25, 27, 0, 0,
+      71, 61, 62, 0, 65, 66, 0, 20, 0, 15,
+      0, 17, 0, 0, 11, 0, 0, 89, 56, 49,
+      45, 47, 46, 48, 43, 44, 0, 0, 9, 88,
+      87, 0, 0, 0, 80, 82, 0, 24, 28, 0,
+      0, 63, 0, 0, 10, 92, 91, 0, 0, 84,
+      0, 0, 0, 0, 0, 18, 0, 0, 0, 81,
+      85, 55, 0, 54, 52, 51, 50, 0, 0, 19,
+      74,
   };
   final static short yydgoto[] = { 2,
-      11, 12, 13, 14, 15, 16, 53, 17, 82, 41,
-      18, 47, 36, 42, 37, 70, 19, 20, 21, 22,
-      23, 24, 43, 57, 26, 27, 65, 96, 127, 63,
-      75, 45, 78, 101, 137, 102, 103, 104, 105, 58,
-      59,
+      12, 13, 14, 15, 16, 17, 56, 18, 19, 91,
+      46, 20, 52, 40, 47, 41, 79, 21, 22, 23,
+      24, 25, 26, 48, 65, 28, 29, 73, 107, 138,
+      147, 71, 84, 50, 87, 113, 149, 114, 115, 116,
+      117, 66, 67,
   };
-  final static short yysindex[] = { -229,
-      -94, 0, -18, 63, 5, 6, -208, -7, -33, -216,
-      -40, 0, 0, 0, -19, 12, 0, 0, -53, 0,
-      0, 0, 0, 0, -209, 0, 0, -33, -176, 53,
-      -33, 60, -28, -4, 0, 0, -181, 47, 0, -157,
-      0, 0, 0, 24, 68, -155, 70, 0, 0, -153,
-      -22, 0, 0, 0, 0, -33, -42, -14, 0, 0,
-      0, 24, 71, 45, 72, -36, 0, 0, 0, 7,
-      74, 0, 0, 0, 28, 0, 0, 46, 0, -6,
-      0, 75, 0, 24, -139, -33, 0, 0, 0, 0,
-      0, 0, 0, 0, 0, -33, -7, 0, 0, -237,
-      79, 78, 0, 0, -147, 0, 0, -33, 0, 68,
-      0, 0, 84, -22, 0, 0, 24, -143, 0, 4,
-      -237, -129, 88, -33, 0, -7, -221, -18, 0, 0,
-      0, 89, 0, 0, 0, -18, 8, 0, 0,
+  final static short yysindex[] = { -234,
+      -60, 0, -16, -202, 32, 34, 46, -224, -5, -9,
+      -181, -40, 0, 0, 0, 0, 37, -24, 0, 0,
+      -53, 0, 0, 0, 0, 0, -164, 0, 0, -129,
+      -9, -152, 57, -9, -147, 75, -18, -2, 0, 0,
+      -156, 0, 73, 0, -136, 0, 0, 0, 71, 10,
+      -132, 88, 0, 0, 0, 0, -127, -34, 0, 0,
+      -9, -147, 0, -15, -42, 12, 0, 0, 0, 71,
+      90, 49, 91, -14, -36, 0, 0, 0, 9, 93,
+      0, 0, 0, -9, 0, 0, -9, 0, 14, 0,
+      92, 0, 71, -13, 0, -122, -9, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, -9, -5, 0, 0,
+      0, -206, 97, 95, 0, 0, -130, 0, 0, -9,
+      10, 0, 102, -34, 0, 0, 0, 71, -125, 0,
+      21, -206, -112, 105, -9, 0, -5, -163, -16, 0,
+      0, 0, 106, 0, 0, 0, 0, -16, 23, 0,
+      0,
   };
   final static short yyrindex[] = { 0,
-      0, 0, 0, -35, 0, 0, 0, -142, 0, 93,
-      0, 0, 0, 0, 0, -29, 0, 0, 0, 0,
+      0, 0, 0, 0, -27, 0, 0, 0, -121, 0,
+      110, 0, 0, 0, 0, 0, -28, 0, 0, 0,
       0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-      95, -20, 0, 0, 0, 0, 0, 15, 0, 0,
-      0, 0, 0, -52, 27, 0, 0, 0, 0, 0,
+      0, 0, 0, 113, 0, 11, 0, 0, 0, 0,
+      0, 0, 17, 0, 0, 0, 0, 0, -52, 28,
       0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-      0, 96, 0, 0, 0, -37, 0, 0, 0, 0,
-      0, 0, 0, 0, 0, 0, 0, 0, 0, 98,
-      0, -49, 0, -46, 0, 0, 0, 0, 0, 0,
-      0, 0, 0, 0, 0, 0, -218, 0, 0, -130,
-      0, 100, 0, 0, 0, 0, 0, 95, 0, 35,
-      0, 0, 0, 0, 0, 0, 101, -204, 0, 0,
-      -39, 0, 0, 0, 0, -203, 0, 18, 0, 0,
-      0, 0, 0, 0, 0, 19, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 115,
+      0, 0, 0, 0, -37, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, 0, 117, 0,
+      -50, 0, -49, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0, 0, 0, -165, 0, 0,
+      0, -111, 0, 119, 0, 0, 0, 0, 0, 113,
+      39, 0, 0, 0, 0, 0, 0, 120, -149, 0,
+      0, -39, 0, 0, 0, 0, -148, 0, 33, 0,
+      0, 0, 0, 0, 0, 0, 0, 38, 0, 0,
+      0,
   };
   final static short yygindex[] = { 0,
-      17, 3, 9, 0, 139, 0, 0, 0, 0, -30,
-      0, 0, 67, -60, -82, 0, 0, 0, 0, 0,
-      0, 0, 29, 52, 0, 0, 41, 0, 0, 0,
-      0, 77, 0, 0, 0, 0, -80, 0, 0, 0,
-      64,
+      26, 2, 4, 0, 0, 0, 0, 13, 0, 0,
+      -43, 0, 0, 77, -69, -86, 0, 0, 0, 0,
+      0, 0, 0, 16, 6, 0, 0, 42, 0, 0,
+      0, 0, 0, 83, 0, 0, 0, 0, -85, 0,
+      0, 0, 72,
   };
-  final static int YYTABLESIZE = 312;
+  final static int YYTABLESIZE = 316;
   static short yytable[];
   static {
     yytable();
   }
 
   static void yytable() {
-    yytable = new short[] { 10,
-        73, 79, 74, 75, 79, 55, 73, 100, 10, 12,
-        8, 40, 34, 49, 118, 50, 35, 112, 98, 119,
-        83, 10, 40, 10, 50, 10, 87, 1, 3, 86,
-        67, 25, 10, 99, 134, 10, 25, 22, 10, 25,
-        129, 51, 69, 133, 30, 31, 10, 135, 32, 22,
-        22, 48, 22, 46, 56, 68, 68, 68, 68, 68,
-        44, 68, 25, 132, 48, 22, 73, 55, 74, 55,
-        52, 55, 40, 68, 68, 54, 68, 54, 107, 54,
-        60, 62, 64, 125, 48, 55, 55, 73, 55, 74,
-        40, 71, 29, 54, 54, 8, 54, 40, 25, 66,
-        72, 79, 28, 81, 95, 35, 94, 84, 29, 77,
-        80, 88, 97, 108, 76, 34, 34, 115, 114, 120,
-        68, 121, 122, 124, 126, 25, 128, 38, 131, 138,
-        22, 106, 139, 17, 35, 38, 53, 22, 49, 82,
-        74, 37, 72, 71, 136, 33, 113, 117, 123, 116,
-        130, 110, 0, 0, 25, 0, 25, 0, 0, 64,
-        0, 0, 0, 0, 25, 0, 0, 0, 0, 0,
+    yytable = new short[] { 11,
+        82, 83, 83, 79, 83, 60, 77, 112, 16, 38,
+        45, 12, 39, 54, 92, 49, 14, 122, 27, 57,
+        37, 129, 1, 11, 27, 57, 130, 27, 57, 57,
+        57, 35, 36, 14, 11, 45, 58, 11, 70, 72,
+        76, 78, 64, 95, 109, 125, 140, 74, 11, 110,
+        144, 86, 98, 27, 14, 97, 85, 72, 72, 72,
+        72, 72, 3, 72, 111, 143, 93, 30, 60, 14,
+        60, 31, 60, 33, 94, 72, 72, 32, 72, 59,
+        136, 59, 119, 59, 53, 34, 60, 60, 51, 60,
+        26, 82, 145, 83, 27, 55, 12, 59, 59, 61,
+        59, 45, 26, 26, 68, 146, 53, 26, 106, 63,
+        105, 39, 128, 82, 75, 83, 80, 38, 32, 53,
+        26, 81, 77, 27, 88, 72, 62, 63, 89, 90,
+        99, 108, 120, 118, 126, 124, 38, 131, 132, 133,
+        39, 135, 137, 139, 43, 142, 150, 151, 141, 54,
+        21, 26, 27, 42, 27, 58, 26, 76, 86, 78,
+        41, 134, 75, 27, 148, 123, 121, 0, 127, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 54, 73, 0, 0, 12, 0, 0, 34,
-        0, 0, 0, 0, 0, 0, 4, 0, 0, 98,
-        0, 0, 85, 38, 39, 5, 6, 8, 68, 7,
-        82, 8, 82, 9, 99, 39, 8, 8, 4, 0,
-        8, 0, 8, 0, 8, 0, 0, 5, 6, 4,
-        0, 7, 4, 8, 0, 9, 0, 0, 5, 6,
-        0, 5, 6, 4, 8, 0, 9, 8, 0, 9,
-        68, 0, 5, 6, 68, 68, 68, 68, 8, 68,
-        9, 0, 55, 109, 38, 39, 55, 55, 55, 55,
-        54, 55, 0, 0, 54, 54, 54, 54, 0, 54,
-        89, 111, 38, 39, 90, 91, 92, 93, 0, 38,
-        39, 61,
+        0, 0, 59, 77, 0, 16, 38, 0, 0, 0,
+        0, 0, 0, 0, 0, 4, 5, 0, 0, 110,
+        0, 0, 96, 44, 0, 6, 7, 12, 12, 8,
+        86, 9, 86, 10, 111, 0, 72, 12, 12, 4,
+        5, 12, 0, 12, 0, 12, 42, 43, 44, 6,
+        7, 5, 0, 8, 5, 9, 0, 10, 0, 0,
+        6, 7, 0, 6, 7, 5, 9, 0, 10, 9,
+        0, 10, 72, 0, 6, 7, 72, 72, 72, 72,
+        9, 72, 10, 60, 0, 0, 0, 60, 60, 60,
+        60, 0, 60, 0, 59, 0, 0, 0, 59, 59,
+        59, 59, 0, 59, 100, 0, 0, 0, 101, 102,
+        103, 104, 42, 43, 44, 69,
     };
   }
 
@@ -298,38 +306,38 @@ public class Parser {
 
   static void yycheck() {
     yycheck = new short[] { 40,
-        43, 41, 45, 41, 44, 59, 59, 44, 44, 59,
-        40, 45, 59, 11, 97, 44, 8, 78, 256, 100,
-        51, 40, 45, 44, 44, 61, 41, 257, 123, 44,
-        59, 3, 40, 271, 256, 40, 8, 256, 59, 11,
-        121, 61, 34, 126, 40, 40, 40, 269, 257, 268,
-        269, 256, 256, 270, 264, 41, 42, 43, 44, 45,
-        9, 47, 34, 124, 269, 269, 43, 41, 45, 43,
-        59, 45, 45, 59, 60, 41, 62, 43, 70, 45,
-        257, 30, 31, 114, 125, 59, 60, 43, 62, 45,
-        45, 273, 46, 59, 60, 125, 62, 45, 70, 40,
-        258, 257, 40, 257, 60, 97, 62, 56, 46, 42,
-        41, 41, 41, 40, 47, 123, 123, 257, 44, 41,
-        125, 44, 270, 40, 268, 97, 123, 257, 41, 41,
-        273, 125, 125, 41, 126, 41, 41, 40, 136, 270,
-        41, 41, 125, 125, 128, 7, 80, 96, 108, 86,
-        122, 75, -1, -1, 126, -1, 128, -1, -1, 108,
-        -1, -1, -1, -1, 136, -1, -1, -1, -1, -1,
+        43, 41, 45, 41, 44, 59, 59, 44, 59, 59,
+        45, 40, 9, 12, 58, 10, 44, 87, 3, 44,
+        8, 108, 257, 40, 9, 44, 112, 12, 44, 44,
+        44, 256, 257, 61, 40, 45, 61, 40, 33, 34,
+        59, 38, 30, 59, 59, 59, 132, 35, 40, 256,
+        137, 42, 41, 38, 44, 44, 47, 41, 42, 43,
+        44, 45, 123, 47, 271, 135, 61, 270, 41, 59,
+        43, 40, 45, 40, 62, 59, 60, 46, 62, 41,
+        124, 43, 79, 45, 125, 40, 59, 60, 270, 62,
+        256, 43, 256, 45, 79, 59, 125, 59, 60, 264,
+        62, 45, 268, 269, 257, 269, 256, 256, 60, 257,
+        62, 108, 107, 43, 40, 45, 273, 123, 46, 269,
+        269, 258, 125, 108, 257, 120, 256, 257, 41, 257,
+        41, 41, 40, 125, 257, 44, 123, 41, 44, 270,
+        137, 40, 268, 123, 257, 41, 41, 125, 133, 148,
+        41, 273, 137, 41, 139, 41, 40, 125, 270, 41,
+        41, 120, 125, 148, 139, 89, 84, -1, 97, -1,
         -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
         -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
         -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-        -1, -1, 256, 256, -1, -1, 256, -1, -1, 256,
-        -1, -1, -1, -1, -1, -1, 257, -1, -1, 256,
-        -1, -1, 265, 257, 258, 266, 267, 257, 264, 270,
-        270, 272, 270, 274, 271, 258, 266, 267, 257, -1,
-        270, -1, 272, -1, 274, -1, -1, 266, 267, 257,
-        -1, 270, 257, 272, -1, 274, -1, -1, 266, 267,
-        -1, 266, 267, 257, 272, -1, 274, 272, -1, 274,
-        256, -1, 266, 267, 260, 261, 262, 263, 272, 265,
-        274, -1, 256, 256, 257, 258, 260, 261, 262, 263,
-        256, 265, -1, -1, 260, 261, 262, 263, -1, 265,
-        256, 256, 257, 258, 260, 261, 262, 263, -1, 257,
-        258, 259,
+        -1, -1, 256, 256, -1, 256, 256, -1, -1, -1,
+        -1, -1, -1, -1, -1, 256, 257, -1, -1, 256,
+        -1, -1, 265, 258, -1, 266, 267, 256, 257, 270,
+        270, 272, 270, 274, 271, -1, 264, 266, 267, 256,
+        257, 270, -1, 272, -1, 274, 256, 257, 258, 266,
+        267, 257, -1, 270, 257, 272, -1, 274, -1, -1,
+        266, 267, -1, 266, 267, 257, 272, -1, 274, 272,
+        -1, 274, 256, -1, 266, 267, 260, 261, 262, 263,
+        272, 265, 274, 256, -1, -1, -1, 260, 261, 262,
+        263, -1, 265, -1, 256, -1, -1, -1, 260, 261,
+        262, 263, -1, 265, 256, -1, -1, -1, 260, 261,
+        262, 263, 256, 257, 258, 259,
     };
   }
 
@@ -362,8 +370,12 @@ public class Parser {
       "conjunto_sentencias : conjunto_sentencias sentencia",
       "sentencia : sentencia_ejecutable",
       "sentencia : sentencia_declarativa",
-      "sentencia_declarativa : UINT lista_variables ';'",
+      "sentencia_declarativa : declaracion_variable",
       "sentencia_declarativa : declaracion_funcion punto_y_coma_opcional",
+      "declaracion_variable : UINT lista_variables ';'",
+      "declaracion_variable : UINT error lista_variables ';'",
+      "declaracion_variable : error UINT error lista_variables ';'",
+      "declaracion_variable : error UINT lista_variables ';'",
       "punto_y_coma_opcional :",
       "punto_y_coma_opcional : ';'",
       "lista_variables : ID",
@@ -402,8 +414,9 @@ public class Parser {
       "comparador : GEQ",
       "comparador : NEQ",
       "comparador : error",
-      "if : IF '(' condicion ')' cuerpo_ejecutable rama_else ENDIF",
-      "if : IF '(' condicion ')' cuerpo_ejecutable rama_else error",
+      "if : IF '(' condicion ')' cuerpo_ejecutable rama_else fin_if",
+      "fin_if : ENDIF",
+      "fin_if : error",
       "rama_else :",
       "rama_else : ELSE cuerpo_ejecutable",
       "while : DO cuerpo_ejecutable WHILE '(' condicion ')'",
@@ -412,16 +425,15 @@ public class Parser {
       "imprimible : expresion",
       "expresion : expresion operador_suma termino",
       "expresion : termino",
-      "expresion : expresion operador_suma error",
       "operador_suma : '+'",
       "operador_suma : '-'",
       "termino : termino operador_multiplicacion factor",
       "termino : factor",
-      "termino : termino operador_multiplicacion error",
       "operador_multiplicacion : '/'",
       "operador_multiplicacion : '*'",
       "factor : variable",
       "factor : constante",
+      "factor : error",
       "constante : CTE",
       "constante : '-' CTE",
       "variable : ID",
@@ -447,7 +459,7 @@ public class Parser {
       "argumento : expresion FLECHA ID",
   };
 
-  // #line 303 "/home/iroumec/Documents/University/Compiladores e
+  // #line 327 "/home/iroumec/Documents/University/Compiladores e
   // Intérpretes/TPE-Compiler/code/parser/gramatica.y"
 
   /*
@@ -492,7 +504,7 @@ public class Parser {
 
     Token token = lexer.getNextToken();
 
-    this.yylval = new ParserVal(token.getSymbolTableKey());
+    this.yylval = new ParserVal(token.getLexema());
 
     // Se muestra el token.
     System.out.println(token);
@@ -507,14 +519,17 @@ public class Parser {
     // diferenciando entre error y warning.
   }
 
+  // El token error no consume automáticamente el token incorrecto.
+  // Este debe descartarse explícitamente.
   void descartarTokenError() {
     // Se fuerza a que en la próxima iteración se llame a yylex(), leyendo otro
     // token.
     yychar = -1;
 
     // Se limpia el estado de error.
-    yyerrflag = 0;
+    // yyerrflag = 0;
   }
+  // TODO: descartar hasta un punto de sincronizacion. "}" o ";".
 
   void notifyDetection(String message) {
     System.err.println("------------------------------------");
@@ -524,16 +539,26 @@ public class Parser {
 
   void notifyWarning(String warningMessage) {
     System.err.println("------------------------------------");
-    System.err.printf("WARNING SINTÁCTICA: Línea %d: %s\n", lexer.getNroLinea(), warningMessage);
+    System.err.printf("WARNING SINTÁCTICA: Línea %d, caracter %d: %s\n", lexer.getNroLinea(), lexer.getNroCaracter(),
+        warningMessage);
     System.err.println("------------------------------------");
     this.warningsDetected++;
   }
 
   void notifyError(String errorMessage) {
     System.err.println("------------------------------------");
-    System.err.printf("ERROR SINTÁCTICO: Línea %d: %s\n", lexer.getNroLinea(), errorMessage);
+    System.err.printf("ERROR SINTÁCTICO: Línea %d, caracter %d: %s\n", lexer.getNroLinea(), lexer.getNroCaracter(),
+        errorMessage);
     System.err.println("------------------------------------");
     this.errorsDetected++;
+  }
+
+  String applySynchronizationFormat(String invalidWord, String synchronizationWord) {
+    return """
+        Se detectó una palabra inválida: '%s'. \
+        Se descartaron todas las palabras inválidas subsiguientes \
+        hasta el punto de sincronización: '%s'. \
+        """.formatted(invalidWord, synchronizationWord);
   }
 
   public int getWarningsDetected() {
@@ -553,7 +578,7 @@ public class Parser {
    * -----------------------------------------------------------------------------
    * -----------------------
    */
-  // #line 471 "Parser.java"
+  // #line 494 "Parser.java"
   // ###############################################################
   // method: yylexdebug : check lexer state
   // ###############################################################
@@ -697,169 +722,197 @@ public class Parser {
       switch (yyn) {
         // ########## USER-SUPPLIED ACTIONS ##########
         case 1:
-        // #line 26 "/home/iroumec/Documents/University/Compiladores e
+        // #line 23 "/home/iroumec/Documents/University/Compiladores e
         // Intérpretes/TPE-Compiler/code/parser/gramatica.y"
         {
           notifyDetection("Programa.");
         }
           break;
         case 6:
-        // #line 42 "/home/iroumec/Documents/University/Compiladores e
+        // #line 39 "/home/iroumec/Documents/University/Compiladores e
         // Intérpretes/TPE-Compiler/code/parser/gramatica.y"
         {
           notifyDetection("Declaración de variable.");
         }
           break;
-        case 12:
-        // #line 64 "/home/iroumec/Documents/University/Compiladores e
+        case 9:
+        // #line 48 "/home/iroumec/Documents/University/Compiladores e
+        // Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+        {
+          notifyError(applySynchronizationFormat(val_peek(2).sval, val_peek(1).sval));
+        }
+          break;
+        case 10:
+        // #line 50 "/home/iroumec/Documents/University/Compiladores e
+        // Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+        {
+          notifyError(val_peek(4).sval + " no es tipo válido y " + val_peek(2).sval + " no es una variable válida.");
+        }
+          break;
+        case 11:
+        // #line 52 "/home/iroumec/Documents/University/Compiladores e
+        // Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+        {
+          notifyError(applySynchronizationFormat(val_peek(3).sval, val_peek(2).sval));
+        }
+          break;
+        case 16:
+        // #line 78 "/home/iroumec/Documents/University/Compiladores e
         // Intérpretes/TPE-Compiler/code/parser/gramatica.y"
         {
           notifyDetection("Asignación múltiple.");
         }
           break;
-        case 15:
-        // #line 73 "/home/iroumec/Documents/University/Compiladores e
+        case 19:
+        // #line 87 "/home/iroumec/Documents/University/Compiladores e
         // Intérpretes/TPE-Compiler/code/parser/gramatica.y"
         {
           notifyDetection("Expresión lambda.");
         }
           break;
-        case 17:
-        // #line 82 "/home/iroumec/Documents/University/Compiladores e
+        case 21:
+        // #line 96 "/home/iroumec/Documents/University/Compiladores e
         // Intérpretes/TPE-Compiler/code/parser/gramatica.y"
         {
           notifyError("La expresión lambda requiere de un parámetro.");
         }
           break;
-        case 21:
-        // #line 98 "/home/iroumec/Documents/University/Compiladores e
+        case 25:
+        // #line 112 "/home/iroumec/Documents/University/Compiladores e
         // Intérpretes/TPE-Compiler/code/parser/gramatica.y"
         {
           notifyError("El cuerpo de la sentencia no puede estar vacío.");
         }
           break;
-        case 22:
-        // #line 100 "/home/iroumec/Documents/University/Compiladores e
+        case 26:
+        // #line 114 "/home/iroumec/Documents/University/Compiladores e
         // Intérpretes/TPE-Compiler/code/parser/gramatica.y"
         {
           notifyError("Debe especificarse un cuerpo para la sentencia.");
         }
           break;
-        case 26:
-        // #line 112 "/home/iroumec/Documents/University/Compiladores e
+        case 30:
+        // #line 126 "/home/iroumec/Documents/University/Compiladores e
         // Intérpretes/TPE-Compiler/code/parser/gramatica.y"
         {
           notifyError("Toda sentencia ejecutable debe terminar con punto y coma.");
-        }
-          break;
-        case 34:
-        // #line 125 "/home/iroumec/Documents/University/Compiladores e
-        // Intérpretes/TPE-Compiler/code/parser/gramatica.y"
-        {
-          notifyDetection("Asignación simple.");
-        }
-          break;
-        case 36:
-        // #line 131 "/home/iroumec/Documents/University/Compiladores e
-        // Intérpretes/TPE-Compiler/code/parser/gramatica.y"
-        {
-          notifyDetection("Setencia WHILE.");
         }
           break;
         case 38:
         // #line 139 "/home/iroumec/Documents/University/Compiladores e
         // Intérpretes/TPE-Compiler/code/parser/gramatica.y"
         {
+          notifyDetection("Asignación simple.");
+        }
+          break;
+        case 40:
+        // #line 145 "/home/iroumec/Documents/University/Compiladores e
+        // Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+        {
+          notifyDetection("Setencia WHILE.");
+        }
+          break;
+        case 42:
+        // #line 153 "/home/iroumec/Documents/University/Compiladores e
+        // Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+        {
           notifyError("La condición no puede estar vacía.");
         }
           break;
-        case 45:
-        // #line 152 "/home/iroumec/Documents/University/Compiladores e
+        case 49:
+        // #line 166 "/home/iroumec/Documents/University/Compiladores e
         // Intérpretes/TPE-Compiler/code/parser/gramatica.y"
         {
           notifyError("El token leído no corresponde a un operador de comparación válido. Este se descartará.");
           descartarTokenError();
         }
           break;
-        case 47:
-        // #line 163 "/home/iroumec/Documents/University/Compiladores e
+        case 52:
+        // #line 180 "/home/iroumec/Documents/University/Compiladores e
         // Intérpretes/TPE-Compiler/code/parser/gramatica.y"
         {
           notifyError("La sentencia IF debe finalizarse con 'endif'.");
         }
           break;
-        case 48:
-        // #line 167 "/home/iroumec/Documents/University/Compiladores e
+        case 53:
+        // #line 184 "/home/iroumec/Documents/University/Compiladores e
         // Intérpretes/TPE-Compiler/code/parser/gramatica.y"
         {
           notifyDetection("Setencia IF.");
         }
           break;
-        case 49:
-        // #line 169 "/home/iroumec/Documents/University/Compiladores e
+        case 54:
+        // #line 186 "/home/iroumec/Documents/University/Compiladores e
         // Intérpretes/TPE-Compiler/code/parser/gramatica.y"
         {
           notifyDetection("Setencia IF-ELSE.");
         }
           break;
-        case 52:
-        // #line 180 "/home/iroumec/Documents/University/Compiladores e
+        case 57:
+        // #line 197 "/home/iroumec/Documents/University/Compiladores e
         // Intérpretes/TPE-Compiler/code/parser/gramatica.y"
         {
           notifyDetection("Impresión de cadena.");
         }
           break;
-        case 53:
-        // #line 182 "/home/iroumec/Documents/University/Compiladores e
+        case 58:
+        // #line 199 "/home/iroumec/Documents/University/Compiladores e
         // Intérpretes/TPE-Compiler/code/parser/gramatica.y"
         {
           notifyDetection("Impresión de expresión.");
         }
           break;
-        case 70:
-        // #line 237 "/home/iroumec/Documents/University/Compiladores e
+        case 69:
+        // #line 243 "/home/iroumec/Documents/University/Compiladores e
+        // Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+        {
+          notifyError("Operando no válido.");
+        }
+          break;
+        case 74:
+        // #line 261 "/home/iroumec/Documents/University/Compiladores e
         // Intérpretes/TPE-Compiler/code/parser/gramatica.y"
         {
           notifyDetection("Declaración de función.");
         }
           break;
-        case 72:
-        // #line 245 "/home/iroumec/Documents/University/Compiladores e
+        case 76:
+        // #line 269 "/home/iroumec/Documents/University/Compiladores e
         // Intérpretes/TPE-Compiler/code/parser/gramatica.y"
         {
           notifyError("El cuerpo de la función no puede estar vacío.");
         }
           break;
-        case 75:
-        // #line 255 "/home/iroumec/Documents/University/Compiladores e
+        case 79:
+        // #line 279 "/home/iroumec/Documents/University/Compiladores e
         // Intérpretes/TPE-Compiler/code/parser/gramatica.y"
         {
           notifyError("Toda función debe recibir al menos un parámetro.");
         }
           break;
-        case 78:
-        // #line 264 "/home/iroumec/Documents/University/Compiladores e
+        case 82:
+        // #line 288 "/home/iroumec/Documents/University/Compiladores e
         // Intérpretes/TPE-Compiler/code/parser/gramatica.y"
         {
           notifyError("Se halló un parámetro formal vacío.");
         }
           break;
-        case 84:
-        // #line 280 "/home/iroumec/Documents/University/Compiladores e
+        case 88:
+        // #line 304 "/home/iroumec/Documents/University/Compiladores e
         // Intérpretes/TPE-Compiler/code/parser/gramatica.y"
         {
           notifyError("Semántica de pasaje de parámetro inválida. Se asumirá pasaje de parámetro por defecto.");
           descartarTokenError();
         }
           break;
-        case 85:
-        // #line 287 "/home/iroumec/Documents/University/Compiladores e
+        case 89:
+        // #line 311 "/home/iroumec/Documents/University/Compiladores e
         // Intérpretes/TPE-Compiler/code/parser/gramatica.y"
         {
           notifyDetection("Invocación de función.");
         }
           break;
-        // #line 718 "Parser.java"
+        // #line 757 "Parser.java"
         // ########## END OF USER-SUPPLIED ACTIONS ##########
       }// switch
        // #### Now let's reduce... ####

@@ -15,9 +15,6 @@
 // error: token especial que representa cualquier cosa que en ese punto no cumpla ninguna
 // de las alternativas válidas.
 
-// El token error no consume automáticamente el token incorrecto. Para descartar un símbolo, se debe
-// explícitamente incluir un token que el analizador debería esperar y luego descartar.
-
 /* ---------------------------------------------------------------------------------------------------- */
 /* INICIO DE REGLAS                                                                                     */
 /* ---------------------------------------------------------------------------------------------------- */
@@ -25,7 +22,7 @@
 programa                        : ID '{' conjunto_sentencias '}'
                                 { notifyDetection("Programa."); }
                                 ;
-                    
+                
 conjunto_sentencias             : sentencia
                                 | conjunto_sentencias sentencia
                                 ;
@@ -38,10 +35,27 @@ sentencia                       : sentencia_ejecutable
 /* Sentencias declarativas                                                                              */
 /* ---------------------------------------------------------------------------------------------------- */
 
-sentencia_declarativa           : UINT lista_variables ';'
+sentencia_declarativa           : declaracion_variable
                                 { notifyDetection("Declaración de variable."); }
                                 | declaracion_funcion punto_y_coma_opcional
                                 ;
+
+declaracion_variable            : UINT lista_variables ';'
+                                // --------------- //
+                                // REGLAS DE ERROR //
+                                // --------------- //
+                                | UINT error lista_variables ';'
+                                { notifyError(applySynchronizationFormat($2.sval, $3.sval)); }
+                                | error UINT error lista_variables ';'
+                                { notifyError($1.sval + " no es tipo válido y " + $3.sval + " no es una variable válida."); }
+                                | error UINT lista_variables ';'
+                                { notifyError(applySynchronizationFormat($1.sval, $2.sval)); }
+                                ;
+
+/*
+Si el error está al comienzo de la regla, no se puede obtener su valor a través de $n.
+Si está en alguna otra parte, sí se puede.
+*/
 
 // Permite la opcionalidad de la coma al final de las funciones.
 punto_y_coma_opcional           : // épsilon
@@ -138,7 +152,7 @@ condicion                       : expresion comparador expresion
                                 | // éspilon
                                 { notifyError("La condición no puede estar vacía."); }
                                 ;
-                        
+
 comparador                      : '>'
                                 | '<'
                                 | EQ
@@ -155,11 +169,14 @@ comparador                      : '>'
                                 }
                                 ;
 
-if                              : IF '(' condicion ')' cuerpo_ejecutable rama_else ENDIF
+if                              : IF '(' condicion ')' cuerpo_ejecutable rama_else fin_if
+                                ;
+
+fin_if                          : ENDIF
                                 // --------------- //
                                 // REGLAS DE ERROR //
                                 // --------------- //
-                                | IF '(' condicion ')' cuerpo_ejecutable rama_else error
+                                | error
                                 { notifyError("La sentencia IF debe finalizarse con 'endif'."); }
                                 ;
 
@@ -189,34 +206,41 @@ imprimible                      : STR
 // Podría simplificarse con un "operador_expresion" creo.
 expresion                       : expresion operador_suma termino
                                 | termino
-                                // --------------- //
-                                // REGLAS DE ERROR //
-                                // --------------- //
-                                | expresion operador_suma error
                                 ;
 
 // Esta separación se realiza en libros como "Compilers: Principles, Techniques, and Tools”
 // para aclarar la estructura y reducir la duplicación.
 operador_suma                   : '+'
                                 | '-'
+                                // --------------- //
+                                // REGLAS DE ERROR //
+                                // --------------- //
+                                //| error
+                                //{ notifyError("Operador no válido."); }
                                 ;
 
 termino                         : termino operador_multiplicacion factor 
                                 | factor
-                                // --------------- //
-                                // REGLAS DE ERROR //
-                                // --------------- //
-                                | termino operador_multiplicacion error
                                 ;
 
 // Esta separación se realiza en libros como "Compilers: Principles, Techniques, and Tools”
 // para aclarar la estructura y reducir la duplicación.
 operador_multiplicacion         : '/'
                                 | '*'
+                                // --------------- //
+                                // REGLAS DE ERROR //
+                                // --------------- //
+                                //| error
+                                //{ notifyError("Operador no válido."); }
                                 ;
 
 factor                          : variable
                                 | constante
+                                // --------------- //
+                                // REGLAS DE ERROR //
+                                // --------------- //
+                                | error
+                                { notifyError("Operando no válido."); }
                                 ;
 
 // Separados para contemplar la posibilidad de CTE negativa.
@@ -337,7 +361,7 @@ int yylex() {
 
     Token token = lexer.getNextToken();
 
-    this.yylval = new ParserVal(token.getSymbolTableKey());
+    this.yylval = new ParserVal(token.getLexema());
 
     // Se muestra el token.
     System.out.println(token);
@@ -352,13 +376,16 @@ void yyerror(String message) {
     // diferenciando entre error y warning.
 }
 
+// El token error no consume automáticamente el token incorrecto.
+// Este debe descartarse explícitamente.
 void descartarTokenError() {
     // Se fuerza a que en la próxima iteración se llame a yylex(), leyendo otro token.
     yychar = -1;
 
     // Se limpia el estado de error.
-    yyerrflag = 0;
+    //yyerrflag = 0;
 }
+// TODO: descartar hasta un punto de sincronizacion. "}" o ";".
 
 void notifyDetection(String message) {
     System.err.println("------------------------------------");
@@ -368,16 +395,24 @@ void notifyDetection(String message) {
 
 void notifyWarning(String warningMessage) {
     System.err.println("------------------------------------");
-    System.err.printf("WARNING SINTÁCTICA: Línea %d: %s\n", lexer.getNroLinea(), warningMessage);
+    System.err.printf("WARNING SINTÁCTICA: Línea %d, caracter %d: %s\n", lexer.getNroLinea(), lexer.getNroCaracter(), warningMessage);
     System.err.println("------------------------------------");
     this.warningsDetected++;
 }
 
 void notifyError(String errorMessage) {
     System.err.println("------------------------------------");
-    System.err.printf("ERROR SINTÁCTICO: Línea %d: %s\n", lexer.getNroLinea(), errorMessage);
+    System.err.printf("ERROR SINTÁCTICO: Línea %d, caracter %d: %s\n", lexer.getNroLinea(), lexer.getNroCaracter(), errorMessage);
     System.err.println("------------------------------------");
     this.errorsDetected++;
+}
+
+String applySynchronizationFormat(String invalidWord, String synchronizationWord) {
+    return """
+        Se detectó una palabra inválida: '%s'. \
+        Se descartaron todas las palabras inválidas subsiguientes \
+        hasta el punto de sincronización: '%s'. \
+        """.formatted(invalidWord, synchronizationWord);
 }
 
 public int getWarningsDetected() {

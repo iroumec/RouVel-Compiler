@@ -19,7 +19,7 @@ public final class Lexer {
     private char lastCharRead;
     private StringBuilder lexema;
     private final String codigoFuente;
-    private int nroLinea, siguienteCaracterALeer;
+    private int nroLinea, siguienteCaracterALeer, nroCaracter;
     private int warningsDetected, errorsDetected;
     private final int estadoInicio, estadoAceptacion;
 
@@ -33,6 +33,7 @@ public final class Lexer {
         this.errorsDetected = 0;
         this.warningsDetected = 0;
         this.siguienteCaracterALeer = 0;
+        this.nroCaracter = 0;
         this.estadoInicio = DataManager.getEstadoInicio();
         this.estadoAceptacion = DataManager.getEstadoAceptacion();
         this.codigoFuente = DataManager.loadSourceCode(sourceCodePath);
@@ -202,6 +203,7 @@ public final class Lexer {
         if (siguienteCaracterALeer >= codigoFuente.length()) {
             return '\0';
         }
+        this.nroCaracter++;
         return codigoFuente.charAt(siguienteCaracterALeer++);
     }
 
@@ -295,5 +297,17 @@ public final class Lexer {
 
     public int getErrorsDetected() {
         return this.errorsDetected;
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    public int getNroCaracter() {
+        return this.nroCaracter;
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    public void resetearNroCaracter() {
+        this.nroCaracter = 0;
     }
 }

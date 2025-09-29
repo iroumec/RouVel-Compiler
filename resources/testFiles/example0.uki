@@ -101,4 +101,7 @@ PROGRAMA {
 
     ## No parámetros ##
     () { if (A > 1UI) print ("¡Hola!"); endif; } (3UI);
+
+    ## EXPRESIONES ##
+    A + B ( C;
 }

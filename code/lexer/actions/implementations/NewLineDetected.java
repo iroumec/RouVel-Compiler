@@ -5,7 +5,7 @@ import lexer.actions.SemanticAction;
 
 /**
  * NLD:
- * Incrementa el número de línea.
+ * Incrementa el número de línea. Resetea el contador de caracter a cero.
  */
 public class NewLineDetected implements SemanticAction {
 
@@ -30,6 +30,7 @@ public class NewLineDetected implements SemanticAction {
     @Override
     public void execute(Lexer lexicalAnalyzer) {
         lexicalAnalyzer.incrementarNroLinea();
+        lexicalAnalyzer.resetearNroCaracter();
     }
 
     // --------------------------------------------------------------------------------------------

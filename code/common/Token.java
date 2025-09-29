@@ -37,6 +37,12 @@ public class Token {
 
     // --------------------------------------------------------------------------------------------
 
+    public String getLexema() {
+        return (this.symbolTableKey == null) ? this.tokenType.toString() : this.symbolTableKey;
+    }
+
+    // --------------------------------------------------------------------------------------------
+
     public boolean hasSymbolTableIndex() {
         return tokenType.requiereLexema();
     }
