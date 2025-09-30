@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import lexer.Lexer;
 import parser.Parser;
+import utilities.Printer;
 
 public class Main {
 
@@ -31,9 +32,9 @@ public class Main {
 
         Parser sintacticalAnalyzer = new Parser(lexicalAnalyzer);
 
-        System.err.println("------------------------------------");
+        Printer.printSeparation();
         sintacticalAnalyzer.execute();
-        System.err.println("------------------------------------");
+        Printer.printSeparation();
 
         System.out.println("\nEl programa tiene " + lexicalAnalyzer.getNroLinea() + " líneas.");
 

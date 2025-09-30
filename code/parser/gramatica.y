@@ -8,6 +8,7 @@
 
     import lexer.Lexer;
     import common.Token;
+    import utilities.Printer;
 %}
 
 // Declaración de los tipos de valores.
@@ -427,7 +428,7 @@ int yylex() {
     this.yylval = new ParserVal(token.getLexema());
 
     // Se muestra el token.
-    System.out.println(token);
+    Printer.print(token);
 
     return token.getIdentificationCode();
 }
@@ -470,22 +471,25 @@ void descartarTokenError() {
 // TODO: descartar hasta un punto de sincronizacion. "}" o ";".
 
 void notifyDetection(String message) {
-    System.err.println("------------------------------------");
-    System.err.printf("DETECCIÓN SEMÁNTICA: %s\n", message);
-    System.err.println("------------------------------------");
+    Printer.printBetweenSeparations(String.format(
+        "DETECCIÓN SEMÁNTICA: %s",
+        message
+    ));
 }
 
 void notifyWarning(String warningMessage) {
-    System.err.println("------------------------------------");
-    System.err.printf("WARNING SINTÁCTICA: Línea %d, caracter %d: %s\n", lexer.getNroLinea(), lexer.getNroCaracter(), warningMessage);
-    System.err.println("------------------------------------");
+    Printer.printBetweenSeparations(String.format(
+        "WARNING SINTÁCTICA: Línea %d, caracter %d: %s",
+        lexer.getNroLinea(), lexer.getNroCaracter(), warningMessage
+    ));
     this.warningsDetected++;
 }
 
 void notifyError(String errorMessage) {
-    System.err.println("------------------------------------");
-    System.err.printf("ERROR SINTÁCTICO: Línea %d, caracter %d: %s\n", lexer.getNroLinea(), lexer.getNroCaracter(), errorMessage);
-    System.err.println("------------------------------------");
+    Printer.printBetweenSeparations(String.format(
+        "ERROR SINTÁCTICO: Línea %d, caracter %d: %s",
+        lexer.getNroLinea(), lexer.getNroCaracter(), errorMessage
+    ));
     this.errorsDetected++;
 }
 
