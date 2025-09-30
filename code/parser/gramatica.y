@@ -13,7 +13,7 @@
 // Asignación de tipo a token y no-terminales.
 // Esto es necesario para ejecutar acciones semánticas como: "$$ = $3".
 %token <sval> ID, CTE, STR  // Los tokens ID, CTE y STR tendrán un valor de tipo String (accedido vía .sval)
-%type <sval> lista_variables // El no-terminal lista_variables también guardará un String.
+%type <sval> lista_variables // El no-terminal lista_variables también gaurda un String.
 
 // Tokens sin valor semántico asociado (no necesitan tipo).
 %token EQ, GEQ, LEQ, NEQ, DASIG, FLECHA
@@ -71,7 +71,6 @@ declaracion_variable            : UINT lista_variables ';'
                                 ; */
 
 declaracion_variable            : UINT lista_variables ';'
-                                // REGLA DE RECUPERACIÓN LOCAL Y ROBUSTA
                                 | UINT error ';'
                                 { notifyError("Error de sintaxis en la lista de variables. La declaración se ha descartado hasta el ';'."); }
                                 | UINT lista_variables error ';'
@@ -231,8 +230,11 @@ fin_if                          : ENDIF
                                 // --------------- //
                                 // REGLAS DE ERROR //
                                 // --------------- //
-                                | error
-                                { notifyError("La sentencia IF debe finalizarse con 'endif'."); }
+                                | error // No hay punto de sincronización
+                                {
+                                    notifyError("La sentencia IF debe finalizarse con 'endif'.");
+                                    descartarTokenError();
+                                }
                                 ;
 
 rama_else                       : // épsilon
@@ -295,7 +297,7 @@ factor                          : variable
                                 // REGLAS DE ERROR //
                                 // --------------- //
                                 | error
-                                { notifyError("Operando no válido."); }
+                                { notifyError("Operando no válido."); } // ¿Por qué lllega hasta acá si el if no tiene ENDIF?
                                 ;
 
 // Separados para contemplar la posibilidad de CTE negativa.
