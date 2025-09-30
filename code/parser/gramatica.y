@@ -38,10 +38,12 @@ sentencia                       : sentencia_ejecutable
 sentencia_declarativa           : declaracion_variable
                                 { notifyDetection("Declaración de variable."); }
                                 | declaracion_funcion punto_y_coma_opcional
+                                
+                                | error
+                                { notifyError("Sentencia declarativa no válida."); }
                                 ;
-
+/*
 declaracion_variable            : UINT lista_variables ';'
-                                ;
                                 // --------------- //
                                 // REGLAS DE ERROR //
                                 // --------------- //
@@ -52,12 +54,23 @@ declaracion_variable            : UINT lista_variables ';'
                                 { notifyError($1.sval + " no es tipo válido y " + $3.sval + " no es una variable válida."); }
                                 | error UINT lista_variables ';'
                                 { notifyError(applySynchronizationFormat($1.sval, $2.sval)); }
+                                
+                                ; */
+
+declaracion_variable            : UINT lista_variables ';'
+                                // REGLA DE RECUPERACIÓN LOCAL Y ROBUSTA
+                                | UINT error ';'
+                                { notifyError("Error de sintaxis en la lista de variables. La declaración se ha descartado hasta el ';'."); }
+                                | UINT lista_variables error ';'
+                                { notifyError("Error de sintaxis al final de la lista de variables. La declaración se ha descartado hasta el ';'."); }
                                 ;
-                                */
 
 /*
 Si el error está al comienzo de la regla, no se puede obtener su valor a través de $n.
 Si está en alguna otra parte, sí se puede.
+ERRORES AL COMIENZO DE UNA REGLA NO.
+SI LOS PONEMOS EN MUCHAS REGLAS, VAMOS A TENER PROBLEMAS.
+NO COMBINAR VACÍO CON ERROR.
 */
 
 // Permite la opcionalidad de la coma al final de las funciones.
@@ -67,6 +80,9 @@ punto_y_coma_opcional           : // épsilon
 
 lista_variables                 : ID
                                 | lista_variables ',' ID
+/*
+                                | error
+                                { notifyError("Se esperaba una variable. Se leyó: " + $1.sval + "."); } */
                                 ;
 
 /*
@@ -373,23 +389,8 @@ int yylex() {
 }
 
 void yyerror(String message) {
-    // Cuando yyerror es llamado, el lexer aún no ha avanzado.
-    // 'lexer.getCurrentToken()' (o como lo llames) contendrá el token que causó el error.
-    Token tokenProblematico = lexer.getCurrentToken(); // Necesitarás un método en tu Lexer para esto.
-    
-    if (tokenProblematico == null || tokenProblematico.getIdentificationCode() == EOF) {
-        notifyError("Error de sintaxis al final del archivo. ¿Falta un '}' o un ';'? ");
-    } else {
-        String lexema = tokenProblematico.getLexema();
-        
-        // Creamos un mensaje mucho más útil
-        String errorMessage = "Token inesperado '" + lexema + "'.";
-
-        this.notifyError(errorMessage);
-    }
+    // Silenciado
 }
-
-// ... el resto de tu código ...
 
 // El token error no consume automáticamente el token incorrecto.
 // Este debe descartarse explícitamente.
