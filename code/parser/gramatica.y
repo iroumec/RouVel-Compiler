@@ -2,7 +2,20 @@
 /* INICIO DE DECLARACIONES                                                                              */
 /* ---------------------------------------------------------------------------------------------------- */
 
-%token ID, CTE, STR
+// Declaración de los tipos de valores.
+// Se le informa a Yacc que tendrá que trabajar con valores de tipo String.
+// Esto es para que no dé error el highlighter de la gramática, ya que está pensado para byacc para C.
+// Al generar el Parser, debe comentarse para no romper el código .java, ya que genera un typedef (C).
+%union {
+    String sval;
+}
+
+// Asignación de tipo a token y no-terminales.
+// Esto es necesario para ejecutar acciones semánticas como: "$$ = $3".
+%token <sval> ID, CTE, STR  // Los tokens ID, CTE y STR tendrán un valor de tipo String (accedido vía .sval)
+%type <sval> lista_variables // El no-terminal lista_variables también guardará un String.
+
+// Tokens sin valor semántico asociado (no necesitan tipo).
 %token EQ, GEQ, LEQ, NEQ, DASIG, FLECHA
 %token PRINT, IF, ELSE, ENDIF, UINT, CVR, DO, WHILE, RETURN
 
@@ -78,8 +91,16 @@ punto_y_coma_opcional           : // épsilon
                                 | ';'
                                 ;
 
+// Al declarar que es de tipo sval, ya no es necesario especificar ".sval" junto a los $n.
 lista_variables                 : ID
                                 | lista_variables ',' ID
+                                { $$ = $3; }
+                                // Le dice a Yacc que, cuando reduzca usando esta regla, el valor de la nueva lista_variables
+                                // que coloque en la pila no sea el de la lista vieja ($1, por defecto siempre hace $$ = $1),
+                                // sino el valor del ID que acaba de leer ($3)
+                                // Esto es útil para mostrar errores correctamente. Si no se pone, en una sentencia como:
+                                // uint A, B C
+                                // Diría que la coma falta entre A y C.
                                 // ------------------------------
                                 // PATRONES DE ERROR ESPECÍFICOS
                                 // ------------------------------
@@ -87,7 +108,7 @@ lista_variables                 : ID
                                 {
                                     notifyError(String.format(
                                         "Se encontraron dos variables juntas sin una coma de separación. Sugerencia: Inserte una ',' entre '%s' y '%s'.",
-                                        $1.sval, $2.sval));
+                                        $1, $2));
                                 }
                                 ;
 
@@ -184,9 +205,18 @@ comparador                      : '>'
                                 | LEQ
                                 | GEQ
                                 | NEQ
-                                // --------------- //
-                                // REGLAS DE ERROR //
-                                // --------------- //
+                                // ------------------------------
+                                // PATRONES DE ERROR ESPECÍFICOS
+                                // ------------------------------
+                                | '='
+                                {
+                                    notifyError(
+                                        "Se esperaba un comparador y se encontró el operador de asignación '='. ¿Quiso colocar '=='?"
+                                        );
+                                }
+                                // ------------------------------
+                                // REGLAS DE ERROR
+                                // ------------------------------
                                 | error
                                 {
                                     notifyError("El token leído no corresponde a un operador de comparación válido. Este se descartará.");

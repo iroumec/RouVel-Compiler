@@ -9,7 +9,7 @@ package parser;
  * This class provides some of the functionality
  * of the yacc/C 'union' directive
  */
-public class ParserVal
+final public class ParserVal
 {
 /**
  * integer value of this 'union'

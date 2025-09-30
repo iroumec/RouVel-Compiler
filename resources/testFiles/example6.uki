@@ -1,4 +1,8 @@
 PROGRAMA {
 
-    uint JUAN, PEDRO RODRIGO;
+    uint A, B C;
+
+    if (A = C) {
+
+    }
 }
