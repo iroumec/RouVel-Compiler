@@ -15,7 +15,7 @@ import lexer.errors.implementations.UndeterminedNumber;
 
 public final class Lexer {
 
-    private Token token;
+    private Token currentToken;
     private char lastCharRead;
     private StringBuilder lexema;
     private final String codigoFuente;
@@ -56,16 +56,16 @@ public final class Lexer {
             // o este será nulo (en caso de ya haberse leído todo el archivo).
             searchToken();
 
-        } while (this.token == null && siguienteCaracterALeer < codigoFuente.length());
+        } while (this.currentToken == null && siguienteCaracterALeer < codigoFuente.length());
 
         // Si el token es null, es porque no hay más tokens reconocibles.
         // Esto es, se llegó al final del archivo.
-        if (this.token == null) {
-            this.token = new Token(TokenType.EOF, null);
+        if (this.currentToken == null) {
+            this.currentToken = new Token(TokenType.EOF, null);
         }
 
         // Se devuelve el token.
-        return this.token;
+        return this.currentToken;
     }
 
     // --------------------------------------------------------------------------------------------
@@ -78,7 +78,7 @@ public final class Lexer {
 
         while (estadoActual != estadoAceptacion && siguienteCaracterALeer < codigoFuente.length()) {
 
-            System.out.printf("'%d%s'", this.nroCaracter, this.lastCharRead);
+            // System.out.printf("'%d%s'", this.nroCaracter, this.lastCharRead);
             this.lastCharRead = this.readNextChar();
             this.nroCaracter++;
 
@@ -136,7 +136,8 @@ public final class Lexer {
      * Se limpian las variables utilizadas entre búsquedas.
      */
     private void cleanSearch() {
-        this.token = null;
+        // Se limpia el token actual.
+        this.currentToken = null;
         if (this.lexema == null)
             this.lexema = new StringBuilder();
         else
@@ -268,7 +269,13 @@ public final class Lexer {
     // --------------------------------------------------------------------------------------------
 
     public void setToken(Token token) {
-        this.token = token;
+        this.currentToken = token;
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    public Token getCurrentToken() {
+        return this.currentToken;
     }
 
     // --------------------------------------------------------------------------------------------

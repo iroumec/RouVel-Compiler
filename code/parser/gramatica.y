@@ -41,9 +41,11 @@ sentencia_declarativa           : declaracion_variable
                                 ;
 
 declaracion_variable            : UINT lista_variables ';'
+                                ;
                                 // --------------- //
                                 // REGLAS DE ERROR //
                                 // --------------- //
+                                /*
                                 | UINT error lista_variables ';'
                                 { notifyError(applySynchronizationFormat($2.sval, $3.sval)); }
                                 | error UINT error lista_variables ';'
@@ -51,6 +53,7 @@ declaracion_variable            : UINT lista_variables ';'
                                 | error UINT lista_variables ';'
                                 { notifyError(applySynchronizationFormat($1.sval, $2.sval)); }
                                 ;
+                                */
 
 /*
 Si el error está al comienzo de la regla, no se puede obtener su valor a través de $n.
@@ -370,11 +373,23 @@ int yylex() {
 }
 
 void yyerror(String message) {
-    // Silenciar esto permite que mensajes como "syntax error", al utilizar
-    // un token de error, no se muestren.
-    // En su lugar, se presentan los mensajes que nosotros brindamos,
-    // diferenciando entre error y warning.
+    // Cuando yyerror es llamado, el lexer aún no ha avanzado.
+    // 'lexer.getCurrentToken()' (o como lo llames) contendrá el token que causó el error.
+    Token tokenProblematico = lexer.getCurrentToken(); // Necesitarás un método en tu Lexer para esto.
+    
+    if (tokenProblematico == null || tokenProblematico.getIdentificationCode() == EOF) {
+        notifyError("Error de sintaxis al final del archivo. ¿Falta un '}' o un ';'? ");
+    } else {
+        String lexema = tokenProblematico.getLexema();
+        
+        // Creamos un mensaje mucho más útil
+        String errorMessage = "Token inesperado '" + lexema + "'.";
+
+        this.notifyError(errorMessage);
+    }
 }
+
+// ... el resto de tu código ...
 
 // El token error no consume automáticamente el token incorrecto.
 // Este debe descartarse explícitamente.

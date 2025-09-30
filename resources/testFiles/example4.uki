@@ -1,9 +1,9 @@
 PROGRAMA {
 
-    do uint J;
+    uint sds J;
 
     uint uint J;
-    uint uint while uint if uint K;
+    uint while uint if uint K;
     uint do L;
     LUIS uint H;
     TNIU uint uint UINT;
