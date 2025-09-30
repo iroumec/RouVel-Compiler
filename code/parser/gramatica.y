@@ -22,7 +22,7 @@
 // Asignación de tipo a token y no-terminales.
 // Esto es necesario para ejecutar acciones semánticas como: "$$ = $3".
 %token <sval> ID, CTE, STR  // Los tokens ID, CTE y STR tendrán un valor de tipo String (accedido vía .sval)
-%type <sval> lista_variables, variable // El no-terminal lista_variables también gaurda un String.
+%type <sval> lista_variables, lista_constantes, variable, constante // El no-terminal lista_variables también guarda un String.
 
 // Tokens sin valor semántico asociado (no necesitan tipo).
 %token EQ, GEQ, LEQ, NEQ, DASIG, FLECHA
@@ -51,7 +51,10 @@ programa                        : ID '{' conjunto_sentencias '}'
                                 | ID '{' '}'
                                 { notifyError("El programa no tiene ninguna sentencia."); }
                                 | error
-                                { notifyError("Programa inválido. Este debe seguir la estructura: ID { <conjunto_de_sentencias> }."); }
+                                {
+                                    notifyError("Inicio de programa inválido. Este debe seguir la estructura: <NOMBRE%PROGRAMA> { ... }. Se sincronizará hasta ID.");
+                                    descartarTokensHasta(ID); // Se descartan todos los tokens hasta ID.
+                                }
                                 ;
                 
 conjunto_sentencias             : sentencia
@@ -139,6 +142,16 @@ asignacion_multiple             : lista_variables '=' lista_constantes
                                 
 lista_constantes                : constante
                                 | lista_constantes ',' constante
+                                { $$ = $3; }
+                                // ------------------------------
+                                // PATRONES DE ERROR ESPECÍFICOS
+                                // ------------------------------
+                                | lista_constantes constante
+                                {
+                                    notifyError(String.format(
+                                        "Se encontraron dos constantes juntas sin una coma de separación. Sugerencia: Inserte una ',' entre '%s' y '%s'.",
+                                        $1, $2));
+                                }
                                 ;
 
 /* ---------------------------------------------------------------------------------------------------- */
@@ -303,11 +316,13 @@ factor                          : variable
 // Separados para contemplar la posibilidad de CTE negativa.
 constante                       : CTE
                                 | '-' CTE // Luego debe revisarse que la CTE no sea entera.
+                                { $$ = '-' + $2; }
                                 ;
 
 // Separado para contemplar la posibilidad de identificador prefijado.
 variable                        : ID
                                 | ID '.' ID
+                                { $$ = $1 + "." + $3; }
                                 ;
 
 /* ---------------------------------------------------------------------------------------------------- */
@@ -427,10 +442,25 @@ int yylex() {
 
     this.yylval = new ParserVal(token.getLexema());
 
-    // Se muestra el token.
-    Printer.print(token);
-
     return token.getIdentificationCode();
+}
+
+public void descartarTokensHasta(int tokenEsperado) {
+
+    int t = yylex();
+    
+    // Se pide un token mientras no se halle el token esperado
+    // o el final de archivo.
+    while (t != tokenEsperado && t != EOF) {
+        t = yylex();
+    }
+
+    if (t == EOF) {
+        Printer.printBetweenSeparations("SE LLEGÓ AL FINAL DEL ARCHIVO SIN ENCONTRAR UN TOKEN DE SINCRONIZACION.");
+    }
+
+    // Se actualizá que se halló el token deseado o se llegó al final del archivo.
+    yychar = t;
 }
 
 /**
@@ -446,17 +476,18 @@ public void yyerror(String s) {
     
     // yychar es una variable interna del parser que contiene el token actual (lookahead).
     if (yychar == EOF) {
-        //notifyError("Error de sintaxis: Se alcanzó el final del archivo inesperadamente. (¿Falta un '}' o un ';'? )");
+        notifyError("Error de sintaxis: Se alcanzó el final del archivo inesperadamente. (¿Falta un '}' o un ';'? )");
         return;
     }
     
     // Usamos nuestro método notificador con la información de línea/columna del lexer.
-    notifyError(
+    /*notifyError(
         String.format(
             "Error de sintaxis cerca del token '%s'.", 
             lexer.getCurrentToken().getLexema() // Asumiendo que tu lexer tiene un método para obtener el lexema actual.
         )
     );
+    */
 }
 
 // El token error no consume automáticamente el token incorrecto.
@@ -467,6 +498,8 @@ void descartarTokenError() {
 
     // Se limpia el estado de error.
     yyerrflag = 0;
+
+    Printer.print("Token de error descartado.");
 }
 // TODO: descartar hasta un punto de sincronizacion. "}" o ";".
 

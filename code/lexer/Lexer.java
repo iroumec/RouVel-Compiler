@@ -12,6 +12,7 @@ import lexer.errors.implementations.NewLineInString;
 import lexer.errors.implementations.NoExponent;
 import lexer.errors.implementations.NoExponentSign;
 import lexer.errors.implementations.UndeterminedNumber;
+import utilities.Printer;
 
 public final class Lexer {
 
@@ -56,13 +57,16 @@ public final class Lexer {
             // o este será nulo (en caso de ya haberse leído todo el archivo).
             searchToken();
 
-        } while (this.currentToken == null && siguienteCaracterALeer < codigoFuente.length());
+        } while (this.currentToken == null && siguienteCaracterALeer <= codigoFuente.length());
 
         // Si el token es null, es porque no hay más tokens reconocibles.
         // Esto es, se llegó al final del archivo.
         if (this.currentToken == null) {
             this.currentToken = new Token(TokenType.EOF, null);
         }
+
+        // Se imprime el token en la salida.
+        Printer.print(this.currentToken);
 
         // Se devuelve el token.
         return this.currentToken;
@@ -76,7 +80,9 @@ public final class Lexer {
         int estadoActual = estadoInicio;
         int siguienteEstado;
 
-        while (estadoActual != estadoAceptacion && siguienteCaracterALeer < codigoFuente.length()) {
+        // Se utiliza "<=" para leer el símbolo especial que indica el fin de archvio:
+        // '\0'.
+        while (estadoActual != estadoAceptacion && siguienteCaracterALeer <= codigoFuente.length()) {
 
             // System.out.printf("'%d%s'", this.nroCaracter, this.lastCharRead);
             this.lastCharRead = this.readNextChar();
@@ -203,7 +209,11 @@ public final class Lexer {
     // --------------------------------------------------------------------------------------------
 
     public char readNextChar() {
-        if (siguienteCaracterALeer >= codigoFuente.length()) {
+        // Al llegar al final del archivo, se retorna un carácter especial que indique
+        // EOF. Adicionalmente, para cortar las iteraciones, se incrementa el siguiente
+        // caracter a leer.
+        if (this.siguienteCaracterALeer == codigoFuente.length()) {
+            this.siguienteCaracterALeer++;
             return '\0';
         }
         return codigoFuente.charAt(siguienteCaracterALeer++);
@@ -230,6 +240,7 @@ public final class Lexer {
     // --------------------------------------------------------------------------------------------
 
     public void decrementarSiguienteCaracterALeer() {
+
         this.siguienteCaracterALeer--;
         this.nroCaracter--;
     }
