@@ -11,7 +11,8 @@ OUT_DIR="$CALL_DIR/code/parser"
 cd "$SCRIPT_DIR" || { echo "No se pudo cambiar a $SCRIPT_DIR"; exit 1; }
 
 # "./yacc -V" para ver las opciones.
-./yacc -J -Jnoconstruct -Jnorun -Jnodebug -Jfinal -v "$OUT_DIR/gramatica.y"
+# -Jnodebug
+./yacc -J -Jnoconstruct -Jnorun -Jfinal -v "$OUT_DIR/gramatica.y"
 
 # Se agrega "package parser;" al inicio de ambos archivos.
 # Esto para que sea coherente con nuestra estructura de código.

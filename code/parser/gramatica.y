@@ -13,7 +13,7 @@
 // Asignación de tipo a token y no-terminales.
 // Esto es necesario para ejecutar acciones semánticas como: "$$ = $3".
 %token <sval> ID, CTE, STR  // Los tokens ID, CTE y STR tendrán un valor de tipo String (accedido vía .sval)
-%type <sval> lista_variables // El no-terminal lista_variables también gaurda un String.
+%type <sval> lista_variables, variable // El no-terminal lista_variables también gaurda un String.
 
 // Tokens sin valor semántico asociado (no necesitan tipo).
 %token EQ, GEQ, LEQ, NEQ, DASIG, FLECHA
@@ -34,6 +34,8 @@
 
 programa                        : ID '{' conjunto_sentencias '}'
                                 { notifyDetection("Programa."); }
+                                | error
+                                { notifyError("Programa inválido. Este debe seguir la estructura: ID { <conjunto_de_sentencias> }."); }
                                 ;
                 
 conjunto_sentencias             : sentencia
@@ -42,6 +44,11 @@ conjunto_sentencias             : sentencia
 
 sentencia                       : sentencia_ejecutable
                                 | sentencia_declarativa
+                                // -----------------
+                                // REGLAS DE ERROR
+                                // -----------------
+                                | error ';'
+                                { notifyError("Sentencia inválida en el lenguaje. Se sincronizó hasta un ';'."); }
                                 ;
 
 /* ---------------------------------------------------------------------------------------------------- */
@@ -51,9 +58,10 @@ sentencia                       : sentencia_ejecutable
 sentencia_declarativa           : declaracion_variable
                                 { notifyDetection("Declaración de variable."); }
                                 | declaracion_funcion punto_y_coma_opcional
-                                
+                                /*
                                 | error
                                 { notifyError("Sentencia declarativa no válida."); }
+                                */
                                 ;
 /*
 declaracion_variable            : UINT lista_variables ';'
@@ -145,8 +153,8 @@ parametro_lambda                : UINT ID
 /* Sentencias ejecutables                                                                               */
 /* ---------------------------------------------------------------------------------------------------- */
 
-cuerpo_ejecutable               : bloque_ejecutable
-                                | sentencia_ejecutable
+cuerpo_ejecutable               : sentencia_ejecutable
+                                | bloque_ejecutable
                                 ;
 
 bloque_ejecutable               : '{' conjunto_sentencias_ejecutables '}'
@@ -155,7 +163,7 @@ bloque_ejecutable               : '{' conjunto_sentencias_ejecutables '}'
                                 // --------------- //
                                 | '{' '}'
                                 { notifyError("El cuerpo de la sentencia no puede estar vacío."); }
-                                | // épsilon
+                                | //épsilon
                                 { notifyError("Debe especificarse un cuerpo para la sentencia."); }
                                 ;
 
@@ -182,6 +190,11 @@ operacion_ejecutable            : invocacion_funcion
 
 asignacion_simple               : variable DASIG expresion                                          
                                 { notifyDetection("Asignación simple."); }
+                                // ------------------------------
+                                // REGLAS DE ERROR CONTEXTUALES
+                                // ------------------------------
+                                | variable error expresion
+                                { notifyError("Error en asignación. Se esperaba un ':='."); }
                                 ;
 
 // Separada por legibilidad.
@@ -191,7 +204,7 @@ sentencia_control               : if
                                 ;
 
 condicion                       : expresion comparador expresion
-                                { notifyDetection("Condicion.")}
+                                { notifyDetection("Condicion."); }
                                 // --------------- //
                                 // REGLAS DE ERROR //
                                 // --------------- //
@@ -224,24 +237,15 @@ comparador                      : '>'
                                 }
                                 ;
 
-if                              : IF '(' condicion ')' cuerpo_ejecutable rama_else fin_if
-                                ;
-
-fin_if                          : ENDIF
-                                // --------------- //
-                                // REGLAS DE ERROR //
-                                // --------------- //
-                                | error // No hay punto de sincronización
-                                {
-                                    notifyError("La sentencia IF debe finalizarse con 'endif'.");
-                                    descartarTokenError();
-                                }
+if                              : IF '(' condicion ')' cuerpo_ejecutable rama_else ENDIF
+                                | IF '(' condicion ')' cuerpo_ejecutable rama_else
+                                { notifyError("La sentencia IF debe finalizarse con 'endif'."); }
                                 ;
 
 rama_else                       : // épsilon
-                                { notifyDetection("Setencia IF."); }
+                                { notifyDetection("Sentencia IF."); }
                                 | ELSE cuerpo_ejecutable
-                                { notifyDetection("Setencia IF-ELSE."); }
+                                { notifyDetection("Sentencia IF-ELSE."); }
                                 ;
 
 
@@ -270,11 +274,6 @@ expresion                       : expresion operador_suma termino
 // para aclarar la estructura y reducir la duplicación.
 operador_suma                   : '+'
                                 | '-'
-                                // --------------- //
-                                // REGLAS DE ERROR //
-                                // --------------- //
-                                //| error
-                                //{ notifyError("Operador no válido."); }
                                 ;
 
 termino                         : termino operador_multiplicacion factor 
@@ -285,20 +284,10 @@ termino                         : termino operador_multiplicacion factor
 // para aclarar la estructura y reducir la duplicación.
 operador_multiplicacion         : '/'
                                 | '*'
-                                // --------------- //
-                                // REGLAS DE ERROR //
-                                // --------------- //
-                                //| error
-                                //{ notifyError("Operador no válido."); }
                                 ;
 
 factor                          : variable
                                 | constante
-                                // --------------- //
-                                // REGLAS DE ERROR //
-                                // --------------- //
-                                | error
-                                { notifyError("Operando no válido."); } // ¿Por qué lllega hasta acá si el if no tiene ENDIF?
                                 ;
 
 // Separados para contemplar la posibilidad de CTE negativa.
@@ -328,6 +317,7 @@ cuerpo_funcion                  : conjunto_sentencias
                                 ;
 
 sentencia_retorno               : RETURN expresion
+                                ;
 
 conjunto_parametros             : lista_parametros
                                 // --------------- //
@@ -402,6 +392,8 @@ private int warningsDetected;
 public Parser(Lexer lexer) {
     this.lexer = lexer;
     this.errorsDetected = this.warningsDetected = 0;
+    // Se activa el debug.
+    //yydebug = true;
 }
 
 // Método público para llamar a yyparse(), ya que, por defecto,
@@ -427,8 +419,30 @@ int yylex() {
     return token.getIdentificationCode();
 }
 
-void yyerror(String message) {
-    // Silenciado
+/**
+ * Este método es invocado por el parser generado por Byacc/J cada vez que
+ * se encuentra un error de sintaxis que no puede ser manejado por una
+ * regla gramatical específica con el token 'error'.
+ *
+ * @param s El mensaje de error por defecto (generalmente "syntax error").
+ */
+public void yyerror(String s) {
+    // El mensaje 's' que nos pasa Byacc/J es genérico y poco útil.
+    // Lo ignoramos y usamos el estado del lexer para dar un mensaje preciso.
+    
+    // yychar es una variable interna del parser que contiene el token actual (lookahead).
+    if (yychar == EOF) {
+        notifyError("Error de sintaxis: Se alcanzó el final del archivo inesperadamente. (¿Falta un '}' o un ';'? )");
+        return;
+    }
+    
+    // Usamos nuestro método notificador con la información de línea/columna del lexer.
+    notifyError(
+        String.format(
+            "Error de sintaxis cerca del token '%s'.", 
+            lexer.getCurrentToken().getLexema() // Asumiendo que tu lexer tiene un método para obtener el lexema actual.
+        )
+    );
 }
 
 // El token error no consume automáticamente el token incorrecto.
@@ -438,7 +452,7 @@ void descartarTokenError() {
     yychar = -1;
 
     // Se limpia el estado de error.
-    //yyerrflag = 0;
+    yyerrflag = 0;
 }
 // TODO: descartar hasta un punto de sincronizacion. "}" o ";".
 

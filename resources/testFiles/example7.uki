@@ -1,0 +1,13 @@
+PROGRAMA {
+
+    A { B + C;
+
+    uint A, B C;
+
+    ## Semántica inválida ##
+    uint FUNC8 (J uint Y) {
+        return 1UI;
+    }
+
+    I++
+}
