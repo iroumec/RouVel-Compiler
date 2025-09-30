@@ -49,7 +49,7 @@ public enum TokenType {
     EQ("==", Parser.EQ),
     GEQ(">=", Parser.GEQ),
     LEQ("<=", Parser.LEQ),
-    NEQ("!=", Parser.NEQ),
+    NEQ("=!", Parser.NEQ),
     DASIG(":=", Parser.DASIG),
     FLECHA("->", Parser.FLECHA),
 

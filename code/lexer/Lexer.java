@@ -64,6 +64,8 @@ public final class Lexer {
             this.currentToken = new Token(TokenType.EOF, null);
         }
 
+        System.out.println(this.currentToken);
+
         // Se devuelve el token.
         return this.currentToken;
     }

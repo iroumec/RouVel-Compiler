@@ -1,5 +1,13 @@
 PROGRAMA {
 
+    +
+
+    =
+
+    >
+
+    A = =! B;
+
     uint A, B C;
 
     if (A = C) {

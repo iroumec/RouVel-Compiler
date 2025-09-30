@@ -137,7 +137,7 @@ public final class DataManager {
         STATE_TRANSITION_MATRIX[11][charToIndex('=')] = ESTADO_ACEPTACION;
 
         // Estado 12
-        Arrays.fill(STATE_TRANSITION_MATRIX[11], ESTADO_ACEPTACION);
+        Arrays.fill(STATE_TRANSITION_MATRIX[12], ESTADO_ACEPTACION);
 
         // Estado 13
         Arrays.fill(STATE_TRANSITION_MATRIX[13], ESTADO_ACEPTACION);
