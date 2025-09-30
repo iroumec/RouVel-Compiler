@@ -28,7 +28,6 @@ sed -i '/^typedef union/{s/^/\/\*/}' Parser.java
 # Cerrar comentario después de "} YYSTYPE;".
 sed -i '/^} YYSTYPE;/{s/$/ \*\//}' Parser.java
 
-
 # Se mueven los arhcivos .java a la sección de código.
 mv Parser.java "$OUT_DIR"
 mv ParserVal.java "$OUT_DIR"

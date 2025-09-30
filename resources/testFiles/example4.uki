@@ -4,7 +4,7 @@ PROGRAMA {
 
     uint uint J;
     uint while uint if uint K;
-    uint do L;
+    uint PALABRALARGUISIMARELARGALARGARELARGA do L;
     LUIS uint H;
     TNIU uint uint UINT;
 
@@ -15,5 +15,13 @@ PROGRAMA {
     while (5UI > 1UI) do {
         print(U);
     }
+
+    uint X =                                     4UI                                                                                               + 1.0F+1
+
+
+
+
+
+;
 
 }

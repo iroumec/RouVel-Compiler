@@ -187,10 +187,11 @@ asignacion_simple               : variable DASIG expresion
 // Separada por legibilidad.
 sentencia_control               : if                                                                
                                 | while         
-                                { notifyDetection("Setencia WHILE."); }                                                   
+                                { notifyDetection("Sentencia WHILE."); }                                                   
                                 ;
 
 condicion                       : expresion comparador expresion
+                                { notifyDetection("Condicion.")}
                                 // --------------- //
                                 // REGLAS DE ERROR //
                                 // --------------- //
