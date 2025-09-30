@@ -569,6 +569,27 @@ public class Parser {
     return this.errorsDetected;
   }
 
+  /**
+   * Este método es llamado por el parser en cuanto detecta un error de sintaxis.
+   * Aquí es donde obtienes el token que fue descartado.
+   */
+  @Override
+  public void syntax_error(java_cup.runtime.Symbol cur_token) {
+    // ¡'cur_token' ES el token que intentabas obtener con $1!
+    // Por ejemplo, si la entrada era "miVar UINT ...", cur_token contiene "miVar".
+
+    String valorErroneo = (cur_token.value != null) ? cur_token.value.toString() : "fin de archivo";
+    int linea = cur_token.left;
+    int columna = cur_token.right;
+
+    // Ahora puedes usar tu función notifyError o simplemente imprimir el mensaje.
+    String mensaje = "Error de sintaxis en la línea " + linea + ", columna " + columna + ". ";
+    mensaje += "Se encontró un token inesperado: '" + valorErroneo + "'.";
+
+    // notifyError(mensaje);
+    System.err.println(mensaje);
+  }
+
   /*
    * -----------------------------------------------------------------------------
    * -----------------------
@@ -578,7 +599,7 @@ public class Parser {
    * -----------------------------------------------------------------------------
    * -----------------------
    */
-  // #line 494 "Parser.java"
+  // #line 515 "Parser.java"
   // ###############################################################
   // method: yylexdebug : check lexer state
   // ###############################################################
@@ -912,7 +933,7 @@ public class Parser {
           notifyDetection("Invocación de función.");
         }
           break;
-        // #line 757 "Parser.java"
+        // #line 778 "Parser.java"
         // ########## END OF USER-SUPPLIED ACTIONS ##########
       }// switch
        // #### Now let's reduce... ####

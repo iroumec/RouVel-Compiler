@@ -78,7 +78,9 @@ public final class Lexer {
 
         while (estadoActual != estadoAceptacion && siguienteCaracterALeer < codigoFuente.length()) {
 
+            System.out.printf("'%d%s'", this.nroCaracter, this.lastCharRead);
             this.lastCharRead = this.readNextChar();
+            this.nroCaracter++;
 
             index = charToIndex(lastCharRead);
 
@@ -203,7 +205,6 @@ public final class Lexer {
         if (siguienteCaracterALeer >= codigoFuente.length()) {
             return '\0';
         }
-        this.nroCaracter++;
         return codigoFuente.charAt(siguienteCaracterALeer++);
     }
 
@@ -229,6 +230,7 @@ public final class Lexer {
 
     public void decrementarSiguienteCaracterALeer() {
         this.siguienteCaracterALeer--;
+        this.nroCaracter--;
     }
 
     // --------------------------------------------------------------------------------------------
@@ -288,7 +290,8 @@ public final class Lexer {
 
     public void notifyError(String errorMessage) {
         System.err.println("------------------------------------");
-        System.err.printf("ERROR LÉXICO: LÍNEA %d: %s%n", this.nroLinea, errorMessage);
+        System.err.printf("ERROR LÉXICO: Línea %d, caracter %d: %s%n", this.nroLinea, this.getNroCaracter(),
+                errorMessage);
         System.err.println("------------------------------------");
         this.errorsDetected++;
     }
@@ -302,7 +305,7 @@ public final class Lexer {
     // --------------------------------------------------------------------------------------------
 
     public int getNroCaracter() {
-        return this.nroCaracter;
+        return this.nroCaracter - 2;
     }
 
     // --------------------------------------------------------------------------------------------
