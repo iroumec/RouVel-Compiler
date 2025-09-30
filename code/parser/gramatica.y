@@ -80,9 +80,15 @@ punto_y_coma_opcional           : // épsilon
 
 lista_variables                 : ID
                                 | lista_variables ',' ID
-/*
-                                | error
-                                { notifyError("Se esperaba una variable. Se leyó: " + $1.sval + "."); } */
+                                // ------------------------------
+                                // PATRONES DE ERROR ESPECÍFICOS
+                                // ------------------------------
+                                | lista_variables ID
+                                {
+                                    notifyError(String.format(
+                                        "Se encontraron dos variables juntas sin una coma de separación. Sugerencia: Inserte una ',' entre '%s' y '%s'.",
+                                        $1.sval, $2.sval));
+                                }
                                 ;
 
 /*
