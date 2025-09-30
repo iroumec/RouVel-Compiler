@@ -2,6 +2,14 @@
 /* INICIO DE DECLARACIONES                                                                              */
 /* ---------------------------------------------------------------------------------------------------- */
 
+// Importaciones necesarias.
+%{
+    package parser;
+
+    import lexer.Lexer;
+    import common.Token;
+%}
+
 // Declaración de los tipos de valores.
 // Se le informa a Yacc que tendrá que trabajar con valores de tipo String.
 // Esto es para que no dé error el highlighter de la gramática, ya que está pensado para byacc para C.
@@ -34,6 +42,13 @@
 
 programa                        : ID '{' conjunto_sentencias '}'
                                 { notifyDetection("Programa."); }
+                                // -----------------
+                                // REGLAS DE ERROR
+                                // -----------------
+                                | ID
+                                { notifyError("El programa no posee un cuerpo."); }
+                                | ID '{' '}'
+                                { notifyError("El programa no tiene ninguna sentencia."); }
                                 | error
                                 { notifyError("Programa inválido. Este debe seguir la estructura: ID { <conjunto_de_sentencias> }."); }
                                 ;
@@ -63,20 +78,10 @@ sentencia_declarativa           : declaracion_variable
                                 { notifyError("Sentencia declarativa no válida."); }
                                 */
                                 ;
-/*
-declaracion_variable            : UINT lista_variables ';'
-                                // --------------- //
-                                // REGLAS DE ERROR //
-                                // --------------- //
-                                /*
-                                | UINT error lista_variables ';'
-                                { notifyError(applySynchronizationFormat($2.sval, $3.sval)); }
-                                | error UINT error lista_variables ';'
-                                { notifyError($1.sval + " no es tipo válido y " + $3.sval + " no es una variable válida."); }
-                                | error UINT lista_variables ';'
-                                { notifyError(applySynchronizationFormat($1.sval, $2.sval)); }
-                                
-                                ; */
+
+/* ---------------------------------------------------------------------------------------------------- */
+/* Variables                                                                                            */
+/* ---------------------------------------------------------------------------------------------------- */
 
 declaracion_variable            : UINT lista_variables ';'
                                 | UINT error ';'
@@ -134,6 +139,10 @@ asignacion_multiple             : lista_variables '=' lista_constantes
 lista_constantes                : constante
                                 | lista_constantes ',' constante
                                 ;
+
+/* ---------------------------------------------------------------------------------------------------- */
+/* Expresiones Lambda                                                                                   */
+/* ---------------------------------------------------------------------------------------------------- */
 
 // El factor representa al argumento.
 lambda                          : '(' parametro_lambda ')' bloque_ejecutable '(' factor ')'
@@ -208,7 +217,7 @@ condicion                       : expresion comparador expresion
                                 // --------------- //
                                 // REGLAS DE ERROR //
                                 // --------------- //
-                                | // éspilon
+                                | // épsilon
                                 { notifyError("La condición no puede estar vacía."); }
                                 ;
 
@@ -355,6 +364,10 @@ semantica_pasaje                : // épsilon
                                 }
                                 ;
 
+/* ---------------------------------------------------------------------------------------------------- */
+/* Invocación de Función                                                                                */
+/* ---------------------------------------------------------------------------------------------------- */
+
 invocacion_funcion              : ID '(' lista_argumentos ')' 
                                 { notifyDetection("Invocación de función."); }
                                 ;
@@ -432,7 +445,7 @@ public void yyerror(String s) {
     
     // yychar es una variable interna del parser que contiene el token actual (lookahead).
     if (yychar == EOF) {
-        notifyError("Error de sintaxis: Se alcanzó el final del archivo inesperadamente. (¿Falta un '}' o un ';'? )");
+        //notifyError("Error de sintaxis: Se alcanzó el final del archivo inesperadamente. (¿Falta un '}' o un ';'? )");
         return;
     }
     

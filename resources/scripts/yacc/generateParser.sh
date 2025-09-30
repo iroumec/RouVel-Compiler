@@ -14,13 +14,9 @@ cd "$SCRIPT_DIR" || { echo "No se pudo cambiar a $SCRIPT_DIR"; exit 1; }
 # -Jnodebug
 ./yacc -J -Jnoconstruct -Jnorun -Jfinal -v "$OUT_DIR/gramatica.y"
 
-# Se agrega "package parser;" al inicio de ambos archivos.
-# Esto para que sea coherente con nuestra estructura de código.
-sed -i '1ipackage parser;\n' Parser.java
+# Se agrega "package parser;" al inicio del archivo ParserVal.java.
+# Esto para que sea coherente con la estructura de código.
 sed -i '1ipackage parser;\n' ParserVal.java
-
-# Se agregan las importaciones necesarias a Parser.java.
-sed -i '2iimport lexer.Lexer;\nimport common.Token;' Parser.java
 
 # FIX: comentar typedef union que no sirve en Java.
 # Abrir comentario antes de "typedef union".
