@@ -67,7 +67,17 @@ sentencia                       : sentencia_ejecutable
                                 // REGLAS DE ERROR
                                 // -----------------
                                 | error ';'
-                                { notifyError("Sentencia inválida en el lenguaje. Se sincronizó hasta un ';'."); }
+                                {
+                                    notifyError("Sentencia inválida en el lenguaje. Se sincronizará hasta un ';'.");
+                                }
+                                | error '}'
+                                {
+                                    notifyError("Sentencia inválida en el lenguaje. Se sincronizará hasta un '}'.");
+                                }
+                                | error sentencia
+                                {
+                                    notifyError("Sentencia inválida en el lenguaje. Se sincronizará hasta otra sentencia.");
+                                }
                                 ;
 
 /* ---------------------------------------------------------------------------------------------------- */
@@ -422,7 +432,7 @@ public Parser(Lexer lexer) {
     this.lexer = lexer;
     this.errorsDetected = this.warningsDetected = 0;
     // Se activa el debug.
-    //yydebug = true;
+    yydebug = true;
 }
 
 // Método público para llamar a yyparse(), ya que, por defecto,
@@ -502,6 +512,10 @@ void descartarTokenError() {
     Printer.print("Token de error descartado.");
 }
 // TODO: descartar hasta un punto de sincronizacion. "}" o ";".
+
+void apagarEstadoDeError() {
+    yyerrflag = 0;
+}
 
 void notifyDetection(String message) {
     Printer.printBetweenSeparations(String.format(
