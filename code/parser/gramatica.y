@@ -46,6 +46,8 @@ programa                        : ID cuerpo_programa
                                 // -----------------
                                 // REGLAS DE ERROR
                                 // -----------------
+                                | ID conjunto_sentencias
+                                //| conjunto_sentencias
                                 | cuerpo_programa
                                 { notifyError("El programa requiere de un nombre."); }
                                 | error
@@ -61,6 +63,8 @@ cuerpo_programa                 : '{' conjunto_sentencias '}'
                                 // -----------------
                                 | '{' '}'
                                 { notifyError("El programa no posee ninguna sentencia."); }
+                                //| conjunto_sentencias
+                                { notify("Las sentencias del programa deben estar delimitadas por llaves."); }
                                 | // lambda //
                                 { notifyError("El programa no posee un cuerpo."); }
                                 ;
@@ -204,7 +208,7 @@ bloque_ejecutable               : '{' conjunto_sentencias_ejecutables '}'
                                 // --------------- //
                                 | '{' '}'
                                 { notifyError("El cuerpo de la sentencia no puede estar vacío."); }
-                                | //épsilon
+                                //| //épsilon
                                 { notifyError("Debe especificarse un cuerpo para la sentencia."); }
                                 ;
 
@@ -244,15 +248,25 @@ sentencia_control               : if
                                 { notifyDetection("Sentencia WHILE."); }                                                   
                                 ;
 
-condicion                       : expresion comparador expresion
+condicion                       : '(' cuerpo_condicion ')'
                                 { notifyDetection("Condicion."); }
                                 // --------------- //
                                 // REGLAS DE ERROR //
                                 // --------------- //
-                                | // épsilon
+                                | '(' ')'
                                 { notifyError("La condición no puede estar vacía."); }
+                                | cuerpo_condicion
+                                { notifyError("Falta apertura y cierre de paréntesis en condicion de selección/iteración.") }
+                                | '(' cuerpo_condicion
+                                { notifyError("Falta cierre de paréntesis en condicion de selección/iteración.") }
+                                | cuerpo_condicion')'
+                                { notifyError("Falta apertura de paréntesis en condicion de selección/iteración.") }
                                 ;
 
+cuerpo_condicion                : expresion comparador expresion
+                                //| // lambda //
+                                ;
+                                
 comparador                      : '>'
                                 | '<'
                                 | EQ
@@ -278,8 +292,8 @@ comparador                      : '>'
                                 }
                                 ;
 
-if                              : IF '(' condicion ')' cuerpo_ejecutable rama_else ENDIF
-                                | IF '(' condicion ')' cuerpo_ejecutable rama_else
+if                              : IF condicion cuerpo_ejecutable rama_else ENDIF
+                                | IF condicion cuerpo_ejecutable rama_else
                                 { notifyError("La sentencia IF debe finalizarse con 'endif'."); }
                                 ;
 
@@ -288,9 +302,21 @@ rama_else                       : // épsilon
                                 | ELSE cuerpo_ejecutable
                                 { notifyDetection("Sentencia IF-ELSE."); }
                                 ;
+                                
+while                           : DO cuerpo_do
+                                // --------------- //
+                                // REGLAS DE ERROR //
+                                // --------------- //
+                                //| cuerpo_do
+                                //{ notifyError("Falta 'do'."); }
+                                ;
 
-
-while                           : DO cuerpo_ejecutable WHILE '(' condicion ')'
+cuerpo_do                       : cuerpo_ejecutable WHILE condicion
+                                // --------------- //
+                                // REGLAS DE ERROR //
+                                // --------------- //
+                                | cuerpo_ejecutable condicion
+                                { notifyError("Falta 'while'."); }
                                 ;
 
 impresion                       : PRINT '(' imprimible ')'                                          
@@ -300,6 +326,11 @@ imprimible                      : STR
                                 { notifyDetection("Impresión de cadena."); }
                                 | expresion
                                 { notifyDetection("Impresión de expresión."); }
+                                // ------------------------------
+                                // REGLAS DE ERROR
+                                // ------------------------------
+                                | // lambda //
+                                { notifyError("La sentencia 'print' requiere de al menos un argumento."); }
                                 ;
 
 /* ---------------------------------------------------------------------------------------------------- */
@@ -308,6 +339,7 @@ imprimible                      : STR
 
 // Podría simplificarse con un "operador_expresion" creo.
 expresion                       : expresion operador_suma termino
+                                | expresion termino
                                 | termino
                                 ;
 
@@ -317,7 +349,7 @@ operador_suma                   : '+'
                                 | '-'
                                 ;
 
-termino                         : termino operador_multiplicacion factor 
+termino                         : termino operador_multiplicacion factor
                                 | factor
                                 ;
 
@@ -349,6 +381,8 @@ variable                        : ID
 
 declaracion_funcion             : UINT ID '(' conjunto_parametros ')' '{' cuerpo_funcion '}'
                                 { notifyDetection("Declaración de función."); }
+                                | UINT '(' conjunto_parametros ')' '{' cuerpo_funcion '}'
+                                { notifyError("Falta de nombre en la función.")}
                                 ;
 
 cuerpo_funcion                  : conjunto_sentencias
@@ -386,6 +420,10 @@ parametro_vacio                 : lista_parametros ','
 
 // Separado por legibilidad.
 parametro_formal                : semantica_pasaje UINT variable
+                                | semantica_pasaje UINT 
+                                { notifyError("Falta de nombre de parámetro formal en declaración de función.") }
+                                | semantica_pasaje variable
+                                { notifyError("Falta de tipo de parámetro formal en declaración de funcion.") }
                                 ; 
 
 // Separado para evitar un reduce/reduce.
@@ -412,6 +450,11 @@ lista_argumentos                : argumento
 
 // Separado por legibilidad.
 argumento                       : expresion FLECHA ID
+                                // --------------- //
+                                // REGLAS DE ERROR //
+                                // --------------- //
+                                | expresion
+                                { notifyError("Falta de especificación del parámetro formal al que corresponde el parámetro real."); }
                                 ;
 
 /* ---------------------------------------------------------------------------------------------------- */
