@@ -41,20 +41,28 @@
 /* INICIO DE REGLAS                                                                                     */
 /* ---------------------------------------------------------------------------------------------------- */
 
-programa                        : ID '{' conjunto_sentencias '}'
+programa                        : ID cuerpo_programa
                                 { notifyDetection("Programa."); }
                                 // -----------------
                                 // REGLAS DE ERROR
                                 // -----------------
-                                | ID
-                                { notifyError("El programa no posee un cuerpo."); }
-                                | ID '{' '}'
-                                { notifyError("El programa no tiene ninguna sentencia."); }
+                                | cuerpo_programa
+                                { notifyError("El programa requiere de un nombre."); }
                                 | error
                                 {
                                     notifyError("Inicio de programa inválido. Este debe seguir la estructura: <NOMBRE%PROGRAMA> { ... }. Se sincronizará hasta ID.");
                                     descartarTokensHasta(ID); // Se descartan todos los tokens hasta ID.
                                 }
+                                ;
+
+cuerpo_programa                 : '{' conjunto_sentencias '}'
+                                // -----------------
+                                // REGLAS DE ERROR
+                                // -----------------
+                                | '{' '}'
+                                { notifyError("El programa no posee ninguna sentencia."); }
+                                | // lambda //
+                                { notifyError("El programa no posee un cuerpo."); }
                                 ;
                 
 conjunto_sentencias             : sentencia
