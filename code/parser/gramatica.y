@@ -41,6 +41,9 @@
 // error: token especial que representa cualquier cosa que en ese punto no cumpla ninguna
 // de las alternativas válidas.
 
+// Si se define el error con un token de sincronización, por ejemplo, "error '}'", el parser consumirá todos los tokens
+// habidos, incluido '}' antes de reducir por la regla.
+
 // ============================================================================================================================================================
 // INICIO DE REGLAS
 // ============================================================================================================================================================
@@ -279,20 +282,23 @@ sentencia_control               : if
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-// AGREGUÉ "ERROR" PORQUE, SI SE SACAN, DA SHIFT/REDUCE.
-condicion                       : '(' cuerpo_condicion ')'
-                                // --------------- //
-                                // REGLAS DE ERROR //
-                                // --------------- //
-                                | cuerpo_condicion error
-                                {
-                                    notifyError("Falta apertura y cierre de paréntesis en condicion de selección/iteración.");
-                                    descartarTokenError();
-                                }
-                                | '(' cuerpo_condicion error
-                                { notifyError("Falta cierre de paréntesis en condicion de selección/iteración."); }
-                                | cuerpo_condicion ')'
+condicion                       : inicio_condicion cuerpo_condicion fin_condicion
+                                ;
+
+inicio_condicion                : '('
+                                // ==============================
+                                // REGLAS DE ERROR
+                                // ==============================
+                                | // lambda //
                                 { notifyError("Falta apertura de paréntesis en condicion de selección/iteración."); }
+                                ;
+
+fin_condicion                   : ')'
+                                // ==============================
+                                // REGLAS DE ERROR
+                                // ==============================
+                                //| // lambda //
+                                //{ notifyError("Falta cierre de paréntesis en condicion de selección/iteración."); this.readAgain = true; }
                                 ;
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -592,6 +598,8 @@ private final Lexer lexer;
 private int errorsDetected;
 private int warningsDetected;
 
+private boolean readAgain;
+
 /**
 * Constructor que recibe un Lexer.
 */
@@ -599,6 +607,7 @@ public Parser(Lexer lexer) {
     
     this.lexer = lexer;
     this.errorsDetected = this.warningsDetected = 0;
+    this.readAgain = false;
     
     // Descomentar la siguiente línea para activar el debugging.
     // yydebug = true;
@@ -621,7 +630,15 @@ int yylex() {
         throw new IllegalStateException("No hay un analizador léxico asignado.");
     }
 
-    Token token = lexer.getNextToken();
+    Token token;
+    // Se lee nuevamente el último token.
+    // Útil para recuperar el token de sincronización en reglas de error.
+    if (this.readAgain) {
+        token = lexer.getCurrentToken();
+        this.readAgain = false;
+    } else {
+        token = lexer.getNextToken();
+    }
 
     this.yylval = new ParserVal(token.getLexema());
 
