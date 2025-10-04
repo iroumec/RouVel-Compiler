@@ -48,6 +48,9 @@ antes de reducir por la regla. Lo mismo sucede si se usa un no-terminal, por eje
 no terminal consumido por el error, por lo que no puede usarse para detectar luego otra regla. Esto es muy importante ya que complica el manejo
 de errores.
 
+En caso de que el token a recuperarse quiera volver a leerse, se proporciona un método que puede ser invocado con dicho propósito: "readLastTokenAgain()".
+ESTE SOLO ES VÁLIDO PARA LA LECTURA REPETIDA DE TOKENS. NO SIRVE PARA NO-TERMINALES.
+
 De producirse un error, el error sube hasta que una regla superior lo intercepta. En tal caso de que una regla levante un error que deba ser interceptada
 por una regla de orden superior, se usa la notación "@LevantaError" para hacer esto explícito y claro. Estas reglas se van a caracterizar por ser un
 posible punto de fallo y no permitir, debido a la aparición de conflictos, la posibilidad de vacío (lambda). Si la regla de un orden superior no intercepta
@@ -118,11 +121,12 @@ sentencia                       : sentencia_ejecutable
                                 // -----------------
                                 | error ';'
                                 {
-                                    notifyError("Sentencia inválida en el lenguaje. Se sincronizará hasta un ';'.");
+                                    notifyError("Sentencia inválida en el lenguaje.");
                                 }
                                 | error '}'
                                 {
-                                    notifyError("Sentencia inválida en el lenguaje. Se sincronizará hasta un '}'.");
+                                    notifyError("Sentencia inválida en el lenguaje.");
+                                    readLastTokenAgain(); // Importante para no consumir erróneamente el cierre del programa.
                                 }
                                 | error sentencia
                                 {
@@ -668,6 +672,17 @@ int yylex() {
         throw new IllegalStateException("No hay un analizador léxico asignado.");
     }
 
+    Token token = this.getAppropiateToken();
+
+    this.yylval = new ParserVal(token.getLexema());
+
+    return token.getIdentificationCode();
+}
+
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Token getAppropiateToken() {
+
     Token token;
     // Se lee nuevamente el último token.
     // Útil para recuperar el token de sincronización en reglas de error.
@@ -678,9 +693,7 @@ int yylex() {
         token = lexer.getNextToken();
     }
 
-    this.yylval = new ParserVal(token.getLexema());
-
-    return token.getIdentificationCode();
+    return token;
 }
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -731,6 +744,14 @@ public void yyerror(String s) {
     );
     */
 }
+
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+void readLastTokenAgain() {
+    this.readAgain = true;
+}
+
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 void forzarUsoDeNuevoToken() {
     yylex(); // leer un token y avanzar
