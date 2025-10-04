@@ -64,7 +64,7 @@ cuerpo_programa                 : '{' conjunto_sentencias '}'
                                 | '{' '}'
                                 { notifyError("El programa no posee ninguna sentencia."); }
                                 //| conjunto_sentencias
-                                { notify("Las sentencias del programa deben estar delimitadas por llaves."); }
+                                { notifyError("Las sentencias del programa deben estar delimitadas por llaves."); }
                                 | // lambda //
                                 { notifyError("El programa no posee un cuerpo."); }
                                 ;
@@ -248,6 +248,7 @@ sentencia_control               : if
                                 { notifyDetection("Sentencia WHILE."); }                                                   
                                 ;
 
+// AGREGUÉ "ERROR" PORQUE, SI SE SACAN, DA SHIFT/REDUCE.
 condicion                       : '(' cuerpo_condicion ')'
                                 { notifyDetection("Condicion."); }
                                 // --------------- //
@@ -255,12 +256,12 @@ condicion                       : '(' cuerpo_condicion ')'
                                 // --------------- //
                                 | '(' ')'
                                 { notifyError("La condición no puede estar vacía."); }
-                                | cuerpo_condicion
-                                { notifyError("Falta apertura y cierre de paréntesis en condicion de selección/iteración.") }
-                                | '(' cuerpo_condicion
-                                { notifyError("Falta cierre de paréntesis en condicion de selección/iteración.") }
-                                | cuerpo_condicion')'
-                                { notifyError("Falta apertura de paréntesis en condicion de selección/iteración.") }
+                                | error cuerpo_condicion error
+                                { notifyError("Falta apertura y cierre de paréntesis en condicion de selección/iteración."); }
+                                | '(' cuerpo_condicion error
+                                { notifyError("Falta cierre de paréntesis en condicion de selección/iteración."); }
+                                | cuerpo_condicion ')'
+                                { notifyError("Falta apertura de paréntesis en condicion de selección/iteración."); }
                                 ;
 
 cuerpo_condicion                : expresion comparador expresion
@@ -339,7 +340,7 @@ imprimible                      : STR
 
 // Podría simplificarse con un "operador_expresion" creo.
 expresion                       : expresion operador_suma termino
-                                | expresion termino
+                                //| expresion error termino
                                 | termino
                                 ;
 
@@ -361,6 +362,7 @@ operador_multiplicacion         : '/'
 
 factor                          : variable
                                 | constante
+                                | invocacion_funcion
                                 ;
 
 // Separados para contemplar la posibilidad de CTE negativa.
@@ -382,7 +384,7 @@ variable                        : ID
 declaracion_funcion             : UINT ID '(' conjunto_parametros ')' '{' cuerpo_funcion '}'
                                 { notifyDetection("Declaración de función."); }
                                 | UINT '(' conjunto_parametros ')' '{' cuerpo_funcion '}'
-                                { notifyError("Falta de nombre en la función.")}
+                                { notifyError("Falta de nombre en la función."); }
                                 ;
 
 cuerpo_funcion                  : conjunto_sentencias
@@ -393,7 +395,7 @@ cuerpo_funcion                  : conjunto_sentencias
                                 { notifyError("El cuerpo de la función no puede estar vacío."); }
                                 ;
 
-sentencia_retorno               : RETURN expresion
+sentencia_retorno               : RETURN '(' expresion ')'
                                 ;
 
 conjunto_parametros             : lista_parametros
@@ -421,9 +423,9 @@ parametro_vacio                 : lista_parametros ','
 // Separado por legibilidad.
 parametro_formal                : semantica_pasaje UINT variable
                                 | semantica_pasaje UINT 
-                                { notifyError("Falta de nombre de parámetro formal en declaración de función.") }
+                                { notifyError("Falta de nombre de parámetro formal en declaración de función."); }
                                 | semantica_pasaje variable
-                                { notifyError("Falta de tipo de parámetro formal en declaración de funcion.") }
+                                { notifyError("Falta de tipo de parámetro formal en declaración de funcion."); }
                                 ; 
 
 // Separado para evitar un reduce/reduce.
