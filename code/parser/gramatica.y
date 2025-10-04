@@ -61,9 +61,17 @@ de un no-terminal que utiliza; y "@TrasladaError" si, en lugar de interceptarlo,
 
 Es importante tener en cuenta que NO CUALQUIER REGLA PUEDE INTERCEPTAR UN ERROR. La regla, además de usar un no-terminal que levante o traslade un error,
 este no terminal, en la regla, al remplazarse por el token de error, debe estar procedido de otro no-terminal, de forma que haya un punto de sincronización.
-En caso contrario, en caso de una regla de la forma "<no-terminal1> <no-terminal2> error", no se intercepta el error, sino que se traslada a una regla de
+En caso contrario, en caso de una regla de la forma "<no-terminal1> <no-terminal2> ... error", no se intercepta el error, sino que se traslada a una regla de
 orden superior. Es decir, SÍ O SÍ, LUEGO DE UN TOKEN DE ERROR, DEBE HABER UN TOKEN O NO-TERMINAL QUE FUNCIONE COMO PUNTO DE SINCRONIZACIÓN (no olvidar lo
 mencionado en el segundo párrago).
+
+ATENCIÓN: lo último no es siempre cierto. Existen veces donde el error de igual forma sí se intercepta. Aún no sé por qué a veces sí y a veces no.
+NUEVA HIPÓTESIS: O quizás sí. Pero hay una peculiaridad: al irse trasladando el error, las acciones semánticas no se ejecutan hasta que el error no es
+interceptado. Si ocurren otros errores (con otras acciones semánticas asociadas en el medio), únicamente la primera acción semántica se ejecuta.
+Por lo mismo, es altamente recomendable interceptar los errores lo antes posible, ya que no se acumulan.
+
+Básicamente, es como si una regla, al usar un no-terminal que levanta o traslada un error, estuviese firmando un contrato que dice: "Me comprometo a
+interceptar o trasladar el error".
 
 Si en una regla está la posibilidad de vacío, "lambda", jamás va a producirse un error en dicha regla, porque, de venir algo que no cumpla
 con ninguna de las alternativas válidas, va a reducir por la regla vacía.
@@ -272,10 +280,11 @@ conjunto_sentencias_ejecutables : sentencia_ejecutable
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+// @LevantaError: "Toda sentencia ejecutable debe terminar con punto y coma."
 sentencia_ejecutable            : operacion_ejecutable ';'
-                                // --------------- //
-                                // REGLAS DE ERROR //
-                                // --------------- //
+                                // ==============================
+                                // REGLAS DE ERROR
+                                // ==============================
                                 | operacion_ejecutable error
                                 { notifyError("Toda sentencia ejecutable debe terminar con punto y coma."); }
                                 ;
@@ -295,9 +304,9 @@ operacion_ejecutable            : invocacion_funcion
 
 asignacion_simple               : variable DASIG expresion                                          
                                 { notifyDetection("Asignación simple."); }
-                                // ------------------------------
-                                // REGLAS DE ERROR CONTEXTUALES
-                                // ------------------------------
+                                // ==============================
+                                // PATRONES DE ERROR ESPECÍFICOS
+                                // ==============================
                                 | variable error expresion
                                 { notifyError("Error en asignación. Se esperaba un ':='."); }
                                 ;
@@ -305,7 +314,7 @@ asignacion_simple               : variable DASIG expresion
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 sentencia_control               : if                                                                
-                                | while         
+                                | do_while         
                                 { notifyDetection("Sentencia WHILE."); }                                                   
                                 ;
 
@@ -368,7 +377,9 @@ comparador                      : '>'
                                 }
                                 ;
 
-// ------------------------------------------------------------------------------------------------------------------------------------------------------------
+// ************************************************************************************************************************************************************
+// Sentencia IF
+// ************************************************************************************************************************************************************
 
 // @InterceptaError: "Falta cierre de paréntesis en condición."
 if                              : IF condicion cuerpo_ejecutable rama_else ENDIF
@@ -389,27 +400,35 @@ rama_else                       : // lambda //
                                 { notifyDetection("Sentencia IF-ELSE."); }
                                 ;
 
-// ------------------------------------------------------------------------------------------------------------------------------------------------------------
-                                
-while                           : DO cuerpo_do
-                                // ==============================
-                                // REGLAS DE ERROR
-                                // ==============================
-                                //| cuerpo_do
-                                //{ notifyError("Falta 'do'."); }
-                                ;
+// ************************************************************************************************************************************************************
+// Sentencia WHILE
+// ************************************************************************************************************************************************************
 
-// ------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-cuerpo_do                       : cuerpo_ejecutable WHILE condicion
+// @InterceptaError: "Falta 'while'."
+do_while                        : DO cuerpo_do
                                 // ==============================
-                                // REGLAS DE ERROR
+                                // INTERCEPCIÓN DE ERRORES
                                 // ==============================
-                                | cuerpo_ejecutable condicion
+                                | DO error
                                 { notifyError("Falta 'while'."); }
                                 ;
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+// @LevantaError: "Falta 'while'."
+// @InterceptaError: "Falta cierre de paréntesis en condición."
+cuerpo_do                       : cuerpo_ejecutable WHILE condicion
+                                // ==============================
+                                // INTERCEPCIÓN DE ERRORES
+                                // ==============================
+                                | cuerpo_ejecutable WHILE error
+                                { notifyError("Falta cierre de paréntesis en condición."); }
+                                | error WHILE error
+                                ;
+
+// ************************************************************************************************************************************************************
+// Sentencia PRINT
+// ************************************************************************************************************************************************************
 
 impresion                       : PRINT '(' imprimible ')'                                          
                                 ;
@@ -517,7 +536,7 @@ variable                        : ID
                                 ;
 
 // ************************************************************************************************************************************************************
-// Funciones
+// Declaración de Función
 // ************************************************************************************************************************************************************
 
 declaracion_funcion             : UINT ID '(' conjunto_parametros ')' '{' cuerpo_funcion '}'
@@ -529,9 +548,9 @@ declaracion_funcion             : UINT ID '(' conjunto_parametros ')' '{' cuerpo
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 cuerpo_funcion                  : conjunto_sentencias
-                                // --------------- //
-                                // REGLAS DE ERROR //
-                                // --------------- //
+                                // ==============================
+                                // REGLAS DE ERROR
+                                // ==============================
                                 | // lambda //
                                 { notifyError("El cuerpo de la función no puede estar vacío."); }
                                 ;
@@ -544,9 +563,9 @@ sentencia_retorno               : RETURN '(' expresion ')'
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 conjunto_parametros             : lista_parametros
-                                // --------------- //
-                                // REGLAS DE ERROR //
-                                // --------------- //
+                                // ==============================
+                                // REGLAS DE ERROR
+                                // ==============================
                                 | // lambda //
                                 { notifyError("Toda función debe recibir al menos un parámetro."); }
                                 ;
@@ -589,9 +608,9 @@ semantica_pasaje                : // lambda //
                                 }
                                 ;
 
-/* ---------------------------------------------------------------------------------------------------- */
-/* Invocación de Función                                                                                */
-/* ---------------------------------------------------------------------------------------------------- */
+// ************************************************************************************************************************************************************
+// Invocación de Función
+// ************************************************************************************************************************************************************
 
 invocacion_funcion              : ID '(' lista_argumentos ')' 
                                 {
