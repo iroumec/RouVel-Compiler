@@ -12,10 +12,10 @@ public class FloatChecker implements SemanticAction {
 
     private static FloatChecker INSTANCE;
 
-    private static final BigDecimal MIN_POS_VAL = new BigDecimal("1.17549435E-38");
-    private static final BigDecimal MAX_POS_VAL = new BigDecimal("3.40282347E38");
-    private static final BigDecimal MIN_NEG_VAL = new BigDecimal("-3.40282347E38");
-    private static final BigDecimal MAX_NEG_VAL = new BigDecimal("-1.17549435E-38");
+    // Debido a que no se cuenta con el signo aún, solo puede efectuarse el chequeo
+    // del rango considerando los valores absolutoss.
+    private static final BigDecimal ABSOLUTE_MINIMUN = new BigDecimal("1.17549435E-38");
+    private static final BigDecimal ABSOLUTE_MAXIMUM = new BigDecimal("3.40282347E38");
 
     // --------------------------------------------------------------------------------------------
 
@@ -141,8 +141,7 @@ public class FloatChecker implements SemanticAction {
 
         BigDecimal value = new BigDecimal(number);
 
-        return (value.compareTo(MIN_POS_VAL) >= 0 && value.compareTo(MAX_POS_VAL) <= 0)
-                || (value.compareTo(MAX_NEG_VAL) <= 0 && value.compareTo(MIN_NEG_VAL) >= 0)
+        return (value.compareTo(ABSOLUTE_MINIMUN) >= 0 && value.compareTo(ABSOLUTE_MAXIMUM) <= 0)
                 || value.compareTo(BigDecimal.ZERO) == 0;
     }
 
