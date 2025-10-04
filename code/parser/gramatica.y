@@ -68,7 +68,7 @@ mencionado en el segundo párrago).
 ATENCIÓN: lo último no es siempre cierto. Existen veces donde el error de igual forma sí se intercepta. Aún no sé por qué a veces sí y a veces no.
 NUEVA HIPÓTESIS: O quizás sí. Pero hay una peculiaridad: al irse trasladando el error, las acciones semánticas no se ejecutan hasta que el error no es
 interceptado. Si ocurren otros errores (con otras acciones semánticas asociadas en el medio), únicamente la primera acción semántica se ejecuta.
-Por lo mismo, es altamente recomendable interceptar los errores lo antes posible, ya que no se acumulan.
+Por lo mismo, es altamente recomendable interceptar los errores lo antes posible, ya que no se acumulan. ESTOY SEGURO DE QUE ESTO ES LO QUE PASA.
 
 Básicamente, es como si una regla, al usar un no-terminal que levanta o traslada un error, estuviese firmando un contrato que dice: "Me comprometo a
 interceptar o trasladar el error".
@@ -86,9 +86,9 @@ Las reglas vacías son altamente propensas a conflictos shift/reduce.
 
 programa                        : ID cuerpo_programa
                                 { notifyDetection("Programa."); }
-                                // -----------------
+                                // ==============================
                                 // REGLAS DE ERROR
-                                // -----------------
+                                // ==============================
                                 | ID conjunto_sentencias
                                 //| conjunto_sentencias
                                 | cuerpo_programa
@@ -124,9 +124,9 @@ conjunto_sentencias             : sentencia
 
 sentencia                       : sentencia_ejecutable
                                 | sentencia_declarativa
-                                // -----------------
+                                // ==============================
                                 // REGLAS DE ERROR
-                                // -----------------
+                                // ==============================
                                 | error ';'
                                 {
                                     notifyError("Sentencia inválida en el lenguaje.");
@@ -193,9 +193,9 @@ lista_variables                 : ID
                                 // Esto es útil para mostrar errores correctamente. Si no se pone, en una sentencia como:
                                 // uint A, B C
                                 // Diría que la coma falta entre A y C.
-                                // ------------------------------
+                                // ==============================
                                 // PATRONES DE ERROR ESPECÍFICOS
-                                // ------------------------------
+                                // ==============================
                                 | lista_variables ID
                                 {
                                     notifyError(String.format(
@@ -245,9 +245,9 @@ lambda                          : '(' parametro_lambda ')' bloque_ejecutable '('
 
 // Separado por legibilidad y para contemplar los casos de error.
 parametro_lambda                : UINT ID
-                                // --------------- //
-                                // REGLAS DE ERROR //
-                                // --------------- //
+                                // ==============================
+                                // REGLAS DE ERROR
+                                // ==============================
                                 | // épsilon
                                 { notifyError("La expresión lambda requiere de un parámetro."); }
                                 ;
@@ -263,9 +263,9 @@ cuerpo_ejecutable               : sentencia_ejecutable
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 bloque_ejecutable               : '{' conjunto_sentencias_ejecutables '}'
-                                // --------------- //
-                                // REGLAS DE ERROR //
-                                // --------------- //
+                                // ==============================
+                                // REGLAS DE ERROR
+                                // ==============================
                                 | '{' '}'
                                 { notifyError("El cuerpo de la sentencia no puede estar vacío."); }
                                 //| //épsilon 2 shift/reduce
