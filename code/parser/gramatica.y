@@ -337,17 +337,32 @@ imprimible                      : STR
 /* ---------------------------------------------------------------------------------------------------- */
 /* Expresiones                                                                                          */
 /* ---------------------------------------------------------------------------------------------------- */
-
+/*
 // Podría simplificarse con un "operador_expresion" creo.
 expresion                       : expresion operador_suma termino
                                 //| expresion error termino
                                 | termino
+                                | expresion termino
+                                ;*/
+
+expresion                       : expresion operador_suma termino
+                                | termino
+                                // ====================
+                                // Reglas de Error
+                                // ====================
+                                | secuencia_sin_operador
                                 ;
 
 // Esta separación se realiza en libros como "Compilers: Principles, Techniques, and Tools”
 // para aclarar la estructura y reducir la duplicación.
 operador_suma                   : '+'
                                 | '-'
+                                ;
+
+// Permite la aparición de varios términos sin un operador de por medio.
+// No hace falta agregar una para término ya que hay una regla termino -> factor.
+secuencia_sin_operador          : termino termino
+                                | secuencia_sin_operador termino
                                 ;
 
 termino                         : termino operador_multiplicacion factor
@@ -367,8 +382,8 @@ factor                          : variable
 
 // Separados para contemplar la posibilidad de CTE negativa.
 constante                       : CTE
-                                | '-' CTE // Luego debe revisarse que la CTE no sea entera.
-                                { $$ = '-' + $2; }
+                                //| '-' CTE // Luego debe revisarse que la CTE no sea entera.
+                                //{ $$ = '-' + $2; }
                                 ;
 
 // Separado para contemplar la posibilidad de identificador prefijado.
@@ -391,7 +406,7 @@ cuerpo_funcion                  : conjunto_sentencias
                                 // --------------- //
                                 // REGLAS DE ERROR //
                                 // --------------- //
-                                | // Épsilon
+                                | // lambda //
                                 { notifyError("El cuerpo de la función no puede estar vacío."); }
                                 ;
 
@@ -402,7 +417,7 @@ conjunto_parametros             : lista_parametros
                                 // --------------- //
                                 // REGLAS DE ERROR //
                                 // --------------- //
-                                | // épsilon
+                                | // lambda //
                                 { notifyError("Toda función debe recibir al menos un parámetro."); }
                                 ;
                             
