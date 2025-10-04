@@ -73,12 +73,12 @@
   51                    | while
 
   52  condicion : inicio_condicion cuerpo_condicion fin_condicion
+  53            | inicio_condicion cuerpo_condicion error
 
-  53  inicio_condicion : '('
-  54                   |
+  54  inicio_condicion : '('
+  55                   |
 
-  55  fin_condicion : ')'
-  56                | error '{'
+  56  fin_condicion : ')'
 
   57  cuerpo_condicion : expresion comparador expresion
   58                   |
@@ -334,13 +334,13 @@ state 8
 state 9
 	if : IF . condicion cuerpo_ejecutable rama_else ENDIF  (67)
 	if : IF . condicion cuerpo_ejecutable rama_else  (68)
-	inicio_condicion : .  (54)
+	inicio_condicion : .  (55)
 
 	'('  shift 41
-	error  reduce 54
-	ID  reduce 54
-	CTE  reduce 54
-	')'  reduce 54
+	error  reduce 55
+	ID  reduce 55
+	CTE  reduce 55
+	')'  reduce 55
 
 	condicion  goto 42
 	inicio_condicion  goto 43
@@ -679,9 +679,9 @@ state 40
 
 
 state 41
-	inicio_condicion : '(' .  (53)
+	inicio_condicion : '(' .  (54)
 
-	.  reduce 53
+	.  reduce 54
 
 
 state 42
@@ -716,6 +716,7 @@ state 42
 
 state 43
 	condicion : inicio_condicion . cuerpo_condicion fin_condicion  (52)
+	condicion : inicio_condicion . cuerpo_condicion error  (53)
 	cuerpo_condicion : .  (58)
 
 	ID  shift 68
@@ -827,14 +828,14 @@ state 50
 state 51
 	cuerpo_do : cuerpo_ejecutable . WHILE condicion  (72)
 	cuerpo_do : cuerpo_ejecutable . condicion  (73)
-	inicio_condicion : .  (54)
+	inicio_condicion : .  (55)
 
 	WHILE  shift 101
 	'('  shift 41
-	error  reduce 54
-	ID  reduce 54
-	CTE  reduce 54
-	')'  reduce 54
+	error  reduce 55
+	ID  reduce 55
+	CTE  reduce 55
+	')'  reduce 55
 
 	condicion  goto 102
 	inicio_condicion  goto 43
@@ -1189,6 +1190,7 @@ state 84
 
 state 85
 	condicion : inicio_condicion cuerpo_condicion . fin_condicion  (52)
+	condicion : inicio_condicion cuerpo_condicion . error  (53)
 
 	error  shift 133
 	')'  shift 134
@@ -1342,13 +1344,13 @@ state 100
 
 state 101
 	cuerpo_do : cuerpo_ejecutable WHILE . condicion  (72)
-	inicio_condicion : .  (54)
+	inicio_condicion : .  (55)
 
 	'('  shift 41
-	error  reduce 54
-	ID  reduce 54
-	CTE  reduce 54
-	')'  reduce 54
+	error  reduce 55
+	ID  reduce 55
+	CTE  reduce 55
+	')'  reduce 55
 
 	condicion  goto 146
 	inicio_condicion  goto 43
@@ -1693,16 +1695,15 @@ state 132
 
 
 state 133
-	fin_condicion : error . '{'  (56)
+	condicion : inicio_condicion cuerpo_condicion error .  (53)
 
-	'{'  shift 159
-	.  error
+	.  reduce 53
 
 
 state 134
-	fin_condicion : ')' .  (55)
+	fin_condicion : ')' .  (56)
 
-	.  reduce 55
+	.  reduce 56
 
 
 state 135
@@ -1714,7 +1715,7 @@ state 135
 state 136
 	declaracion_funcion : UINT ID '(' conjunto_parametros . ')' '{' cuerpo_funcion '}'  (97)
 
-	')'  shift 160
+	')'  shift 159
 	.  error
 
 
@@ -1727,7 +1728,7 @@ state 137
 state 138
 	declaracion_funcion : UINT '(' conjunto_parametros ')' . '{' cuerpo_funcion '}'  (98)
 
-	'{'  shift 161
+	'{'  shift 160
 	.  error
 
 
@@ -1743,7 +1744,7 @@ state 139
 	','  reduce 107
 	')'  reduce 107
 
-	parametro_formal  goto 162
+	parametro_formal  goto 161
 	semantica_pasaje  goto 95
 
 
@@ -1764,7 +1765,7 @@ state 141
 	','  reduce 110
 	')'  reduce 110
 
-	variable  goto 163
+	variable  goto 162
 
 
 state 142
@@ -1806,7 +1807,7 @@ state 147
 state 148
 	lambda : '(' parametro_lambda ')' bloque_ejecutable . '(' factor ')'  (30)
 
-	'('  shift 164
+	'('  shift 163
 	.  error
 
 
@@ -1816,7 +1817,7 @@ state 149
 	CTE  shift 69
 	.  error
 
-	constante  goto 165
+	constante  goto 164
 
 
 state 150
@@ -1900,19 +1901,13 @@ state 158
 
 
 state 159
-	fin_condicion : error '{' .  (56)
-
-	.  reduce 56
-
-
-state 160
 	declaracion_funcion : UINT ID '(' conjunto_parametros ')' . '{' cuerpo_funcion '}'  (97)
 
-	'{'  shift 166
+	'{'  shift 165
 	.  error
 
 
-state 161
+state 160
 	declaracion_funcion : UINT '(' conjunto_parametros ')' '{' . cuerpo_funcion '}'  (98)
 	cuerpo_funcion : .  (100)
 
@@ -1929,7 +1924,7 @@ state 161
 	lista_variables  goto 14
 	variable  goto 15
 	invocacion_funcion  goto 16
-	conjunto_sentencias  goto 167
+	conjunto_sentencias  goto 166
 	sentencia  goto 19
 	sentencia_ejecutable  goto 20
 	sentencia_declarativa  goto 21
@@ -1944,22 +1939,22 @@ state 161
 	impresion  goto 30
 	if  goto 31
 	while  goto 32
-	cuerpo_funcion  goto 168
+	cuerpo_funcion  goto 167
 
 
-state 162
+state 161
 	lista_parametros : lista_parametros ',' parametro_formal .  (105)
 
 	.  reduce 105
 
 
-state 163
+state 162
 	parametro_formal : semantica_pasaje UINT variable .  (109)
 
 	.  reduce 109
 
 
-state 164
+state 163
 	lambda : '(' parametro_lambda ')' bloque_ejecutable '(' . factor ')'  (30)
 
 	ID  shift 68
@@ -1968,17 +1963,17 @@ state 164
 
 	variable  goto 70
 	constante  goto 71
-	factor  goto 169
+	factor  goto 168
 	invocacion_funcion  goto 75
 
 
-state 165
+state 164
 	lista_constantes : lista_constantes ',' constante .  (28)
 
 	.  reduce 28
 
 
-state 166
+state 165
 	declaracion_funcion : UINT ID '(' conjunto_parametros ')' '{' . cuerpo_funcion '}'  (97)
 	cuerpo_funcion : .  (100)
 
@@ -1995,7 +1990,7 @@ state 166
 	lista_variables  goto 14
 	variable  goto 15
 	invocacion_funcion  goto 16
-	conjunto_sentencias  goto 167
+	conjunto_sentencias  goto 166
 	sentencia  goto 19
 	sentencia_ejecutable  goto 20
 	sentencia_declarativa  goto 21
@@ -2010,10 +2005,10 @@ state 166
 	impresion  goto 30
 	if  goto 31
 	while  goto 32
-	cuerpo_funcion  goto 170
+	cuerpo_funcion  goto 169
 
 
-state 167
+state 166
 	conjunto_sentencias : conjunto_sentencias . sentencia  (10)
 	cuerpo_funcion : conjunto_sentencias .  (99)
 
@@ -2046,44 +2041,44 @@ state 167
 	while  goto 32
 
 
-state 168
+state 167
 	declaracion_funcion : UINT '(' conjunto_parametros ')' '{' cuerpo_funcion . '}'  (98)
 
-	'}'  shift 171
+	'}'  shift 170
+	.  error
+
+
+state 168
+	lambda : '(' parametro_lambda ')' bloque_ejecutable '(' factor . ')'  (30)
+
+	')'  shift 171
 	.  error
 
 
 state 169
-	lambda : '(' parametro_lambda ')' bloque_ejecutable '(' factor . ')'  (30)
+	declaracion_funcion : UINT ID '(' conjunto_parametros ')' '{' cuerpo_funcion . '}'  (97)
 
-	')'  shift 172
+	'}'  shift 172
 	.  error
 
 
 state 170
-	declaracion_funcion : UINT ID '(' conjunto_parametros ')' '{' cuerpo_funcion . '}'  (97)
-
-	'}'  shift 173
-	.  error
-
-
-state 171
 	declaracion_funcion : UINT '(' conjunto_parametros ')' '{' cuerpo_funcion '}' .  (98)
 
 	.  reduce 98
 
 
-state 172
+state 171
 	lambda : '(' parametro_lambda ')' bloque_ejecutable '(' factor ')' .  (30)
 
 	.  reduce 30
 
 
-state 173
+state 172
 	declaracion_funcion : UINT ID '(' conjunto_parametros ')' '{' cuerpo_funcion '}' .  (97)
 
 	.  reduce 97
 
 
 34 terminals, 51 nonterminals
-120 grammar rules, 174 states
+120 grammar rules, 173 states
