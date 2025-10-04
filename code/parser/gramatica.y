@@ -1,14 +1,24 @@
-/* ---------------------------------------------------------------------------------------------------- */
-/* INICIO DE DECLARACIONES                                                                              */
-/* ---------------------------------------------------------------------------------------------------- */
+// ============================================================================================================================================================
+// INICIO DE DECLARACIONES
+// ============================================================================================================================================================
 
-// Importaciones necesarias.
 %{
     package parser;
 
+    // Importaciones.
     import lexer.Lexer;
     import common.Token;
     import utilities.Printer;
+
+    // End of File.
+    public final static short EOF = 0;
+
+    // Lexer.
+    private final Lexer lexer;
+
+    // Contadores de la cantidad de errores detectados.
+    private int errorsDetected;
+    private int warningsDetected;
 %}
 
 // Declaración de los tipos de valores.
@@ -28,18 +38,18 @@
 %token EQ, GEQ, LEQ, NEQ, DASIG, FLECHA
 %token PRINT, IF, ELSE, ENDIF, UINT, CVR, DO, WHILE, RETURN
 
-/* ---------------------------------------------------------------------------------------------------- */
-/* FIN DE DECLARACIONES                                                                                 */
-/* ---------------------------------------------------------------------------------------------------- */
+// ============================================================================================================================================================
+// FIN DE DECLARACIONES
+// ============================================================================================================================================================
 
 %%
 
 // error: token especial que representa cualquier cosa que en ese punto no cumpla ninguna
 // de las alternativas válidas.
 
-/* ---------------------------------------------------------------------------------------------------- */
-/* INICIO DE REGLAS                                                                                     */
-/* ---------------------------------------------------------------------------------------------------- */
+// ============================================================================================================================================================
+// INICIO DE REGLAS
+// ============================================================================================================================================================
 
 programa                        : ID cuerpo_programa
                                 { notifyDetection("Programa."); }
@@ -57,6 +67,8 @@ programa                        : ID cuerpo_programa
                                 }
                                 ;
 
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 cuerpo_programa                 : '{' conjunto_sentencias '}'
                                 // -----------------
                                 // REGLAS DE ERROR
@@ -68,10 +80,14 @@ cuerpo_programa                 : '{' conjunto_sentencias '}'
                                 | // lambda //
                                 { notifyError("El programa no posee un cuerpo."); }
                                 ;
+
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------
                 
 conjunto_sentencias             : sentencia
                                 | conjunto_sentencias sentencia
                                 ;
+
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 sentencia                       : sentencia_ejecutable
                                 | sentencia_declarativa
@@ -92,9 +108,9 @@ sentencia                       : sentencia_ejecutable
                                 }
                                 ;
 
-/* ---------------------------------------------------------------------------------------------------- */
-/* Sentencias declarativas                                                                              */
-/* ---------------------------------------------------------------------------------------------------- */
+// ************************************************************************************************************************************************************
+// Sentencias declarativas
+// ************************************************************************************************************************************************************
 
 sentencia_declarativa           : declaracion_variable
                                 { notifyDetection("Declaración de variable."); }
@@ -105,9 +121,9 @@ sentencia_declarativa           : declaracion_variable
                                 */
                                 ;
 
-/* ---------------------------------------------------------------------------------------------------- */
-/* Variables                                                                                            */
-/* ---------------------------------------------------------------------------------------------------- */
+// ************************************************************************************************************************************************************
+// Variables
+// ************************************************************************************************************************************************************
 
 declaracion_variable            : UINT lista_variables ';'
                                 | UINT error ';'
@@ -115,6 +131,8 @@ declaracion_variable            : UINT lista_variables ';'
                                 | UINT lista_variables error ';'
                                 { notifyError("Error de sintaxis al final de la lista de variables. La declaración se ha descartado hasta el ';'."); }
                                 ;
+
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 /*
 Si el error está al comienzo de la regla, no se puede obtener su valor a través de $n.
@@ -128,6 +146,8 @@ NO COMBINAR VACÍO CON ERROR.
 punto_y_coma_opcional           : // épsilon
                                 | ';'
                                 ;
+
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 // Al declarar que es de tipo sval, ya no es necesario especificar ".sval" junto a los $n.
 lista_variables                 : ID
@@ -150,6 +170,8 @@ lista_variables                 : ID
                                 }
                                 ;
 
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 /*
 Estas asignaciones pueden tener un menor número de elementos del lado izquierdo (tema 17).
 
@@ -161,13 +183,15 @@ Los elementos del lado derecho sólo pueden ser constantes.
 asignacion_multiple             : lista_variables '=' lista_constantes
                                 { notifyDetection("Asignación múltiple."); }
                                 ;
+
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------
                                 
 lista_constantes                : constante
                                 | lista_constantes ',' constante
                                 { $$ = $3; }
-                                // ------------------------------
+                                // ==============================
                                 // PATRONES DE ERROR ESPECÍFICOS
-                                // ------------------------------
+                                // ==============================
                                 | lista_constantes constante
                                 {
                                     notifyError(String.format(
@@ -176,9 +200,9 @@ lista_constantes                : constante
                                 }
                                 ;
 
-/* ---------------------------------------------------------------------------------------------------- */
-/* Expresiones Lambda                                                                                   */
-/* ---------------------------------------------------------------------------------------------------- */
+// ************************************************************************************************************************************************************
+// Expresiones Lambda
+// ************************************************************************************************************************************************************
 
 // El factor representa al argumento.
 lambda                          : '(' parametro_lambda ')' bloque_ejecutable '(' factor ')'
@@ -202,6 +226,8 @@ cuerpo_ejecutable               : sentencia_ejecutable
                                 | bloque_ejecutable
                                 ;
 
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 bloque_ejecutable               : '{' conjunto_sentencias_ejecutables '}'
                                 // --------------- //
                                 // REGLAS DE ERROR //
@@ -212,9 +238,13 @@ bloque_ejecutable               : '{' conjunto_sentencias_ejecutables '}'
                                 { notifyError("Debe especificarse un cuerpo para la sentencia."); }
                                 ;
 
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 conjunto_sentencias_ejecutables : sentencia_ejecutable
                                 | conjunto_sentencias_ejecutables sentencia_ejecutable
                                 ;
+
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 sentencia_ejecutable            : operacion_ejecutable ';'
                                 // --------------- //
@@ -223,6 +253,8 @@ sentencia_ejecutable            : operacion_ejecutable ';'
                                 | operacion_ejecutable error
                                 { notifyError("Toda sentencia ejecutable debe terminar con punto y coma."); }
                                 ;
+
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 operacion_ejecutable            : invocacion_funcion
                                 | asignacion_simple
@@ -233,6 +265,8 @@ operacion_ejecutable            : invocacion_funcion
                                 | lambda
                                 ;
 
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 asignacion_simple               : variable DASIG expresion                                          
                                 { notifyDetection("Asignación simple."); }
                                 // ------------------------------
@@ -242,11 +276,14 @@ asignacion_simple               : variable DASIG expresion
                                 { notifyError("Error en asignación. Se esperaba un ':='."); }
                                 ;
 
-// Separada por legibilidad.
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 sentencia_control               : if                                                                
                                 | while         
                                 { notifyDetection("Sentencia WHILE."); }                                                   
                                 ;
+
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 // AGREGUÉ "ERROR" PORQUE, SI SE SACAN, DA SHIFT/REDUCE.
 condicion                       : '(' cuerpo_condicion ')'
@@ -264,9 +301,13 @@ condicion                       : '(' cuerpo_condicion ')'
                                 { notifyError("Falta apertura de paréntesis en condicion de selección/iteración."); }
                                 ;
 
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 cuerpo_condicion                : expresion comparador expresion
-                                //| // lambda //
+                                //| // lambda // Shift/reduce si se descomenta
                                 ;
+
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------
                                 
 comparador                      : '>'
                                 | '<'
@@ -274,18 +315,18 @@ comparador                      : '>'
                                 | LEQ
                                 | GEQ
                                 | NEQ
-                                // ------------------------------
+                                // ==============================
                                 // PATRONES DE ERROR ESPECÍFICOS
-                                // ------------------------------
+                                // ==============================
                                 | '='
                                 {
                                     notifyError(
                                         "Se esperaba un comparador y se encontró el operador de asignación '='. ¿Quiso colocar '=='?"
                                         );
                                 }
-                                // ------------------------------
+                                // ==============================
                                 // REGLAS DE ERROR
-                                // ------------------------------
+                                // ==============================
                                 | error
                                 {
                                     notifyError("El token leído no corresponde a un operador de comparación válido. Este se descartará.");
@@ -293,16 +334,22 @@ comparador                      : '>'
                                 }
                                 ;
 
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 if                              : IF condicion cuerpo_ejecutable rama_else ENDIF
                                 | IF condicion cuerpo_ejecutable rama_else
                                 { notifyError("La sentencia IF debe finalizarse con 'endif'."); }
                                 ;
 
-rama_else                       : // épsilon
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+rama_else                       : // lambda //
                                 { notifyDetection("Sentencia IF."); }
                                 | ELSE cuerpo_ejecutable
                                 { notifyDetection("Sentencia IF-ELSE."); }
                                 ;
+
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------
                                 
 while                           : DO cuerpo_do
                                 // --------------- //
@@ -312,6 +359,8 @@ while                           : DO cuerpo_do
                                 //{ notifyError("Falta 'do'."); }
                                 ;
 
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 cuerpo_do                       : cuerpo_ejecutable WHILE condicion
                                 // --------------- //
                                 // REGLAS DE ERROR //
@@ -320,8 +369,12 @@ cuerpo_do                       : cuerpo_ejecutable WHILE condicion
                                 { notifyError("Falta 'while'."); }
                                 ;
 
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 impresion                       : PRINT '(' imprimible ')'                                          
                                 ;
+
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 imprimible                      : STR
                                 { notifyDetection("Impresión de cadena."); }
@@ -334,73 +387,78 @@ imprimible                      : STR
                                 { notifyError("La sentencia 'print' requiere de al menos un argumento."); }
                                 ;
 
-/* ---------------------------------------------------------------------------------------------------- */
-/* Expresiones                                                                                          */
-/* ---------------------------------------------------------------------------------------------------- */
-/*
-// Podría simplificarse con un "operador_expresion" creo.
-expresion                       : expresion operador_suma termino
-                                //| expresion error termino
-                                | termino
-                                | expresion termino
-                                ;*/
+// ************************************************************************************************************************************************************
+// Expresiones
+// ************************************************************************************************************************************************************
 
 expresion                       : expresion operador_suma termino
                                 | termino
                                 // ====================
-                                // Reglas de Error
+                                // REGLAS DE ERROR
                                 // ====================
                                 | secuencia_sin_operador
                                 ;
 
-// Esta separación se realiza en libros como "Compilers: Principles, Techniques, and Tools”
-// para aclarar la estructura y reducir la duplicación.
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 operador_suma                   : '+'
                                 | '-'
                                 ;
 
-// Permite la aparición de varios términos sin un operador de por medio.
-// No hace falta agregar una para término ya que hay una regla termino -> factor.
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+/*
+    Permite la aparición de varios términos sin un operador de por medio.
+    No hace falta agregar una regla similar para "factor" ya que hay una regla termino -> factor.
+*/
 secuencia_sin_operador          : termino termino
                                 | secuencia_sin_operador termino
                                 ;
+
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 termino                         : termino operador_multiplicacion factor
                                 | factor
                                 ;
 
-// Esta separación se realiza en libros como "Compilers: Principles, Techniques, and Tools”
-// para aclarar la estructura y reducir la duplicación.
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 operador_multiplicacion         : '/'
                                 | '*'
                                 ;
+
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 factor                          : variable
                                 | constante
                                 | invocacion_funcion
                                 ;
 
-// Separados para contemplar la posibilidad de CTE negativa.
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 constante                       : CTE
                                 //| '-' CTE // Luego debe revisarse que la CTE no sea entera.
                                 //{ $$ = '-' + $2; }
                                 ;
 
-// Separado para contemplar la posibilidad de identificador prefijado.
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 variable                        : ID
                                 | ID '.' ID
                                 { $$ = $1 + "." + $3; }
                                 ;
 
-/* ---------------------------------------------------------------------------------------------------- */
-/* Funciones, llamadas y parametros                                                                     */
-/* ---------------------------------------------------------------------------------------------------- */
+// ************************************************************************************************************************************************************
+// Funciones
+// ************************************************************************************************************************************************************
 
 declaracion_funcion             : UINT ID '(' conjunto_parametros ')' '{' cuerpo_funcion '}'
                                 { notifyDetection("Declaración de función."); }
                                 | UINT '(' conjunto_parametros ')' '{' cuerpo_funcion '}'
                                 { notifyError("Falta de nombre en la función."); }
                                 ;
+
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 cuerpo_funcion                  : conjunto_sentencias
                                 // --------------- //
@@ -410,8 +468,12 @@ cuerpo_funcion                  : conjunto_sentencias
                                 { notifyError("El cuerpo de la función no puede estar vacío."); }
                                 ;
 
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 sentencia_retorno               : RETURN '(' expresion ')'
                                 ;
+
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 conjunto_parametros             : lista_parametros
                                 // --------------- //
@@ -420,7 +482,9 @@ conjunto_parametros             : lista_parametros
                                 | // lambda //
                                 { notifyError("Toda función debe recibir al menos un parámetro."); }
                                 ;
-                            
+
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 lista_parametros                : parametro_formal 
                                 | lista_parametros ',' parametro_formal 
                                 // --------------- //
@@ -431,11 +495,14 @@ lista_parametros                : parametro_formal
                                 // No puede agregarse directamente épsilon porque daría reduce/reduce con la regla de arriba.
                                 ;
 
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 parametro_vacio                 : lista_parametros ','
                                 | ',' parametro_formal
                                 ;
 
-// Separado por legibilidad.
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 parametro_formal                : semantica_pasaje UINT variable
                                 | semantica_pasaje UINT 
                                 { notifyError("Falta de nombre de parámetro formal en declaración de función."); }
@@ -443,8 +510,9 @@ parametro_formal                : semantica_pasaje UINT variable
                                 { notifyError("Falta de tipo de parámetro formal en declaración de funcion."); }
                                 ; 
 
-// Separado para evitar un reduce/reduce.
-semantica_pasaje                : // épsilon
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+semantica_pasaje                : // lambda //
                                 | CVR
                                 | error
                                 {
@@ -461,11 +529,14 @@ invocacion_funcion              : ID '(' lista_argumentos ')'
                                 { notifyDetection("Invocación de función."); }
                                 ;
 
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 lista_argumentos                : argumento
                                 | lista_argumentos ',' argumento
                                 ;
 
-// Separado por legibilidad.
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 argumento                       : expresion FLECHA ID
                                 // --------------- //
                                 // REGLAS DE ERROR //
@@ -474,40 +545,37 @@ argumento                       : expresion FLECHA ID
                                 { notifyError("Falta de especificación del parámetro formal al que corresponde el parámetro real."); }
                                 ;
 
-/* ---------------------------------------------------------------------------------------------------- */
-/* FIN DE REGLAS                                                                                        */
-/* ---------------------------------------------------------------------------------------------------- */
+// ============================================================================================================================================================
+// FIN DE REGLAS  
+// ============================================================================================================================================================
 
 %%
 
-/* ---------------------------------------------------------------------------------------------------- */
-/* INICIO DE CÓDIGO (opcional)                                                                          */
-/* ---------------------------------------------------------------------------------------------------- */
-
-// End of File.
-public final static short EOF = 0;
-
-// Lexer.
-private final Lexer lexer;
-
-private int errorsDetected;
-private int warningsDetected;
+// ============================================================================================================================================================
+// INICIO DE CÓDIGO (opcional)
+// ============================================================================================================================================================
 
 /**
 * Constructor que recibe un Lexer.
 */
 public Parser(Lexer lexer) {
+    
     this.lexer = lexer;
     this.errorsDetected = this.warningsDetected = 0;
-    // Se activa el debug.
-    yydebug = true;
+    
+    // Descomentar la siguiente línea para activar el debugging.
+    // yydebug = true;
 }
+
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 // Método público para llamar a yyparse(), ya que, por defecto,
 // su modificador de visibilidad es package.
 public void execute() {
     yyparse();
 }
+
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 // Método yylex() invocado durante yyparse().
 int yylex() {
@@ -522,6 +590,8 @@ int yylex() {
 
     return token.getIdentificationCode();
 }
+
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 public void descartarTokensHasta(int tokenEsperado) {
 
@@ -540,6 +610,8 @@ public void descartarTokensHasta(int tokenEsperado) {
     // Se actualizá que se halló el token deseado o se llegó al final del archivo.
     yychar = t;
 }
+
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 /**
  * Este método es invocado por el parser generado por Byacc/J cada vez que
@@ -568,6 +640,8 @@ public void yyerror(String s) {
     */
 }
 
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 // El token error no consume automáticamente el token incorrecto.
 // Este debe descartarse explícitamente.
 void descartarTokenError() {
@@ -579,11 +653,14 @@ void descartarTokenError() {
 
     Printer.print("Token de error descartado.");
 }
-// TODO: descartar hasta un punto de sincronizacion. "}" o ";".
+
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 void apagarEstadoDeError() {
     yyerrflag = 0;
 }
+
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 void notifyDetection(String message) {
     Printer.printBetweenSeparations(String.format(
@@ -591,6 +668,8 @@ void notifyDetection(String message) {
         message
     ));
 }
+
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 void notifyWarning(String warningMessage) {
     Printer.printBetweenSeparations(String.format(
@@ -600,6 +679,8 @@ void notifyWarning(String warningMessage) {
     this.warningsDetected++;
 }
 
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 void notifyError(String errorMessage) {
     Printer.printBetweenSeparations(String.format(
         "ERROR SINTÁCTICO: Línea %d, caracter %d: %s",
@@ -607,6 +688,8 @@ void notifyError(String errorMessage) {
     ));
     this.errorsDetected++;
 }
+
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 String applySynchronizationFormat(String invalidWord, String synchronizationWord) {
     return """
@@ -616,14 +699,18 @@ String applySynchronizationFormat(String invalidWord, String synchronizationWord
         """.formatted(invalidWord, synchronizationWord);
 }
 
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 public int getWarningsDetected() {
     return this.warningsDetected;
 }
+
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 public int getErrorsDetected() {
     return this.errorsDetected;
 }
 
-/* ---------------------------------------------------------------------------------------------------- */
-/* FIN DE CÓDIGO                                                                                        */
-/* ---------------------------------------------------------------------------------------------------- */
+// ============================================================================================================================================================
+// FIN DE CÓDIGO
+// ============================================================================================================================================================
