@@ -20,10 +20,13 @@
     String sval;
 }
 
+// No terminales que guardan un String.
+%type <sval> lista_variables, lista_constantes, variable, constante, expresion, termino,
+            factor, invocacion_funcion, lista_argumentos, argumento, secuencia_sin_operador
+
 // Asignación de tipo a token y no-terminales.
 // Esto es necesario para ejecutar acciones semánticas como: "$$ = $3".
 %token <sval> ID, CTE, STR  // Los tokens ID, CTE y STR tendrán un valor de tipo String (accedido vía .sval)
-%type <sval> lista_variables, lista_constantes, variable, constante, expresion, termino, factor, invocacion_funcion, lista_argumentos, argumento, secuencia_sin_operador // El no-terminal lista_variables también guarda un String.
 
 // Tokens sin valor semántico asociado (no necesitan tipo).
 %token <sval> EQ, GEQ, LEQ, NEQ, DASIG, FLECHA
@@ -225,8 +228,8 @@ bloque_ejecutable               : '{' conjunto_sentencias_ejecutables '}'
                                 // --------------- //
                                 | '{' '}'
                                 { notifyError("El cuerpo de la sentencia no puede estar vacío."); }
-                                //| //épsilon
-                                { notifyError("Debe especificarse un cuerpo para la sentencia."); }
+                                //| //épsilon 2 shift/reduce
+                                //{ notifyError("Debe especificarse un cuerpo para la sentencia."); }
                                 ;
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -278,14 +281,14 @@ sentencia_control               : if
 
 // AGREGUÉ "ERROR" PORQUE, SI SE SACAN, DA SHIFT/REDUCE.
 condicion                       : '(' cuerpo_condicion ')'
-                                { notifyDetection("Condicion."); }
                                 // --------------- //
                                 // REGLAS DE ERROR //
                                 // --------------- //
-                                | '(' ')'
-                                { notifyError("La condición no puede estar vacía."); }
-                                | error cuerpo_condicion error
-                                { notifyError("Falta apertura y cierre de paréntesis en condicion de selección/iteración."); }
+                                | cuerpo_condicion error
+                                {
+                                    notifyError("Falta apertura y cierre de paréntesis en condicion de selección/iteración.");
+                                    descartarTokenError();
+                                }
                                 | '(' cuerpo_condicion error
                                 { notifyError("Falta cierre de paréntesis en condicion de selección/iteración."); }
                                 | cuerpo_condicion ')'
@@ -295,7 +298,13 @@ condicion                       : '(' cuerpo_condicion ')'
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 cuerpo_condicion                : expresion comparador expresion
-                                //| // lambda // Shift/reduce si se descomenta
+                                // ==============================
+                                // REGLAS DE ERROR
+                                // ==============================
+                                | // lambda //
+                                { notifyError("La condición no puede estar vacía."); }
+                                | expresion
+                                { notifyError("Falta de comparador en comparación."); }
                                 ;
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -314,14 +323,6 @@ comparador                      : '>'
                                     notifyError(
                                         "Se esperaba un comparador y se encontró el operador de asignación '='. ¿Quiso colocar '=='?"
                                         );
-                                }
-                                // ==============================
-                                // REGLAS DE ERROR
-                                // ==============================
-                                | error
-                                {
-                                    notifyError("El token leído no corresponde a un operador de comparación válido. Este se descartará.");
-                                    descartarTokenError(); 
                                 }
                                 ;
 
@@ -674,6 +675,11 @@ public void yyerror(String s) {
         )
     );
     */
+}
+
+void forzarUsoDeNuevoToken() {
+    yylex(); // leer un token y avanzar
+    yychar = -1; // forzar que el parser use el nuevo token
 }
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------

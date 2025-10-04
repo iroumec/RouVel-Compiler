@@ -1,0 +1,45 @@
+CONDICIONES {
+
+    ## Condición normal ##
+    if (5UI + 3UI < 9UI / 6UI) {
+
+    } endif;
+
+    if (7UI + B >= 10.0) {
+
+    } endif;
+
+    if (7UI + B == 10.0) {
+
+    } endif;
+
+    ## Falta de comparador ##
+    if (C 10.0) {
+
+    } endif;
+
+    if (C + 10.0) {
+
+    } endif;
+
+    ## Condición vacía ##
+    if () {
+
+    } endif;
+
+    ## Condición sin paréntesis de cierre ##
+    if (7UI + B == 10.0 {
+
+    } endif;
+
+    ## Condición sin paréntesis de apertura ##
+    if 7UI + B == 10.0) {
+
+    } endif;
+
+    ## Condición sin paréntesis ##
+    if 7UI + B == 10.0 {
+
+    } endif;
+
+}
