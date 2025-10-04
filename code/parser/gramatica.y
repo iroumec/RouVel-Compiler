@@ -73,10 +73,19 @@ Por lo mismo, es altamente recomendable interceptar los errores lo antes posible
 Básicamente, es como si una regla, al usar un no-terminal que levanta o traslada un error, estuviese firmando un contrato que dice: "Me comprometo a
 interceptar o trasladar el error".
 
+Mucho cuidado con las reglas glotonas. Si únicamente se tiene una regla de error "... error <no-terminal> ...", el parser no va a parar de descartar todo
+hasta hallar dicho no-terminal.
+
+
 Si en una regla está la posibilidad de vacío, "lambda", jamás va a producirse un error en dicha regla, porque, de venir algo que no cumpla
 con ninguna de las alternativas válidas, va a reducir por la regla vacía.
 
 Las reglas vacías son altamente propensas a conflictos shift/reduce.
+
+Si el error está al comienzo de la regla, no se puede obtener su valor a través de $n. Si está en alguna otra parte, sí se puede.
+
+YA SÉ POR QUÉ EL ERROR SUBE: SUBE EN BUSCA DE UN PUNTO DE SINCRONIZACIÓN. POR ESO, SI EL TOKEN ERROR ESTÁ AL FINAL, SE TRASLADA A UNA REGLA SUPERIOR.
+POR QUE, SI NO, NO SABE HASTA CUÁNDO DESCARTAR.
 
 */
 
@@ -90,12 +99,12 @@ programa                        : ID cuerpo_programa
                                 // REGLAS DE ERROR
                                 // ==============================
                                 | ID conjunto_sentencias
-                                //| conjunto_sentencias
+                                { notifyError("Las sentencias del programa deben estar delimitadas por llaves."); }
                                 | cuerpo_programa
                                 { notifyError("El programa requiere de un nombre."); }
                                 | error
                                 {
-                                    notifyError("Inicio de programa inválido. Este debe seguir la estructura: <NOMBRE%PROGRAMA> { ... }. Se sincronizará hasta ID.");
+                                    notifyError("Inicio de programa inválido. Este debe seguir la estructura: <NOMBRE%PROGRAMA> { ... }.");
                                     descartarTokensHasta(ID); // Se descartan todos los tokens hasta ID.
                                 }
                                 ;
@@ -108,38 +117,47 @@ cuerpo_programa                 : '{' conjunto_sentencias '}'
                                 // -----------------
                                 | '{' '}'
                                 { notifyError("El programa no posee ninguna sentencia."); }
-                                //| conjunto_sentencias
-                                { notifyError("Las sentencias del programa deben estar delimitadas por llaves."); }
                                 | // lambda //
-                                { notifyError("El programa no posee un cuerpo."); }
+                                | '{' error '}'
+                                { notifyError("Sentencia inválida en el lenguaje."); }
                                 ;
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
                 
 conjunto_sentencias             : sentencia
                                 | conjunto_sentencias sentencia
+                                // ==============================
+                                // REGLAS DE ERROR
+                                // ==============================
+                                | error punto_sincronizacion_sentencia
+                                { notifyError("Sentencia inválida en el lenguaje."); }
                                 ;
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+punto_sincronizacion_sentencia  : ';'
+                                | '}'
+                                { notifyDetection("Just testing"); readLastTokenAgain(); }
+                                | token_inicio_sentencia
+                                { notifyDetection("Just testing"); readLastTokenAgain(); }
+                                ;
+
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+token_inicio_sentencia          : ID
+                                | IF
+                                | UINT
+                                | PRINT
+                                | DO
+                                | RETURN
+                                | WHILE
+                                ;
+
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+// @LevantaError: "Sentencia inválida en el lenguaje."
 sentencia                       : sentencia_ejecutable
                                 | sentencia_declarativa
-                                // ==============================
-                                // REGLAS DE ERROR
-                                // ==============================
-                                | error ';'
-                                {
-                                    notifyError("Sentencia inválida en el lenguaje.");
-                                }
-                                | error '}'
-                                {
-                                    notifyError("Sentencia inválida en el lenguaje.");
-                                    readLastTokenAgain(); // Importante para no consumir erróneamente el cierre del programa.
-                                }
-                                | error sentencia
-                                {
-                                    notifyError("Sentencia inválida en el lenguaje. Se sincronizará hasta otra sentencia.");
-                                }
                                 ;
 
 // ************************************************************************************************************************************************************
@@ -149,10 +167,6 @@ sentencia                       : sentencia_ejecutable
 sentencia_declarativa           : declaracion_variable
                                 { notifyDetection("Declaración de variable."); }
                                 | declaracion_funcion punto_y_coma_opcional
-                                /*
-                                | error
-                                { notifyError("Sentencia declarativa no válida."); }
-                                */
                                 ;
 
 // ************************************************************************************************************************************************************
@@ -167,14 +181,6 @@ declaracion_variable            : UINT lista_variables ';'
                                 ;
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-/*
-Si el error está al comienzo de la regla, no se puede obtener su valor a través de $n.
-Si está en alguna otra parte, sí se puede.
-ERRORES AL COMIENZO DE UNA REGLA NO.
-SI LOS PONEMOS EN MUCHAS REGLAS, VAMOS A TENER PROBLEMAS.
-NO COMBINAR VACÍO CON ERROR.
-*/
 
 // Permite la opcionalidad de la coma al final de las funciones.
 punto_y_coma_opcional           : // épsilon
@@ -274,19 +280,20 @@ bloque_ejecutable               : '{' conjunto_sentencias_ejecutables '}'
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+// @InterceptaError: "Toda sentencia ejecutable debe terminar con punto y coma."
 conjunto_sentencias_ejecutables : sentencia_ejecutable
                                 | conjunto_sentencias_ejecutables sentencia_ejecutable
+                                // ==============================
+                                // INTERCEPCIÓN DE ERRORES
+                                // ==============================
+                                | error sentencia_ejecutable
+                                { notifyError("Toda sentencia ejecutable debe terminar con punto y coma."); }
                                 ;
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 // @LevantaError: "Toda sentencia ejecutable debe terminar con punto y coma."
 sentencia_ejecutable            : operacion_ejecutable ';'
-                                // ==============================
-                                // REGLAS DE ERROR
-                                // ==============================
-                                | operacion_ejecutable error
-                                { notifyError("Toda sentencia ejecutable debe terminar con punto y coma."); }
                                 ;
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -344,6 +351,8 @@ inicio_condicion                : '('
 */
 // @LevantaError: "Falta cierre de paréntesis en condición."
 fin_condicion                   : ')'
+                                | error
+                                { notifyError("Falta cierre de paréntesis en condición."); }
                                 ;
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -388,12 +397,16 @@ if                              : IF condicion cuerpo_ejecutable rama_else ENDIF
                                 // ==============================
                                 // INTERCEPCIÓN DE ERRORES
                                 // ==============================
-                                | IF error cuerpo_ejecutable rama_else ENDIF
-                                { notifyError("Falta cierre de paréntesis en condición."); }
+                                //| IF error cuerpo_ejecutable rama_else ENDIF
+                                //{ notifyError("Falta cierre de paréntesis en condición."); }
+                                // ==============================
+                                // REGLAS DE ERROR
+                                // ==============================
                                 ;
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+// Únicamente se detecta como sentencia IF si está bien formada.
 rama_else                       : // lambda //
                                 { notifyDetection("Sentencia IF."); }
                                 | ELSE cuerpo_ejecutable
@@ -417,13 +430,22 @@ do_while                        : DO cuerpo_do
 
 // @LevantaError: "Falta 'while'."
 // @InterceptaError: "Falta cierre de paréntesis en condición."
-cuerpo_do                       : cuerpo_ejecutable WHILE condicion
+cuerpo_do                       : cuerpo_ejecutable fin_cuerpo_do
+                                // ==============================
+                                // REGLAS DE ERROR
+                                // ==============================
+                                | fin_cuerpo_do
+                                { notifyError("Debe especificarse un cuerpo para la sentencia do-while."); }
+                                | cuerpo_ejecutable condicion
+                                { notifyError("Falta 'while'."); }
                                 // ==============================
                                 // INTERCEPCIÓN DE ERRORES
                                 // ==============================
                                 | cuerpo_ejecutable WHILE error
                                 { notifyError("Falta cierre de paréntesis en condición."); }
-                                | error WHILE error
+                                ;
+
+fin_cuerpo_do                   : WHILE condicion
                                 ;
 
 // ************************************************************************************************************************************************************
@@ -671,7 +693,7 @@ public Parser(Lexer lexer) {
     this.readAgain = false;
     
     // Descomentar la siguiente línea para activar el debugging.
-    // yydebug = true;
+    yydebug = true;
 }
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -767,6 +789,7 @@ public void yyerror(String s) {
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 void readLastTokenAgain() {
+    Printer.print("READ AGAIN");
     this.readAgain = true;
 }
 

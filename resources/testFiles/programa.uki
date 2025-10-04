@@ -1,0 +1,7 @@
+PROGRAMA {
+    if endif;
+    if (A > B print("Hola"); endif;
+    if
+    if;
+    if
+}
