@@ -2,6 +2,7 @@
 // INICIO DE DECLARACIONES
 // ============================================================================================================================================================
 
+// Lo siguiente se coloca previo a la signatura de la clase.
 %{
     package parser;
 
@@ -9,16 +10,6 @@
     import lexer.Lexer;
     import common.Token;
     import utilities.Printer;
-
-    // End of File.
-    public final static short EOF = 0;
-
-    // Lexer.
-    private final Lexer lexer;
-
-    // Contadores de la cantidad de errores detectados.
-    private int errorsDetected;
-    private int warningsDetected;
 %}
 
 // Declaración de los tipos de valores.
@@ -32,10 +23,10 @@
 // Asignación de tipo a token y no-terminales.
 // Esto es necesario para ejecutar acciones semánticas como: "$$ = $3".
 %token <sval> ID, CTE, STR  // Los tokens ID, CTE y STR tendrán un valor de tipo String (accedido vía .sval)
-%type <sval> lista_variables, lista_constantes, variable, constante // El no-terminal lista_variables también guarda un String.
+%type <sval> lista_variables, lista_constantes, variable, constante, expresion, termino, factor, invocacion_funcion, lista_argumentos, argumento, secuencia_sin_operador // El no-terminal lista_variables también guarda un String.
 
 // Tokens sin valor semántico asociado (no necesitan tipo).
-%token EQ, GEQ, LEQ, NEQ, DASIG, FLECHA
+%token <sval> EQ, GEQ, LEQ, NEQ, DASIG, FLECHA
 %token PRINT, IF, ELSE, ENDIF, UINT, CVR, DO, WHILE, RETURN
 
 // ============================================================================================================================================================
@@ -352,9 +343,9 @@ rama_else                       : // lambda //
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
                                 
 while                           : DO cuerpo_do
-                                // --------------- //
-                                // REGLAS DE ERROR //
-                                // --------------- //
+                                // ==============================
+                                // REGLAS DE ERROR
+                                // ==============================
                                 //| cuerpo_do
                                 //{ notifyError("Falta 'do'."); }
                                 ;
@@ -362,9 +353,9 @@ while                           : DO cuerpo_do
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 cuerpo_do                       : cuerpo_ejecutable WHILE condicion
-                                // --------------- //
-                                // REGLAS DE ERROR //
-                                // --------------- //
+                                // ==============================
+                                // REGLAS DE ERROR
+                                // ==============================
                                 | cuerpo_ejecutable condicion
                                 { notifyError("Falta 'while'."); }
                                 ;
@@ -380,9 +371,9 @@ imprimible                      : STR
                                 { notifyDetection("Impresión de cadena."); }
                                 | expresion
                                 { notifyDetection("Impresión de expresión."); }
-                                // ------------------------------
+                                // ==============================
                                 // REGLAS DE ERROR
-                                // ------------------------------
+                                // ==============================
                                 | // lambda //
                                 { notifyError("La sentencia 'print' requiere de al menos un argumento."); }
                                 ;
@@ -397,6 +388,12 @@ expresion                       : expresion operador_suma termino
                                 // REGLAS DE ERROR
                                 // ====================
                                 | secuencia_sin_operador
+                                { $$ = $1; }
+                                | expresion operador_suma
+                                {
+                                    notifyError("Falta de operando en expresión.");
+                                    $$ = $1;    
+                                }
                                 ;
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -412,13 +409,30 @@ operador_suma                   : '+'
     No hace falta agregar una regla similar para "factor" ya que hay una regla termino -> factor.
 */
 secuencia_sin_operador          : termino termino
+                                {
+                                    notifyError(String.format(
+                                        "Falta de operador entre operandos %s y %s.",
+                                        $1, $2)
+                                    );
+                                    $$ = $2;
+                                }
                                 | secuencia_sin_operador termino
+                                {
+                                    notifyError(String.format(
+                                        "Falta de operador entre operandos %s y %s.",
+                                        $1, $2)
+                                    );
+                                    $$ = $2;
+                                }
                                 ;
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 termino                         : termino operador_multiplicacion factor
                                 | factor
+                                { $$ = $1; }
+                                | termino operador_multiplicacion error
+                                { notifyError("Falta de operando en expresión."); }
                                 ;
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -430,15 +444,20 @@ operador_multiplicacion         : '/'
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 factor                          : variable
+                                { $$ = $1; }
                                 | constante
+                                { $$ = $1; }
                                 | invocacion_funcion
+                                { $$ = $1; }
                                 ;
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 constante                       : CTE
+                                { $$ = $1; }
                                 //| '-' CTE // Luego debe revisarse que la CTE no sea entera.
                                 //{ $$ = '-' + $2; }
+                                // Si se obliga que haya un espacio entre terminos, ' ', entonces esto no da shift/reduce.
                                 ;
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -526,23 +545,30 @@ semantica_pasaje                : // lambda //
 /* ---------------------------------------------------------------------------------------------------- */
 
 invocacion_funcion              : ID '(' lista_argumentos ')' 
-                                { notifyDetection("Invocación de función."); }
+                                {
+                                    notifyDetection("Invocación de función."); 
+                                    $$ = $1 + '(' + $3 + ')';
+                                }
                                 ;
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 lista_argumentos                : argumento
                                 | lista_argumentos ',' argumento
+                                { $$ = $3; }
                                 ;
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 argumento                       : expresion FLECHA ID
+                                { $$ = $1 + $2 + $3; }
                                 // --------------- //
                                 // REGLAS DE ERROR //
                                 // --------------- //
                                 | expresion
-                                { notifyError("Falta de especificación del parámetro formal al que corresponde el parámetro real."); }
+                                {
+                                    notifyError("Falta de especificación del parámetro formal al que corresponde el parámetro real.");
+                                }
                                 ;
 
 // ============================================================================================================================================================
@@ -554,6 +580,16 @@ argumento                       : expresion FLECHA ID
 // ============================================================================================================================================================
 // INICIO DE CÓDIGO (opcional)
 // ============================================================================================================================================================
+
+// End of File.
+public final static short EOF = 0;
+
+// Lexer.
+private final Lexer lexer;
+
+// Contadores de la cantidad de errores detectados.
+private int errorsDetected;
+private int warningsDetected;
 
 /**
 * Constructor que recibe un Lexer.
