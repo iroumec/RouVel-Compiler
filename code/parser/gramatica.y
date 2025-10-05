@@ -87,6 +87,8 @@ Si el error está al comienzo de la regla, no se puede obtener su valor a travé
 YA SÉ POR QUÉ EL ERROR SUBE: SUBE EN BUSCA DE UN PUNTO DE SINCRONIZACIÓN. POR ESO, SI EL TOKEN ERROR ESTÁ AL FINAL, SE TRASLADA A UNA REGLA SUPERIOR.
 POR QUE, SI NO, NO SABE HASTA CUÁNDO DESCARTAR.
 
+Aunque sea redundante, es conveniente poner la restricción de punto y coma en cada sentencia individualmente. Simplifica mucho la gramática.
+
 */
 
 // ============================================================================================================================================================
@@ -129,7 +131,7 @@ conjunto_sentencias             : sentencia
                                 // ==============================
                                 // REGLAS DE ERROR
                                 // ==============================
-                                | error punto_sincronizacion_sentencia
+                                | conjunto_sentencias error punto_sincronizacion_sentencia
                                 { notifyError("Sentencia inválida en el lenguaje."); }
                                 ;
 
@@ -137,7 +139,7 @@ conjunto_sentencias             : sentencia
 
 punto_sincronizacion_sentencia  : ';'
                                 | '}'
-                                { notifyDetection("Just testing"); readLastTokenAgain(); }
+                                { Printer.print("HOlaaa"); readLastTokenAgain(); }
                                 | token_inicio_sentencia
                                 { notifyDetection("Just testing"); readLastTokenAgain(); }
                                 ;
@@ -286,14 +288,16 @@ conjunto_sentencias_ejecutables : sentencia_ejecutable
                                 // ==============================
                                 // INTERCEPCIÓN DE ERRORES
                                 // ==============================
-                                | error sentencia_ejecutable
-                                { notifyError("Toda sentencia ejecutable debe terminar con punto y coma."); }
+                                //| error sentencia_ejecutable
+                                //{ notifyError("Toda sentencia ejecutable debe terminar con punto y coma."); }
                                 ;
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 // @LevantaError: "Toda sentencia ejecutable debe terminar con punto y coma."
 sentencia_ejecutable            : operacion_ejecutable ';'
+                                | operacion_ejecutable '}'
+                                //{ readLastTokenAgain(); }
                                 ;
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -351,8 +355,6 @@ inicio_condicion                : '('
 */
 // @LevantaError: "Falta cierre de paréntesis en condición."
 fin_condicion                   : ')'
-                                | error
-                                { notifyError("Falta cierre de paréntesis en condición."); }
                                 ;
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -392,25 +394,34 @@ comparador                      : '>'
 
 // @InterceptaError: "Falta cierre de paréntesis en condición."
 if                              : IF condicion cuerpo_ejecutable rama_else ENDIF
+                                { notifyDetection("Sentencia IF."); }
                                 | IF condicion cuerpo_ejecutable rama_else
                                 { notifyError("La sentencia IF debe finalizarse con 'endif'."); }
                                 // ==============================
                                 // INTERCEPCIÓN DE ERRORES
                                 // ==============================
-                                //| IF error cuerpo_ejecutable rama_else ENDIF
-                                //{ notifyError("Falta cierre de paréntesis en condición."); }
+                                // Si se descomenta esto, el mensaje de falta cierre de paréntesis lo muesta bien.
+                                // Pero no detecta otras sentencias inválidas.
+                                | IF error cuerpo_ejecutable rama_else ENDIF
+                                { notifyError("Sentencia IF inválida en el lenguaje. Falta cierre de paréntesis en condición."); }
                                 // ==============================
                                 // REGLAS DE ERROR
                                 // ==============================
+                                | IF error '}'
+                                { notifyError("Sentencia IF inválida en el lenguaje."); readLastTokenAgain(); }
+                                | IF error ';'
+                                { notifyError("Sentencia IF inválida en el lenguaje."); readLastTokenAgain(); }
+                                ;
+
+punto_sincronizacion_if         : '}'
+                                { Printer.print("Entré acá"); }
+                                | ';'
                                 ;
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-// Únicamente se detecta como sentencia IF si está bien formada.
 rama_else                       : // lambda //
-                                { notifyDetection("Sentencia IF."); }
                                 | ELSE cuerpo_ejecutable
-                                { notifyDetection("Sentencia IF-ELSE."); }
                                 ;
 
 // ************************************************************************************************************************************************************
@@ -714,6 +725,8 @@ int yylex() {
     }
 
     Token token = this.getAppropiateToken();
+
+    System.out.println("> " + token.getLexema());
 
     this.yylval = new ParserVal(token.getLexema());
 
