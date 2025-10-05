@@ -97,6 +97,7 @@ Aunque sea redundante, es conveniente poner la restricción de punto y coma en c
 
 programa                        : ID cuerpo_programa
                                 { notifyDetection("Programa."); }
+                                // ID { notifyDetection("Programa.");} cuerpo_programa notifica al reducir por ID.
                                 // ==============================
                                 // REGLAS DE ERROR
                                 // ==============================
@@ -288,7 +289,7 @@ conjunto_sentencias_ejecutables : sentencia_ejecutable
                                 // ==============================
                                 // INTERCEPCIÓN DE ERRORES
                                 // ==============================
-                                //| error sentencia_ejecutable
+                                //| error '}'
                                 //{ notifyError("Toda sentencia ejecutable debe terminar con punto y coma."); }
                                 ;
 
@@ -296,8 +297,6 @@ conjunto_sentencias_ejecutables : sentencia_ejecutable
 
 // @LevantaError: "Toda sentencia ejecutable debe terminar con punto y coma."
 sentencia_ejecutable            : operacion_ejecutable ';'
-                                | operacion_ejecutable '}'
-                                //{ readLastTokenAgain(); }
                                 ;
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -416,12 +415,10 @@ if                              : IF condicion cuerpo_ejecutable rama_else ENDIF
                                 // ==============================
                                 // REGLAS DE ERROR
                                 // ==============================
-                                | IF error punto_sincronizacion_if
-                                ;
-
-punto_sincronizacion_if         : '}'
-                                { Printer.print("Entré acá"); }
-                                | ';'
+                                | IF error
+                                {
+                                    notifyError("Sentencia IF inválida en el lenguaje."); 
+                                }
                                 ;
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -710,7 +707,7 @@ public Parser(Lexer lexer) {
     this.readAgain = false;
     
     // Descomentar la siguiente línea para activar el debugging.
-    yydebug = true;
+    // yydebug = true;
 }
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
