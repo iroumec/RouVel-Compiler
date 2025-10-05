@@ -326,7 +326,7 @@ asignacion_simple               : variable DASIG expresion
 
 sentencia_control               : if                                                                
                                 | do_while         
-                                { notifyDetection("Sentencia WHILE."); }                                                   
+                                { notifyDetection("Sentencia WHILE."); }                                                  
                                 ;
 
 // ************************************************************************************************************************************************************
@@ -334,18 +334,27 @@ sentencia_control               : if
 // ************************************************************************************************************************************************************
 
 // @TrasladaError: "Falta cierre de paréntesis en condición."
-condicion                       : inicio_condicion cuerpo_condicion fin_condicion
+condicion                       : '(' cuerpo_condicion fin_condicion
+                                | cuerpo_condicion ')'
+                                { notifyError("Falta apertura de paréntesis en condición."); }
+                                | '(' ')'
+                                { notifyError("La condición no puede estar vacía."); }
                                 ;
+/*
+condicion                       : inicio_condicion cuerpo_condicion fin_condicion 
+                                ;
+
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-inicio_condicion                : '('
+/*inicio_condicion                : '('
                                 // ==============================
                                 // REGLAS DE ERROR
                                 // ==============================
                                 | // lambda //
                                 { notifyError("Falta apertura de paréntesis en condición."); }
                                 ;
+*/
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -363,8 +372,8 @@ cuerpo_condicion                : expresion comparador expresion
                                 // ==============================
                                 // REGLAS DE ERROR
                                 // ==============================
-                                | // lambda //
-                                { notifyError("La condición no puede estar vacía."); }
+                                /*| // lambda //
+                                { notifyError("La condición no puede estar vacía."); }*/
                                 | expresion
                                 { notifyError("Falta de comparador en comparación."); }
                                 ;
@@ -433,8 +442,8 @@ do_while                        : DO cuerpo_do
                                 // ==============================
                                 // INTERCEPCIÓN DE ERRORES
                                 // ==============================
-                                | DO error
-                                { notifyError("Falta 'while'."); }
+                                /*| DO error
+                                { notifyError("Falta 'while'."); }*/
                                 ;
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
