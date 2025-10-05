@@ -12,17 +12,21 @@
     import utilities.Printer;
 %}
 
-// Declaración de los tipos de valores.
-// Se le informa a Yacc que tendrá que trabajar con valores de tipo String.
-// Esto es para que no dé error el highlighter de la gramática, ya que está pensado para byacc para C.
-// Al generar el Parser, debe comentarse para no romper el código .java, ya que genera un typedef (C).
+/*
+    Declaración de los tipos de valores. Se le informa a Yacc que tendrá que trabajar con valores de tipo String.
+    
+    Esto es para que no dé error el highlighter de la gramática, ya que está pensado para byacc para C.
+    
+    Al generar el Parser, debe comentarse para no romper el código .java, ya que inserta un typedef en el código.
+*/
 %union {
     String sval;
 }
 
 // No terminales que guardan un String.
-%type <sval> lista_variables, lista_constantes, variable, constante, expresion, termino,
-            factor, invocacion_funcion, lista_argumentos, argumento, secuencia_sin_operador
+%type <sval> expresion, expresion_error, termino, factor
+            lista_variables, lista_constantes, variable, constante,
+            invocacion_funcion, lista_argumentos, argumento, secuencia_sin_operador
 
 // Asignación de tipo a token y no-terminales.
 // Esto es necesario para ejecutar acciones semánticas como: "$$ = $3".
@@ -31,6 +35,13 @@
 // Tokens sin valor semántico asociado (no necesitan tipo).
 %token <sval> EQ, GEQ, LEQ, NEQ, DASIG, FLECHA
 %token PRINT, IF, ELSE, ENDIF, UINT, CVR, DO, WHILE, RETURN
+
+// NECESARIO PARA PERMITIR EL OPERADOR UNARIO '-'. ASÍ LO HACEN EN LOS LIBROS.
+%left '+' '-' // Se declara que estos operadores binarios son asociativos a izquierda.
+%left '*' '/' // Lo mismo para estos, con la particularidad de que tienen mayor precedencia que los de arriba.
+%right UMINUS // Utilizado para el operador unario '-'. Tiene mayor precedencia que los anteriores.
+
+
 
 // ============================================================================================================================================================
 // FIN DE DECLARACIONES
@@ -273,7 +284,7 @@ bloque_ejecutable               : '{' conjunto_sentencias_ejecutables '}'
                                 // ==============================
                                 | '{' '}'
                                 { notifyError("El cuerpo de la sentencia no puede estar vacío."); }
-                                //| //épsilon 2 shift/reduce
+                                //| //épsilon 3 shift/reduce
                                 //{ notifyError("Debe especificarse un cuerpo para la sentencia."); }
                                 ;
 
@@ -285,8 +296,8 @@ conjunto_sentencias_ejecutables : sentencia_ejecutable
                                 // ==============================
                                 // INTERCEPCIÓN DE ERRORES
                                 // ==============================
-                                | error
-                                { notifyError("Toda sentencia ejecutable debe terminar con punto y coma."); }
+                                //| error
+                                //{ notifyError("Toda sentencia ejecutable debe terminar con punto y coma."); }
                                 ;
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -321,45 +332,25 @@ asignacion_simple               : variable DASIG expresion
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 sentencia_control               : if                                                                
-                                | do_while         
-                                { notifyDetection("Sentencia WHILE."); }                                                  
+                                | do_while                                                
                                 ;
 
 // ************************************************************************************************************************************************************
 // Condición
 // ************************************************************************************************************************************************************
 
-// @TrasladaError: "Falta cierre de paréntesis en condición."
-condicion                       : '(' cuerpo_condicion fin_condicion
+/*
+    En caso de no recibir un paréntesis de cierre, el fin de la condición será inválida, por lo que se levantará
+    un error que deberán interceptar las sentencias que usen el no terminal.
+
+    Especificar una regla "'(' cuerpo_condicion", produce shift/reduce.
+*/
+// @LevantaError: "Falta cierre de paréntesis en condición."
+condicion                       : '(' cuerpo_condicion ')'
                                 | cuerpo_condicion ')'
                                 { notifyError("Falta apertura de paréntesis en condición."); }
                                 | '(' ')'
                                 { notifyError("La condición no puede estar vacía."); }
-                                ;
-/*
-condicion                       : inicio_condicion cuerpo_condicion fin_condicion 
-                                ;
-
-
-// ------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-/*inicio_condicion                : '('
-                                // ==============================
-                                // REGLAS DE ERROR
-                                // ==============================
-                                | // lambda //
-                                { notifyError("Falta apertura de paréntesis en condición."); }
-                                ;
-*/
-
-// ------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-/*
-    En caso de no recibir un paréntesis de cierre, el fin de la condición será inválida, por lo que se levantará
-    un error que deberán interceptar las sentencias que usen el no terminal.
-*/
-// @LevantaError: "Falta cierre de paréntesis en condición."
-fin_condicion                   : ')'
                                 ;
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -368,8 +359,8 @@ cuerpo_condicion                : expresion comparador expresion
                                 // ==============================
                                 // REGLAS DE ERROR
                                 // ==============================
-                                /*| // lambda //
-                                { notifyError("La condición no puede estar vacía."); }*/
+                                //| // lambda //
+                                //{ notifyError("La condición no puede estar vacía."); }
                                 | expresion
                                 { notifyError("Falta de comparador en comparación."); }
                                 ;
@@ -426,20 +417,19 @@ rama_else                       : // lambda //
 // Sentencia WHILE
 // ************************************************************************************************************************************************************
 
-// @InterceptaError: "Falta 'while'."
 do_while                        : DO cuerpo_do
                                 // ==============================
                                 // INTERCEPCIÓN DE ERRORES
                                 // ==============================
-                                /*| DO error
-                                { notifyError("Falta 'while'."); }*/
+                                | DO error
+                                { notifyError("Sentencia DO-WHILE inválida."); }
                                 ;
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-// @LevantaError: "Falta 'while'."
-// @InterceptaError: "Falta cierre de paréntesis en condición."
+// @TrasladaError: "Falta cierre de paréntesis en condición."
 cuerpo_do                       : cuerpo_ejecutable fin_cuerpo_do
+                                { notifyDetection("Sentencia DO-WHILE."); }  
                                 // ==============================
                                 // REGLAS DE ERROR
                                 // ==============================
@@ -452,6 +442,8 @@ cuerpo_do                       : cuerpo_ejecutable fin_cuerpo_do
                                 // ==============================
                                 | cuerpo_ejecutable WHILE error
                                 { notifyError("Falta cierre de paréntesis en condición."); }
+                                | error fin_cuerpo_do
+                                { notifyError("Ha habido un error en el cierre del cuerpo ejecutable."); }
                                 ;
 
 fin_cuerpo_do                   : WHILE condicion
@@ -461,21 +453,21 @@ fin_cuerpo_do                   : WHILE condicion
 // Sentencia PRINT
 // ************************************************************************************************************************************************************
 
-impresion                       : PRINT '(' imprimible ')'                                          
-                                ;
+impresion
+    : PRINT '(' imprimible ')'    
+    | PRINT '(' ')'
+        { notifyError("La sentencia 'print' requiere de al menos un argumento."); }
+    ;
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-imprimible                      : STR
-                                { notifyDetection("Impresión de cadena."); }
-                                | expresion
-                                { notifyDetection("Impresión de expresión."); }
-                                // ==============================
-                                // REGLAS DE ERROR
-                                // ==============================
-                                | // lambda //
-                                { notifyError("La sentencia 'print' requiere de al menos un argumento."); }
-                                ;
+imprimible
+    : STR
+        { notifyDetection("Impresión de cadena."); }
+    | expresion
+        { notifyDetection("Impresión de expresión."); }
+    | expresion_error
+    ;
 
 // ************************************************************************************************************************************************************
 // Expresiones
@@ -483,18 +475,18 @@ imprimible                      : STR
 
 expresion                       : expresion operador_suma termino
                                 | termino
-                                // ====================
-                                // REGLAS DE ERROR
-                                // ====================
-                                | secuencia_sin_operador
-                                { $$ = $1; }
-                                | expresion operador_suma
-                                {
-                                    notifyError("Falta de operando en expresión.");
-                                    $$ = $1;    
-                                }
                                 ;
 
+// ************************************************************************************************************************************************************
+
+expresion_error                 : expresion operador_suma
+                                    {
+                                        notifyError("Falta de operando en expresión.");
+                                        $$ = $1;    
+                                    }
+                                | secuencia_sin_operador
+                                    { $$ = $1; }
+                                ;
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 operador_suma                   : '+'
@@ -542,29 +534,35 @@ operador_multiplicacion         : '/'
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-factor                          : variable
-                                { $$ = $1; }
-                                | constante
-                                { $$ = $1; }
-                                | invocacion_funcion
-                                { $$ = $1; }
-                                ;
+factor
+    : variable
+        { $$ = $1; }
+    | constante
+        { $$ = $1; }
+    | invocacion_funcion
+        { $$ = $1; }
+    | '-' factor %prec UMINUS
+        { $$ = "-" + $2; }
+    | '-' error
+        { notifyError("Falta el operando tras el signo negativo."); }
+    ;
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-constante                       : CTE
-                                { $$ = $1; }
-                                //| '-' CTE // Luego debe revisarse que la CTE no sea entera.
-                                //{ $$ = '-' + $2; }
-                                // Si se obliga que haya un espacio entre terminos, ' ', entonces esto no da shift/reduce.
-                                ;
+constante
+    : CTE
+        { $$ = $1; }
+    /*| '-' CTE %prec UMINUS
+        { $$ = '-' + $2; }*/
+    ;
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-variable                        : ID
-                                | ID '.' ID
-                                { $$ = $1 + "." + $3; }
-                                ;
+variable
+    : ID
+    | ID '.' ID
+        { $$ = $1 + "." + $3; }
+    ;
 
 // ************************************************************************************************************************************************************
 // Declaración de Función
@@ -723,8 +721,6 @@ int yylex() {
     }
 
     Token token = this.getAppropiateToken();
-
-    System.out.println("> " + token.getLexema());
 
     this.yylval = new ParserVal(token.getLexema());
 
