@@ -416,10 +416,7 @@ if                              : IF condicion cuerpo_ejecutable rama_else ENDIF
                                 // ==============================
                                 // REGLAS DE ERROR
                                 // ==============================
-                                | IF error '}'
-                                { notifyError("Sentencia IF inválida en el lenguaje."); readLastTokenAgain(); }
-                                | IF error ';'
-                                { notifyError("Sentencia IF inválida en el lenguaje."); readLastTokenAgain(); }
+                                | IF error punto_sincronizacion_if
                                 ;
 
 punto_sincronizacion_if         : '}'

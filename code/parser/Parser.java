@@ -11,632 +11,624 @@
 //### Please send bug reports to tom@hukatronic.cz
 //### static char yysccsid[] = "@(#)yaccpar	1.8 (Berkeley) 01/20/90";
 
-//#line 7 "gramatica.y"
-package parser;
 
-/* Importaciones.*/
-import lexer.Lexer;
-import common.Token;
-import utilities.Printer;
-//#line 19 "gramatica.y"
+
+
+
+
+//#line 7 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+    package parser;
+
+    /* Importaciones.*/
+    import lexer.Lexer;
+    import common.Token;
+    import utilities.Printer;
+//#line 19 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
 /*typedef union {
     String sval;
 } YYSTYPE; */
 //#line 28 "Parser.java"
 
-public class Parser {
 
-  boolean yydebug; // do I want debug output?
-  int yynerrs; // number of errors so far
-  int yyerrflag; // was there an error?
-  int yychar; // the current working character
 
-  // ########## MESSAGES ##########
-  // ###############################################################
-  // method: debug
-  // ###############################################################
-  void debug(String msg) {
-    if (yydebug)
-      System.out.println(msg);
+
+public class Parser
+{
+
+boolean yydebug;        //do I want debug output?
+int yynerrs;            //number of errors so far
+int yyerrflag;          //was there an error?
+int yychar;             //the current working character
+
+//########## MESSAGES ##########
+//###############################################################
+// method: debug
+//###############################################################
+void debug(String msg)
+{
+  if (yydebug)
+    System.out.println(msg);
+}
+
+//########## STATE STACK ##########
+final static int YYSTACKSIZE = 500;  //maximum stack size
+int statestk[] = new int[YYSTACKSIZE]; //state stack
+int stateptr;
+int stateptrmax;                     //highest index of stackptr
+int statemax;                        //state when highest index reached
+//###############################################################
+// methods: state stack push,pop,drop,peek
+//###############################################################
+final void state_push(int state)
+{
+  try {
+		stateptr++;
+		statestk[stateptr]=state;
+	 }
+	 catch (ArrayIndexOutOfBoundsException e) {
+     int oldsize = statestk.length;
+     int newsize = oldsize * 2;
+     int[] newstack = new int[newsize];
+     System.arraycopy(statestk,0,newstack,0,oldsize);
+     statestk = newstack;
+     statestk[stateptr]=state;
   }
+}
+final int state_pop()
+{
+  return statestk[stateptr--];
+}
+final void state_drop(int cnt)
+{
+  stateptr -= cnt; 
+}
+final int state_peek(int relative)
+{
+  return statestk[stateptr-relative];
+}
+//###############################################################
+// method: init_stacks : allocate and prepare stacks
+//###############################################################
+final boolean init_stacks()
+{
+  stateptr = -1;
+  val_init();
+  return true;
+}
+//###############################################################
+// method: dump_stacks : show n levels of the stacks
+//###############################################################
+void dump_stacks(int count)
+{
+int i;
+  System.out.println("=index==state====value=     s:"+stateptr+"  v:"+valptr);
+  for (i=0;i<count;i++)
+    System.out.println(" "+i+"    "+statestk[i]+"      "+valstk[i]);
+  System.out.println("======================");
+}
 
-  // ########## STATE STACK ##########
-  final static int YYSTACKSIZE = 500; // maximum stack size
-  int statestk[] = new int[YYSTACKSIZE]; // state stack
-  int stateptr;
-  int stateptrmax; // highest index of stackptr
-  int statemax; // state when highest index reached
-  // ###############################################################
-  // methods: state stack push,pop,drop,peek
-  // ###############################################################
 
-  final void state_push(int state) {
-    try {
-      stateptr++;
-      statestk[stateptr] = state;
-    } catch (ArrayIndexOutOfBoundsException e) {
-      int oldsize = statestk.length;
-      int newsize = oldsize * 2;
-      int[] newstack = new int[newsize];
-      System.arraycopy(statestk, 0, newstack, 0, oldsize);
-      statestk = newstack;
-      statestk[stateptr] = state;
-    }
-  }
+//########## SEMANTIC VALUES ##########
+//public class ParserVal is defined in ParserVal.java
 
-  final int state_pop() {
-    return statestk[stateptr--];
-  }
 
-  final void state_drop(int cnt) {
-    stateptr -= cnt;
-  }
+String   yytext;//user variable to return contextual strings
+ParserVal yyval; //used to return semantic vals from action routines
+ParserVal yylval;//the 'lval' (result) I got from yylex()
+ParserVal valstk[];
+int valptr;
+//###############################################################
+// methods: value stack push,pop,drop,peek.
+//###############################################################
+void val_init()
+{
+  valstk=new ParserVal[YYSTACKSIZE];
+  yyval=new ParserVal();
+  yylval=new ParserVal();
+  valptr=-1;
+}
+void val_push(ParserVal val)
+{
+  if (valptr>=YYSTACKSIZE)
+    return;
+  valstk[++valptr]=val;
+}
+ParserVal val_pop()
+{
+  if (valptr<0)
+    return new ParserVal();
+  return valstk[valptr--];
+}
+void val_drop(int cnt)
+{
+int ptr;
+  ptr=valptr-cnt;
+  if (ptr<0)
+    return;
+  valptr = ptr;
+}
+ParserVal val_peek(int relative)
+{
+int ptr;
+  ptr=valptr-relative;
+  if (ptr<0)
+    return new ParserVal();
+  return valstk[ptr];
+}
+final ParserVal dup_yyval(ParserVal val)
+{
+  ParserVal dup = new ParserVal();
+  dup.ival = val.ival;
+  dup.dval = val.dval;
+  dup.sval = val.sval;
+  dup.obj = val.obj;
+  return dup;
+}
+//#### end semantic value section ####
+public final static short ID=257;
+public final static short CTE=258;
+public final static short STR=259;
+public final static short EQ=260;
+public final static short GEQ=261;
+public final static short LEQ=262;
+public final static short NEQ=263;
+public final static short DASIG=264;
+public final static short FLECHA=265;
+public final static short PRINT=266;
+public final static short IF=267;
+public final static short ELSE=268;
+public final static short ENDIF=269;
+public final static short UINT=270;
+public final static short CVR=271;
+public final static short DO=272;
+public final static short WHILE=273;
+public final static short RETURN=274;
+public final static short YYERRCODE=256;
+final static short yylhs[] = {                           -1,
+    0,    0,    0,    0,   12,   12,   12,   12,   13,   13,
+   13,   15,   15,   15,   16,   16,   16,   16,   16,   16,
+   16,   14,   14,   18,   18,   19,   19,   19,   21,   21,
+    1,    1,    1,   22,    2,    2,    2,   23,   24,   24,
+   26,   26,   25,   25,   27,   27,   17,   17,   28,   28,
+   28,   28,   28,   28,   28,   29,   29,   30,   30,   35,
+   35,   35,   37,   36,   36,   38,   38,   38,   38,   38,
+   38,   38,   33,   33,   33,   39,   39,   34,   40,   40,
+   40,   40,   41,   32,   42,   42,   42,    5,    5,    5,
+    5,   43,   43,   11,   11,    6,    6,    6,   44,   44,
+    7,    7,    7,    4,    3,    3,   20,   20,   46,   46,
+   31,   45,   45,   47,   47,   47,   49,   49,   48,   48,
+   48,   50,   50,   50,    8,    9,    9,   10,   10,
+};
+final static short yylen[] = {                            2,
+    2,    2,    1,    1,    3,    2,    0,    3,    1,    2,
+    3,    1,    1,    1,    1,    1,    1,    1,    1,    1,
+    1,    1,    1,    1,    2,    3,    3,    4,    0,    1,
+    1,    3,    2,    3,    1,    3,    2,    7,    2,    0,
+    1,    1,    3,    2,    1,    2,    2,    2,    1,    1,
+    1,    1,    1,    1,    1,    3,    3,    1,    1,    3,
+    2,    2,    1,    3,    1,    1,    1,    1,    1,    1,
+    1,    1,    5,    4,    5,    0,    2,    2,    2,    1,
+    2,    3,    2,    4,    1,    1,    0,    3,    1,    1,
+    2,    1,    1,    2,    2,    3,    1,    3,    1,    1,
+    1,    1,    1,    1,    1,    3,    8,    7,    1,    0,
+    4,    1,    0,    1,    3,    1,    2,    2,    3,    2,
+    2,    0,    1,    1,    4,    1,    3,    3,    1,
+};
+final static short yydefred[] = {                         0,
+    4,    0,    0,    0,    3,    0,    0,    0,    0,    0,
+    0,    0,    0,    0,   49,    1,    0,    9,   22,   23,
+   24,    0,   51,   55,    0,   50,   52,   53,   54,   58,
+   59,    0,    6,    0,    0,    0,    0,    0,    0,  104,
+    0,  101,  102,    0,    0,   97,  103,    0,    0,    0,
+    0,    0,    0,    0,    0,    0,   41,   42,    0,   78,
+   80,    0,    0,    0,   33,    0,    0,    0,    0,    0,
+   10,   30,   25,   48,   47,    8,    5,    0,    0,  126,
+  106,   85,    0,    0,    0,   62,    0,   68,   70,   69,
+   71,   72,   66,   67,   92,   93,    0,    0,   99,  100,
+    0,    0,    0,    0,   61,   27,    0,  124,  123,    0,
+    0,    0,  114,  116,    0,    0,   26,   83,   44,   45,
+    0,    0,   81,   79,    0,   39,    0,   32,    0,   35,
+    0,    0,   15,   18,   16,   17,   19,   21,   20,   13,
+   12,   11,   14,    0,    0,  125,   84,    0,    0,   63,
+   60,    0,    0,   98,   96,    0,    0,  118,    0,    0,
+    0,    0,  121,   28,   43,   46,   82,  111,    0,    0,
+   37,  128,  127,   77,   75,   73,    0,    0,  115,  119,
+    0,   36,    0,    0,    0,    0,    0,  108,   38,  107,
+};
+final static short yydgoto[] = {                          4,
+   13,  129,   42,   43,   44,   45,   46,   47,   79,   80,
+   48,    5,  184,   18,  142,  143,   19,   20,   21,   22,
+   73,   23,   24,   64,   58,   59,  121,   25,   26,   27,
+   28,   29,   30,   31,  118,   50,  151,   97,  149,   60,
+   61,   84,   98,  102,  111,  185,  112,  113,  114,  115,
+};
+final static short yysindex[] = {                      -114,
+    0,   12,  -40,    0,    0,   13,  -20,    7,   20,  -12,
+  -13, -222,  -39, -218,    0,    0,   24,    0,    0,    0,
+    0,   34,    0,    0,  -44,    0,    0,    0,    0,    0,
+    0,  -45,    0,  -28, -191, -158, -203,   35,   13,    0,
+   42,    0,    0,  -11,   56,    0,    0, -191,   35,   67,
+   54,   69,  -31,   68,  -36,   38,    0,    0,  -38,    0,
+    0, -191, -142,   77,    0, -133, -125, -191, -191,  172,
+    0,    0,    0,    0,    0,    0,    0,  -22,   21,    0,
+    0,    0,   41,   93, -132,    0,  100,    0,    0,    0,
+    0,    0,    0,    0,    0,    0, -191, -191,    0,    0,
+   16, -102,   16, -132,    0,    0,  -31,    0,    0, -231,
+  110,  108,    0,    0, -233,  111,    0,    0,    0,    0,
+   49,   31,    0,    0,   61,    0,   46,    0,  -25,    0,
+   41,   41,    0,    0,    0,    0,    0,    0,    0,    0,
+    0,    0,    0,  -85, -191,    0,    0,   35,  -96,    0,
+    0,   41,   16,    0,    0,  -90,  139,    0,   64, -231,
+  146,  -66,    0,    0,    0,    0,    0,    0,  153, -125,
+    0,    0,    0,    0,    0,    0,   72,   60,    0,    0,
+ -191,    0,   60,   24,   74,  155,   75,    0,    0,    0,
+};
+final static short yyrindex[] = {                       194,
+    0,  194,    0,    0,    0,  101,    0,    0,    0,    0,
+    0,  156,    0,    0,    0,    0,  198,    0,    0,    0,
+    0,    1,    0,    0,    0,    0,    0,    0,    0,    0,
+    0,    0,    0,    0,    0,    0,  160,    0,   78,    0,
+    0,    0,    0,  161,  123,    0,    0,  145,    0,    0,
+    0,  106,  -33,    0,    0,    0,    0,    0,    0,    0,
+    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+    0,    0,    0,    0,    0,    0,    0,   50,    0,    0,
+    0,    0,  167,    0,  -60,    0,    0,    0,    0,    0,
+    0,    0,    0,    0,    0,    0,    0,  310,    0,    0,
+   87,    0,  116,  -56,    0,    0,  -33,    0,    0, -213,
+    0,  169,    0,    0,    0,    0,    0,    0,    0,    0,
+    0,    0,    0,    0,    0,    0,    0,    0,  -43,    0,
+  -30,  -29,    0,    0,    0,    0,    0,    0,    0,    0,
+    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+    0,  170,  352,    0,    0,  -24,    0,    0,    0,  -34,
+   66,   73,    0,    0,    0,    0,    0,    0,    0,    0,
+    0,    0,    0,    0,    0,    0,    0,   89,    0,    0,
+    0,    0,   89,   90,    0,    0,    0,    0,    0,    0,
+};
+final static short yygindex[] = {                         0,
+  238,    0,  399,  -41,    8,   -6,  -91,  415,    0,  114,
+    0,  251,   71,   -3,    0,    0,   23,    0,    0,    0,
+    0,    0,    0,    0,  129,  -32,    0,    0,    0,    0,
+    0,    0,    0,    0,   28,  225,    0,    0,  168,    0,
+  215,    0,    0,    0,  176,  102,    0,  -92,    0,    0,
+};
+final static int YYTABLESIZE=617;
+static short yytable[];
+static { yytable();}
+static void yytable(){
+yytable = new short[]{                         12,
+   29,   41,   76,   41,   66,   85,  117,  113,    3,  117,
+  155,   12,  110,   71,   75,   34,  104,  158,  170,   37,
+   95,   67,   96,  161,  108,  130,   62,   12,   57,   56,
+   71,   95,   57,   96,   74,   49,  162,   68,  101,  109,
+   29,  103,   78,  122,   83,   69,   41,   63,   94,   92,
+   93,   12,   35,   39,   40,   82,  122,  100,   36,   53,
+   57,  146,   99,   12,  145,   39,   40,  179,   76,  125,
+   41,   57,   17,   34,   12,  131,  132,   12,  120,   76,
+   74,   34,   86,   95,   33,   96,  123,  171,   12,  186,
+  129,  153,   72,  129,   57,   56,   77,  100,   81,   12,
+   74,  168,   99,   95,  152,   96,  105,  105,  107,  105,
+   56,   66,  106,  120,  126,  174,  120,  127,  105,  105,
+  105,  105,  105,  128,  105,   29,  117,   94,  182,   94,
+   94,   94,   40,  147,    3,  148,  105,  105,  105,  105,
+  150,    1,    2,  166,   31,   94,   94,   94,   94,   31,
+  159,  160,   78,  154,   39,   40,   95,   56,   95,   95,
+   95,   31,  119,   89,   31,   89,   89,   89,   56,  164,
+   57,  172,  175,  165,   95,   95,   95,   95,  176,  177,
+   71,   89,   89,   89,   89,   90,  178,   90,   90,   90,
+  161,   36,  181,    7,  183,  189,   40,    2,  188,  190,
+   87,   65,  105,   90,   90,   90,   90,   86,   76,  112,
+   64,   94,   76,  110,  109,   32,    6,   65,   39,   40,
+   39,   40,  122,  122,  108,    7,    8,   70,    6,    9,
+  141,   10,   40,   11,  122,  122,  122,    7,    8,  109,
+   95,    9,  144,   10,    6,   11,   54,   89,   88,   89,
+   90,   91,   16,    7,    8,  169,   29,   29,  173,   10,
+   55,   11,   38,   39,   40,   87,   29,   29,    6,   90,
+   29,  156,   29,  124,   29,   51,   52,    7,    8,   70,
+    6,    9,  157,   10,  187,   11,  167,   39,   40,    7,
+    8,    6,    0,    9,    6,   10,  140,   11,   39,   40,
+    7,    8,    0,    7,    8,    6,   10,    0,   11,   10,
+    0,   11,   39,   40,    7,    8,    6,    0,    0,    0,
+   10,    0,   11,  116,   65,    7,    8,    0,    0,    9,
+    0,   10,    0,   11,  105,  105,    0,  105,  105,  105,
+  105,    0,  105,   94,   94,    0,   94,   94,   94,   94,
+   91,   94,   91,   91,   91,    0,  105,   31,    0,    0,
+    0,   31,   31,    0,  105,    0,    0,    0,   91,   91,
+   91,   91,   95,   95,    0,   95,   95,   95,   95,    0,
+   95,    0,   89,   89,   89,   89,    0,   89,    0,    0,
+    0,    0,   88,    0,   88,   88,   88,    0,    0,    0,
+   14,   14,    0,    0,   90,   90,   90,   90,   14,   90,
+   88,   88,   88,   88,    0,   14,   15,   15,    0,    0,
+    0,    0,    0,    0,   15,    0,    0,    0,  133,    0,
+    0,   15,   14,    0,   91,    0,   14,  134,  135,    0,
+    0,  136,    0,  137,  138,  139,    0,   14,   15,    0,
+    0,    0,   15,    0,   14,    0,    0,    0,    0,    0,
+    0,    0,    0,   15,    0,    0,    0,    0,    0,    0,
+   15,    0,    0,    0,    0,    0,   88,    0,    0,    0,
+    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+    0,    0,    0,  163,    0,    0,    0,    0,    0,   14,
+    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+    0,    0,    0,    0,    0,   15,    0,    0,    0,    0,
+    0,    0,    0,    0,    0,    0,   14,    0,    0,    0,
+    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+  180,    0,   15,    0,    0,    0,    0,    0,    0,   91,
+   91,   91,   91,    0,   91,    0,   14,    0,    0,    0,
+    0,   14,   14,    0,    0,    0,    0,    0,    0,    0,
+    0,    0,   15,    0,    0,    0,    0,   15,   15,    0,
+    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+    0,   88,   88,   88,   88,    0,   88,
+};
+}
+static short yycheck[];
+static { yycheck(); }
+static void yycheck() {
+yycheck = new short[] {                         40,
+    0,   40,   59,   40,   44,   38,   41,   41,  123,   44,
+  102,   40,   44,   17,   59,   59,   49,  110,   44,   40,
+   43,   61,   45,  257,  256,   67,   40,   40,   59,   59,
+   34,   43,   10,   45,   59,    8,  270,  256,   45,  271,
+   40,   48,   35,  257,   37,  264,   40,  270,   60,   61,
+   62,   40,   40,  257,  258,  259,  270,   42,   46,   40,
+   38,   41,   47,   40,   44,  257,  258,  160,  125,   62,
+   40,   49,    2,    3,   40,   68,   69,   40,   56,  125,
+  125,  125,   41,   43,  125,   45,   59,  129,   40,  181,
+   41,   98,   59,   44,  125,  125,  125,   42,  257,   40,
+  125,   41,   47,   43,   97,   45,   41,   41,   40,   44,
+  123,   44,   59,   41,  257,  148,   44,   41,   41,   42,
+   43,   44,   45,  257,   47,  125,   59,   41,  170,   43,
+   44,   45,  258,   41,  123,  268,   59,   60,   61,   62,
+   41,  256,  257,  121,   44,   59,   60,   61,   62,   44,
+   41,   44,  145,  256,  257,  258,   41,  123,   43,   44,
+   45,   61,  125,   41,   59,   43,   44,   45,  123,   59,
+  148,  257,  269,  125,   59,   60,   61,   62,  269,   41,
+  184,   59,   60,   61,   62,   41,  123,   43,   44,   45,
+  257,   46,   40,    0,  123,   41,   41,    0,  125,  125,
+   41,   41,  125,   59,   60,   61,   62,   41,  269,   41,
+   41,  125,  269,  125,  125,  256,  257,  257,  257,  258,
+  257,  258,  257,  257,  256,  266,  267,  256,  257,  270,
+   59,  272,  258,  274,  273,  270,  270,  266,  267,  271,
+  125,  270,  265,  272,  257,  274,    9,  125,  260,  261,
+  262,  263,    2,  266,  267,  127,  256,  257,  145,  272,
+  273,  274,  256,  257,  258,   41,  266,  267,  257,  125,
+  270,  104,  272,   59,  274,  256,  257,  266,  267,  256,
+  257,  270,  107,  272,  183,  274,  256,  257,  258,  266,
+  267,  257,   -1,  270,  257,  272,  125,  274,  257,  258,
+  266,  267,   -1,  266,  267,  257,  272,   -1,  274,  272,
+   -1,  274,  257,  258,  266,  267,  257,   -1,   -1,   -1,
+  272,   -1,  274,  256,  257,  266,  267,   -1,   -1,  270,
+   -1,  272,   -1,  274,  257,  258,   -1,  260,  261,  262,
+  263,   -1,  265,  257,  258,   -1,  260,  261,  262,  263,
+   41,  265,   43,   44,   45,   -1,  256,  257,   -1,   -1,
+   -1,  256,  257,   -1,  264,   -1,   -1,   -1,   59,   60,
+   61,   62,  257,  258,   -1,  260,  261,  262,  263,   -1,
+  265,   -1,  260,  261,  262,  263,   -1,  265,   -1,   -1,
+   -1,   -1,   41,   -1,   43,   44,   45,   -1,   -1,   -1,
+    2,    3,   -1,   -1,  260,  261,  262,  263,   10,  265,
+   59,   60,   61,   62,   -1,   17,    2,    3,   -1,   -1,
+   -1,   -1,   -1,   -1,   10,   -1,   -1,   -1,  257,   -1,
+   -1,   17,   34,   -1,  125,   -1,   38,  266,  267,   -1,
+   -1,  270,   -1,  272,  273,  274,   -1,   49,   34,   -1,
+   -1,   -1,   38,   -1,   56,   -1,   -1,   -1,   -1,   -1,
+   -1,   -1,   -1,   49,   -1,   -1,   -1,   -1,   -1,   -1,
+   56,   -1,   -1,   -1,   -1,   -1,  125,   -1,   -1,   -1,
+   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
+   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
+   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
+   -1,   -1,   -1,  115,   -1,   -1,   -1,   -1,   -1,  121,
+   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
+   -1,   -1,   -1,   -1,   -1,  121,   -1,   -1,   -1,   -1,
+   -1,   -1,   -1,   -1,   -1,   -1,  148,   -1,   -1,   -1,
+   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
+  162,   -1,  148,   -1,   -1,   -1,   -1,   -1,   -1,  260,
+  261,  262,  263,   -1,  265,   -1,  178,   -1,   -1,   -1,
+   -1,  183,  184,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
+   -1,   -1,  178,   -1,   -1,   -1,   -1,  183,  184,   -1,
+   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
+   -1,  260,  261,  262,  263,   -1,  265,
+};
+}
+final static short YYFINAL=4;
+final static short YYMAXTOKEN=274;
+final static String yyname[] = {
+"end-of-file",null,null,null,null,null,null,null,null,null,null,null,null,null,
+null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,
+null,null,null,null,null,null,null,null,null,null,"'('","')'","'*'","'+'","','",
+"'-'","'.'","'/'",null,null,null,null,null,null,null,null,null,null,null,"';'",
+"'<'","'='","'>'",null,null,null,null,null,null,null,null,null,null,null,null,
+null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,
+null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,
+null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,
+"'{'",null,"'}'",null,null,null,null,null,null,null,null,null,null,null,null,
+null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,
+null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,
+null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,
+null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,
+null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,
+null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,
+null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,
+null,null,null,null,null,null,null,"ID","CTE","STR","EQ","GEQ","LEQ","NEQ",
+"DASIG","FLECHA","PRINT","IF","ELSE","ENDIF","UINT","CVR","DO","WHILE","RETURN",
+};
+final static String yyrule[] = {
+"$accept : programa",
+"programa : ID cuerpo_programa",
+"programa : ID conjunto_sentencias",
+"programa : cuerpo_programa",
+"programa : error",
+"cuerpo_programa : '{' conjunto_sentencias '}'",
+"cuerpo_programa : '{' '}'",
+"cuerpo_programa :",
+"cuerpo_programa : '{' error '}'",
+"conjunto_sentencias : sentencia",
+"conjunto_sentencias : conjunto_sentencias sentencia",
+"conjunto_sentencias : conjunto_sentencias error punto_sincronizacion_sentencia",
+"punto_sincronizacion_sentencia : ';'",
+"punto_sincronizacion_sentencia : '}'",
+"punto_sincronizacion_sentencia : token_inicio_sentencia",
+"token_inicio_sentencia : ID",
+"token_inicio_sentencia : IF",
+"token_inicio_sentencia : UINT",
+"token_inicio_sentencia : PRINT",
+"token_inicio_sentencia : DO",
+"token_inicio_sentencia : RETURN",
+"token_inicio_sentencia : WHILE",
+"sentencia : sentencia_ejecutable",
+"sentencia : sentencia_declarativa",
+"sentencia_declarativa : declaracion_variable",
+"sentencia_declarativa : declaracion_funcion punto_y_coma_opcional",
+"declaracion_variable : UINT lista_variables ';'",
+"declaracion_variable : UINT error ';'",
+"declaracion_variable : UINT lista_variables error ';'",
+"punto_y_coma_opcional :",
+"punto_y_coma_opcional : ';'",
+"lista_variables : ID",
+"lista_variables : lista_variables ',' ID",
+"lista_variables : lista_variables ID",
+"asignacion_multiple : lista_variables '=' lista_constantes",
+"lista_constantes : constante",
+"lista_constantes : lista_constantes ',' constante",
+"lista_constantes : lista_constantes constante",
+"lambda : '(' parametro_lambda ')' bloque_ejecutable '(' factor ')'",
+"parametro_lambda : UINT ID",
+"parametro_lambda :",
+"cuerpo_ejecutable : sentencia_ejecutable",
+"cuerpo_ejecutable : bloque_ejecutable",
+"bloque_ejecutable : '{' conjunto_sentencias_ejecutables '}'",
+"bloque_ejecutable : '{' '}'",
+"conjunto_sentencias_ejecutables : sentencia_ejecutable",
+"conjunto_sentencias_ejecutables : conjunto_sentencias_ejecutables sentencia_ejecutable",
+"sentencia_ejecutable : operacion_ejecutable ';'",
+"sentencia_ejecutable : operacion_ejecutable '}'",
+"operacion_ejecutable : invocacion_funcion",
+"operacion_ejecutable : asignacion_simple",
+"operacion_ejecutable : asignacion_multiple",
+"operacion_ejecutable : sentencia_control",
+"operacion_ejecutable : sentencia_retorno",
+"operacion_ejecutable : impresion",
+"operacion_ejecutable : lambda",
+"asignacion_simple : variable DASIG expresion",
+"asignacion_simple : variable error expresion",
+"sentencia_control : if",
+"sentencia_control : do_while",
+"condicion : '(' cuerpo_condicion fin_condicion",
+"condicion : cuerpo_condicion ')'",
+"condicion : '(' ')'",
+"fin_condicion : ')'",
+"cuerpo_condicion : expresion comparador expresion",
+"cuerpo_condicion : expresion",
+"comparador : '>'",
+"comparador : '<'",
+"comparador : EQ",
+"comparador : LEQ",
+"comparador : GEQ",
+"comparador : NEQ",
+"comparador : '='",
+"if : IF condicion cuerpo_ejecutable rama_else ENDIF",
+"if : IF condicion cuerpo_ejecutable rama_else",
+"if : IF error cuerpo_ejecutable rama_else ENDIF",
+"rama_else :",
+"rama_else : ELSE cuerpo_ejecutable",
+"do_while : DO cuerpo_do",
+"cuerpo_do : cuerpo_ejecutable fin_cuerpo_do",
+"cuerpo_do : fin_cuerpo_do",
+"cuerpo_do : cuerpo_ejecutable condicion",
+"cuerpo_do : cuerpo_ejecutable WHILE error",
+"fin_cuerpo_do : WHILE condicion",
+"impresion : PRINT '(' imprimible ')'",
+"imprimible : STR",
+"imprimible : expresion",
+"imprimible :",
+"expresion : expresion operador_suma termino",
+"expresion : termino",
+"expresion : secuencia_sin_operador",
+"expresion : expresion operador_suma",
+"operador_suma : '+'",
+"operador_suma : '-'",
+"secuencia_sin_operador : termino termino",
+"secuencia_sin_operador : secuencia_sin_operador termino",
+"termino : termino operador_multiplicacion factor",
+"termino : factor",
+"termino : termino operador_multiplicacion error",
+"operador_multiplicacion : '/'",
+"operador_multiplicacion : '*'",
+"factor : variable",
+"factor : constante",
+"factor : invocacion_funcion",
+"constante : CTE",
+"variable : ID",
+"variable : ID '.' ID",
+"declaracion_funcion : UINT ID '(' conjunto_parametros ')' '{' cuerpo_funcion '}'",
+"declaracion_funcion : UINT '(' conjunto_parametros ')' '{' cuerpo_funcion '}'",
+"cuerpo_funcion : conjunto_sentencias",
+"cuerpo_funcion :",
+"sentencia_retorno : RETURN '(' expresion ')'",
+"conjunto_parametros : lista_parametros",
+"conjunto_parametros :",
+"lista_parametros : parametro_formal",
+"lista_parametros : lista_parametros ',' parametro_formal",
+"lista_parametros : parametro_vacio",
+"parametro_vacio : lista_parametros ','",
+"parametro_vacio : ',' parametro_formal",
+"parametro_formal : semantica_pasaje UINT variable",
+"parametro_formal : semantica_pasaje UINT",
+"parametro_formal : semantica_pasaje variable",
+"semantica_pasaje :",
+"semantica_pasaje : CVR",
+"semantica_pasaje : error",
+"invocacion_funcion : ID '(' lista_argumentos ')'",
+"lista_argumentos : argumento",
+"lista_argumentos : lista_argumentos ',' argumento",
+"argumento : expresion FLECHA ID",
+"argumento : expresion",
+};
 
-  final int state_peek(int relative) {
-    return statestk[stateptr - relative];
-  }
+//#line 689 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
 
-  // ###############################################################
-  // method: init_stacks : allocate and prepare stacks
-  // ###############################################################
-  final boolean init_stacks() {
-    stateptr = -1;
-    val_init();
-    return true;
-  }
+// ============================================================================================================================================================
+// INICIO DE CÓDIGO (opcional)
+// ============================================================================================================================================================
 
-  // ###############################################################
-  // method: dump_stacks : show n levels of the stacks
-  // ###############################################################
-  void dump_stacks(int count) {
-    int i;
-    System.out.println("=index==state====value=     s:" + stateptr + "  v:" + valptr);
-    for (i = 0; i < count; i++)
-      System.out.println(" " + i + "    " + statestk[i] + "      " + valstk[i]);
-    System.out.println("======================");
-  }
+// End of File.
+public final static short EOF = 0;
 
-  // ########## SEMANTIC VALUES ##########
-  // public class ParserVal is defined in ParserVal.java
+// Lexer.
+private final Lexer lexer;
 
-  String yytext;// user variable to return contextual strings
-  ParserVal yyval; // used to return semantic vals from action routines
-  ParserVal yylval;// the 'lval' (result) I got from yylex()
-  ParserVal valstk[];
-  int valptr;
+// Contadores de la cantidad de errores detectados.
+private int errorsDetected;
+private int warningsDetected;
 
-  // ###############################################################
-  // methods: value stack push,pop,drop,peek.
-  // ###############################################################
-  void val_init() {
-    valstk = new ParserVal[YYSTACKSIZE];
-    yyval = new ParserVal();
-    yylval = new ParserVal();
-    valptr = -1;
-  }
+private boolean readAgain;
 
-  void val_push(ParserVal val) {
-    if (valptr >= YYSTACKSIZE)
-      return;
-    valstk[++valptr] = val;
-  }
-
-  ParserVal val_pop() {
-    if (valptr < 0)
-      return new ParserVal();
-    return valstk[valptr--];
-  }
-
-  void val_drop(int cnt) {
-    int ptr;
-    ptr = valptr - cnt;
-    if (ptr < 0)
-      return;
-    valptr = ptr;
-  }
-
-  ParserVal val_peek(int relative) {
-    int ptr;
-    ptr = valptr - relative;
-    if (ptr < 0)
-      return new ParserVal();
-    return valstk[ptr];
-  }
-
-  final ParserVal dup_yyval(ParserVal val) {
-    ParserVal dup = new ParserVal();
-    dup.ival = val.ival;
-    dup.dval = val.dval;
-    dup.sval = val.sval;
-    dup.obj = val.obj;
-    return dup;
-  }
-
-  // #### end semantic value section ####
-  public final static short ID = 257;
-  public final static short CTE = 258;
-  public final static short STR = 259;
-  public final static short EQ = 260;
-  public final static short GEQ = 261;
-  public final static short LEQ = 262;
-  public final static short NEQ = 263;
-  public final static short DASIG = 264;
-  public final static short FLECHA = 265;
-  public final static short PRINT = 266;
-  public final static short IF = 267;
-  public final static short ELSE = 268;
-  public final static short ENDIF = 269;
-  public final static short UINT = 270;
-  public final static short CVR = 271;
-  public final static short DO = 272;
-  public final static short WHILE = 273;
-  public final static short RETURN = 274;
-  public final static short YYERRCODE = 256;
-  final static short yylhs[] = { -1,
-      0, 0, 0, 0, 12, 12, 12, 12, 13, 13,
-      13, 15, 15, 15, 16, 16, 16, 16, 16, 16,
-      16, 14, 14, 18, 18, 19, 19, 19, 21, 21,
-      1, 1, 1, 22, 2, 2, 2, 23, 24, 24,
-      26, 26, 25, 25, 27, 27, 17, 17, 28, 28,
-      28, 28, 28, 28, 28, 29, 29, 30, 30, 35,
-      36, 36, 38, 37, 37, 37, 39, 39, 39, 39,
-      39, 39, 39, 33, 33, 40, 40, 34, 34, 41,
-      41, 41, 41, 42, 32, 43, 43, 43, 5, 5,
-      5, 5, 44, 44, 11, 11, 6, 6, 6, 45,
-      45, 7, 7, 7, 4, 3, 3, 20, 20, 47,
-      47, 31, 46, 46, 48, 48, 48, 50, 50, 49,
-      49, 49, 51, 51, 51, 8, 9, 9, 10, 10,
-  };
-  final static short yylen[] = { 2,
-      2, 2, 1, 1, 3, 2, 0, 3, 1, 2,
-      3, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-      1, 1, 1, 1, 2, 3, 3, 4, 0, 1,
-      1, 3, 2, 3, 1, 3, 2, 7, 2, 0,
-      1, 1, 3, 2, 1, 2, 2, 2, 1, 1,
-      1, 1, 1, 1, 1, 3, 3, 1, 1, 3,
-      1, 0, 1, 3, 0, 1, 1, 1, 1, 1,
-      1, 1, 1, 5, 4, 0, 2, 2, 2, 2,
-      1, 2, 3, 2, 4, 1, 1, 0, 3, 1,
-      1, 2, 1, 1, 2, 2, 3, 1, 3, 1,
-      1, 1, 1, 1, 1, 1, 3, 8, 7, 1,
-      0, 4, 1, 0, 1, 3, 1, 2, 2, 3,
-      2, 2, 0, 1, 1, 4, 1, 3, 3, 1,
-  };
-  final static short yydefred[] = { 0,
-      4, 0, 0, 0, 3, 0, 0, 0, 0, 0,
-      0, 0, 0, 0, 0, 49, 1, 0, 9, 22,
-      23, 24, 0, 51, 55, 0, 50, 52, 53, 54,
-      58, 59, 0, 6, 0, 15, 18, 16, 17, 19,
-      21, 20, 13, 12, 11, 14, 0, 0, 0, 61,
-      0, 0, 0, 0, 0, 0, 79, 0, 0, 41,
-      42, 0, 78, 81, 0, 0, 0, 33, 0, 0,
-      0, 0, 10, 30, 25, 48, 0, 5, 0, 105,
-      102, 103, 0, 0, 98, 104, 0, 127, 0, 107,
-      86, 0, 0, 0, 0, 0, 27, 0, 125, 124,
-      0, 0, 0, 115, 117, 0, 0, 26, 84, 0,
-      44, 45, 0, 0, 82, 80, 0, 39, 0, 32,
-      0, 35, 0, 0, 0, 93, 94, 0, 100, 101,
-      0, 0, 0, 126, 0, 85, 0, 0, 69, 71,
-      70, 72, 73, 67, 68, 0, 63, 60, 0, 119,
-      0, 0, 0, 0, 122, 28, 47, 43, 46, 83,
-      112, 0, 0, 37, 129, 0, 99, 97, 128, 77,
-      74, 0, 0, 0, 116, 120, 0, 36, 0, 0,
-      0, 0, 0, 109, 38, 108,
-  };
-  final static short yydgoto[] = { 4,
-      14, 121, 15, 82, 83, 84, 85, 16, 87, 88,
-      89, 5, 180, 19, 45, 46, 20, 21, 22, 23,
-      75, 24, 25, 67, 61, 62, 113, 26, 27, 28,
-      29, 30, 31, 32, 109, 52, 96, 148, 146, 138,
-      63, 64, 93, 128, 132, 102, 181, 103, 104, 105,
-      106,
-  };
-  final static short yysindex[] = { -113,
-      0, -40, -21, 0, 0, 213, 5, 18, 32, -2,
-      24, 33, -241, -5, -230, 0, 0, 59, 0, 0,
-      0, 0, -19, 0, 0, 21, 0, 0, 0, 0,
-      0, 0, 235, 0, -10, 0, 0, 0, 0, 0,
-      0, 0, 0, 0, 0, 0, -204, -208, -162, 0,
-      70, -204, 25, 51, -27, 43, 0, 32, 36, 0,
-      0, -36, 0, 0, -204, -180, 44, 0, -167, -165,
-      -204, -204, 0, 0, 0, 0, 0, 0, 5, 0,
-      0, 0, -37, 8, 0, 0, 30, 0, -204, 0,
-      0, 55, 62, -163, 179, 65, 0, -27, 0, 0,
-      -229, 71, 67, 0, 0, -224, 57, 0, 0, 73,
-      0, 0, -24, -33, 0, 0, 16, 0, -9, 0,
-      3, 0, 55, 55, -140, 0, 0, -204, 0, 0,
-      -11, -133, -204, 0, -11, 0, 70, -149, 0, 0,
-      0, 0, 0, 0, 0, -204, 0, 0, 80, 0,
-      6, -229, 81, -129, 0, 0, 0, 0, 0, 0,
-      0, 90, -165, 0, 0, -11, 0, 0, 0, 0,
-      0, 55, 17, 48, 0, 0, -204, 0, 48, 59,
-      14, 100, 20, 0, 0, 0,
-  };
-  final static short yyrindex[] = { 131,
-      0, 131, 0, 0, 0, 0, 31, 0, -38, 0,
-      0, 0, 101, 0, 0, 0, 0, 148, 0, 0,
-      0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
-      0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-      0, 0, 0, 0, 0, 0, 0, 0, 108, 0,
-      0, 114, 0, 50, -32, 0, 0, -38, 0, 0,
-      0, -38, 0, 0, 0, 0, 0, 0, 0, 0,
-      0, 0, 0, 0, 0, 0, 12, 0, 91, 0,
-      0, 0, 37, 135, 0, 0, 0, 0, 144, 0,
-      0, 118, 0, -48, 119, 0, 0, -32, 0, 0,
-      -222, 0, 121, 0, 0, 0, 0, 0, 0, 0,
-      0, 0, 0, -38, 0, 0, 0, 0, 0, 0,
-      105, 0, 109, 110, 0, 0, 0, 358, 0, 0,
-      113, 0, 0, 0, 122, 0, 0, 111, 0, 0,
-      0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-      0, -39, 38, 45, 0, 0, 0, 0, 0, 0,
-      0, 0, 0, 0, 0, 367, 0, 0, 0, 0,
-      0, 130, 0, 61, 0, 0, 0, 0, 61, 66,
-      0, 0, 0, 0, 0, 0,
-  };
-  final static short yygindex[] = { 0,
-      180, 0, 383, -56, -28, -61, -107, 410, 0, 68,
-      0, 190, 60, -3, 0, 0, 9, 0, 0, 0,
-      0, 0, 0, 0, 79, -29, 0, 0, 0, 0,
-      0, 0, 0, 0, 4, 0, 0, 0, 0, 0,
-      0, 137, 0, 0, 0, 102, 23, 0, -83, 0,
-      0,
-  };
-  final static int YYTABLESIZE = 632;
-  static short yytable[];
-  static {
-    yytable();
-  }
-
-  static void yytable() {
-    yytable = new short[] { 13,
-        29, 118, 62, 50, 118, 126, 50, 127, 114, 3,
-        76, 8, 51, 122, 73, 13, 101, 150, 13, 60,
-        92, 94, 131, 95, 168, 71, 99, 135, 66, 13,
-        130, 73, 153, 72, 123, 129, 117, 55, 69, 74,
-        29, 100, 123, 124, 47, 154, 163, 123, 90, 130,
-        48, 13, 79, 80, 129, 70, 161, 49, 126, 60,
-        127, 18, 35, 13, 164, 115, 166, 112, 175, 182,
-        134, 50, 65, 133, 31, 13, 118, 130, 106, 76,
-        130, 106, 3, 97, 119, 121, 69, 13, 121, 120,
-        98, 31, 80, 31, 79, 80, 91, 126, 13, 127,
-        158, 108, 136, 34, 137, 147, 178, 170, 31, 13,
-        152, 151, 13, 59, 78, 156, 165, 172, 157, 171,
-        173, 159, 167, 79, 80, 29, 48, 153, 174, 177,
-        7, 106, 106, 106, 106, 106, 13, 106, 184, 179,
-        185, 40, 1, 2, 186, 60, 59, 2, 88, 106,
-        106, 106, 106, 95, 65, 95, 95, 95, 87, 66,
-        111, 113, 96, 34, 96, 96, 96, 57, 56, 75,
-        64, 95, 95, 95, 95, 90, 73, 90, 90, 90,
-        96, 96, 96, 96, 91, 111, 91, 91, 91, 56,
-        110, 17, 59, 90, 90, 90, 90, 162, 116, 149,
-        169, 183, 91, 91, 91, 91, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 6, 7, 123, 62, 62,
-        76, 126, 160, 127, 123, 8, 9, 125, 99, 10,
-        123, 11, 7, 12, 33, 7, 114, 123, 145, 143,
-        144, 8, 9, 100, 8, 9, 7, 11, 10, 12,
-        11, 68, 12, 53, 54, 8, 9, 29, 0, 10,
-        80, 11, 0, 12, 79, 80, 29, 29, 13, 0,
-        29, 44, 29, 0, 29, 0, 0, 13, 13, 57,
-        7, 13, 0, 13, 0, 13, 106, 31, 0, 8,
-        9, 110, 7, 44, 106, 11, 58, 12, 107, 68,
-        0, 8, 9, 6, 7, 31, 31, 11, 0, 12,
-        0, 0, 0, 8, 9, 7, 0, 10, 0, 11,
-        0, 12, 0, 0, 8, 9, 7, 0, 10, 7,
-        11, 0, 12, 0, 0, 8, 9, 43, 8, 9,
-        0, 11, 0, 12, 11, 0, 12, 106, 106, 0,
-        106, 106, 106, 106, 0, 106, 0, 0, 0, 77,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 95,
-        95, 0, 95, 95, 95, 95, 0, 95, 96, 96,
-        0, 96, 96, 96, 96, 0, 96, 0, 0, 0,
-        0, 0, 0, 0, 90, 90, 90, 90, 92, 90,
-        92, 92, 92, 91, 91, 91, 91, 89, 91, 89,
-        89, 89, 0, 0, 0, 0, 92, 92, 92, 92,
-        0, 0, 0, 0, 0, 89, 89, 89, 89, 81,
-        0, 81, 0, 0, 81, 0, 0, 0, 139, 140,
-        141, 142, 0, 0, 0, 0, 0, 81, 0, 0,
-        0, 0, 0, 81, 81, 0, 86, 0, 86, 0,
-        0, 86, 0, 0, 0, 0, 81, 0, 0, 36,
-        0, 81, 0, 0, 86, 0, 0, 0, 37, 38,
-        86, 86, 39, 0, 40, 41, 42, 0, 155, 0,
-        0, 36, 0, 86, 0, 0, 0, 0, 86, 0,
-        37, 38, 0, 0, 39, 0, 40, 41, 42, 0,
-        81, 0, 0, 0, 81, 81, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 81, 0,
-        0, 0, 0, 0, 0, 0, 176, 86, 0, 0,
-        0, 86, 86, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 86, 0, 0, 0, 81,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 86, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 92, 92, 92,
-        92, 0, 92, 0, 0, 0, 89, 89, 89, 89,
-        0, 89,
-    };
-  }
-
-  static short yycheck[];
-  static {
-    yycheck();
-  }
-
-  static void yycheck() {
-    yycheck = new short[] { 40,
-        0, 41, 41, 40, 44, 43, 40, 45, 41, 123,
-        59, 0, 9, 70, 18, 40, 44, 101, 40, 11,
-        49, 51, 84, 52, 132, 256, 256, 89, 270, 40,
-        42, 35, 257, 264, 257, 47, 65, 40, 44, 59,
-        40, 271, 71, 72, 40, 270, 44, 270, 257, 42,
-        46, 40, 257, 258, 47, 61, 41, 40, 43, 51,
-        45, 2, 3, 40, 121, 62, 128, 59, 152, 177,
-        41, 40, 40, 44, 44, 40, 257, 41, 41, 59,
-        44, 44, 123, 59, 41, 41, 44, 40, 44, 257,
-        40, 61, 258, 44, 257, 258, 259, 43, 40, 45,
-        125, 59, 41, 125, 268, 41, 163, 137, 59, 40,
-        44, 41, 40, 123, 125, 59, 257, 146, 110, 269,
-        41, 113, 256, 257, 258, 125, 46, 257, 123, 40,
-        0, 41, 42, 43, 44, 45, 125, 47, 125, 123,
-        41, 41, 256, 257, 125, 137, 123, 0, 41, 59,
-        60, 61, 62, 41, 41, 43, 44, 45, 41, 41,
-        125, 41, 41, 59, 43, 44, 45, 59, 59, 59,
-        41, 59, 60, 61, 62, 41, 180, 43, 44, 45,
-        59, 60, 61, 62, 41, 125, 43, 44, 45, 10,
-        125, 2, 123, 59, 60, 61, 62, 119, 62, 98,
-        133, 179, 59, 60, 61, 62, -1, -1, -1, -1,
-        -1, -1, -1, -1, -1, 256, 257, 257, 257, 258,
-        269, 43, 256, 45, 257, 266, 267, 265, 256, 270,
-        270, 272, 257, 274, 256, 257, 273, 270, 60, 61,
-        62, 266, 267, 271, 266, 267, 257, 272, 270, 274,
-        272, 257, 274, 256, 257, 266, 267, 257, -1, 270,
-        258, 272, -1, 274, 257, 258, 266, 267, 257, -1,
-        270, 59, 272, -1, 274, -1, -1, 266, 267, 256,
-        257, 270, -1, 272, -1, 274, 256, 257, -1, 266,
-        267, 256, 257, 59, 264, 272, 273, 274, 256, 257,
-        -1, 266, 267, 256, 257, 256, 257, 272, -1, 274,
-        -1, -1, -1, 266, 267, 257, -1, 270, -1, 272,
-        -1, 274, -1, -1, 266, 267, 257, -1, 270, 257,
-        272, -1, 274, -1, -1, 266, 267, 125, 266, 267,
-        -1, 272, -1, 274, 272, -1, 274, 257, 258, -1,
-        260, 261, 262, 263, -1, 265, -1, -1, -1, 125,
-        -1, -1, -1, -1, -1, -1, -1, -1, -1, 257,
-        258, -1, 260, 261, 262, 263, -1, 265, 257, 258,
-        -1, 260, 261, 262, 263, -1, 265, -1, -1, -1,
-        -1, -1, -1, -1, 260, 261, 262, 263, 41, 265,
-        43, 44, 45, 260, 261, 262, 263, 41, 265, 43,
-        44, 45, -1, -1, -1, -1, 59, 60, 61, 62,
-        -1, -1, -1, -1, -1, 59, 60, 61, 62, 47,
-        -1, 49, -1, -1, 52, -1, -1, -1, 260, 261,
-        262, 263, -1, -1, -1, -1, -1, 65, -1, -1,
-        -1, -1, -1, 71, 72, -1, 47, -1, 49, -1,
-        -1, 52, -1, -1, -1, -1, 84, -1, -1, 257,
-        -1, 89, -1, -1, 65, -1, -1, -1, 266, 267,
-        71, 72, 270, -1, 272, 273, 274, -1, 106, -1,
-        -1, 257, -1, 84, -1, -1, -1, -1, 89, -1,
-        266, 267, -1, -1, 270, -1, 272, 273, 274, -1,
-        128, -1, -1, -1, 132, 133, -1, -1, -1, -1,
-        -1, -1, -1, -1, -1, -1, -1, -1, 146, -1,
-        -1, -1, -1, -1, -1, -1, 154, 128, -1, -1,
-        -1, 132, 133, -1, -1, -1, -1, -1, -1, -1,
-        -1, -1, -1, -1, -1, 146, -1, -1, -1, 177,
-        -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-        -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-        -1, -1, -1, -1, -1, -1, 177, -1, -1, -1,
-        -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-        -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-        -1, -1, -1, -1, -1, -1, -1, 260, 261, 262,
-        263, -1, 265, -1, -1, -1, 260, 261, 262, 263,
-        -1, 265,
-    };
-  }
-
-  final static short YYFINAL = 4;
-  final static short YYMAXTOKEN = 274;
-  final static String yyname[] = {
-      "end-of-file", null, null, null, null, null, null, null, null, null, null, null, null, null,
-      null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-      null, null, null, null, null, null, null, null, null, null, "'('", "')'", "'*'", "'+'", "','",
-      "'-'", "'.'", "'/'", null, null, null, null, null, null, null, null, null, null, null, "';'",
-      "'<'", "'='", "'>'", null, null, null, null, null, null, null, null, null, null, null, null,
-      null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-      null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-      null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-      "'{'", null, "'}'", null, null, null, null, null, null, null, null, null, null, null, null,
-      null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-      null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-      null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-      null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-      null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-      null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-      null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,
-      null, null, null, null, null, null, null, "ID", "CTE", "STR", "EQ", "GEQ", "LEQ", "NEQ",
-      "DASIG", "FLECHA", "PRINT", "IF", "ELSE", "ENDIF", "UINT", "CVR", "DO", "WHILE", "RETURN",
-  };
-  final static String yyrule[] = {
-      "$accept : programa",
-      "programa : ID cuerpo_programa",
-      "programa : ID conjunto_sentencias",
-      "programa : cuerpo_programa",
-      "programa : error",
-      "cuerpo_programa : '{' conjunto_sentencias '}'",
-      "cuerpo_programa : '{' '}'",
-      "cuerpo_programa :",
-      "cuerpo_programa : '{' error '}'",
-      "conjunto_sentencias : sentencia",
-      "conjunto_sentencias : conjunto_sentencias sentencia",
-      "conjunto_sentencias : conjunto_sentencias error punto_sincronizacion_sentencia",
-      "punto_sincronizacion_sentencia : ';'",
-      "punto_sincronizacion_sentencia : '}'",
-      "punto_sincronizacion_sentencia : token_inicio_sentencia",
-      "token_inicio_sentencia : ID",
-      "token_inicio_sentencia : IF",
-      "token_inicio_sentencia : UINT",
-      "token_inicio_sentencia : PRINT",
-      "token_inicio_sentencia : DO",
-      "token_inicio_sentencia : RETURN",
-      "token_inicio_sentencia : WHILE",
-      "sentencia : sentencia_ejecutable",
-      "sentencia : sentencia_declarativa",
-      "sentencia_declarativa : declaracion_variable",
-      "sentencia_declarativa : declaracion_funcion punto_y_coma_opcional",
-      "declaracion_variable : UINT lista_variables ';'",
-      "declaracion_variable : UINT error ';'",
-      "declaracion_variable : UINT lista_variables error ';'",
-      "punto_y_coma_opcional :",
-      "punto_y_coma_opcional : ';'",
-      "lista_variables : ID",
-      "lista_variables : lista_variables ',' ID",
-      "lista_variables : lista_variables ID",
-      "asignacion_multiple : lista_variables '=' lista_constantes",
-      "lista_constantes : constante",
-      "lista_constantes : lista_constantes ',' constante",
-      "lista_constantes : lista_constantes constante",
-      "lambda : '(' parametro_lambda ')' bloque_ejecutable '(' factor ')'",
-      "parametro_lambda : UINT ID",
-      "parametro_lambda :",
-      "cuerpo_ejecutable : sentencia_ejecutable",
-      "cuerpo_ejecutable : bloque_ejecutable",
-      "bloque_ejecutable : '{' conjunto_sentencias_ejecutables '}'",
-      "bloque_ejecutable : '{' '}'",
-      "conjunto_sentencias_ejecutables : sentencia_ejecutable",
-      "conjunto_sentencias_ejecutables : conjunto_sentencias_ejecutables sentencia_ejecutable",
-      "sentencia_ejecutable : operacion_ejecutable ';'",
-      "sentencia_ejecutable : operacion_ejecutable '}'",
-      "operacion_ejecutable : invocacion_funcion",
-      "operacion_ejecutable : asignacion_simple",
-      "operacion_ejecutable : asignacion_multiple",
-      "operacion_ejecutable : sentencia_control",
-      "operacion_ejecutable : sentencia_retorno",
-      "operacion_ejecutable : impresion",
-      "operacion_ejecutable : lambda",
-      "asignacion_simple : variable DASIG expresion",
-      "asignacion_simple : variable error expresion",
-      "sentencia_control : if",
-      "sentencia_control : do_while",
-      "condicion : '(' cuerpo_condicion fin_condicion",
-      "condicion : cuerpo_condicion ')'",
-      "condicion : '(' ')'",
-      "fin_condicion : ')'",
-      "fin_condicion : error",
-      "cuerpo_condicion : expresion comparador expresion",
-      "cuerpo_condicion : expresion",
-      "comparador : '>'",
-      "comparador : '<'",
-      "comparador : EQ",
-      "comparador : LEQ",
-      "comparador : GEQ",
-      "comparador : NEQ",
-      "comparador : '='",
-      "if : IF condicion cuerpo_ejecutable rama_else ENDIF",
-      "if : IF condicion cuerpo_ejecutable rama_else",
-      "if : IF error cuerpo_ejecutable rama_else ENDIF",
-      "if : IF error '}'",
-      "if : IF error ';'",
-      "punto_sincronizacion_if : '}'",
-      "punto_sincronizacion_if : ';'",
-      "rama_else :",
-      "rama_else : ELSE cuerpo_ejecutable",
-      "do_while : DO cuerpo_do",
-      "cuerpo_do : cuerpo_ejecutable fin_cuerpo_do",
-      "cuerpo_do : fin_cuerpo_do",
-      "cuerpo_do : cuerpo_ejecutable condicion",
-      "cuerpo_do : cuerpo_ejecutable WHILE error",
-      "fin_cuerpo_do : WHILE condicion",
-      "impresion : PRINT '(' imprimible ')'",
-      "imprimible : STR",
-      "imprimible : expresion",
-      "imprimible :",
-      "expresion : expresion operador_suma termino",
-      "expresion : termino",
-      "expresion : secuencia_sin_operador",
-      "expresion : expresion operador_suma",
-      "operador_suma : '+'",
-      "operador_suma : '-'",
-      "secuencia_sin_operador : termino termino",
-      "secuencia_sin_operador : secuencia_sin_operador termino",
-      "termino : termino operador_multiplicacion factor",
-      "termino : factor",
-      "termino : termino operador_multiplicacion error",
-      "operador_multiplicacion : '/'",
-      "operador_multiplicacion : '*'",
-      "factor : variable",
-      "factor : constante",
-      "factor : invocacion_funcion",
-      "constante : CTE",
-      "variable : ID",
-      "variable : ID '.' ID",
-      "declaracion_funcion : UINT ID '(' conjunto_parametros ')' '{' cuerpo_funcion '}'",
-      "declaracion_funcion : UINT '(' conjunto_parametros ')' '{' cuerpo_funcion '}'",
-      "cuerpo_funcion : conjunto_sentencias",
-      "cuerpo_funcion :",
-      "sentencia_retorno : RETURN '(' expresion ')'",
-      "conjunto_parametros : lista_parametros",
-      "conjunto_parametros :",
-      "lista_parametros : parametro_formal",
-      "lista_parametros : lista_parametros ',' parametro_formal",
-      "lista_parametros : parametro_vacio",
-      "parametro_vacio : lista_parametros ','",
-      "parametro_vacio : ',' parametro_formal",
-      "parametro_formal : semantica_pasaje UINT variable",
-      "parametro_formal : semantica_pasaje UINT",
-      "parametro_formal : semantica_pasaje variable",
-      "semantica_pasaje :",
-      "semantica_pasaje : CVR",
-      "semantica_pasaje : error",
-      "invocacion_funcion : ID '(' lista_argumentos ')'",
-      "lista_argumentos : argumento",
-      "lista_argumentos : lista_argumentos ',' argumento",
-      "argumento : expresion FLECHA ID",
-      "argumento : expresion",
-  };
-
-  // #line 665 "/home/iroumec/Documents/University/Compiladores e
-  // Intérpretes/TPE-Compiler/code/parser/gramatica.y"
-
-  // ============================================================================================================================================================
-  // INICIO DE CÓDIGO (opcional)
-  // ============================================================================================================================================================
-
-  // End of File.
-  public final static short EOF = 0;
-
-  // Lexer.
-  private final Lexer lexer;
-
-  // Contadores de la cantidad de errores detectados.
-  private int errorsDetected;
-  private int warningsDetected;
-
-  private boolean readAgain;
-
-  /**
-   * Constructor que recibe un Lexer.
-   */
-  public Parser(Lexer lexer) {
-
+/**
+* Constructor que recibe un Lexer.
+*/
+public Parser(Lexer lexer) {
+    
     this.lexer = lexer;
     this.errorsDetected = this.warningsDetected = 0;
     this.readAgain = false;
-
+    
     // Descomentar la siguiente línea para activar el debugging.
     yydebug = true;
-  }
+}
 
-  // ------------------------------------------------------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-  // Método público para llamar a yyparse(), ya que, por defecto,
-  // su modificador de visibilidad es package.
-  public void execute() {
+// Método público para llamar a yyparse(), ya que, por defecto,
+// su modificador de visibilidad es package.
+public void execute() {
     yyparse();
-  }
+}
 
-  // ------------------------------------------------------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-  // Método yylex() invocado durante yyparse().
-  int yylex() {
+// Método yylex() invocado durante yyparse().
+int yylex() {
 
     if (lexer == null) {
-      throw new IllegalStateException("No hay un analizador léxico asignado.");
+        throw new IllegalStateException("No hay un analizador léxico asignado.");
     }
 
     Token token = this.getAppropiateToken();
@@ -646,824 +638,645 @@ public class Parser {
     this.yylval = new ParserVal(token.getLexema());
 
     return token.getIdentificationCode();
-  }
+}
 
-  // ------------------------------------------------------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-  Token getAppropiateToken() {
+Token getAppropiateToken() {
 
     Token token;
     // Se lee nuevamente el último token.
     // Útil para recuperar el token de sincronización en reglas de error.
     if (this.readAgain) {
-      token = lexer.getCurrentToken();
-      this.readAgain = false;
+        token = lexer.getCurrentToken();
+        this.readAgain = false;
     } else {
-      token = lexer.getNextToken();
+        token = lexer.getNextToken();
     }
 
     return token;
-  }
+}
 
-  // ------------------------------------------------------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-  public void descartarTokensHasta(int tokenEsperado) {
+public void descartarTokensHasta(int tokenEsperado) {
 
     int t = yylex();
-
+    
     // Se pide un token mientras no se halle el token esperado
     // o el final de archivo.
     while (t != tokenEsperado && t != EOF) {
-      t = yylex();
+        t = yylex();
     }
 
     if (t == EOF) {
-      Printer.printBetweenSeparations("SE LLEGÓ AL FINAL DEL ARCHIVO SIN ENCONTRAR UN TOKEN DE SINCRONIZACION.");
+        Printer.printBetweenSeparations("SE LLEGÓ AL FINAL DEL ARCHIVO SIN ENCONTRAR UN TOKEN DE SINCRONIZACION.");
     }
 
     // Se actualizá que se halló el token deseado o se llegó al final del archivo.
     yychar = t;
-  }
+}
 
-  // ------------------------------------------------------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-  /**
-   * Este método es invocado por el parser generado por Byacc/J cada vez que
-   * se encuentra un error de sintaxis que no puede ser manejado por una
-   * regla gramatical específica con el token 'error'.
-   *
-   * @param s El mensaje de error por defecto (generalmente "syntax error").
-   */
-  public void yyerror(String s) {
+/**
+ * Este método es invocado por el parser generado por Byacc/J cada vez que
+ * se encuentra un error de sintaxis que no puede ser manejado por una
+ * regla gramatical específica con el token 'error'.
+ *
+ * @param s El mensaje de error por defecto (generalmente "syntax error").
+ */
+public void yyerror(String s) {
     // El mensaje 's' que nos pasa Byacc/J es genérico y poco útil.
     // Lo ignoramos y usamos el estado del lexer para dar un mensaje preciso.
-
-    // yychar es una variable interna del parser que contiene el token actual
-    // (lookahead).
+    
+    // yychar es una variable interna del parser que contiene el token actual (lookahead).
     if (yychar == EOF) {
-      notifyError("Error de sintaxis: Se alcanzó el final del archivo inesperadamente. (¿Falta un '}' o un ';'? )");
-      return;
+        notifyError("Error de sintaxis: Se alcanzó el final del archivo inesperadamente. (¿Falta un '}' o un ';'? )");
+        return;
     }
+    
+    // Usamos nuestro método notificador con la información de línea/columna del lexer.
+    /*notifyError(
+        String.format(
+            "Error de sintaxis cerca del token '%s'.", 
+            lexer.getCurrentToken().getLexema() // Asumiendo que tu lexer tiene un método para obtener el lexema actual.
+        )
+    );
+    */
+}
 
-    // Usamos nuestro método notificador con la información de línea/columna del
-    // lexer.
-    /*
-     * notifyError(
-     * String.format(
-     * "Error de sintaxis cerca del token '%s'.",
-     * lexer.getCurrentToken().getLexema() // Asumiendo que tu lexer tiene un método
-     * para obtener el lexema actual.
-     * )
-     * );
-     */
-  }
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-  // ------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-  void readLastTokenAgain() {
+void readLastTokenAgain() {
     Printer.print("READ AGAIN");
     this.readAgain = true;
-  }
+}
 
-  // ------------------------------------------------------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-  void forzarUsoDeNuevoToken() {
+void forzarUsoDeNuevoToken() {
     yylex(); // leer un token y avanzar
     yychar = -1; // forzar que el parser use el nuevo token
-  }
+}
 
-  // ------------------------------------------------------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-  // El token error no consume automáticamente el token incorrecto.
-  // Este debe descartarse explícitamente.
-  void descartarTokenError() {
-    // Se fuerza a que en la próxima iteración se llame a yylex(), leyendo otro
-    // token.
+// El token error no consume automáticamente el token incorrecto.
+// Este debe descartarse explícitamente.
+void descartarTokenError() {
+    // Se fuerza a que en la próxima iteración se llame a yylex(), leyendo otro token.
     yychar = -1;
 
     // Se limpia el estado de error.
     yyerrflag = 0;
 
     Printer.print("Token de error descartado.");
-  }
+}
 
-  // ------------------------------------------------------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-  void apagarEstadoDeError() {
+void apagarEstadoDeError() {
     yyerrflag = 0;
-  }
+}
 
-  // ------------------------------------------------------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-  void notifyDetection(String message) {
+void notifyDetection(String message) {
     Printer.printBetweenSeparations(String.format(
         "DETECCIÓN SEMÁNTICA: %s",
-        message));
-  }
+        message
+    ));
+}
 
-  // ------------------------------------------------------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-  void notifyWarning(String warningMessage) {
+void notifyWarning(String warningMessage) {
     Printer.printBetweenSeparations(String.format(
         "WARNING SINTÁCTICA: Línea %d, caracter %d: %s",
-        lexer.getNroLinea(), lexer.getNroCaracter(), warningMessage));
+        lexer.getNroLinea(), lexer.getNroCaracter(), warningMessage
+    ));
     this.warningsDetected++;
-  }
+}
 
-  // ------------------------------------------------------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-  void notifyError(String errorMessage) {
+void notifyError(String errorMessage) {
     Printer.printBetweenSeparations(String.format(
         "ERROR SINTÁCTICO: Línea %d, caracter %d: %s",
-        lexer.getNroLinea(), lexer.getNroCaracter(), errorMessage));
+        lexer.getNroLinea(), lexer.getNroCaracter(), errorMessage
+    ));
     this.errorsDetected++;
-  }
+}
 
-  // ------------------------------------------------------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-  String applySynchronizationFormat(String invalidWord, String synchronizationWord) {
+String applySynchronizationFormat(String invalidWord, String synchronizationWord) {
     return """
         Se detectó una palabra inválida: '%s'. \
         Se descartaron todas las palabras inválidas subsiguientes \
         hasta el punto de sincronización: '%s'. \
         """.formatted(invalidWord, synchronizationWord);
-  }
+}
 
-  // ------------------------------------------------------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-  public int getWarningsDetected() {
+public int getWarningsDetected() {
     return this.warningsDetected;
-  }
+}
 
-  // ------------------------------------------------------------------------------------------------------------------------------------------------------------
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-  public int getErrorsDetected() {
+public int getErrorsDetected() {
     return this.errorsDetected;
-  }
+}
 
-  // ============================================================================================================================================================
-  // FIN DE CÓDIGO
-  // ============================================================================================================================================================
-  // #line 731 "Parser.java"
-  // ###############################################################
-  // method: yylexdebug : check lexer state
-  // ###############################################################
-  void yylexdebug(int state, int ch) {
-    String s = null;
-    if (ch < 0)
-      ch = 0;
-    if (ch <= YYMAXTOKEN) // check index bounds
-      s = yyname[ch]; // now get it
-    if (s == null)
-      s = "illegal-symbol";
-    debug("state " + state + ", reading " + ch + " (" + s + ")");
-  }
+// ============================================================================================================================================================
+// FIN DE CÓDIGO
+// ============================================================================================================================================================
+//#line 726 "Parser.java"
+//###############################################################
+// method: yylexdebug : check lexer state
+//###############################################################
+void yylexdebug(int state,int ch)
+{
+String s=null;
+  if (ch < 0) ch=0;
+  if (ch <= YYMAXTOKEN) //check index bounds
+     s = yyname[ch];    //now get it
+  if (s==null)
+    s = "illegal-symbol";
+  debug("state "+state+", reading "+ch+" ("+s+")");
+}
 
-  // The following are now global, to aid in error reporting
-  int yyn; // next next thing to do
-  int yym; //
-  int yystate; // current parsing state from state table
-  String yys; // current token string
 
-  // ###############################################################
-  // method: yyparse : parse input and execute indicated items
-  // ###############################################################
-  int yyparse() {
-    boolean doaction;
-    init_stacks();
-    yynerrs = 0;
-    yyerrflag = 0;
-    yychar = -1; // impossible char forces a read
-    yystate = 0; // initial state
-    state_push(yystate); // save it
-    val_push(yylval); // save empty value
-    while (true) // until parsing is done, either correctly, or w/error
+
+
+
+//The following are now global, to aid in error reporting
+int yyn;       //next next thing to do
+int yym;       //
+int yystate;   //current parsing state from state table
+String yys;    //current token string
+
+
+//###############################################################
+// method: yyparse : parse input and execute indicated items
+//###############################################################
+int yyparse()
+{
+boolean doaction;
+  init_stacks();
+  yynerrs = 0;
+  yyerrflag = 0;
+  yychar = -1;          //impossible char forces a read
+  yystate=0;            //initial state
+  state_push(yystate);  //save it
+  val_push(yylval);     //save empty value
+  while (true) //until parsing is done, either correctly, or w/error
     {
-      doaction = true;
-      if (yydebug)
-        debug("loop");
-      // #### NEXT ACTION (from reduction table)
-      for (yyn = yydefred[yystate]; yyn == 0; yyn = yydefred[yystate]) {
-        if (yydebug)
-          debug("yyn:" + yyn + "  state:" + yystate + "  yychar:" + yychar);
-        if (yychar < 0) // we want a char?
-        {
-          yychar = yylex(); // get next token
-          if (yydebug)
-            debug(" next yychar:" + yychar);
-          // #### ERROR CHECK ####
-          if (yychar < 0) // it it didn't work/error
-          {
-            yychar = 0; // change it to default string (no -1!)
-            if (yydebug)
-              yylexdebug(yystate, yychar);
-          }
-        } // yychar<0
-        yyn = yysindex[yystate]; // get amount to shift by (shift index)
-        if ((yyn != 0) && (yyn += yychar) >= 0 &&
-            yyn <= YYTABLESIZE && yycheck[yyn] == yychar) {
-          if (yydebug)
-            debug("state " + yystate + ", shifting to state " + yytable[yyn]);
-          // #### NEXT STATE ####
-          yystate = yytable[yyn];// we are in a new state
-          state_push(yystate); // save it
-          val_push(yylval); // push our lval as the input for next rule
-          yychar = -1; // since we have 'eaten' a token, say we need another
-          if (yyerrflag > 0) // have we recovered an error?
-            --yyerrflag; // give ourselves credit
-          doaction = false; // but don't process yet
-          break; // quit the yyn=0 loop
-        }
-
-        yyn = yyrindex[yystate]; // reduce
-        if ((yyn != 0) && (yyn += yychar) >= 0 &&
-            yyn <= YYTABLESIZE && yycheck[yyn] == yychar) { // we reduced!
-          if (yydebug)
-            debug("reduce");
-          yyn = yytable[yyn];
-          doaction = true; // get ready to execute
-          break; // drop down to actions
-        } else // ERROR RECOVERY
-        {
-          if (yyerrflag == 0) {
-            yyerror("syntax error");
-            yynerrs++;
-          }
-          if (yyerrflag < 3) // low error count?
-          {
-            yyerrflag = 3;
-            while (true) // do until break
-            {
-              if (stateptr < 0) // check for under & overflow here
-              {
-                yyerror("stack underflow. aborting..."); // note lower case 's'
-                return 1;
-              }
-              yyn = yysindex[state_peek(0)];
-              if ((yyn != 0) && (yyn += YYERRCODE) >= 0 &&
-                  yyn <= YYTABLESIZE && yycheck[yyn] == YYERRCODE) {
-                if (yydebug)
-                  debug("state " + state_peek(0) + ", error recovery shifting to state " + yytable[yyn] + " ");
-                yystate = yytable[yyn];
-                state_push(yystate);
-                val_push(yylval);
-                doaction = false;
-                break;
-              } else {
-                if (yydebug)
-                  debug("error recovery discarding state " + state_peek(0) + " ");
-                if (stateptr < 0) // check for under & overflow here
-                {
-                  yyerror("Stack underflow. aborting..."); // capital 'S'
-                  return 1;
-                }
-                state_pop();
-                val_pop();
-              }
-            }
-          } else // discard this token
-          {
-            if (yychar == 0)
-              return 1; // yyabort
-            if (yydebug) {
-              yys = null;
-              if (yychar <= YYMAXTOKEN)
-                yys = yyname[yychar];
-              if (yys == null)
-                yys = "illegal-symbol";
-              debug("state " + yystate + ", error recovery discards token " + yychar + " (" + yys + ")");
-            }
-            yychar = -1; // read another
-          }
-        } // end error recovery
-      } // yyn=0 loop
-      if (!doaction) // any reason not to proceed?
-        continue; // skip action
-      yym = yylen[yyn]; // get count of terminals on rhs
-      if (yydebug)
-        debug("state " + yystate + ", reducing " + yym + " by rule " + yyn + " (" + yyrule[yyn] + ")");
-      if (yym > 0) // if count of rhs not 'nil'
-        yyval = val_peek(yym - 1); // get current semantic value
-      yyval = dup_yyval(yyval); // duplicate yyval if ParserVal is used as semantic value
-      switch (yyn) {
-        // ########## USER-SUPPLIED ACTIONS ##########
-        case 1:
-        // #line 94 "/home/iroumec/Documents/University/Compiladores e
-        // Intérpretes/TPE-Compiler/code/parser/gramatica.y"
-        {
-          notifyDetection("Programa.");
-        }
-          break;
-        case 2:
-        // #line 99 "/home/iroumec/Documents/University/Compiladores e
-        // Intérpretes/TPE-Compiler/code/parser/gramatica.y"
-        {
-          notifyError("Las sentencias del programa deben estar delimitadas por llaves.");
-        }
-          break;
-        case 3:
-        // #line 101 "/home/iroumec/Documents/University/Compiladores e
-        // Intérpretes/TPE-Compiler/code/parser/gramatica.y"
-        {
-          notifyError("El programa requiere de un nombre.");
-        }
-          break;
-        case 4:
-        // #line 103 "/home/iroumec/Documents/University/Compiladores e
-        // Intérpretes/TPE-Compiler/code/parser/gramatica.y"
-        {
-          notifyError("Inicio de programa inválido. Este debe seguir la estructura: <NOMBRE%PROGRAMA> { ... }.");
-          descartarTokensHasta(ID); /* Se descartan todos los tokens hasta ID. */
-        }
-          break;
-        case 6:
-        // #line 116 "/home/iroumec/Documents/University/Compiladores e
-        // Intérpretes/TPE-Compiler/code/parser/gramatica.y"
-        {
-          notifyError("El programa no posee ninguna sentencia.");
-        }
-          break;
-        case 8:
-        // #line 119 "/home/iroumec/Documents/University/Compiladores e
-        // Intérpretes/TPE-Compiler/code/parser/gramatica.y"
-        {
-          notifyError("Sentencia inválida en el lenguaje.");
-        }
-          break;
-        case 11:
-        // #line 130 "/home/iroumec/Documents/University/Compiladores e
-        // Intérpretes/TPE-Compiler/code/parser/gramatica.y"
-        {
-          notifyError("Sentencia inválida en el lenguaje.");
-        }
-          break;
-        case 13:
-        // #line 137 "/home/iroumec/Documents/University/Compiladores e
-        // Intérpretes/TPE-Compiler/code/parser/gramatica.y"
-        {
-          notifyDetection("Just testing");
-          readLastTokenAgain();
-        }
-          break;
-        case 14:
-        // #line 139 "/home/iroumec/Documents/University/Compiladores e
-        // Intérpretes/TPE-Compiler/code/parser/gramatica.y"
-        {
-          notifyDetection("Just testing");
-          readLastTokenAgain();
-        }
-          break;
-        case 24:
-        // #line 165 "/home/iroumec/Documents/University/Compiladores e
-        // Intérpretes/TPE-Compiler/code/parser/gramatica.y"
-        {
-          notifyDetection("Declaración de variable.");
-        }
-          break;
-        case 27:
-        // #line 175 "/home/iroumec/Documents/University/Compiladores e
-        // Intérpretes/TPE-Compiler/code/parser/gramatica.y"
-        {
-          notifyError("Error de sintaxis en la lista de variables. La declaración se ha descartado hasta el ';'.");
-        }
-          break;
-        case 28:
-        // #line 177 "/home/iroumec/Documents/University/Compiladores e
-        // Intérpretes/TPE-Compiler/code/parser/gramatica.y"
-        {
-          notifyError(
-              "Error de sintaxis al final de la lista de variables. La declaración se ha descartado hasta el ';'.");
-        }
-          break;
-        case 32:
-        // #line 192 "/home/iroumec/Documents/University/Compiladores e
-        // Intérpretes/TPE-Compiler/code/parser/gramatica.y"
-        {
-          yyval.sval = val_peek(0).sval;
-        }
-          break;
-        case 33:
-        // #line 203 "/home/iroumec/Documents/University/Compiladores e
-        // Intérpretes/TPE-Compiler/code/parser/gramatica.y"
-        {
-          notifyError(String.format(
-              "Se encontraron dos variables juntas sin una coma de separación. Sugerencia: Inserte una ',' entre '%s' y '%s'.",
-              val_peek(1).sval, val_peek(0).sval));
-        }
-          break;
-        case 34:
-        // #line 221 "/home/iroumec/Documents/University/Compiladores e
-        // Intérpretes/TPE-Compiler/code/parser/gramatica.y"
-        {
-          notifyDetection("Asignación múltiple.");
-        }
-          break;
-        case 36:
-        // #line 228 "/home/iroumec/Documents/University/Compiladores e
-        // Intérpretes/TPE-Compiler/code/parser/gramatica.y"
-        {
-          yyval.sval = val_peek(0).sval;
-        }
-          break;
-        case 37:
-        // #line 233 "/home/iroumec/Documents/University/Compiladores e
-        // Intérpretes/TPE-Compiler/code/parser/gramatica.y"
-        {
-          notifyError(String.format(
-              "Se encontraron dos constantes juntas sin una coma de separación. Sugerencia: Inserte una ',' entre '%s' y '%s'.",
-              val_peek(1).sval, val_peek(0).sval));
-        }
-          break;
-        case 38:
-        // #line 246 "/home/iroumec/Documents/University/Compiladores e
-        // Intérpretes/TPE-Compiler/code/parser/gramatica.y"
-        {
-          notifyDetection("Expresión lambda.");
-        }
-          break;
-        case 40:
-        // #line 255 "/home/iroumec/Documents/University/Compiladores e
-        // Intérpretes/TPE-Compiler/code/parser/gramatica.y"
-        {
-          notifyError("La expresión lambda requiere de un parámetro.");
-        }
-          break;
-        case 44:
-        // #line 273 "/home/iroumec/Documents/University/Compiladores e
-        // Intérpretes/TPE-Compiler/code/parser/gramatica.y"
-        {
-          notifyError("El cuerpo de la sentencia no puede estar vacío.");
-        }
-          break;
-        case 47:
-        // #line 287 "/home/iroumec/Documents/University/Compiladores e
-        // Intérpretes/TPE-Compiler/code/parser/gramatica.y"
-        {
-          notifyError("Toda sentencia ejecutable debe terminar con punto y coma.");
-        }
-          break;
-        case 56:
-        // #line 310 "/home/iroumec/Documents/University/Compiladores e
-        // Intérpretes/TPE-Compiler/code/parser/gramatica.y"
-        {
-          notifyDetection("Asignación simple.");
-        }
-          break;
-        case 57:
-        // #line 315 "/home/iroumec/Documents/University/Compiladores e
-        // Intérpretes/TPE-Compiler/code/parser/gramatica.y"
-        {
-          notifyError("Error en asignación. Se esperaba un ':='.");
-        }
-          break;
-        case 59:
-        // #line 322 "/home/iroumec/Documents/University/Compiladores e
-        // Intérpretes/TPE-Compiler/code/parser/gramatica.y"
-        {
-          notifyDetection("Sentencia WHILE.");
-        }
-          break;
-        case 62:
-        // #line 340 "/home/iroumec/Documents/University/Compiladores e
-        // Intérpretes/TPE-Compiler/code/parser/gramatica.y"
-        {
-          notifyError("Falta apertura de paréntesis en condición.");
-        }
-          break;
-        case 65:
-        // #line 361 "/home/iroumec/Documents/University/Compiladores e
-        // Intérpretes/TPE-Compiler/code/parser/gramatica.y"
-        {
-          notifyError("La condición no puede estar vacía.");
-        }
-          break;
-        case 64:
-        // #line 359 "gramatica.y"
-        {
-          notifyError("Falta cierre de paréntesis en condición.");
-        }
-          break;
-        case 66:
-        // #line 363 "/home/iroumec/Documents/University/Compiladores e
-        // Intérpretes/TPE-Compiler/code/parser/gramatica.y"
-        {
-          notifyError("Falta de comparador en comparación.");
-        }
-          break;
-        case 73:
-        // #line 378 "/home/iroumec/Documents/University/Compiladores e
-        // Intérpretes/TPE-Compiler/code/parser/gramatica.y"
-        {
-          notifyError(
-              "Se esperaba un comparador y se encontró el operador de asignación '='. ¿Quiso colocar '=='?");
-        }
-          break;
-        case 74:
-        // #line 397 "/home/iroumec/Documents/University/Compiladores e
-        // Intérpretes/TPE-Compiler/code/parser/gramatica.y"
-        {
-          notifyDetection("Sentencia IF.");
-        }
-          break;
-        case 75:
-        // #line 392 "/home/iroumec/Documents/University/Compiladores e
-        // Intérpretes/TPE-Compiler/code/parser/gramatica.y"
-        {
-          notifyError("La sentencia IF debe finalizarse con 'endif'.");
-        }
-          break;
-        case 76:
-        // #line 407 "/home/iroumec/Documents/University/Compiladores e
-        // Intérpretes/TPE-Compiler/code/parser/gramatica.y"
-        {
-          notifyDetection("Sentencia IF.");
-        }
-          break;
-        case 77:
-        // #line 409 "/home/iroumec/Documents/University/Compiladores e
-        // Intérpretes/TPE-Compiler/code/parser/gramatica.y"
-        {
-          notifyDetection("Sentencia IF-ELSE.");
-        }
-          break;
-        case 79:
-        // #line 422 "/home/iroumec/Documents/University/Compiladores e
-        // Intérpretes/TPE-Compiler/code/parser/gramatica.y"
-        {
-          notifyError("Falta 'while'.");
-        }
-          break;
-        case 81:
-        // #line 434 "/home/iroumec/Documents/University/Compiladores e
-        // Intérpretes/TPE-Compiler/code/parser/gramatica.y"
-        {
-          notifyError("Debe especificarse un cuerpo para la sentencia do-while.");
-        }
-          break;
-        case 82:
-        // #line 436 "/home/iroumec/Documents/University/Compiladores e
-        // Intérpretes/TPE-Compiler/code/parser/gramatica.y"
-        {
-          notifyError("Falta 'while'.");
-        }
-          break;
-        case 83:
-        // #line 441 "/home/iroumec/Documents/University/Compiladores e
-        // Intérpretes/TPE-Compiler/code/parser/gramatica.y"
-        {
-          notifyError("Falta cierre de paréntesis en condición.");
-        }
-          break;
-        case 86:
-        // #line 457 "/home/iroumec/Documents/University/Compiladores e
-        // Intérpretes/TPE-Compiler/code/parser/gramatica.y"
-        {
-          notifyDetection("Impresión de cadena.");
-        }
-          break;
-        case 87:
-        // #line 459 "/home/iroumec/Documents/University/Compiladores e
-        // Intérpretes/TPE-Compiler/code/parser/gramatica.y"
-        {
-          notifyDetection("Impresión de expresión.");
-        }
-          break;
-        case 88:
-        // #line 464 "/home/iroumec/Documents/University/Compiladores e
-        // Intérpretes/TPE-Compiler/code/parser/gramatica.y"
-        {
-          notifyError("La sentencia 'print' requiere de al menos un argumento.");
-        }
-          break;
-        case 91:
-        // #line 477 "/home/iroumec/Documents/University/Compiladores e
-        // Intérpretes/TPE-Compiler/code/parser/gramatica.y"
-        {
-          yyval.sval = val_peek(0).sval;
-        }
-          break;
-        case 92:
-        // #line 479 "/home/iroumec/Documents/University/Compiladores e
-        // Intérpretes/TPE-Compiler/code/parser/gramatica.y"
-        {
-          notifyError("Falta de operando en expresión.");
-          yyval.sval = val_peek(1).sval;
-        }
-          break;
-        case 95:
-        // #line 498 "/home/iroumec/Documents/University/Compiladores e
-        // Intérpretes/TPE-Compiler/code/parser/gramatica.y"
-        {
-          notifyError(String.format(
-              "Falta de operador entre operandos %s y %s.",
-              val_peek(1).sval, val_peek(0).sval));
-          yyval.sval = val_peek(0).sval;
-        }
-          break;
-        case 96:
-        // #line 506 "/home/iroumec/Documents/University/Compiladores e
-        // Intérpretes/TPE-Compiler/code/parser/gramatica.y"
-        {
-          notifyError(String.format(
-              "Falta de operador entre operandos %s y %s.",
-              val_peek(1).sval, val_peek(0).sval));
-          yyval.sval = val_peek(0).sval;
-        }
-          break;
-        case 98:
-        // #line 519 "/home/iroumec/Documents/University/Compiladores e
-        // Intérpretes/TPE-Compiler/code/parser/gramatica.y"
-        {
-          yyval.sval = val_peek(0).sval;
-        }
-          break;
-        case 99:
-        // #line 521 "/home/iroumec/Documents/University/Compiladores e
-        // Intérpretes/TPE-Compiler/code/parser/gramatica.y"
-        {
-          notifyError("Falta de operando en expresión.");
-        }
-          break;
-        case 101:
-        // #line 541 "gramatica.y"
-        {
-          yyval.sval = val_peek(0).sval;
-        }
-          break;
-        case 102:
-        // #line 533 "/home/iroumec/Documents/University/Compiladores e
-        // Intérpretes/TPE-Compiler/code/parser/gramatica.y"
-        {
-          yyval.sval = val_peek(0).sval;
-        }
-          break;
-        case 103:
-        // #line 535 "/home/iroumec/Documents/University/Compiladores e
-        // Intérpretes/TPE-Compiler/code/parser/gramatica.y"
-        {
-          yyval.sval = val_peek(0).sval;
-        }
-          break;
-        case 104:
-        // #line 537 "/home/iroumec/Documents/University/Compiladores e
-        // Intérpretes/TPE-Compiler/code/parser/gramatica.y"
-        {
-          yyval.sval = val_peek(0).sval;
-        }
-          break;
-        case 105:
-        // #line 543 "/home/iroumec/Documents/University/Compiladores e
-        // Intérpretes/TPE-Compiler/code/parser/gramatica.y"
-        {
-          yyval.sval = val_peek(0).sval;
-        }
-          break;
-        case 107:
-        // #line 553 "/home/iroumec/Documents/University/Compiladores e
-        // Intérpretes/TPE-Compiler/code/parser/gramatica.y"
-        {
-          yyval.sval = val_peek(2).sval + "." + val_peek(0).sval;
-        }
-          break;
-        case 108:
-        // #line 561 "/home/iroumec/Documents/University/Compiladores e
-        // Intérpretes/TPE-Compiler/code/parser/gramatica.y"
-        {
-          notifyDetection("Declaración de función.");
-        }
-          break;
-        case 109:
-        // #line 563 "/home/iroumec/Documents/University/Compiladores e
-        // Intérpretes/TPE-Compiler/code/parser/gramatica.y"
-        {
-          notifyError("Falta de nombre en la función.");
-        }
-          break;
-        case 111:
-        // #line 573 "/home/iroumec/Documents/University/Compiladores e
-        // Intérpretes/TPE-Compiler/code/parser/gramatica.y"
-        {
-          notifyError("El cuerpo de la función no puede estar vacío.");
-        }
-          break;
-        case 114:
-        // #line 588 "/home/iroumec/Documents/University/Compiladores e
-        // Intérpretes/TPE-Compiler/code/parser/gramatica.y"
-        {
-          notifyError("Toda función debe recibir al menos un parámetro.");
-        }
-          break;
-        case 117:
-        // #line 599 "/home/iroumec/Documents/University/Compiladores e
-        // Intérpretes/TPE-Compiler/code/parser/gramatica.y"
-        {
-          notifyError("Se halló un parámetro formal vacío.");
-        }
-          break;
-        case 121:
-        // #line 613 "/home/iroumec/Documents/University/Compiladores e
-        // Intérpretes/TPE-Compiler/code/parser/gramatica.y"
-        {
-          notifyError("Falta de nombre de parámetro formal en declaración de función.");
-        }
-          break;
-        case 122:
-        // #line 615 "/home/iroumec/Documents/University/Compiladores e
-        // Intérpretes/TPE-Compiler/code/parser/gramatica.y"
-        {
-          notifyError("Falta de tipo de parámetro formal en declaración de funcion.");
-        }
-          break;
-        case 125:
-        // #line 623 "/home/iroumec/Documents/University/Compiladores e
-        // Intérpretes/TPE-Compiler/code/parser/gramatica.y"
-        {
-          notifyError("Semántica de pasaje de parámetro inválida. Se asumirá pasaje de parámetro por defecto.");
-          descartarTokenError();
-        }
-          break;
-        case 126:
-        // #line 634 "/home/iroumec/Documents/University/Compiladores e
-        // Intérpretes/TPE-Compiler/code/parser/gramatica.y"
-        {
-          notifyDetection("Invocación de función.");
-          yyval.sval = val_peek(3).sval + '(' + val_peek(1).sval + ')';
-        }
-          break;
-        case 128:
-        // #line 644 "/home/iroumec/Documents/University/Compiladores e
-        // Intérpretes/TPE-Compiler/code/parser/gramatica.y"
-        {
-          yyval.sval = val_peek(0).sval;
-        }
-          break;
-        case 129:
-        // #line 650 "/home/iroumec/Documents/University/Compiladores e
-        // Intérpretes/TPE-Compiler/code/parser/gramatica.y"
-        {
-          yyval.sval = val_peek(2).sval + val_peek(1).sval + val_peek(0).sval;
-        }
-          break;
-        case 130:
-        // #line 655 "/home/iroumec/Documents/University/Compiladores e
-        // Intérpretes/TPE-Compiler/code/parser/gramatica.y"
-        {
-          notifyError("Falta de especificación del parámetro formal al que corresponde el parámetro real.");
-        }
-          break;
-        // #line 1162 "Parser.java"
-        // ########## END OF USER-SUPPLIED ACTIONS ##########
-      }// switch
-       // #### Now let's reduce... ####
-      if (yydebug)
-        debug("reduce");
-      state_drop(yym); // we just reduced yylen states
-      yystate = state_peek(0); // get new state
-      val_drop(yym); // corresponding value drop
-      yym = yylhs[yyn]; // select next TERMINAL(on lhs)
-      if (yystate == 0 && yym == 0)// done? 'rest' state and at first TERMINAL
+    doaction=true;
+    if (yydebug) debug("loop"); 
+    //#### NEXT ACTION (from reduction table)
+    for (yyn=yydefred[yystate];yyn==0;yyn=yydefred[yystate])
       {
-        if (yydebug)
-          debug("After reduction, shifting from state 0 to state " + YYFINAL + "");
-        yystate = YYFINAL; // explicitly say we're done
-        state_push(YYFINAL); // and save it
-        val_push(yyval); // also save the semantic value of parsing
-        if (yychar < 0) // we want another character?
+      if (yydebug) debug("yyn:"+yyn+"  state:"+yystate+"  yychar:"+yychar);
+      if (yychar < 0)      //we want a char?
         {
-          yychar = yylex(); // get next character
-          if (yychar < 0)
-            yychar = 0; // clean, if necessary
+        yychar = yylex();  //get next token
+        if (yydebug) debug(" next yychar:"+yychar);
+        //#### ERROR CHECK ####
+        if (yychar < 0)    //it it didn't work/error
+          {
+          yychar = 0;      //change it to default string (no -1!)
           if (yydebug)
-            yylexdebug(yystate, yychar);
-        }
-        if (yychar == 0) // Good exit (if lex returns 0 ;-)
-          break; // quit the loop--all DONE
-      } // if yystate
-      else // else not done yet
-      { // get next state and push, for next yydefred[]
-        yyn = yygindex[yym]; // find out where to go
-        if ((yyn != 0) && (yyn += yystate) >= 0 &&
-            yyn <= YYTABLESIZE && yycheck[yyn] == yystate)
-          yystate = yytable[yyn]; // get new state
-        else
-          yystate = yydgoto[yym]; // else go to new defred
+            yylexdebug(yystate,yychar);
+          }
+        }//yychar<0
+      yyn = yysindex[yystate];  //get amount to shift by (shift index)
+      if ((yyn != 0) && (yyn += yychar) >= 0 &&
+          yyn <= YYTABLESIZE && yycheck[yyn] == yychar)
+        {
         if (yydebug)
-          debug("after reduction, shifting from state " + state_peek(0) + " to state " + yystate + "");
-        state_push(yystate); // going again, so push state & val...
-        val_push(yyval); // for next action
+          debug("state "+yystate+", shifting to state "+yytable[yyn]);
+        //#### NEXT STATE ####
+        yystate = yytable[yyn];//we are in a new state
+        state_push(yystate);   //save it
+        val_push(yylval);      //push our lval as the input for next rule
+        yychar = -1;           //since we have 'eaten' a token, say we need another
+        if (yyerrflag > 0)     //have we recovered an error?
+           --yyerrflag;        //give ourselves credit
+        doaction=false;        //but don't process yet
+        break;   //quit the yyn=0 loop
+        }
+
+    yyn = yyrindex[yystate];  //reduce
+    if ((yyn !=0 ) && (yyn += yychar) >= 0 &&
+            yyn <= YYTABLESIZE && yycheck[yyn] == yychar)
+      {   //we reduced!
+      if (yydebug) debug("reduce");
+      yyn = yytable[yyn];
+      doaction=true; //get ready to execute
+      break;         //drop down to actions
       }
-    } // main loop
-    return 0;// yyaccept!!
-  }
-  // ## end of method parse() ######################################
+    else //ERROR RECOVERY
+      {
+      if (yyerrflag==0)
+        {
+        yyerror("syntax error");
+        yynerrs++;
+        }
+      if (yyerrflag < 3) //low error count?
+        {
+        yyerrflag = 3;
+        while (true)   //do until break
+          {
+          if (stateptr<0)   //check for under & overflow here
+            {
+            yyerror("stack underflow. aborting...");  //note lower case 's'
+            return 1;
+            }
+          yyn = yysindex[state_peek(0)];
+          if ((yyn != 0) && (yyn += YYERRCODE) >= 0 &&
+                    yyn <= YYTABLESIZE && yycheck[yyn] == YYERRCODE)
+            {
+            if (yydebug)
+              debug("state "+state_peek(0)+", error recovery shifting to state "+yytable[yyn]+" ");
+            yystate = yytable[yyn];
+            state_push(yystate);
+            val_push(yylval);
+            doaction=false;
+            break;
+            }
+          else
+            {
+            if (yydebug)
+              debug("error recovery discarding state "+state_peek(0)+" ");
+            if (stateptr<0)   //check for under & overflow here
+              {
+              yyerror("Stack underflow. aborting...");  //capital 'S'
+              return 1;
+              }
+            state_pop();
+            val_pop();
+            }
+          }
+        }
+      else            //discard this token
+        {
+        if (yychar == 0)
+          return 1; //yyabort
+        if (yydebug)
+          {
+          yys = null;
+          if (yychar <= YYMAXTOKEN) yys = yyname[yychar];
+          if (yys == null) yys = "illegal-symbol";
+          debug("state "+yystate+", error recovery discards token "+yychar+" ("+yys+")");
+          }
+        yychar = -1;  //read another
+        }
+      }//end error recovery
+    }//yyn=0 loop
+    if (!doaction)   //any reason not to proceed?
+      continue;      //skip action
+    yym = yylen[yyn];          //get count of terminals on rhs
+    if (yydebug)
+      debug("state "+yystate+", reducing "+yym+" by rule "+yyn+" ("+yyrule[yyn]+")");
+    if (yym>0)                 //if count of rhs not 'nil'
+      yyval = val_peek(yym-1); //get current semantic value
+    yyval = dup_yyval(yyval); //duplicate yyval if ParserVal is used as semantic value
+    switch(yyn)
+      {
+//########## USER-SUPPLIED ACTIONS ##########
+case 1:
+//#line 99 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+{ notifyDetection("Programa."); }
+break;
+case 2:
+//#line 104 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+{ notifyError("Las sentencias del programa deben estar delimitadas por llaves."); }
+break;
+case 3:
+//#line 106 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+{ notifyError("El programa requiere de un nombre."); }
+break;
+case 4:
+//#line 108 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+{
+                                    notifyError("Inicio de programa inválido. Este debe seguir la estructura: <NOMBRE%PROGRAMA> { ... }.");
+                                    descartarTokensHasta(ID); /* Se descartan todos los tokens hasta ID.*/
+                                }
+break;
+case 6:
+//#line 121 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+{ notifyError("El programa no posee ninguna sentencia."); }
+break;
+case 8:
+//#line 124 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+{ notifyError("Sentencia inválida en el lenguaje."); }
+break;
+case 11:
+//#line 135 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+{ notifyError("Sentencia inválida en el lenguaje."); }
+break;
+case 13:
+//#line 142 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+{ Printer.print("HOlaaa"); readLastTokenAgain(); }
+break;
+case 14:
+//#line 144 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+{ notifyDetection("Just testing"); readLastTokenAgain(); }
+break;
+case 24:
+//#line 170 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+{ notifyDetection("Declaración de variable."); }
+break;
+case 27:
+//#line 180 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+{ notifyError("Error de sintaxis en la lista de variables. La declaración se ha descartado hasta el ';'."); }
+break;
+case 28:
+//#line 182 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+{ notifyError("Error de sintaxis al final de la lista de variables. La declaración se ha descartado hasta el ';'."); }
+break;
+case 32:
+//#line 197 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+{ yyval.sval = val_peek(0).sval; }
+break;
+case 33:
+//#line 208 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+{
+                                    notifyError(String.format(
+                                        "Se encontraron dos variables juntas sin una coma de separación. Sugerencia: Inserte una ',' entre '%s' y '%s'.",
+                                        val_peek(1).sval, val_peek(0).sval));
+                                }
+break;
+case 34:
+//#line 226 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+{ notifyDetection("Asignación múltiple."); }
+break;
+case 36:
+//#line 233 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+{ yyval.sval = val_peek(0).sval; }
+break;
+case 37:
+//#line 238 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+{
+                                    notifyError(String.format(
+                                        "Se encontraron dos constantes juntas sin una coma de separación. Sugerencia: Inserte una ',' entre '%s' y '%s'.",
+                                        val_peek(1).sval, val_peek(0).sval));
+                                }
+break;
+case 38:
+//#line 251 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+{ notifyDetection("Expresión lambda."); }
+break;
+case 40:
+//#line 260 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+{ notifyError("La expresión lambda requiere de un parámetro."); }
+break;
+case 44:
+//#line 278 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+{ notifyError("El cuerpo de la sentencia no puede estar vacío."); }
+break;
+case 56:
+//#line 317 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+{ notifyDetection("Asignación simple."); }
+break;
+case 57:
+//#line 322 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+{ notifyError("Error en asignación. Se esperaba un ':='."); }
+break;
+case 59:
+//#line 329 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+{ notifyDetection("Sentencia WHILE."); }
+break;
+case 61:
+//#line 339 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+{ notifyError("Falta apertura de paréntesis en condición."); }
+break;
+case 62:
+//#line 341 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+{ notifyError("La condición no puede estar vacía."); }
+break;
+case 65:
+//#line 378 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+{ notifyError("Falta de comparador en comparación."); }
+break;
+case 72:
+//#line 393 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+{
+                                    notifyError(
+                                        "Se esperaba un comparador y se encontró el operador de asignación '='. ¿Quiso colocar '=='?"
+                                        );
+                                }
+break;
+case 73:
+//#line 406 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+{ notifyDetection("Sentencia IF."); }
+break;
+case 74:
+//#line 408 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+{ notifyError("La sentencia IF debe finalizarse con 'endif'."); }
+break;
+case 75:
+//#line 415 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+{ notifyError("Sentencia IF inválida en el lenguaje. Falta cierre de paréntesis en condición."); }
+break;
+case 80:
+//#line 458 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+{ notifyError("Debe especificarse un cuerpo para la sentencia do-while."); }
+break;
+case 81:
+//#line 460 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+{ notifyError("Falta 'while'."); }
+break;
+case 82:
+//#line 465 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+{ notifyError("Falta cierre de paréntesis en condición."); }
+break;
+case 85:
+//#line 481 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+{ notifyDetection("Impresión de cadena."); }
+break;
+case 86:
+//#line 483 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+{ notifyDetection("Impresión de expresión."); }
+break;
+case 87:
+//#line 488 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+{ notifyError("La sentencia 'print' requiere de al menos un argumento."); }
+break;
+case 90:
+//#line 501 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+{ yyval.sval = val_peek(0).sval; }
+break;
+case 91:
+//#line 503 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+{
+                                    notifyError("Falta de operando en expresión.");
+                                    yyval.sval = val_peek(1).sval;    
+                                }
+break;
+case 94:
+//#line 522 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+{
+                                    notifyError(String.format(
+                                        "Falta de operador entre operandos %s y %s.",
+                                        val_peek(1).sval, val_peek(0).sval)
+                                    );
+                                    yyval.sval = val_peek(0).sval;
+                                }
+break;
+case 95:
+//#line 530 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+{
+                                    notifyError(String.format(
+                                        "Falta de operador entre operandos %s y %s.",
+                                        val_peek(1).sval, val_peek(0).sval)
+                                    );
+                                    yyval.sval = val_peek(0).sval;
+                                }
+break;
+case 97:
+//#line 543 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+{ yyval.sval = val_peek(0).sval; }
+break;
+case 98:
+//#line 545 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+{ notifyError("Falta de operando en expresión."); }
+break;
+case 101:
+//#line 557 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+{ yyval.sval = val_peek(0).sval; }
+break;
+case 102:
+//#line 559 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+{ yyval.sval = val_peek(0).sval; }
+break;
+case 103:
+//#line 561 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+{ yyval.sval = val_peek(0).sval; }
+break;
+case 104:
+//#line 567 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+{ yyval.sval = val_peek(0).sval; }
+break;
+case 106:
+//#line 577 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+{ yyval.sval = val_peek(2).sval + "." + val_peek(0).sval; }
+break;
+case 107:
+//#line 585 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+{ notifyDetection("Declaración de función."); }
+break;
+case 108:
+//#line 587 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+{ notifyError("Falta de nombre en la función."); }
+break;
+case 110:
+//#line 597 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+{ notifyError("El cuerpo de la función no puede estar vacío."); }
+break;
+case 113:
+//#line 612 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+{ notifyError("Toda función debe recibir al menos un parámetro."); }
+break;
+case 116:
+//#line 623 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+{ notifyError("Se halló un parámetro formal vacío."); }
+break;
+case 120:
+//#line 637 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+{ notifyError("Falta de nombre de parámetro formal en declaración de función."); }
+break;
+case 121:
+//#line 639 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+{ notifyError("Falta de tipo de parámetro formal en declaración de funcion."); }
+break;
+case 124:
+//#line 647 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+{
+                                    notifyError("Semántica de pasaje de parámetro inválida. Se asumirá pasaje de parámetro por defecto.");
+                                    descartarTokenError();
+                                }
+break;
+case 125:
+//#line 658 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+{
+                                    notifyDetection("Invocación de función."); 
+                                    yyval.sval = val_peek(3).sval + '(' + val_peek(1).sval + ')';
+                                }
+break;
+case 127:
+//#line 668 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+{ yyval.sval = val_peek(0).sval; }
+break;
+case 128:
+//#line 674 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+{ yyval.sval = val_peek(2).sval + val_peek(1).sval + val_peek(0).sval; }
+break;
+case 129:
+//#line 679 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+{
+                                    notifyError("Falta de especificación del parámetro formal al que corresponde el parámetro real.");
+                                }
+break;
+//#line 1149 "Parser.java"
+//########## END OF USER-SUPPLIED ACTIONS ##########
+    }//switch
+    //#### Now let's reduce... ####
+    if (yydebug) debug("reduce");
+    state_drop(yym);             //we just reduced yylen states
+    yystate = state_peek(0);     //get new state
+    val_drop(yym);               //corresponding value drop
+    yym = yylhs[yyn];            //select next TERMINAL(on lhs)
+    if (yystate == 0 && yym == 0)//done? 'rest' state and at first TERMINAL
+      {
+      if (yydebug) debug("After reduction, shifting from state 0 to state "+YYFINAL+"");
+      yystate = YYFINAL;         //explicitly say we're done
+      state_push(YYFINAL);       //and save it
+      val_push(yyval);           //also save the semantic value of parsing
+      if (yychar < 0)            //we want another character?
+        {
+        yychar = yylex();        //get next character
+        if (yychar<0) yychar=0;  //clean, if necessary
+        if (yydebug)
+          yylexdebug(yystate,yychar);
+        }
+      if (yychar == 0)          //Good exit (if lex returns 0 ;-)
+         break;                 //quit the loop--all DONE
+      }//if yystate
+    else                        //else not done yet
+      {                         //get next state and push, for next yydefred[]
+      yyn = yygindex[yym];      //find out where to go
+      if ((yyn != 0) && (yyn += yystate) >= 0 &&
+            yyn <= YYTABLESIZE && yycheck[yyn] == yystate)
+        yystate = yytable[yyn]; //get new state
+      else
+        yystate = yydgoto[yym]; //else go to new defred
+      if (yydebug) debug("after reduction, shifting from state "+state_peek(0)+" to state "+yystate+"");
+      state_push(yystate);     //going again, so push state & val...
+      val_push(yyval);         //for next action
+      }
+    }//main loop
+  return 0;//yyaccept!!
+}
+//## end of method parse() ######################################
 
-  // ## run() --- for Thread #######################################
-  // ## The -Jnorun option was used ##
-  // ## end of method run() ########################################
 
-  // ## Constructors ###############################################
-  // ## The -Jnoconstruct option was used ##
-  // ###############################################################
+
+//## run() --- for Thread #######################################
+//## The -Jnorun option was used ##
+//## end of method run() ########################################
+
+
+
+//## Constructors ###############################################
+//## The -Jnoconstruct option was used ##
+//###############################################################
+
+
 
 }
-// ################### END OF CLASS ##############################
+//################### END OF CLASS ##############################
