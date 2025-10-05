@@ -487,6 +487,7 @@ expresion_error                 : expresion operador_suma
                                 | secuencia_sin_operador
                                     { $$ = $1; }
                                 ;
+
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 operador_suma                   : '+'
@@ -522,8 +523,8 @@ secuencia_sin_operador          : termino termino
 termino                         : termino operador_multiplicacion factor
                                 | factor
                                 { $$ = $1; }
-                                | termino operador_multiplicacion error
-                                { notifyError("Falta de operando en expresión."); }
+                                /*| termino operador_multiplicacion error
+                                { notifyError("Falta de operando en expresión."); }*/
                                 ;
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -553,7 +554,7 @@ constante
     : CTE
         { $$ = $1; }
     /*| '-' CTE %prec UMINUS
-        { $$ = '-' + $2; }*/
+        { $$ = '-' + $2; } */
     ;
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
