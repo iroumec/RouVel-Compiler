@@ -35,7 +35,6 @@
 // Tokens sin valor semántico asociado (no necesitan tipo).
 %token <sval> EQ, GEQ, LEQ, NEQ, DASIG, FLECHA
 %token PRINT, IF, ELSE, ENDIF, UINT, CVR, DO, WHILE, RETURN
-%token YYEOF
 
 // NECESARIO PARA PERMITIR EL OPERADOR UNARIO '-'. ASÍ LO HACEN EN LOS LIBROS.
 %left '+' '-' // Se declara que estos operadores binarios son asociativos a izquierda.
@@ -106,7 +105,7 @@ CUIDADO CON QUE EL PARSER PUEDE INTENTAR APLICAR DOS REDUCCIONES DISTINTAS Y, PO
 // INICIO DE REGLAS
 // ============================================================================================================================================================
 
-programa                        : ID cuerpo_programa YYEOF
+programa                        : ID cuerpo_programa
                                 // ==============================
                                 // REGLAS DE ERROR
                                 // ==============================
