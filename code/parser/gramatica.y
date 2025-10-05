@@ -35,6 +35,7 @@
 // Tokens sin valor semántico asociado (no necesitan tipo).
 %token <sval> EQ, GEQ, LEQ, NEQ, DASIG, FLECHA
 %token PRINT, IF, ELSE, ENDIF, UINT, CVR, DO, WHILE, RETURN
+%token YYEOF
 
 // NECESARIO PARA PERMITIR EL OPERADOR UNARIO '-'. ASÍ LO HACEN EN LOS LIBROS.
 %left '+' '-' // Se declara que estos operadores binarios son asociativos a izquierda.
@@ -87,7 +88,6 @@ interceptar o trasladar el error".
 Mucho cuidado con las reglas glotonas. Si únicamente se tiene una regla de error "... error <no-terminal> ...", el parser no va a parar de descartar todo
 hasta hallar dicho no-terminal.
 
-
 Si en una regla está la posibilidad de vacío, "lambda", jamás va a producirse un error en dicha regla, porque, de venir algo que no cumpla
 con ninguna de las alternativas válidas, va a reducir por la regla vacía.
 
@@ -106,7 +106,7 @@ CUIDADO CON QUE EL PARSER PUEDE INTENTAR APLICAR DOS REDUCCIONES DISTINTAS Y, PO
 // INICIO DE REGLAS
 // ============================================================================================================================================================
 
-programa                        : ID cuerpo_programa
+programa                        : ID cuerpo_programa YYEOF
                                 // ==============================
                                 // REGLAS DE ERROR
                                 // ==============================
@@ -473,26 +473,29 @@ imprimible
 // Expresiones
 // ************************************************************************************************************************************************************
 
-expresion                       : expresion operador_suma termino
-                                | termino
-                                ;
+expresion
+    : expresion operador_suma termino
+    | termino
+    ;
 
 // ************************************************************************************************************************************************************
 
-expresion_error                 : expresion operador_suma
-                                    {
-                                        notifyError("Falta de operando en expresión.");
-                                        $$ = $1;    
-                                    }
-                                | secuencia_sin_operador
-                                    { $$ = $1; }
-                                ;
+expresion_error                 
+    : expresion operador_suma
+        {
+            notifyError("Falta de operando en expresión.");
+            $$ = $1;    
+        }
+    | secuencia_sin_operador
+        { $$ = $1; }
+    ;
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-operador_suma                   : '+'
-                                | '-'
-                                ;
+operador_suma                   
+    : '+'
+    | '-'
+    ;
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -500,38 +503,41 @@ operador_suma                   : '+'
     Permite la aparición de varios términos sin un operador de por medio.
     No hace falta agregar una regla similar para "factor" ya que hay una regla termino -> factor.
 */
-secuencia_sin_operador          : termino termino
-                                {
-                                    notifyError(String.format(
-                                        "Falta de operador entre operandos %s y %s.",
-                                        $1, $2)
-                                    );
-                                    $$ = $2;
-                                }
-                                | secuencia_sin_operador termino
-                                {
-                                    notifyError(String.format(
-                                        "Falta de operador entre operandos %s y %s.",
-                                        $1, $2)
-                                    );
-                                    $$ = $2;
-                                }
-                                ;
+secuencia_sin_operador        
+    : termino termino
+        {
+            notifyError(String.format(
+                "Falta de operador entre operandos %s y %s.",
+                $1, $2)
+            );
+            $$ = $2;
+        }
+    | secuencia_sin_operador termino
+        {
+            notifyError(String.format(
+            "Falta de operador entre operandos %s y %s.",
+            $1, $2)
+        );
+        $$ = $2;
+    }
+    ;
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-termino                         : termino operador_multiplicacion factor
-                                | factor
-                                { $$ = $1; }
-                                /*| termino operador_multiplicacion error
-                                { notifyError("Falta de operando en expresión."); }*/
-                                ;
+termino                         
+    : termino operador_multiplicacion factor
+    | factor
+    { $$ = $1; }
+    /*| termino operador_multiplicacion error
+    { notifyError("Falta de operando en expresión."); }*/
+    ;
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-operador_multiplicacion         : '/'
-                                | '*'
-                                ;
+operador_multiplicacion
+    : '/'
+    | '*'
+    ;
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
 

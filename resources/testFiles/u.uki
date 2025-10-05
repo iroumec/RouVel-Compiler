@@ -1,0 +1,3 @@
+PROGRAMA {
+    print(2UI + uint X := 2UI);
+}
