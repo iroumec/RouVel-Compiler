@@ -87,7 +87,7 @@ Si el error está al comienzo de la regla, no se puede obtener su valor a travé
 YA SÉ POR QUÉ EL ERROR SUBE: SUBE EN BUSCA DE UN PUNTO DE SINCRONIZACIÓN. POR ESO, SI EL TOKEN ERROR ESTÁ AL FINAL, SE TRASLADA A UNA REGLA SUPERIOR.
 POR QUE, SI NO, NO SABE HASTA CUÁNDO DESCARTAR.
 
-Aunque sea redundante, es conveniente poner la restricción de punto y coma en cada sentencia individualmente. Simplifica mucho la gramática.
+CUIDADO CON QUE EL PARSER PUEDE INTENTAR APLICAR DOS REDUCCIONES DISTINTAS Y, POR LO TANTO, SI PASA POR UN MISMO CAMINO, MOSTRAR DOS VECES UN MISMO MENSAJE.
 
 */
 
@@ -96,8 +96,6 @@ Aunque sea redundante, es conveniente poner la restricción de punto y coma en c
 // ============================================================================================================================================================
 
 programa                        : ID cuerpo_programa
-                                { notifyDetection("Programa."); }
-                                // ID { notifyDetection("Programa.");} cuerpo_programa notifica al reducir por ID.
                                 // ==============================
                                 // REGLAS DE ERROR
                                 // ==============================
@@ -140,9 +138,7 @@ conjunto_sentencias             : sentencia
 
 punto_sincronizacion_sentencia  : ';'
                                 | '}'
-                                { Printer.print("HOlaaa"); readLastTokenAgain(); }
                                 | token_inicio_sentencia
-                                { notifyDetection("Just testing"); readLastTokenAgain(); }
                                 ;
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -289,14 +285,15 @@ conjunto_sentencias_ejecutables : sentencia_ejecutable
                                 // ==============================
                                 // INTERCEPCIÓN DE ERRORES
                                 // ==============================
-                                //| error '}'
-                                //{ notifyError("Toda sentencia ejecutable debe terminar con punto y coma."); }
+                                | error
+                                { notifyError("Toda sentencia ejecutable debe terminar con punto y coma."); }
                                 ;
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 // @LevantaError: "Toda sentencia ejecutable debe terminar con punto y coma."
 sentencia_ejecutable            : operacion_ejecutable ';'
+                                | operacion_ejecutable '}' // Captura sentencias al final del cuerpo del programa.
                                 ;
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -408,8 +405,6 @@ if                              : IF condicion cuerpo_ejecutable rama_else ENDIF
                                 // ==============================
                                 // INTERCEPCIÓN DE ERRORES
                                 // ==============================
-                                // Si se descomenta esto, el mensaje de falta cierre de paréntesis lo muesta bien.
-                                // Pero no detecta otras sentencias inválidas.
                                 | IF error cuerpo_ejecutable rama_else ENDIF
                                 { notifyError("Sentencia IF inválida en el lenguaje. Falta cierre de paréntesis en condición."); }
                                 // ==============================
