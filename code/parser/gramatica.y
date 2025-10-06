@@ -55,12 +55,18 @@
 %token EOF 0
 
 // ************************************************************************************************************************************************************
-// Declaraciones de Precedencia (Menor a Mayor)
+// Declaración de Precedencias (Menor a Mayor)
 // ************************************************************************************************************************************************************
+
+// Se define la asociatividad y el nivel de precedencia de los operadores.
+// El orden es de MENOR a MAYOR precedencia.
 
 %left '+' '-'
 %left '*' '/'
-%nonassoc CONSTANTE_NEGATIVA
+
+// "UMINUS" es un alias para la regla del menos unario.
+// Al declararse al final, tiene la precedencia MÁS ALTA.
+%right UMINUS
 
 // ============================================================================================================================================================
 // FIN DE DECLARACIONES
@@ -286,7 +292,7 @@ conjunto_sentencias_ejecutables
 // @LevantaError: "Toda sentencia ejecutable debe terminar con punto y coma."
 sentencia_ejecutable
     : operacion_ejecutable ';'
-    | operacion_ejecutable '}' // Captura sentencias al final del cuerpo del programa.
+    //| operacion_ejecutable '}' // Captura sentencias al final del cuerpo del programa.
     ;
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -366,11 +372,7 @@ comparador
     // PATRONES DE ERROR ESPECÍFICOS //
     // ============================= //
     | '='
-    {
-        notifyError(
-            "Se esperaba un comparador y se encontró el operador de asignación '='. ¿Quiso colocar '=='?"
-            );
-    }
+    { notifyError( "Se esperaba un comparador y se encontró el operador de asignación '='. ¿Quiso colocar '=='?" );}
     ;
 
 // ************************************************************************************************************************************************************
@@ -519,19 +521,12 @@ operador_multiplicacion
 factor
     : variable
         { $$ = $1; }
-    | constante
+    | CTE
         { $$ = $1; }
+    | '-' CTE %prec UMINUS
+        { $$ = '-' + $2; }
     | invocacion_funcion
         { $$ = $1; }
-    ;
-
-// ------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-constante
-    : CTE
-        { $$ = $1; } 
-    | '-' CTE %prec CONSTANTE_NEGATIVA
-        { $$ = '-' + $2; }
     ;
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
