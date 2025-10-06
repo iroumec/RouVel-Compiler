@@ -21,11 +21,6 @@ public class Main {
             return;
         }
 
-        // Redirección del error estándar a la salida estándar.
-        // Esto solo tiene el objetivo de que la salida se vea bien.
-        // TODO: implementar un sistema de logging más robusto.
-        System.setErr(System.out);
-
         System.out.println("\n=== Resultados de la Compilación del Archivo: " + file.getName() + " ===\n");
 
         Lexer lexicalAnalyzer = new Lexer(file.getPath());

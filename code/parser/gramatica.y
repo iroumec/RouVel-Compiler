@@ -27,9 +27,9 @@
 }
 
 // No terminales que guardan un String.
-%type <sval> expresion, expresion_error, termino, factor
+%type <sval> expresion, termino, factor
             lista_variables, lista_constantes, variable, constante,
-            invocacion_funcion, lista_argumentos, argumento, secuencia_sin_operador
+            invocacion_funcion, lista_argumentos, argumento
 
 // Asignación de tipo a token y no-terminales.
 // Esto es necesario para ejecutar acciones semánticas como: "$$ = $3".
@@ -43,10 +43,14 @@
 // Token de fin de archivo.
 %token EOF 0
 
-// NECESARIO PARA PERMITIR EL OPERADOR UNARIO '-'. ASÍ LO HACEN EN LOS LIBROS.
-%left '+' '-' // Se declara que estos operadores binarios son asociativos a izquierda.
-%left '*' '/' // Lo mismo para estos, con la particularidad de que tienen mayor precedencia que los de arriba.
-%right UMINUS // Utilizado para el operador unario '-'. Tiene mayor precedencia que los anteriores.
+// ************************************************************************************************************************************************************
+// Declaraciones de Precedencia (Menor a Mayor)
+// ************************************************************************************************************************************************************
+
+%left MISSING_OPERATOR
+%left '+' '-'
+%left '*' '/'
+%right UMINUS
 
 // ============================================================================================================================================================
 // FIN DE DECLARACIONES
@@ -440,7 +444,6 @@ imprimible
         { notifyDetection("Impresión de cadena."); }
     | expresion
         { notifyDetection("Impresión de expresión."); }
-    | expresion_error
     ;
 
 // ************************************************************************************************************************************************************
@@ -450,18 +453,27 @@ imprimible
 expresion
     : expresion operador_suma termino
     | termino
-    ;
 
-// ************************************************************************************************************************************************************
+    // ==============================
+    // REGLAS DE ERROR
+    // ==============================
 
-expresion_error                 
-    : expresion operador_suma
-        {
-            notifyError("Falta de operando en expresión.");
-            $$ = $1;    
+    // Error: Falta de operando al final (ej. "5 +")
+    | expresion operador_suma error
+        { 
+            notifyError("Falta de operando en expresión."); 
+            // $$ no se asigna o se le da un valor por defecto
         }
-    | secuencia_sin_operador
-        { $$ = $1; }
+
+    // Error: Falta de operador entre operandos (ej. "5 4")
+    | expresion termino %prec MISSING_OPERATOR
+        {
+            notifyError(String.format(
+                "Falta de operador entre operandos %s y %s.",
+                $1, $2)
+            );
+           //  $$ = $2; // Se podría optar por continuar con el último término
+        }
     ;
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -473,37 +485,12 @@ operador_suma
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-/*
-    Permite la aparición de varios términos sin un operador de por medio.
-    No hace falta agregar una regla similar para "factor" ya que hay una regla termino -> factor.
-*/
-secuencia_sin_operador        
-    : termino termino
-        {
-            notifyError(String.format(
-                "Falta de operador entre operandos %s y %s.",
-                $1, $2)
-            );
-            $$ = $2;
-        }
-    | secuencia_sin_operador termino
-        {
-            notifyError(String.format(
-            "Falta de operador entre operandos %s y %s.",
-            $1, $2)
-        );
-        $$ = $2;
-    }
-    ;
-
-// ------------------------------------------------------------------------------------------------------------------------------------------------------------
-
 termino                         
     : termino operador_multiplicacion factor
     | factor
-    { $$ = $1; }
+        { $$ = $1; }
     /*| termino operador_multiplicacion error
-    { notifyError("Falta de operando en expresión."); }*/
+        { notifyError("Falta de operando en expresión."); }*/
     ;
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -532,6 +519,7 @@ constante
     | '-' CTE %prec UMINUS
         { $$ = '-' + $2; }
     ;
+
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -664,9 +652,6 @@ argumento
 // ============================================================================================================================================================
 // INICIO DE CÓDIGO (opcional)
 // ============================================================================================================================================================
-
-// End of File.
-public final static short EOF = 0;
 
 // Lexer.
 private final Lexer lexer;
