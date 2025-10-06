@@ -16,3 +16,55 @@
     // Diría que la coma falta entre A y C.
 
 También, se pide que se chequee que las asignaciones puedan tener un menor número de elementos del lado izquierdo (tema 17). A eso no lo podemos hacer con la gramática, ¿verdad? Lo haríamos en la siguiente etapa, en el análisis semántico.
+
+---
+
+## No se muestra error de falta de punto y coma
+
+declaracion_variable
+: UINT lista_variables ';'
+{ notifyDetection("Declaración de variables."); }
+
+    // |========================= REGLAS DE ERROR =========================| //
+    | UINT ID error
+        {
+            notifyError("La declaración de variables debe terminar con ';'.");
+        }
+    | UINT lista_variables error
+        {
+            notifyError("La declaración de variables debe terminar con ';'.");
+        }
+    | UINT error
+        {
+            notifyError("Declaración de variables inválida.");
+        }
+    | UINT variable DASIG constante ';'
+        {
+            notifyError("La declaración de variables y la asignación de un valor a estas debe realizarse en dos sentencias separadas.");
+        }
+    ;
+
+lista_variables
+: ID ',' ID // Remplacé "ID" por "ID ',' ID" y agregué ID arriba. No sé por qué, pero ahora detecta bien la falta de ';' en sentencias como "uint A"
+| lista_variables ',' ID
+{ $$ = $3; }
+// ============================= //
+// PATRONES DE ERROR ESPECÍFICOS //
+// ============================= //
+| lista_variables ID
+{
+notifyError(String.format(
+"Se encontraron dos variables juntas sin separación. Inserte una ',' entre '%s' y '%s'.",
+$1, $2));
+}
+| ID ID
+{
+notifyError(String.format(
+"Se encontraron dos variables juntas sin separación. Inserte una ',' entre '%s' y '%s'.",
+$1, $2));
+}
+;
+
+LOS PEGO ASÍ NOMÁS AHORA. DESPUÉS LOS DETALLO.
+
+---

@@ -1,3 +1,5 @@
 PROGRAMA {
-    I := 5UI
+    ##I := 5UI + 4UI##
+    uint A B
+    print("Gdsds")
 }

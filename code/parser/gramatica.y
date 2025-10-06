@@ -103,8 +103,8 @@ conjunto_sentencias
     // =============== //
     // REGLAS DE ERROR //
     // =============== //
-    | conjunto_sentencias error punto_sincronizacion_sentencia
-        { notifyError("Sentencia inválida en el lenguaje."); }
+    | error punto_sincronizacion_sentencia
+        { notifyError("Error capturado a nivel de sentencia."); }
     ;
 
 // --------------------------------------------------------------------------------------------------------------------
@@ -113,6 +113,7 @@ punto_sincronizacion_sentencia
     : ';'
     | '}'
     | token_inicio_sentencia
+    | EOF
     ;
 
 // --------------------------------------------------------------------------------------------------------------------
@@ -150,20 +151,24 @@ punto_y_coma_opcional
     | ';'
     ;
 
-punto_y_coma_obligatorio
-    : error { notifyError("La sentencia debe finalizar con ';'. Se reanudará después del próximo ';'."); } // ';'
-    | ';'
-    ;
-
 // ********************************************************************************************************************
 // Variables
 // ********************************************************************************************************************
 
 declaracion_variable
     : UINT lista_variables ';'
+    { notifyDetection("Declaración de variables."); }
     
     // |========================= REGLAS DE ERROR =========================| //
 
+    | UINT ID error
+        {
+            notifyError("La declaración de variables debe terminar con ';'.");
+        }
+    | UINT lista_variables error
+        {
+            notifyError("La declaración de variables debe terminar con ';'.");
+        }
     | UINT error
         {
             notifyError("Declaración de variables inválida.");
@@ -177,7 +182,7 @@ declaracion_variable
 // --------------------------------------------------------------------------------------------------------------------
 
 lista_variables 
-    : ID
+    : ID ',' ID
     | lista_variables ',' ID
         { $$ = $3; }
     // ============================= //
@@ -188,6 +193,14 @@ lista_variables
             notifyError(String.format(
                 "Se encontraron dos variables juntas sin separación. Inserte una ',' entre '%s' y '%s'.",
                 $1, $2));
+            { $$ = $3; }
+        }
+    | ID ID
+        {
+            notifyError(String.format(
+                "Se encontraron dos variables juntas sin separación. Inserte una ',' entre '%s' y '%s'.",
+                $1, $2));
+            { $$ = $3; }
         }
     ;
 
@@ -196,7 +209,14 @@ lista_variables
 //Estas asignaciones pueden tener un menor número de elementos del lado izquierdo (tema 17).
 asignacion_multiple 
     : inicio_par_variable_constante ';'
+        { notifyDetection("Asignación múltiple."); }
     | inicio_par_variable_constante ',' lista_constantes ';'
+        { notifyDetection("Asignación múltiple."); }
+
+    | inicio_par_variable_constante error
+        { notifyDetection("La asignación múltiple debe terminar con ';'."); }
+    | inicio_par_variable_constante ',' lista_constantes error
+        { notifyDetection("La asignación múltiple debe terminar con ';'."); }
     ;
 
 // --------------------------------------------------------------------------------------------------------------------
@@ -234,8 +254,10 @@ lista_constantes
 // ********************************************************************************************************************
 
 lambda
-    : '(' parametro_lambda ')' bloque_ejecutable '(' factor ')' punto_y_coma_obligatorio
+    : '(' parametro_lambda ')' bloque_ejecutable '(' factor ')' ';'
         { notifyDetection("Expresión lambda."); }
+    | '(' parametro_lambda ')' bloque_ejecutable '(' factor ')' error
+        { notifyDetection("La expresión 'lambda' debe terminar con ';'."); }
     ;
 
 // --------------------------------------------------------------------------------------------------------------------
@@ -282,7 +304,9 @@ conjunto_sentencias_ejecutables
 // --------------------------------------------------------------------------------------------------------------------
 
 sentencia_ejecutable
-    : invocacion_funcion
+    : invocacion_funcion ';' // Contexto en el que es invocada en línea.
+    | invocacion_funcion error
+        { notifyError("La invocación a función debe terminar con ';'."); }
     | asignacion_simple
     | asignacion_multiple
     | sentencia_control
@@ -476,7 +500,6 @@ expresion
     | expresion operador_suma error
         { 
             notifyError("Falta de operando en expresión."); 
-            // $$ no se asigna o se le da un valor por defecto
         }
     | expresion termino_simple
         {
