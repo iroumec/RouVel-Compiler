@@ -19,15 +19,14 @@
 //#line 10 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
     package parser;
 
-    /* Importaciones.*/
     import lexer.Lexer;
     import common.Token;
     import utilities.Printer;
-//#line 32 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+//#line 31 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
 /*typedef union {
     String sval;
 } YYSTYPE; */
-//#line 28 "Parser.java"
+//#line 27 "Parser.java"
 
 
 
@@ -188,276 +187,260 @@ public final static short YYERRCODE=256;
 final static short yylhs[] = {                           -1,
     0,    0,    0,    0,   13,   13,   13,   13,   14,   14,
    14,   16,   16,   16,   17,   17,   17,   17,   17,   17,
-   17,   15,   15,   19,   19,   22,   22,   24,   23,   23,
-   20,   20,   20,    6,    6,    6,   25,    7,    7,    7,
-   26,   27,   27,   29,   29,   28,   28,   28,   30,   30,
-   18,   18,   18,   18,   18,   18,   18,   31,   31,   32,
-   32,   37,   37,   37,   37,   37,   38,   38,   39,   39,
-   39,   39,   39,   39,   39,   35,   35,   35,   35,   40,
-   40,   36,   36,   41,   41,   41,   41,   41,   42,   34,
-   34,   43,   43,    1,    1,    1,    1,   44,   44,    2,
-    2,    2,    4,    4,    4,   45,   45,    3,    3,    3,
-    5,    5,    5,    9,    9,    8,    8,   21,   21,   47,
-   47,   33,   46,   46,   48,   48,   48,   50,   50,   49,
-   49,   49,   51,   51,   51,   10,   11,   11,   12,   12,
+   17,   15,   15,   19,   19,   22,   22,   23,   23,   20,
+   20,   20,    6,    6,    6,   24,    7,    7,    7,   25,
+   26,   26,   28,   28,   27,   27,   29,   29,   18,   18,
+   18,   18,   18,   18,   18,   30,   30,   31,   31,   36,
+   36,   36,   36,   36,   37,   37,   38,   38,   38,   38,
+   38,   38,   38,   34,   34,   34,   34,   39,   39,   35,
+   35,   35,   40,   40,   40,   41,   33,   33,   33,   33,
+   42,   42,    1,    1,    1,    1,   43,   43,    2,    2,
+    2,    4,    4,    4,   44,   44,    3,    3,    3,    5,
+    5,    5,    9,    9,    8,    8,   21,   21,   46,   46,
+   32,   32,   32,   45,   45,   47,   47,   47,   49,   49,
+   48,   48,   48,   50,   50,   50,   10,   11,   11,   12,
+   12,
 };
 final static short yylen[] = {                            2,
-    3,    3,    1,    1,    3,    2,    0,    3,    1,    2,
+    2,    2,    1,    1,    3,    2,    0,    3,    1,    2,
     3,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-    1,    1,    1,    1,    2,    0,    1,    0,    3,    1,
-    3,    3,    4,    1,    3,    2,    4,    1,    3,    2,
-    8,    2,    0,    1,    1,    3,    2,    1,    1,    2,
-    1,    1,    1,    1,    1,    1,    1,    4,    4,    1,
-    1,    3,    2,    2,    2,    3,    3,    1,    1,    1,
-    1,    1,    1,    1,    1,    6,    6,    5,    3,    0,
-    2,    3,    3,    2,    1,    2,    3,    2,    2,    5,
-    4,    1,    1,    3,    1,    3,    2,    1,    1,    3,
-    1,    3,    3,    1,    3,    1,    1,    1,    1,    1,
-    1,    1,    1,    1,    2,    1,    3,    8,    7,    1,
-    0,    5,    1,    0,    1,    3,    1,    2,    2,    3,
-    2,    2,    0,    1,    1,    4,    1,    3,    3,    1,
+    1,    1,    1,    1,    2,    0,    1,    1,    1,    3,
+    3,    4,    1,    3,    2,    4,    1,    3,    2,    8,
+    2,    0,    1,    1,    3,    2,    1,    2,    1,    1,
+    1,    1,    1,    1,    1,    4,    4,    1,    1,    3,
+    2,    2,    2,    3,    3,    1,    1,    1,    1,    1,
+    1,    1,    1,    6,    6,    5,    2,    0,    2,    3,
+    3,    2,    2,    1,    2,    2,    5,    5,    4,    4,
+    1,    1,    3,    1,    3,    2,    1,    1,    3,    1,
+    3,    3,    1,    3,    1,    1,    1,    1,    1,    1,
+    1,    1,    1,    2,    1,    3,    6,    5,    3,    2,
+    5,    5,    4,    1,    0,    1,    3,    1,    2,    2,
+    3,    2,    2,    0,    1,    1,    4,    1,    3,    3,
+    1,
 };
 final static short yydefred[] = {                         0,
     4,    0,    0,    0,    3,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,   51,    0,    0,    9,   22,   23,
-   24,    0,   53,   57,   52,   54,   55,   56,   60,   61,
-    0,    6,    0,    0,    0,    0,    0,    0,  114,    0,
-    0,    0,    0,  101,  108,  109,  110,    0,    0,    0,
-    0,    0,    0,    0,    0,    0,   44,   45,    0,    0,
-   85,    0,    0,    0,   36,    0,    0,    0,    0,    1,
-    0,    2,   10,   27,   25,    8,    5,    0,    0,  137,
-  117,   92,    0,    0,    0,    0,   30,   79,    0,   64,
-    0,  115,  112,   71,   73,   72,   74,   75,   69,   70,
-   98,   99,    0,  104,  111,  113,    0,    0,  106,  107,
-    0,   48,    0,   65,   63,   32,    0,  135,  134,    0,
-    0,    0,  125,  127,    0,    0,   31,   83,   88,   89,
-   47,   49,    0,    0,   86,   84,   82,    0,   42,    0,
-   35,    0,   38,    0,    0,   15,   18,   16,   17,   19,
-   21,   20,   13,   12,   11,   14,    0,    0,  136,   28,
-   91,    0,    0,    0,    0,   66,   62,    0,    0,   96,
-    0,  102,  100,    0,    0,  129,    0,    0,    0,    0,
-  132,   33,   46,   50,   87,    0,    0,   37,    0,   40,
-   59,   58,  139,  138,   90,   29,   81,    0,  105,  103,
-    0,   78,    0,    0,  126,  130,  122,    0,   39,   77,
-   76,    0,    0,    0,    0,    0,  119,    0,  118,   41,
+    0,    0,    0,    0,   49,    1,    0,    9,   22,   23,
+   24,    0,   51,   55,   50,   52,   53,   54,   58,   59,
+    0,    6,    0,    0,    0,    0,   77,    0,  113,    0,
+    0,    0,    0,  100,  107,  108,  109,    0,    0,    0,
+    0,    0,    0,   82,    0,    0,   43,   44,    0,    0,
+   84,    0,    0,    0,   35,    0,    0,    0,    0,    0,
+   10,   27,   25,    8,    5,    0,    0,  138,  116,   91,
+    0,    0,    0,   62,    0,  114,  111,   69,   71,   70,
+   72,   73,   67,   68,   97,   98,    0,  103,  110,  112,
+    0,    0,  105,  106,    0,    0,   63,   61,   31,    0,
+  136,  135,    0,    0,    0,  126,  128,    0,    0,   30,
+   86,   46,   47,    0,   85,   83,   81,   80,    0,    0,
+   41,    0,   34,    0,   37,    0,    0,   15,   18,   16,
+   17,   19,   21,   20,   13,   12,   11,   14,    0,    0,
+  137,   90,   89,    0,   64,   60,    0,    0,   95,    0,
+  101,   99,    0,    0,    0,  130,    0,    0,    0,    0,
+  133,   32,   45,   48,  123,    0,    0,   36,    0,   39,
+   57,   56,  140,  139,   88,   87,  104,  102,   79,    0,
+   76,    0,    0,  118,  127,  131,  122,  121,    0,   38,
+   75,   74,  117,  120,    0,    0,  119,    0,   28,   29,
+   40,
 };
 final static short yydgoto[] = {                          4,
-   42,   43,   44,  103,  104,   13,  142,   45,   46,   47,
-   79,   80,    5,  213,   18,  155,  156,   19,   20,   21,
-   22,   75,   88,  163,   23,   24,   64,   58,   59,  133,
-   25,   26,   27,   28,   29,   30,  130,   49,  107,  165,
-   60,   61,   85,  108,  111,  121,  214,  122,  123,  124,
-  125,
+   42,   43,   44,   97,   98,   13,  134,   45,   46,   47,
+   77,   78,    5,   17,   18,  147,  148,   19,   20,   21,
+   22,   73,  211,   23,   24,   64,   58,   59,  124,   25,
+   26,   27,   28,   29,   30,   48,   49,  101,  164,   60,
+   61,   83,  102,  105,  114,  194,  115,  116,  117,  118,
 };
-final static short yysindex[] = {                      -105,
-    0,   48,  -40,    0,    0,    9,   -7,  -35,   74,  -28,
-   -5, -246,   17, -233,    0,   46,   13,    0,    0,    0,
-    0,   15,    0,    0,    0,    0,    0,    0,    0,    0,
-  -75,    0,   25,  101, -203,    3,   37,    9,    0,   66,
- -202,  149,   16,    0,    0,    0,    0,   60,  -15,   23,
-   20,  -16,  219,  -42,   19,  -24,    0,    0,  -38,   32,
-    0,  101, -195,   27,    0, -170,   28,  101,  101,    0,
-  159,    0,    0,    0,    0,    0,    0,   -6,   42,    0,
-    0,    0,  -55,   96,   52,    0,    0,    0, -171,    0,
-   -9,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,   16,    0,    0,    0,  101,  157,    0,    0,
-  180,    0, -171,    0,    0,    0,  -16,    0,    0, -226,
-   57,   61,    0,    0, -236,   45,    0,    0,    0,    0,
-    0,    0,   83,   44,    0,    0,    0,   49,    0, -108,
-    0,   -2,    0,   79,   90,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,    0,    0, -148,  101,    0,    0,
-    0,  -55,   59,   60, -153,    0,    0,  209,   96,    0,
-   16,    0,    0,  -56,   76,    0,    2, -226,   75, -130,
-    0,    0,    0,    0,    0,   70,   91,    0,   28,    0,
-    0,    0,    0,    0,    0,    0,    0,  -55,    0,    0,
-  -55,    0,    7,   94,    0,    0,    0,  101,    0,    0,
-    0,   94,   72,   12,   95,   18,    0,  -55,    0,    0,
-};
-final static short yyrindex[] = {                       132,
-    0,  132,    0,    0,    0,    8,    0,    0,    0,    0,
-    0,   99,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    1,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,    0,    0,    0,  114,    0,    0,
-    0,   -3,  125,    0,    0,    0,    0,    0,    0,    0,
-  254,  -21,    0,   31,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,    0,    0,    0,   58,    0,    0,
-    0,    0,    0,  104,    0,  155,    0,    0, -127,    0,
-    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,  136,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,   56,    0,    0,    0,  -21,    0,    0, -230,
-    0,  112,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,    0,    0,    0,    0,   10,    0,
-  359,    0,    0,    0,    0,    0,    0,  -33,   62,   69,
-    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,   29,    0,    0,    0,    0,    0,    0,
-    0,   29,   40,    0,    0,    0,    0,    0,    0,    0,
-};
-final static short yygindex[] = {                         0,
-  417,   54,  -89,    0,    0,  158,    0,  445,  -61,  495,
-    0,   14,  176,   64,   -8,    0,    0,  398,    0,    0,
-    0,    0,  -54,    0,    0,    0,    0,   50,   -1,    0,
-    0,    0,    0,    0,    0,    0,   11,  142,    0,   78,
-    0,   21,    0,    0,   85,   82,  -23,    0, -106,    0,
+final static short yysindex[] = {                      -108,
+    0,   36,  -40,    0,    0,  -18,  -14,  -35,   44,  -28,
+   -7, -230,  -26, -206,    0,    0,   48,    0,    0,    0,
+    0,   -4,    0,    0,    0,    0,    0,    0,    0,    0,
+  -80,    0,   13,  138, -205,    6,    0,  -18,    0,   32,
+ -202,  112,    7,    0,    0,    0,    0,   70,   -9,    2,
+   27,  -31,  121,    0,    3,  -24,    0,    0,  -38,  -56,
+    0,   55, -191,   29,    0, -189,   26,  138,  138,  182,
+    0,    0,    0,    0,    0,   -6,  -20,    0,    0,    0,
+  -53,   77,   40,    0,   -3,    0,    0,    0,    0,    0,
+    0,    0,    0,    0,    0,    0,    7,    0,    0,    0,
+  138,  136,    0,    0,  144, -182,    0,    0,    0,  -31,
+    0,    0, -237,   51,   49,    0,    0, -234,   43,    0,
+    0,    0,    0,   73,    0,    0,    0,    0,   45,   19,
+    0,  -25,    0,   30,    0,   66,  123,    0,    0,    0,
+    0,    0,    0,    0,    0,    0,    0,    0, -154,  138,
+    0,    0,    0,   10,    0,    0,  161,   77,    0,    7,
+    0,    0,   70,  -55,   64,    0,  -17, -237,   61, -149,
+    0,    0,    0,    0,    0,   65,   74,    0,   26,    0,
+    0,    0,    0,    0,    0,    0,    0,    0,    0,   72,
+    0,  -17,   59,    0,    0,    0,    0,    0,  138,    0,
+    0,    0,    0,    0,   25,   71,    0,   82,    0,    0,
     0,
 };
-final static int YYTABLESIZE=708;
+final static short yyrindex[] = {                       115,
+    0,  115,    0,    0,    0,   -2,    0,    0,    0,    0,
+    0,   75,    0,    0,    0,    0,  117,    0,    0,    0,
+    0,    1,    0,    0,    0,    0,    0,    0,    0,    0,
+    0,    0,    0,    0,    0,    0,    0,   92,    0,    0,
+    0,   16,  102,    0,    0,    0,    0,    0,    0,    0,
+  250,  -21,    0,    0,    0,    0,    0,    0,    0,    0,
+    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+    0,    0,    0,    0,    0,   39,    0,    0,    0,    0,
+    0,   78,    0,    0,    0,    0,    0,    0,    0,    0,
+    0,    0,    0,    0,    0,    0,  126,    0,    0,    0,
+    0,    0,    0,    0,    0,  -13,    0,    0,    0,  -21,
+    0,    0, -226,    0,   86,    0,    0,    0,    0,    0,
+    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+    0,    0,    0,    0,    0,    0,    0,   22,    0,  151,
+    0,    0,    0,    0,    0,    0,    0,  -33,   46,   50,
+    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+    0,
+};
+final static short yygindex[] = {                         0,
+  363,   21,  -78,    0,    0,  109,    0,  418,  -37,  420,
+    0,  -22,  127,   11,   -8,    0,    0,  388,    0,    0,
+    0,    0,    0,    0,    0,    0,    8,  -19,    0,    0,
+    0,    0,    0,    0,    0,   23,   90,    0,    0,    0,
+   97,    0,    0,   35,   67,  -34,    0,  -96,    0,    0,
+};
+final static int YYTABLESIZE=625;
 static short yytable[];
 static { yytable();}
 static void yytable(){
 yytable = new short[]{                         12,
-   26,   40,   87,   87,   40,  143,   41,  128,   73,   41,
-  128,   12,   72,  176,   56,   12,  128,    3,   48,  124,
-  179,  173,   68,   63,   73,  115,  133,  120,  161,  118,
-   69,  167,   36,  180,   62,   89,  101,   68,  102,  133,
-   26,  189,   41,   83,  119,   70,  113,   41,   34,   76,
-   67,   34,   12,   81,   35,   92,  188,  110,   40,  117,
-   66,  139,  109,   41,   12,   17,   33,  140,   34,  135,
-   48,  205,   41,   74,  129,   48,   12,   67,  200,  136,
-  190,  116,  159,   40,   32,  158,  141,   12,   41,  186,
-  137,  101,  162,  102,   56,   87,  164,  177,  140,   12,
-  131,  140,  116,  182,  178,  116,   90,  195,  193,  131,
-   41,   12,  131,   52,   80,  198,  203,  196,  215,  202,
-   35,  101,   12,  102,  204,   26,  179,  209,  207,  212,
-  208,    7,  101,   12,  102,  218,  217,  191,  101,   43,
-  102,   80,  219,  210,   93,   41,  211,  112,  192,   77,
-    1,    2,  123,  121,  116,  116,  116,  116,  116,   56,
-  116,  171,  197,  220,  120,   95,   53,   95,   95,   95,
-    3,  194,  116,  116,  116,  116,   97,   16,   97,   97,
-   97,   91,   56,   95,   95,   95,   95,  168,  216,  187,
-  174,  101,    0,  102,   97,   97,   97,   97,  175,  160,
-  160,   41,    0,    0,   73,    0,    0,  183,  100,   98,
-   99,    0,  201,   28,    0,   31,    6,  154,   38,   39,
-   37,   38,   39,  133,   41,    7,    8,   54,    6,    9,
-   55,   10,    6,   11,  134,  133,  133,    7,    8,  118,
-  114,    7,    8,   10,   55,   11,  166,   10,  133,   11,
-   38,   93,   68,   41,  119,   39,   26,   26,  157,   38,
-   39,   82,   66,  116,   34,   67,   26,   26,   71,    6,
-   26,  116,   26,   65,   26,   38,   39,  127,    7,    8,
-   71,    6,    9,  153,   10,   39,   11,   48,   48,    0,
-    7,    8,   86,    6,    9,    0,   10,   34,   11,  185,
-   38,   39,    7,    8,    6,   38,   93,    0,   10,    0,
-   11,   80,   34,    7,    8,  112,    6,    9,    0,   10,
-    0,   11,   38,   39,   80,    7,    8,   71,    6,   50,
-   51,   10,    0,   11,    0,   38,   93,    7,    8,    6,
-    0,    9,    0,   10,    0,   11,   38,   93,    7,    8,
-    6,    0,   38,   93,   10,    0,   11,   38,   39,    7,
-    8,    0,    0,    9,    0,   10,    0,   11,    0,  116,
-  116,  116,    0,  116,  116,  116,  116,    0,  116,    0,
-   95,   95,   95,    0,   95,   95,   95,   95,    0,   95,
-    0,   97,   97,   97,    0,   97,   97,   97,   97,   94,
-   97,   94,   94,   94,    0,   38,   93,   57,   94,   95,
-   96,   97,  170,   38,   39,  146,    0,   94,   94,   94,
-   94,    0,   48,   48,  147,  148,    0,    0,  149,    0,
-  150,  151,  152,    0,   57,  172,   38,   39,    0,    0,
-    0,    0,    0,    0,    0,   57,   14,   14,    0,    0,
-   78,    0,   84,  132,   14,    0,    0,    0,    0,    0,
-    0,   14,    0,    0,  199,   38,   39,    0,    0,    0,
-    0,    0,    0,    0,  126,   65,    0,   14,  138,    0,
-    0,   14,    0,    0,  144,  145,  105,    0,    0,    0,
-    0,    0,   14,    0,    0,    0,   15,   15,    0,    0,
-   14,    0,    0,    0,   15,    0,    0,    0,    0,   34,
-   34,   15,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,  105,  169,    0,    0,    0,   15,  105,    0,
-  184,   15,    0,    0,    0,    0,  106,    0,    0,    0,
-    0,    0,   15,    0,    0,    0,    0,    0,    0,    0,
-   15,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,   57,    0,    0,    0,    0,    0,    0,    0,  181,
-    0,    0,  106,    0,   78,    0,    0,   14,  106,    0,
-    0,    0,  105,    0,    0,    0,    0,    0,  105,  105,
+   26,   40,  128,  191,   40,  153,   41,  129,   71,   41,
+  129,   12,  113,   33,    3,   12,  166,   66,  111,  125,
+  151,   34,  169,  150,   71,   36,  162,   35,  106,  135,
+  134,  108,   62,  112,   67,  170,   95,  156,   96,   63,
+   26,   33,   40,  134,   74,   78,   81,   41,  104,   68,
+   41,   79,   12,  103,   72,   86,   66,   69,   33,  176,
+  109,   95,   65,   96,   12,  131,  110,  133,  186,  132,
+   41,  195,   84,  179,   41,   12,   41,  121,  188,  141,
+  154,  125,  141,   52,   32,  163,  115,   12,  178,  115,
+  132,  167,  168,  132,   56,  129,  180,   56,   12,   41,
+  122,  172,  183,  175,  192,  193,   35,  169,   95,   12,
+   96,  208,   12,  199,    7,   42,    2,   53,   92,   95,
+  206,   96,  160,  198,  181,   26,  124,  184,   16,   85,
+  202,  157,  115,  115,  115,  115,  115,   75,  115,  177,
+  210,  200,   94,  189,   94,   94,   94,    1,    2,  207,
+  115,  115,  115,  115,   95,  126,   96,  203,    3,    0,
+   94,   94,   94,   94,   66,   95,   96,   96,   96,   96,
+   96,   94,   92,   93,    0,    0,  165,    0,    0,  120,
+   41,  182,   41,  204,   96,   96,   96,   96,   41,    0,
+    0,   93,   56,   93,   93,   93,   71,  173,    0,  127,
+    0,    0,  152,  205,    0,   41,    0,    0,    0,   93,
+   93,   93,   93,  190,    0,   31,    6,    0,   38,   39,
+   37,   38,   39,  134,  111,    7,    8,   54,    6,    9,
+   65,   10,    6,   11,   55,  134,  134,    7,    8,  112,
+  146,    7,    8,   10,   55,   11,  107,   10,  134,   11,
+   38,   87,  155,  115,   33,   78,   26,   26,  149,   38,
+   39,  115,   38,   39,   80,  185,   26,   26,   70,    6,
+   26,   66,   26,    0,   26,   38,   87,   65,    7,    8,
+   70,    6,    9,   39,   10,    0,   11,   39,   38,   39,
+    7,    8,    6,   33,    9,    0,   10,    0,   11,   50,
+   51,    7,    8,   70,    6,    9,  145,   10,   33,   11,
+    0,   38,   39,    7,    8,    6,    0,    9,    0,   10,
+  197,   11,   38,   87,    7,    8,    6,  201,    9,    6,
+   10,    0,   11,   38,   87,    7,    8,  209,    7,    8,
+    0,   10,    0,   11,   10,    0,   11,  115,  115,  115,
+    0,  115,  115,  115,  115,    0,  115,   94,   94,   94,
+    0,   94,   94,   94,   94,    0,   94,    0,   38,   87,
+    0,   88,   89,   90,   91,    0,  119,   65,    0,   38,
+   87,   96,   96,   96,    0,   96,   96,   96,   96,    0,
+   96,  159,   38,   39,   38,   39,   76,   57,   82,  161,
+   38,   39,    0,    0,    0,    0,   93,   93,   93,    0,
+   93,   93,   93,   93,    0,   93,  187,   38,   39,   14,
+   14,   15,   15,    0,  130,    0,    0,   14,    0,   15,
+  136,  137,    0,    0,   14,   57,   15,    0,  138,    0,
+    0,    0,    0,  123,    0,    0,    0,  139,  140,    0,
+   14,  141,   15,  142,  143,  144,    0,    0,    0,   99,
+    0,  100,    0,  158,    0,   14,    0,   15,    0,    0,
+    0,    0,    0,   14,    0,   15,    0,    0,    0,    0,
     0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,    0,    0,    0,    0,   14,    0,
-    0,    0,    0,  105,   94,   94,   94,    0,   94,   94,
-   94,   94,    0,   94,  206,    0,    0,   15,    0,    0,
-    0,    0,  106,    0,    0,    0,    0,    0,  106,  106,
-    0,    0,    0,    0,    0,    0,    0,    0,   14,    0,
-    0,    0,    0,    0,    0,    0,   14,   14,   15,    0,
-    0,    0,    0,  106,    0,    0,    0,    0,    0,    0,
+    0,    0,    0,   99,    0,  100,    0,    0,    0,   99,
+    0,  100,    0,    0,    0,   33,   33,    0,    0,    0,
+    0,  174,   76,    0,    0,    0,    0,    0,    0,    0,
+    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+    0,    0,    0,    0,    0,  171,    0,    0,    0,    0,
+    0,   14,    0,   15,    0,    0,    0,   99,    0,  100,
+   57,    0,    0,   99,   99,  100,  100,    0,    0,    0,
+    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+    0,    0,    0,    0,    0,   99,    0,  100,    0,    0,
+   14,    0,   15,    0,    0,    0,    0,  196,    0,    0,
     0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
     0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,    0,    0,    0,    0,   15,    0,
-    0,    0,    0,    0,    0,    0,   15,   15,
+   14,    0,   15,    0,    0,    0,    0,    0,    0,    0,
+    0,    0,   14,    0,   15,
 };
 }
 static short yycheck[];
 static { yycheck(); }
 static void yycheck() {
 yycheck = new short[] {                         40,
-    0,   40,   59,   59,   40,   67,   45,   41,   17,   45,
-   44,   40,    0,  120,  123,   40,   59,  123,    8,   41,
-  257,  111,  256,  270,   33,   41,  257,   44,   83,  256,
-  264,   41,   40,  270,   40,   37,   43,   41,   45,  270,
-   40,   44,   45,   41,  271,    0,   48,   45,   40,  125,
-   41,   44,   40,  257,   46,  258,   59,   42,   40,   40,
-   44,  257,   47,   45,   40,    2,    3,   41,   61,   59,
-   40,  178,   45,   59,   54,   45,   40,   61,  168,   59,
-  142,   59,   41,   40,  125,   44,  257,   40,   45,   41,
-   59,   43,   41,   45,  123,   59,  268,   41,   41,   40,
-  125,   44,   41,   59,   44,   44,   41,  162,  257,   41,
-   45,   40,   44,   40,   59,  269,   41,   59,  208,  174,
-   46,   43,   40,   45,  123,  125,  257,  189,   59,  123,
-   40,    0,   43,   40,   45,   41,  125,   59,   43,   41,
-   45,  269,  125,  198,   41,   45,  201,  256,   59,  125,
-  256,  257,   41,  125,   41,   42,   43,   44,   45,  123,
-   47,  108,  164,  218,  125,   41,    9,   43,   44,   45,
-  123,  158,   59,   60,   61,   62,   41,    2,   43,   44,
-   45,   40,  123,   59,   60,   61,   62,  103,  212,  140,
-  113,   43,   -1,   45,   59,   60,   61,   62,  117,  256,
-  256,   45,   -1,   -1,  213,   -1,   -1,  125,   60,   61,
-   62,   -1,  269,   59,   -1,  256,  257,   59,  257,  258,
-  256,  257,  258,  257,   45,  266,  267,  256,  257,  270,
-  273,  272,  257,  274,  273,  257,  270,  266,  267,  256,
-  256,  266,  267,  272,  273,  274,  256,  272,  270,  274,
-  257,  258,  256,   45,  271,  258,  256,  257,  265,  257,
-  258,  259,   44,  256,  257,  256,  266,  267,  256,  257,
-  270,  264,  272,  257,  274,  257,  258,   59,  266,  267,
-  256,  257,  270,  125,  272,  258,  274,  257,  258,   -1,
-  266,  267,  256,  257,  270,   -1,  272,   44,  274,  256,
-  257,  258,  266,  267,  257,  257,  258,   -1,  272,   -1,
-  274,  256,   59,  266,  267,  256,  257,  270,   -1,  272,
-   -1,  274,  257,  258,  269,  266,  267,  256,  257,  256,
-  257,  272,   -1,  274,   -1,  257,  258,  266,  267,  257,
-   -1,  270,   -1,  272,   -1,  274,  257,  258,  266,  267,
-  257,   -1,  257,  258,  272,   -1,  274,  257,  258,  266,
-  267,   -1,   -1,  270,   -1,  272,   -1,  274,   -1,  256,
-  257,  258,   -1,  260,  261,  262,  263,   -1,  265,   -1,
-  256,  257,  258,   -1,  260,  261,  262,  263,   -1,  265,
-   -1,  256,  257,  258,   -1,  260,  261,  262,  263,   41,
-  265,   43,   44,   45,   -1,  257,  258,   10,  260,  261,
-  262,  263,  256,  257,  258,  257,   -1,   59,   60,   61,
-   62,   -1,  268,  269,  266,  267,   -1,   -1,  270,   -1,
-  272,  273,  274,   -1,   37,  256,  257,  258,   -1,   -1,
-   -1,   -1,   -1,   -1,   -1,   48,    2,    3,   -1,   -1,
-   34,   -1,   36,   56,   10,   -1,   -1,   -1,   -1,   -1,
-   -1,   17,   -1,   -1,  256,  257,  258,   -1,   -1,   -1,
-   -1,   -1,   -1,   -1,  256,  257,   -1,   33,   62,   -1,
-   -1,   37,   -1,   -1,   68,   69,   42,   -1,   -1,   -1,
-   -1,   -1,   48,   -1,   -1,   -1,    2,    3,   -1,   -1,
-   56,   -1,   -1,   -1,   10,   -1,   -1,   -1,   -1,  256,
-  257,   17,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
-   -1,   -1,   78,  107,   -1,   -1,   -1,   33,   84,   -1,
-  133,   37,   -1,   -1,   -1,   -1,   42,   -1,   -1,   -1,
-   -1,   -1,   48,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
-   56,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
-   -1,  164,   -1,   -1,   -1,   -1,   -1,   -1,   -1,  125,
-   -1,   -1,   78,   -1,  158,   -1,   -1,  133,   84,   -1,
-   -1,   -1,  138,   -1,   -1,   -1,   -1,   -1,  144,  145,
+    0,   40,   59,   59,   40,   59,   45,   41,   17,   45,
+   44,   40,   44,    3,  123,   40,  113,   44,  256,   41,
+   41,   40,  257,   44,   33,   40,  105,   46,   48,   67,
+  257,   41,   40,  271,   61,  270,   43,   41,   45,  270,
+   40,   44,   40,  270,  125,   59,   41,   45,   42,  256,
+   45,  257,   40,   47,   59,  258,   41,  264,   61,   41,
+   59,   43,   41,   45,   40,  257,   40,  257,   59,   41,
+   45,  168,   41,   44,   45,   40,   45,   55,  157,   41,
+   41,   59,   44,   40,  125,  268,   41,   40,   59,   44,
+   41,   41,   44,   44,  123,   41,  134,  123,   40,   45,
+  125,   59,  257,   59,   41,  123,   46,  257,   43,   40,
+   45,   41,   40,   40,    0,   41,    0,    9,   41,   43,
+  199,   45,  102,   59,   59,  125,   41,  150,    2,   40,
+   59,   97,   41,   42,   43,   44,   45,  125,   47,  132,
+   59,  179,   41,  163,   43,   44,   45,  256,  257,  125,
+   59,   60,   61,   62,   43,   59,   45,  192,  123,   -1,
+   59,   60,   61,   62,   44,   43,   41,   45,   43,   44,
+   45,   60,   61,   62,   -1,   -1,  110,   -1,   -1,   59,
+   45,   59,   45,  125,   59,   60,   61,   62,   45,   -1,
+   -1,   41,  123,   43,   44,   45,  205,  125,   -1,  256,
+   -1,   -1,  256,  193,   -1,   45,   -1,   -1,   -1,   59,
+   60,   61,   62,  269,   -1,  256,  257,   -1,  257,  258,
+  256,  257,  258,  257,  256,  266,  267,  256,  257,  270,
+  257,  272,  257,  274,  273,  257,  270,  266,  267,  271,
+   59,  266,  267,  272,  273,  274,  256,  272,  270,  274,
+  257,  258,  256,  256,  257,  269,  256,  257,  265,  257,
+  258,  264,  257,  258,  259,  256,  266,  267,  256,  257,
+  270,  256,  272,   -1,  274,  257,  258,  256,  266,  267,
+  256,  257,  270,  258,  272,   -1,  274,  258,  257,  258,
+  266,  267,  257,   44,  270,   -1,  272,   -1,  274,  256,
+  257,  266,  267,  256,  257,  270,  125,  272,   59,  274,
+   -1,  257,  258,  266,  267,  257,   -1,  270,   -1,  272,
+  256,  274,  257,  258,  266,  267,  257,  256,  270,  257,
+  272,   -1,  274,  257,  258,  266,  267,  256,  266,  267,
+   -1,  272,   -1,  274,  272,   -1,  274,  256,  257,  258,
+   -1,  260,  261,  262,  263,   -1,  265,  256,  257,  258,
+   -1,  260,  261,  262,  263,   -1,  265,   -1,  257,  258,
+   -1,  260,  261,  262,  263,   -1,  256,  257,   -1,  257,
+  258,  256,  257,  258,   -1,  260,  261,  262,  263,   -1,
+  265,  256,  257,  258,  257,  258,   34,   10,   36,  256,
+  257,  258,   -1,   -1,   -1,   -1,  256,  257,  258,   -1,
+  260,  261,  262,  263,   -1,  265,  256,  257,  258,    2,
+    3,    2,    3,   -1,   62,   -1,   -1,   10,   -1,   10,
+   68,   69,   -1,   -1,   17,   48,   17,   -1,  257,   -1,
+   -1,   -1,   -1,   56,   -1,   -1,   -1,  266,  267,   -1,
+   33,  270,   33,  272,  273,  274,   -1,   -1,   -1,   42,
+   -1,   42,   -1,  101,   -1,   48,   -1,   48,   -1,   -1,
+   -1,   -1,   -1,   56,   -1,   56,   -1,   -1,   -1,   -1,
    -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
-   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,  164,   -1,
-   -1,   -1,   -1,  169,  256,  257,  258,   -1,  260,  261,
-  262,  263,   -1,  265,  180,   -1,   -1,  133,   -1,   -1,
-   -1,   -1,  138,   -1,   -1,   -1,   -1,   -1,  144,  145,
-   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,  204,   -1,
-   -1,   -1,   -1,   -1,   -1,   -1,  212,  213,  164,   -1,
-   -1,   -1,   -1,  169,   -1,   -1,   -1,   -1,   -1,   -1,
+   -1,   -1,   -1,   76,   -1,   76,   -1,   -1,   -1,   82,
+   -1,   82,   -1,   -1,   -1,  256,  257,   -1,   -1,   -1,
+   -1,  124,  150,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
+   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
+   -1,   -1,   -1,   -1,   -1,  118,   -1,   -1,   -1,   -1,
+   -1,  124,   -1,  124,   -1,   -1,   -1,  130,   -1,  130,
+  163,   -1,   -1,  136,  137,  136,  137,   -1,   -1,   -1,
+   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
+   -1,   -1,   -1,   -1,   -1,  158,   -1,  158,   -1,   -1,
+  163,   -1,  163,   -1,   -1,   -1,   -1,  170,   -1,   -1,
    -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
    -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
-   -1,   -1,   -1,   -1,   -1,   -1,   -1,   -1,  204,   -1,
-   -1,   -1,   -1,   -1,   -1,   -1,  212,  213,
+  193,   -1,  193,   -1,   -1,   -1,   -1,   -1,   -1,   -1,
+   -1,   -1,  205,   -1,  205,
 };
 }
 final static short YYFINAL=4;
@@ -484,8 +467,8 @@ null,null,null,null,null,null,null,"ID","CTE","STR","EQ","GEQ","LEQ","NEQ",
 };
 final static String yyrule[] = {
 "$accept : programa",
-"programa : ID cuerpo_programa EOF",
-"programa : ID conjunto_sentencias EOF",
+"programa : ID cuerpo_programa",
+"programa : ID conjunto_sentencias",
 "programa : cuerpo_programa",
 "programa : error",
 "cuerpo_programa : '{' conjunto_sentencias '}'",
@@ -511,8 +494,7 @@ final static String yyrule[] = {
 "sentencia_declarativa : declaracion_funcion punto_y_coma_opcional",
 "punto_y_coma_opcional :",
 "punto_y_coma_opcional : ';'",
-"$$1 :",
-"punto_y_coma_obligatorio : error $$1 ';'",
+"punto_y_coma_obligatorio : error",
 "punto_y_coma_obligatorio : ';'",
 "declaracion_variable : UINT lista_variables ';'",
 "declaracion_variable : UINT error ';'",
@@ -531,7 +513,6 @@ final static String yyrule[] = {
 "cuerpo_ejecutable : bloque_ejecutable",
 "bloque_ejecutable : '{' conjunto_sentencias_ejecutables '}'",
 "bloque_ejecutable : '{' '}'",
-"bloque_ejecutable : error",
 "conjunto_sentencias_ejecutables : sentencia_ejecutable",
 "conjunto_sentencias_ejecutables : conjunto_sentencias_ejecutables sentencia_ejecutable",
 "sentencia_ejecutable : invocacion_funcion",
@@ -559,22 +540,23 @@ final static String yyrule[] = {
 "comparador : GEQ",
 "comparador : NEQ",
 "comparador : '='",
-"if : IF condicion cuerpo_ejecutable rama_else ENDIF punto_y_coma_obligatorio",
-"if : IF error cuerpo_ejecutable rama_else ENDIF punto_y_coma_obligatorio",
-"if : IF condicion cuerpo_ejecutable rama_else punto_y_coma_obligatorio",
-"if : IF error punto_y_coma_obligatorio",
+"if : IF condicion cuerpo_ejecutable rama_else ENDIF ';'",
+"if : IF condicion cuerpo_ejecutable rama_else ENDIF error",
+"if : IF condicion cuerpo_ejecutable rama_else ';'",
+"if : IF error",
 "rama_else :",
 "rama_else : ELSE cuerpo_ejecutable",
 "do_while : DO cuerpo_do ';'",
-"do_while : DO error ';'",
+"do_while : DO cuerpo_do error",
+"do_while : DO error",
 "cuerpo_do : cuerpo_ejecutable fin_cuerpo_do",
 "cuerpo_do : fin_cuerpo_do",
 "cuerpo_do : cuerpo_ejecutable condicion",
-"cuerpo_do : cuerpo_ejecutable WHILE error",
-"cuerpo_do : error fin_cuerpo_do",
 "fin_cuerpo_do : WHILE condicion",
-"impresion : PRINT '(' imprimible ')' punto_y_coma_obligatorio",
-"impresion : PRINT '(' ')' punto_y_coma_obligatorio",
+"impresion : PRINT '(' imprimible ')' ';'",
+"impresion : PRINT '(' imprimible ')' error",
+"impresion : PRINT '(' ')' ';'",
+"impresion : PRINT '(' ')' error",
 "imprimible : STR",
 "imprimible : expresion",
 "expresion : expresion operador_suma termino",
@@ -601,11 +583,13 @@ final static String yyrule[] = {
 "constante : '-' CTE",
 "variable : ID",
 "variable : ID '.' ID",
-"declaracion_funcion : UINT ID '(' conjunto_parametros ')' '{' cuerpo_funcion '}'",
-"declaracion_funcion : UINT '(' conjunto_parametros ')' '{' cuerpo_funcion '}'",
-"cuerpo_funcion : conjunto_sentencias",
-"cuerpo_funcion :",
+"declaracion_funcion : UINT ID '(' conjunto_parametros ')' cuerpo_funcion",
+"declaracion_funcion : UINT '(' conjunto_parametros ')' cuerpo_funcion",
+"cuerpo_funcion : '{' conjunto_sentencias '}'",
+"cuerpo_funcion : '{' '}'",
 "sentencia_retorno : RETURN '(' expresion ')' ';'",
+"sentencia_retorno : RETURN '(' expresion ')' error",
+"sentencia_retorno : RETURN '(' ')' ';'",
 "conjunto_parametros : lista_parametros",
 "conjunto_parametros :",
 "lista_parametros : parametro_formal",
@@ -626,7 +610,7 @@ final static String yyrule[] = {
 "argumento : expresion",
 };
 
-//#line 663 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+//#line 673 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
 
 // ============================================================================================================================================================
 // INICIO DE CÓDIGO (opcional)
@@ -826,7 +810,7 @@ public int getErrorsDetected() {
 // ============================================================================================================================================================
 // FIN DE CÓDIGO
 // ============================================================================================================================================================
-//#line 758 "Parser.java"
+//#line 742 "Parser.java"
 //###############################################################
 // method: yylexdebug : check lexer state
 //###############################################################
@@ -981,185 +965,185 @@ boolean doaction;
       {
 //########## USER-SUPPLIED ACTIONS ##########
 case 1:
-//#line 69 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+//#line 68 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
 { notifyDetection("Programa."); }
 break;
 case 2:
-//#line 74 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+//#line 73 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
 { notifyError("Las sentencias del programa deben estar delimitadas por llaves."); }
 break;
 case 3:
-//#line 76 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+//#line 75 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
 { notifyError("El programa requiere de un nombre."); }
 break;
 case 4:
-//#line 78 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+//#line 77 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
 {
             notifyError("Inicio de programa inválido. Este debe seguir la estructura: <NOMBRE%PROGRAMA> { ... }.");
             descartarTokensHasta(ID); /* Se descartan todos los tokens hasta ID.*/
         }
 break;
 case 6:
-//#line 92 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+//#line 91 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
 { notifyError("El programa no posee ninguna sentencia."); }
 break;
 case 7:
-//#line 94 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+//#line 93 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
 { notifyError("El programa no posee ningún cuerpo."); }
 break;
 case 8:
-//#line 96 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+//#line 95 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
 { notifyError("Sentencia inválida en el lenguaje."); }
 break;
 case 11:
-//#line 108 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+//#line 107 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
 { notifyError("Sentencia inválida en el lenguaje."); }
 break;
 case 28:
-//#line 156 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+//#line 155 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
 { notifyError("La sentencia debe finalizar con punto y coma. Se reanudará después del próximo ';'."); }
 break;
-case 32:
-//#line 170 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+case 31:
+//#line 169 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
 { notifyError("Error de sintaxis en la lista de variables. La declaración se ha descartado hasta el ';'."); }
 break;
-case 33:
-//#line 172 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+case 32:
+//#line 171 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
 { notifyError("Error de sintaxis al final de la lista de variables. La declaración se ha descartado hasta el ';'."); }
 break;
-case 35:
-//#line 180 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+case 34:
+//#line 179 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
 { yyval.sval = val_peek(0).sval; }
 break;
-case 36:
-//#line 191 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+case 35:
+//#line 190 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
 {
             notifyError(String.format(
                 "Se encontraron dos variables juntas sin una coma de separación. Sugerencia: Inserte una ',' entre '%s' y '%s'.",
                 val_peek(1).sval, val_peek(0).sval));
         }
 break;
-case 37:
-//#line 210 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+case 36:
+//#line 209 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
 { notifyDetection("Asignación múltiple."); }
 break;
-case 39:
-//#line 218 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+case 38:
+//#line 217 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
 { yyval.sval = val_peek(0).sval; }
 break;
-case 40:
-//#line 223 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+case 39:
+//#line 222 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
 {
             notifyError(String.format(
                 "Se encontraron dos constantes juntas sin una coma de separación. Sugerencia: Inserte una ',' entre '%s' y '%s'.",
                 val_peek(1).sval, val_peek(0).sval));
         }
 break;
-case 41:
-//#line 237 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+case 40:
+//#line 235 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
 { notifyDetection("Expresión lambda."); }
 break;
-case 43:
+case 42:
 //#line 249 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
 { notifyError("La expresión lambda requiere de un parámetro."); }
 break;
-case 47:
+case 46:
 //#line 269 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
 { notifyError("El cuerpo de la sentencia no puede estar vacío."); }
 break;
-case 58:
-//#line 297 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+case 56:
+//#line 296 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
 { notifyDetection("Asignación simple."); }
 break;
-case 59:
-//#line 302 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+case 57:
+//#line 301 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
 { notifyError("Error en asignación. Se esperaba un ':='."); }
 break;
-case 63:
-//#line 323 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+case 61:
+//#line 322 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
 { notifyError("Falta apertura de paréntesis en condición."); }
 break;
-case 64:
-//#line 325 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+case 62:
+//#line 324 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
 { notifyError("La condición no puede estar vacía."); }
 break;
-case 65:
-//#line 327 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
-{ notifyError("Falta de paréntesis en condición"); }
+case 63:
+//#line 326 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+{ notifyError("La condición debe ir entre paréntesis."); }
 break;
-case 66:
-//#line 329 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+case 64:
+//#line 328 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
 { notifyError("Falta cierre de paréntesis en condición"); }
 break;
-case 68:
-//#line 340 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+case 66:
+//#line 339 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
 { notifyError("Falta de comparador en comparación."); }
 break;
-case 75:
-//#line 356 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+case 73:
+//#line 355 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
 { notifyError( "Se esperaba un comparador y se encontró el operador de asignación '='. ¿Quiso colocar '=='?" );}
 break;
-case 76:
-//#line 366 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+case 74:
+//#line 365 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
 { notifyDetection("Sentencia IF."); }
 break;
-case 77:
-//#line 371 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
-{ notifyError("Sentencia IF inválida en el lenguaje. Falta cierre de paréntesis en condición."); }
+case 75:
+//#line 375 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+{ notifyError("La sentencia IF debe terminar ';'."); }
 break;
-case 78:
-//#line 376 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+case 76:
+//#line 377 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
 { notifyError("La sentencia IF debe finalizarse con 'endif'."); }
 break;
-case 79:
-//#line 378 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+case 77:
+//#line 379 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
 { notifyError("Sentencia IF inválida en el lenguaje."); }
 break;
-case 83:
-//#line 398 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+case 80:
+//#line 395 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+{ notifyDetection("Sentencia DO-WHILE."); }
+break;
+case 81:
+//#line 400 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+{ notifyError("La sentencia DO-WHILE debe terminar con ';'."); }
+break;
+case 82:
+//#line 402 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
 { notifyError("Sentencia DO-WHILE inválida."); }
 break;
 case 84:
-//#line 406 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
-{ notifyDetection("Sentencia DO-WHILE."); }
-break;
-case 85:
-//#line 411 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+//#line 414 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
 { notifyError("Debe especificarse un cuerpo para la sentencia do-while."); }
 break;
-case 86:
-//#line 413 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+case 85:
+//#line 416 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
 { notifyError("Falta 'while'."); }
 break;
 case 87:
-//#line 418 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
-{ notifyError("Falta cierre de paréntesis en condición."); }
+//#line 437 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+{ notifyDetection("Sentencia PRINT."); }
 break;
 case 88:
-//#line 420 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
-{ notifyError("Ha habido un error en el cierre del cuerpo ejecutable."); }
+//#line 442 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+{ notifyError("La sentencia 'print' debe finalizar con ';'."); }
 break;
-case 91:
-//#line 437 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+case 89:
+//#line 444 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
 { notifyError("La sentencia 'print' requiere de al menos un argumento."); }
 break;
-case 92:
-//#line 444 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
-{ notifyDetection("Impresión de cadena."); }
-break;
-case 93:
+case 90:
 //#line 446 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
-{ notifyDetection("Impresión de expresión."); }
+{ notifyError("La sentencia 'print' requiere de al menos un argumento y debe terminar con ';'."); }
 break;
-case 96:
-//#line 460 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+case 95:
+//#line 467 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
 { 
             notifyError("Falta de operando en expresión."); 
             /* $$ no se asigna o se le da un valor por defecto*/
         }
 break;
-case 97:
-//#line 465 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+case 96:
+//#line 472 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
 {
             notifyError(String.format(
                 "Falta de operador entre operandos %s y %s.",
@@ -1167,85 +1151,93 @@ case 97:
             );
         }
 break;
-case 101:
-//#line 487 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+case 100:
+//#line 492 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
 { yyval.sval = val_peek(0).sval; }
 break;
-case 102:
-//#line 489 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+case 101:
+//#line 494 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
 { notifyError("Falta de operando en expresión."); }
+break;
+case 103:
+//#line 502 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+{ yyval.sval = val_peek(0).sval; }
 break;
 case 104:
-//#line 497 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
-{ yyval.sval = val_peek(0).sval; }
-break;
-case 105:
-//#line 499 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+//#line 504 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
 { notifyError("Falta de operando en expresión."); }
 break;
-case 115:
-//#line 532 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+case 114:
+//#line 537 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
 { yyval.sval = "-" + val_peek(0).sval; }
 break;
-case 117:
-//#line 540 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+case 116:
+//#line 545 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
 { yyval.sval = val_peek(2).sval + "." + val_peek(0).sval; }
 break;
-case 118:
-//#line 549 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+case 117:
+//#line 554 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
 { notifyDetection("Declaración de función."); }
 break;
-case 119:
-//#line 554 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+case 118:
+//#line 559 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
 { notifyError("Falta de nombre en la función."); }
 break;
-case 121:
-//#line 565 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+case 120:
+//#line 570 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
 { notifyError("El cuerpo de la función no puede estar vacío."); }
 break;
-case 124:
-//#line 582 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+case 122:
+//#line 579 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+{ notifyError("La sentencia 'return' debe terminar con ';'."); }
+break;
+case 123:
+//#line 581 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+{ notifyError("El retorno no puede estar vacío."); }
+break;
+case 125:
+//#line 592 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
 { notifyError("Toda función debe recibir al menos un parámetro."); }
 break;
-case 127:
-//#line 594 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+case 128:
+//#line 604 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
 { notifyError("Se halló un parámetro formal vacío."); }
 break;
-case 131:
-//#line 609 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+case 132:
+//#line 619 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
 { notifyError("Falta de nombre de parámetro formal en declaración de función."); }
 break;
-case 132:
-//#line 611 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+case 133:
+//#line 621 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
 { notifyError("Falta de tipo de parámetro formal en declaración de funcion."); }
 break;
-case 135:
-//#line 620 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+case 136:
+//#line 630 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
 {
             notifyError("Semántica de pasaje de parámetro inválida. Se asumirá pasaje de parámetro por defecto.");
             descartarTokenError();
         }
 break;
-case 136:
-//#line 632 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+case 137:
+//#line 642 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
 {
             notifyDetection("Invocación de función."); 
             yyval.sval = val_peek(3).sval + '(' + val_peek(1).sval + ')';
         }
 break;
-case 138:
-//#line 643 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+case 139:
+//#line 653 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
 { yyval.sval = val_peek(0).sval; }
 break;
-case 139:
-//#line 650 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+case 140:
+//#line 660 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
 { yyval.sval = val_peek(2).sval + val_peek(1).sval + val_peek(0).sval; }
 break;
-case 140:
-//#line 655 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+case 141:
+//#line 665 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
 { notifyError("Falta de especificación del parámetro formal al que corresponde el parámetro real."); }
 break;
-//#line 1172 "Parser.java"
+//#line 1164 "Parser.java"
 //########## END OF USER-SUPPLIED ACTIONS ##########
     }//switch
     //#### Now let's reduce... ####

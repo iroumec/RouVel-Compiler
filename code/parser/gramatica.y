@@ -9,7 +9,6 @@
 %{
     package parser;
 
-    // Importaciones.
     import lexer.Lexer;
     import common.Token;
     import utilities.Printer;
@@ -65,12 +64,12 @@
 // ============================================================================================================================================================
 
 programa
-    : ID cuerpo_programa EOF
+    : ID cuerpo_programa
         { notifyDetection("Programa."); }
     // =============== //
     // REGLAS DE ERROR //
     // =============== //
-    | ID conjunto_sentencias EOF
+    | ID conjunto_sentencias
         { notifyError("Las sentencias del programa deben estar delimitadas por llaves."); }
     | cuerpo_programa
         { notifyError("El programa requiere de un nombre."); }
@@ -153,7 +152,7 @@ punto_y_coma_opcional
     ;
 
 punto_y_coma_obligatorio
-    : error { notifyError("La sentencia debe finalizar con punto y coma. Se reanudará después del próximo ';'."); } ';'
+    : error { notifyError("La sentencia debe finalizar con punto y coma. Se reanudará después del próximo ';'."); } // ';'
     | ';'
     ;
 
@@ -324,7 +323,7 @@ condicion
     | '(' ')'
         { notifyError("La condición no puede estar vacía."); }
     | cuerpo_condicion error
-        { notifyError("Falta de paréntesis en condición"); }
+        { notifyError("La condición debe ir entre paréntesis."); }
     | '(' cuerpo_condicion error
         { notifyError("Falta cierre de paréntesis en condición"); }
     ; 
@@ -362,19 +361,21 @@ comparador
 
 // @InterceptaError: "Falta cierre de paréntesis en condición."
 if
-    : IF condicion cuerpo_ejecutable rama_else ENDIF punto_y_coma_obligatorio
+    : IF condicion cuerpo_ejecutable rama_else ENDIF ';'
         { notifyDetection("Sentencia IF."); }
-    // ======================= //
+    /*// ======================= //
     // INTERCEPCIÓN DE ERRORES //
     // ======================= //
     | IF error cuerpo_ejecutable rama_else ENDIF punto_y_coma_obligatorio
-        { notifyError("Sentencia IF inválida en el lenguaje. Falta cierre de paréntesis en condición."); }
+        { notifyError("Sentencia IF inválida en el lenguaje. Falta cierre de paréntesis en condición."); }*/
     // =============== //
     // REGLAS DE ERROR //
     // =============== //
-    | IF condicion cuerpo_ejecutable rama_else punto_y_coma_obligatorio
+    | IF condicion cuerpo_ejecutable rama_else ENDIF error
+        { notifyError("La sentencia IF debe terminar ';'."); }
+    | IF condicion cuerpo_ejecutable rama_else ';'
         { notifyError("La sentencia IF debe finalizarse con 'endif'."); }
-    | IF error punto_y_coma_obligatorio
+    | IF error
         { notifyError("Sentencia IF inválida en el lenguaje."); }
     ;
 
@@ -391,10 +392,13 @@ rama_else
 
 do_while                        
     : DO cuerpo_do ';'
+        { notifyDetection("Sentencia DO-WHILE."); }  
     // ======================= //
     // INTERCEPCIÓN DE ERRORES //
     // ======================= //
-    | DO error ';'
+    | DO cuerpo_do error
+        { notifyError("La sentencia DO-WHILE debe terminar con ';'."); }
+    | DO error
         { notifyError("Sentencia DO-WHILE inválida."); }
     ;
 
@@ -403,7 +407,6 @@ do_while
 // @TrasladaError: "Falta cierre de paréntesis en condición."
 cuerpo_do                       
     : cuerpo_ejecutable fin_cuerpo_do
-        { notifyDetection("Sentencia DO-WHILE."); }  
     // =============== //
     // REGLAS DE ERROR //
     // =============== //
@@ -414,10 +417,11 @@ cuerpo_do
     // ======================= //
     // INTERCEPCIÓN DE ERRORES //
     // ======================= //
+    /*
     | cuerpo_ejecutable WHILE error
         { notifyError("Falta cierre de paréntesis en condición."); }
     | error fin_cuerpo_do
-        { notifyError("Ha habido un error en el cierre del cuerpo ejecutable."); }
+        { notifyError("Ha habido un error en el cierre del cuerpo ejecutable."); }*/
     ;
 
 fin_cuerpo_do
@@ -429,21 +433,24 @@ fin_cuerpo_do
 // ************************************************************************************************************************************************************
 
 impresion
-    : PRINT '(' imprimible ')' punto_y_coma_obligatorio
+    : PRINT '(' imprimible ')' ';'
+        { notifyDetection("Sentencia PRINT."); }
     // =============== //
     // REGLAS DE ERROR //
     // =============== //
-    | PRINT '(' ')' punto_y_coma_obligatorio
+    | PRINT '(' imprimible ')' error
+        { notifyError("La sentencia 'print' debe finalizar con ';'."); }
+    | PRINT '(' ')' ';'
         { notifyError("La sentencia 'print' requiere de al menos un argumento."); }
+    | PRINT '(' ')' error
+        { notifyError("La sentencia 'print' requiere de al menos un argumento y debe terminar con ';'."); }
     ;
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 imprimible
     : STR
-        { notifyDetection("Impresión de cadena."); }
     | expresion
-        { notifyDetection("Impresión de expresión."); }
     ;
 
 // ************************************************************************************************************************************************************
@@ -468,8 +475,6 @@ expresion
                 $1, $2)
             );
         }
-
-    // Error: Falta de primer operando ( + 7)
     ;
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -545,23 +550,23 @@ variable
 // ************************************************************************************************************************************************************
 
 declaracion_funcion
-    : UINT ID '(' conjunto_parametros ')' '{' cuerpo_funcion '}'
+    : UINT ID '(' conjunto_parametros ')' cuerpo_funcion
         { notifyDetection("Declaración de función."); }
     // =============== //
     // REGLAS DE ERROR //
     // =============== //
-    | UINT '(' conjunto_parametros ')' '{' cuerpo_funcion '}'
+    | UINT '(' conjunto_parametros ')' cuerpo_funcion
         { notifyError("Falta de nombre en la función."); }
     ;
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 cuerpo_funcion
-    : conjunto_sentencias
+    : '{' conjunto_sentencias '}'
     // =============== //
     // REGLAS DE ERROR //
     // =============== //
-    | // lambda //
+    | '{' '}'
         { notifyError("El cuerpo de la función no puede estar vacío."); }
     ;
 
@@ -569,6 +574,11 @@ cuerpo_funcion
 
 sentencia_retorno
     : RETURN '(' expresion ')' ';'
+    // ===== REGLAS DE ERROR ===== //
+    | RETURN '(' expresion ')' error
+        { notifyError("La sentencia 'return' debe terminar con ';'."); }
+    | RETURN '(' ')' ';'
+        { notifyError("El retorno no puede estar vacío."); }
     ;
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
