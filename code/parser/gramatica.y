@@ -129,7 +129,6 @@ token_inicio_sentencia
 
 // --------------------------------------------------------------------------------------------------------------------
 
-// @LevantaError: "Sentencia inválida en el lenguaje."
 sentencia
     : sentencia_ejecutable 
     | sentencia_declarativa
@@ -165,7 +164,7 @@ declaracion_variable
     
     // |========================= REGLAS DE ERROR =========================| //
 
-    | UINT error ';'
+    | UINT error
         {
             notifyError("Declaración de variables inválida.");
         }
@@ -192,33 +191,25 @@ lista_variables
         }
     ;
 
-asignacion_multiple
-    : asignacion_valida ';'
-    ;
+// --------------------------------------------------------------------------------------------------------------------
 
-asignacion_valida
-    : variable ',' asignacion_valida ',' constante
-    | variable '=' lista_constantes
-    ;
-
-lista_constantes
-    : constante
-    | lista_constantes ',' constante
+//Estas asignaciones pueden tener un menor número de elementos del lado izquierdo (tema 17).
+asignacion_multiple 
+    : inicio_par_variable_constante ';'
+    | inicio_par_variable_constante ',' lista_constantes ';'
     ;
 
 // --------------------------------------------------------------------------------------------------------------------
 
-/*
-Estas asignaciones pueden tener un menor número de elementos del lado izquierdo (tema 17).
+inicio_par_variable_constante
+    : variable par_variable_constante constante 
+    ;
 
-No es posible chequear utilizando únicamente las reglas que el lado derecho pueda tener más elementos
-que el izquierdo. Se requería un autómata de Turing. Por eso, se utilizan acciones semánticas.
+// --------------------------------------------------------------------------------------------------------------------
 
-Los elementos del lado derecho sólo pueden ser constantes.
-*//*
-asignacion_multiple
-    : lista_variables '=' lista_constantes ';'
-        { notifyDetection("Asignación múltiple."); }
+par_variable_constante
+    : ',' variable par_variable_constante constante ','
+    | '='
     ;
 
 // --------------------------------------------------------------------------------------------------------------------
@@ -236,7 +227,7 @@ lista_constantes
                 "Se encontraron dos constantes juntas sin una coma de separación. Sugerencia: Inserte una ',' entre '%s' y '%s'.",
                 $1, $2));
         }
-    ;*/
+    ;
 
 // ********************************************************************************************************************
 // Expresiones Lambda
@@ -245,9 +236,6 @@ lista_constantes
 lambda
     : '(' parametro_lambda ')' bloque_ejecutable '(' factor ')' punto_y_coma_obligatorio
         { notifyDetection("Expresión lambda."); }
-    // =============== //
-    // REGLAS DE ERROR //
-    // =============== //
     ;
 
 // --------------------------------------------------------------------------------------------------------------------
