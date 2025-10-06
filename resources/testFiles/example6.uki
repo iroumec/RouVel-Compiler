@@ -1,5 +1,3 @@
 PROGRAMA {
-    if (A = C) {
-
-    }
+    I := 5UI
 }
