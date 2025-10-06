@@ -38,7 +38,7 @@
 // ************************************************************************************************************************************************************
 
 // No terminales que guardan un String.
-%type <sval> expresion, termino, factor
+%type <sval> expresion, termino, factor, termino_simple, factor_simple
             lista_variables, lista_constantes, variable, constante,
             invocacion_funcion, lista_argumentos, argumento
 
@@ -60,6 +60,8 @@
 
 // Se define la asociatividad y el nivel de precedencia de los operadores.
 // El orden es de MENOR a MAYOR precedencia.
+
+%right DUMMY
 
 %left '+' '-'
 %left '*' '/'
@@ -469,26 +471,20 @@ imprimible
 expresion
     : expresion operador_suma termino
     | termino
-
     // =============== //
     // REGLAS DE ERROR //
     // =============== //
-
-    // Error: Falta de operando al final (ej. "5 +")
     | expresion operador_suma error
         { 
             notifyError("Falta de operando en expresión."); 
             // $$ no se asigna o se le da un valor por defecto
         }
-
-    // Error: Falta de operador entre operandos (ej. "5 4")
-    | expresion termino
+    | expresion termino_simple
         {
             notifyError(String.format(
                 "Falta de operador entre operandos %s y %s.",
                 $1, $2)
             );
-           //  $$ = $2; // Se podría optar por continuar con el último término
         }
     ;
 
@@ -511,6 +507,16 @@ termino
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+termino_simple
+    : termino_simple operador_multiplicacion factor
+    | factor_simple
+        { $$ = $1; }
+    /*| termino operador_multiplicacion error
+        { notifyError("Falta de operando en expresión."); }*/
+    ;
+
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 operador_multiplicacion
     : '/'
     | '*'
@@ -520,13 +526,24 @@ operador_multiplicacion
 
 factor
     : variable
-        { $$ = $1; }
-    | CTE
-        { $$ = $1; }
-    | '-' CTE %prec UMINUS
-        { $$ = '-' + $2; }
+    | constante
     | invocacion_funcion
-        { $$ = $1; }
+    ;
+
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+factor_simple
+    : variable
+    | CTE
+    | invocacion_funcion
+    ;
+
+// ------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+constante
+    : CTE
+    | '-' CTE
+        { $$ = "-" + $2; }
     ;
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
