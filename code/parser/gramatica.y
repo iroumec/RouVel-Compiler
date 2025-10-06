@@ -713,7 +713,7 @@ public Parser(Lexer lexer) {
     this.readAgain = false;
     
     // Descomentar la siguiente línea para activar el debugging.
-    //yydebug = true;
+    yydebug = true;
 }
 
 // --------------------------------------------------------------------------------------------------------------------
