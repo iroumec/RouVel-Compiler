@@ -7,6 +7,10 @@
     ## Falta de “;” al final de las sentencias ##
 
     ## Falta de nombre en función ##
+
+    ##FUNCION##(uint A) {
+        print(A);
+    }
     
     ## Falta de “,” en declaración de variables ##
 
