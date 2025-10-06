@@ -115,8 +115,8 @@ cuerpo_programa
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
                 
 conjunto_sentencias
-    : sentencia
-    | conjunto_sentencias sentencia
+    : sentencia 
+    | conjunto_sentencias sentencia 
     // =============== //
     // REGLAS DE ERROR //
     // =============== //
@@ -148,7 +148,7 @@ token_inicio_sentencia
 
 // @LevantaError: "Sentencia inválida en el lenguaje."
 sentencia
-    : sentencia_ejecutable
+    : sentencia_ejecutable 
     | sentencia_declarativa
     ;
 
@@ -157,7 +157,7 @@ sentencia
 // ************************************************************************************************************************************************************
 
 sentencia_declarativa
-    : declaracion_variable
+    : declaracion_variable ';'
         { notifyDetection("Declaración de variable."); }
     | declaracion_funcion punto_y_coma_opcional
     ;
@@ -237,6 +237,12 @@ lista_constantes
                 "Se encontraron dos constantes juntas sin una coma de separación. Sugerencia: Inserte una ',' entre '%s' y '%s'.",
                 $1, $2));
         }
+    ;
+
+constante 
+    : CTE 
+    | '-' CTE %prec UMINUS
+        { $$ = '-' + $2; }
     ;
 
 // ************************************************************************************************************************************************************
@@ -450,7 +456,10 @@ fin_cuerpo_do
 // ************************************************************************************************************************************************************
 
 impresion
-    : PRINT '(' imprimible ')'    
+    : PRINT '(' imprimible ')'
+    // =============== //
+    // REGLAS DE ERROR //
+    // =============== //    
     | PRINT '(' ')'
         { notifyError("La sentencia 'print' requiere de al menos un argumento."); }
     ;
@@ -486,6 +495,8 @@ expresion
                 $1, $2)
             );
         }
+
+    // Error: Falta de primer operando ( + 7)
     ;
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -561,6 +572,9 @@ variable
 declaracion_funcion
     : UINT ID '(' conjunto_parametros ')' '{' cuerpo_funcion '}'
         { notifyDetection("Declaración de función."); }
+    // =============== //
+    // REGLAS DE ERROR //
+    // =============== //
     | UINT '(' conjunto_parametros ')' '{' cuerpo_funcion '}'
         { notifyError("Falta de nombre en la función."); }
     ;
