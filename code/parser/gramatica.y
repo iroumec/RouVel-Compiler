@@ -2,7 +2,10 @@
 // INICIO DE DECLARACIONES
 // ============================================================================================================================================================
 
-// Lo siguiente se coloca previo a la signatura de la clase.
+// ************************************************************************************************************************************************************
+// Package e Importaciones
+// ************************************************************************************************************************************************************
+
 %{
     package parser;
 
@@ -11,6 +14,10 @@
     import common.Token;
     import utilities.Printer;
 %}
+
+// ************************************************************************************************************************************************************
+// Declaraciones de Tipos de Valores
+// ************************************************************************************************************************************************************
 
 /*
     Declaración de los tipos de valores. Se le informa a Yacc que tendrá que
@@ -25,6 +32,10 @@
 %union {
     String sval;
 }
+
+// ************************************************************************************************************************************************************
+// Declaración de Tokens y de sus Tipos
+// ************************************************************************************************************************************************************
 
 // No terminales que guardan un String.
 %type <sval> expresion, termino, factor
@@ -47,10 +58,9 @@
 // Declaraciones de Precedencia (Menor a Mayor)
 // ************************************************************************************************************************************************************
 
-%left MISSING_OPERATOR
 %left '+' '-'
 %left '*' '/'
-%right UMINUS
+%nonassoc CONSTANTE_NEGATIVA
 
 // ============================================================================================================================================================
 // FIN DE DECLARACIONES
@@ -64,10 +74,11 @@
 
 programa
     : ID cuerpo_programa EOF
-    // ==============================
-    // REGLAS DE ERROR
-    // ==============================
-    | ID conjunto_sentencias
+        { notifyDetection("Programa."); }
+    // =============== //
+    // REGLAS DE ERROR //
+    // =============== //
+    | ID conjunto_sentencias EOF
         { notifyError("Las sentencias del programa deben estar delimitadas por llaves."); }
     | cuerpo_programa
         { notifyError("El programa requiere de un nombre."); }
@@ -82,14 +93,15 @@ programa
 
 cuerpo_programa
     : '{' conjunto_sentencias '}'
-    // -----------------
-    // REGLAS DE ERROR
-    // -----------------
+    // =============== //
+    // REGLAS DE ERROR //
+    // =============== //
     | '{' '}'
-    { notifyError("El programa no posee ninguna sentencia."); }
+        { notifyError("El programa no posee ninguna sentencia."); }
     | // lambda //
+        { notifyError("El programa no posee ningún cuerpo."); }
     | '{' error '}'
-    { notifyError("Sentencia inválida en el lenguaje."); }
+        { notifyError("Sentencia inválida en el lenguaje."); }
     ;
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -97,11 +109,11 @@ cuerpo_programa
 conjunto_sentencias
     : sentencia
     | conjunto_sentencias sentencia
-    // ==============================
-    // REGLAS DE ERROR
-    // ==============================
+    // =============== //
+    // REGLAS DE ERROR //
+    // =============== //
     | conjunto_sentencias error punto_sincronizacion_sentencia
-    { notifyError("Sentencia inválida en el lenguaje."); }
+        { notifyError("Sentencia inválida en el lenguaje."); }
     ;
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -155,6 +167,9 @@ punto_y_coma_opcional
 
 declaracion_variable
     : UINT lista_variables ';'
+    // =============== //
+    // REGLAS DE ERROR //
+    // =============== //
     | UINT error ';'
         { notifyError("Error de sintaxis en la lista de variables. La declaración se ha descartado hasta el ';'."); }
     | UINT lista_variables error ';'
@@ -173,9 +188,9 @@ lista_variables
     // Esto es útil para mostrar errores correctamente. Si no se pone, en una sentencia como:
     // uint A, B C
     // Diría que la coma falta entre A y C.
-    // ==============================
-    // PATRONES DE ERROR ESPECÍFICOS
-    // ==============================
+    // ============================= //
+    // PATRONES DE ERROR ESPECÍFICOS //
+    // ============================= //
     | lista_variables ID
         {
             notifyError(String.format(
@@ -205,9 +220,9 @@ lista_constantes
     : constante
     | lista_constantes ',' constante
         { $$ = $3; }
-    // ==============================
-    // PATRONES DE ERROR ESPECÍFICOS
-    // ==============================
+    // ============================= //
+    // PATRONES DE ERROR ESPECÍFICOS //
+    // ============================= //
     | lista_constantes constante
         {
             notifyError(String.format(
@@ -231,9 +246,9 @@ lambda
 // Separado por legibilidad y para contemplar los casos de error.
 parametro_lambda
     : UINT ID
-    // ==============================
-    // REGLAS DE ERROR
-    // ==============================
+    // =============== //
+    // REGLAS DE ERROR //
+    // =============== //
     | // épsilon
         { notifyError("La expresión lambda requiere de un parámetro."); }
     ;
@@ -251,9 +266,9 @@ cuerpo_ejecutable
 
 bloque_ejecutable
     : '{' conjunto_sentencias_ejecutables '}'
-    // ==============================
-    // REGLAS DE ERROR
-    // ==============================
+    // =============== //
+    // REGLAS DE ERROR //
+    // =============== //
     | '{' '}'
         { notifyError("El cuerpo de la sentencia no puede estar vacío."); }
     ;
@@ -291,9 +306,9 @@ operacion_ejecutable
 asignacion_simple
     : variable DASIG expresion                                          
         { notifyDetection("Asignación simple."); }
-    // ==============================
-    // PATRONES DE ERROR ESPECÍFICOS
-    // ==============================
+    // ============================= //
+    // PATRONES DE ERROR ESPECÍFICOS //
+    // ============================= //
     | variable error expresion
         { notifyError("Error en asignación. Se esperaba un ':='."); }
     ;
@@ -318,23 +333,24 @@ sentencia_control
 // @LevantaError: "Falta cierre de paréntesis en condición."
 condicion
     : '(' cuerpo_condicion ')'
+    // =============== //
+    // REGLAS DE ERROR //
+    // =============== //
     | cuerpo_condicion ')'
-    { notifyError("Falta apertura de paréntesis en condición."); }
+        { notifyError("Falta apertura de paréntesis en condición."); }
     | '(' ')'
-    { notifyError("La condición no puede estar vacía."); }
+        { notifyError("La condición no puede estar vacía."); }
     ;
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 cuerpo_condicion                
     : expresion comparador expresion
-    // ==============================
-    // REGLAS DE ERROR
-    // ==============================
-    //| // lambda //
-    //{ notifyError("La condición no puede estar vacía."); }
+    // =============== //
+    // REGLAS DE ERROR //
+    // =============== //
     | expresion
-    { notifyError("Falta de comparador en comparación."); }
+        { notifyError("Falta de comparador en comparación."); }
     ;
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -346,9 +362,9 @@ comparador
     | LEQ
     | GEQ
     | NEQ
-    // ==============================
-    // PATRONES DE ERROR ESPECÍFICOS
-    // ==============================
+    // ============================= //
+    // PATRONES DE ERROR ESPECÍFICOS //
+    // ============================= //
     | '='
     {
         notifyError(
@@ -364,21 +380,19 @@ comparador
 // @InterceptaError: "Falta cierre de paréntesis en condición."
 if
     : IF condicion cuerpo_ejecutable rama_else ENDIF
-    { notifyDetection("Sentencia IF."); }
-    | IF condicion cuerpo_ejecutable rama_else
-    { notifyError("La sentencia IF debe finalizarse con 'endif'."); }
-    // ==============================
-    // INTERCEPCIÓN DE ERRORES
-    // ==============================
+        { notifyDetection("Sentencia IF."); }
+    // ======================= //
+    // INTERCEPCIÓN DE ERRORES //
+    // ======================= //
     | IF error cuerpo_ejecutable rama_else ENDIF
-    { notifyError("Sentencia IF inválida en el lenguaje. Falta cierre de paréntesis en condición."); }
-    // ==============================
-    // REGLAS DE ERROR
-    // ==============================
+        { notifyError("Sentencia IF inválida en el lenguaje. Falta cierre de paréntesis en condición."); }
+    // =============== //
+    // REGLAS DE ERROR //
+    // =============== //
+    | IF condicion cuerpo_ejecutable rama_else
+        { notifyError("La sentencia IF debe finalizarse con 'endif'."); }
     | IF error
-    {
-        notifyError("Sentencia IF inválida en el lenguaje."); 
-    }
+        { notifyError("Sentencia IF inválida en el lenguaje."); }
     ;
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -394,11 +408,11 @@ rama_else
 
 do_while                        
     : DO cuerpo_do
-    // ==============================
-    // INTERCEPCIÓN DE ERRORES
-    // ==============================
+    // ======================= //
+    // INTERCEPCIÓN DE ERRORES //
+    // ======================= //
     | DO error
-    { notifyError("Sentencia DO-WHILE inválida."); }
+        { notifyError("Sentencia DO-WHILE inválida."); }
     ;
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -406,21 +420,21 @@ do_while
 // @TrasladaError: "Falta cierre de paréntesis en condición."
 cuerpo_do                       
     : cuerpo_ejecutable fin_cuerpo_do
-    { notifyDetection("Sentencia DO-WHILE."); }  
-    // ==============================
-    // REGLAS DE ERROR
-    // ==============================
+        { notifyDetection("Sentencia DO-WHILE."); }  
+    // =============== //
+    // REGLAS DE ERROR //
+    // =============== //
     | fin_cuerpo_do
-    { notifyError("Debe especificarse un cuerpo para la sentencia do-while."); }
+        { notifyError("Debe especificarse un cuerpo para la sentencia do-while."); }
     | cuerpo_ejecutable condicion
-    { notifyError("Falta 'while'."); }
-    // ==============================
-    // INTERCEPCIÓN DE ERRORES
-    // ==============================
+        { notifyError("Falta 'while'."); }
+    // ======================= //
+    // INTERCEPCIÓN DE ERRORES //
+    // ======================= //
     | cuerpo_ejecutable WHILE error
-    { notifyError("Falta cierre de paréntesis en condición."); }
+        { notifyError("Falta cierre de paréntesis en condición."); }
     | error fin_cuerpo_do
-    { notifyError("Ha habido un error en el cierre del cuerpo ejecutable."); }
+        { notifyError("Ha habido un error en el cierre del cuerpo ejecutable."); }
     ;
 
 fin_cuerpo_do
@@ -454,9 +468,9 @@ expresion
     : expresion operador_suma termino
     | termino
 
-    // ==============================
-    // REGLAS DE ERROR
-    // ==============================
+    // =============== //
+    // REGLAS DE ERROR //
+    // =============== //
 
     // Error: Falta de operando al final (ej. "5 +")
     | expresion operador_suma error
@@ -466,7 +480,7 @@ expresion
         }
 
     // Error: Falta de operador entre operandos (ej. "5 4")
-    | expresion termino %prec MISSING_OPERATOR
+    | expresion termino
         {
             notifyError(String.format(
                 "Falta de operador entre operandos %s y %s.",
@@ -515,11 +529,10 @@ factor
 
 constante
     : CTE
-        { $$ = $1; }
-    | '-' CTE %prec UMINUS
+        { $$ = $1; } 
+    | '-' CTE %prec CONSTANTE_NEGATIVA
         { $$ = '-' + $2; }
     ;
-
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -535,20 +548,20 @@ variable
 
 declaracion_funcion
     : UINT ID '(' conjunto_parametros ')' '{' cuerpo_funcion '}'
-    { notifyDetection("Declaración de función."); }
+        { notifyDetection("Declaración de función."); }
     | UINT '(' conjunto_parametros ')' '{' cuerpo_funcion '}'
-    { notifyError("Falta de nombre en la función."); }
+        { notifyError("Falta de nombre en la función."); }
     ;
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 cuerpo_funcion
     : conjunto_sentencias
-    // ==============================
-    // REGLAS DE ERROR
-    // ==============================
+    // =============== //
+    // REGLAS DE ERROR //
+    // =============== //
     | // lambda //
-    { notifyError("El cuerpo de la función no puede estar vacío."); }
+        { notifyError("El cuerpo de la función no puede estar vacío."); }
     ;
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -561,9 +574,9 @@ sentencia_retorno
 
 conjunto_parametros
     : lista_parametros
-    // ==============================
-    // REGLAS DE ERROR
-    // ==============================
+    // =============== //
+    // REGLAS DE ERROR //
+    // =============== //
     | // lambda //
         { notifyError("Toda función debe recibir al menos un parámetro."); }
     ;
@@ -638,9 +651,7 @@ argumento
     // REGLAS DE ERROR //
     // --------------- //
     | expresion
-    {
-        notifyError("Falta de especificación del parámetro formal al que corresponde el parámetro real.");
-    }
+        { notifyError("Falta de especificación del parámetro formal al que corresponde el parámetro real."); }
     ;
 
 // ============================================================================================================================================================
@@ -669,7 +680,7 @@ public Parser(Lexer lexer) {
     this.readAgain = false;
     
     // Descomentar la siguiente línea para activar el debugging.
-    // yydebug = true;
+    yydebug = true;
 }
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------

@@ -1,3 +1,4 @@
 PROGRAMA {
-    ahihi
+    uint A;
+    A := 1UI
 }
