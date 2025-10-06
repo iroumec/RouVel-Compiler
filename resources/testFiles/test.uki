@@ -1,0 +1,11 @@
+PROGRAMA {
+
+    ## Debería mostrar una detección ##
+    if (X > 3UI) print("Hola"); endif;
+
+    ## No debería mostrar una detección ## 
+    if (X > 4UI) print("Chau"); endif
+
+    ## Ya que no solucionamos el error del '}' aún ##
+    uint A:= 2UI;
+}

@@ -1,0 +1,84 @@
+## >>> ERRORES MÍNIMOS A DETECTAR <<< ##
+
+## Falta de nombre de programa ##
+## Falta de delimitador de programa ##
+## ERRORS { ##
+
+    ## Falta de “;” al final de las sentencias ##
+
+    ## Falta de nombre en función ##
+    
+    ## Falta de “,” en declaración de variables ##
+
+    uint A, B C;
+
+    ## Falta de nombre de parámetro formal en declaración de función ##
+
+    FUNC1 (uint ) {
+        return 1UI;
+    }
+
+    ## Falta de tipo de parámetro formal en declaración de función ##
+
+    ## Falta de especificación del parámetro formal al que corresponde el parámetro real ##
+
+    FUNC1(3UI->PARAMETER1, 6UI);
+
+    FUNC2(9UI->);
+    
+    ## Falta argumento en sentencia print ##
+
+    print();
+    
+    ## Falta de paréntesis de apertura y/o cierre en condición de selecciones e iteraciones ##
+
+    if (A < B {
+        print("A es menor a B");
+    } endif;
+    
+    ## Falta de cuerpo en iteraciones. ##
+
+    do while (X < Y);
+
+    ## Falta de endif ##
+
+    if (Y =! X) {
+        print("Números distintos.");
+    }
+
+    if (Y == X) {
+        print("Números distintos.");
+    };
+    
+    ## Falta de contenido en bloque then/else ##
+
+    if (X > Y) print(0UI); ELSE;
+
+    if (X > Y) print(0UI); ELSE
+
+    ## Falta de operando en expresión ##
+
+    print(4 + );
+    print(3 + 2 * );
+    print(7 - 7 / );
+    print(8 * 2 * 1 / 2 -);
+
+    ## Falta de operador en expresión ##
+
+    ## Falta de comparador en comparación ##
+
+    IF (X UI) print("Caso de error"); endif;
+
+    IF (U + 3 B - 7) print("Caso de error"); endif;
+
+    ## !Este no nos toca, pero lo tenemos? Temas 10/11: Falta de “,” en lista de variables. ## Bueno. Pero aclaramos que nos toca y que lo contemplamos igual
+    Si nom podemos separar en otro archivo los errores que contemplamos y que no se pedían. minimalErros.uki y errors.uki.
+    
+    ## Falta while ##
+
+    ## Falta de “,” en lista de elementos del lado izquierdo o del lado derecho ##
+
+    ## Falta de le después de cv o cr / Falta de cr o cv antes de le. ##
+    ## Falta de delimitadores { y/o } de la función Lambda. ##
+
+## } ##

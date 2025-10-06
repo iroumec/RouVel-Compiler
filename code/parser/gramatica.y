@@ -54,22 +54,6 @@
 // Token de fin de archivo.
 %token EOF 0
 
-// ************************************************************************************************************************************************************
-// Declaración de Precedencias (Menor a Mayor)
-// ************************************************************************************************************************************************************
-
-// Se define la asociatividad y el nivel de precedencia de los operadores.
-// El orden es de MENOR a MAYOR precedencia.
-
-%right DUMMY
-
-%left '+' '-'
-%left '*' '/'
-
-// "UMINUS" es un alias para la regla del menos unario.
-// Al declararse al final, tiene la precedencia MÁS ALTA.
-%right UMINUS
-
 // ============================================================================================================================================================
 // FIN DE DECLARACIONES
 // ============================================================================================================================================================
@@ -157,8 +141,7 @@ sentencia
 // ************************************************************************************************************************************************************
 
 sentencia_declarativa
-    : declaracion_variable ';'
-        { notifyDetection("Declaración de variable."); }
+    : declaracion_variable
     | declaracion_funcion punto_y_coma_opcional
     ;
 
@@ -166,6 +149,11 @@ sentencia_declarativa
 
 punto_y_coma_opcional
     : // épsilon
+    | ';'
+    ;
+
+punto_y_coma_obligatorio
+    : error { notifyError("La sentencia debe finalizar con punto y coma. Se reanudará después del próximo ';'."); } ';'
     | ';'
     ;
 
@@ -218,7 +206,7 @@ que el izquierdo. Se requería un autómata de Turing. Por eso, se utilizan acci
 Los elementos del lado derecho sólo pueden ser constantes.
 */
 asignacion_multiple
-    : lista_variables '=' lista_constantes
+    : lista_variables '=' lista_constantes ';'
         { notifyDetection("Asignación múltiple."); }
     ;
 
@@ -239,25 +227,20 @@ lista_constantes
         }
     ;
 
-constante 
-    : CTE 
-    | '-' CTE %prec UMINUS
-        { $$ = '-' + $2; }
-    ;
-
 // ************************************************************************************************************************************************************
 // Expresiones Lambda
 // ************************************************************************************************************************************************************
 
-// El factor representa al argumento.
 lambda
-    : '(' parametro_lambda ')' bloque_ejecutable '(' factor ')'
+    : '(' parametro_lambda ')' bloque_ejecutable '(' factor ')' punto_y_coma_obligatorio
         { notifyDetection("Expresión lambda."); }
+    // =============== //
+    // REGLAS DE ERROR //
+    // =============== //
     ;
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-// Separado por legibilidad y para contemplar los casos de error.
 parametro_lambda
     : UINT ID
     // =============== //
@@ -297,15 +280,7 @@ conjunto_sentencias_ejecutables
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-// @LevantaError: "Toda sentencia ejecutable debe terminar con punto y coma."
 sentencia_ejecutable
-    : operacion_ejecutable ';'
-    //| operacion_ejecutable '}' // Captura sentencias al final del cuerpo del programa.
-    ;
-
-// ------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-operacion_ejecutable
     : invocacion_funcion
     | asignacion_simple
     | asignacion_multiple
@@ -318,12 +293,12 @@ operacion_ejecutable
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 asignacion_simple
-    : variable DASIG expresion                                          
+    : variable DASIG expresion ';'                              
         { notifyDetection("Asignación simple."); }
     // ============================= //
     // PATRONES DE ERROR ESPECÍFICOS //
     // ============================= //
-    | variable error expresion
+    | variable error expresion ';'
         { notifyError("Error en asignación. Se esperaba un ':='."); }
     ;
 
@@ -338,12 +313,6 @@ sentencia_control
 // Condición
 // ************************************************************************************************************************************************************
 
-/*
-    En caso de no recibir un paréntesis de cierre, el fin de la condición será inválida, por lo que se levantará
-    un error que deberán interceptar las sentencias que usen el no terminal.
-
-    Especificar una regla "'(' cuerpo_condicion", produce shift/reduce.
-*/
 // @LevantaError: "Falta cierre de paréntesis en condición."
 condicion
     : '(' cuerpo_condicion ')'
@@ -354,8 +323,12 @@ condicion
         { notifyError("Falta apertura de paréntesis en condición."); }
     | '(' ')'
         { notifyError("La condición no puede estar vacía."); }
-    ;
-
+    | cuerpo_condicion error
+        { notifyError("Falta de paréntesis en condición"); }
+    | '(' cuerpo_condicion error
+        { notifyError("Falta cierre de paréntesis en condición"); }
+    ; 
+    
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 cuerpo_condicion                
@@ -363,7 +336,7 @@ cuerpo_condicion
     // =============== //
     // REGLAS DE ERROR //
     // =============== //
-    | expresion
+    | expresion 
         { notifyError("Falta de comparador en comparación."); }
     ;
 
@@ -380,7 +353,7 @@ comparador
     // PATRONES DE ERROR ESPECÍFICOS //
     // ============================= //
     | '='
-    { notifyError( "Se esperaba un comparador y se encontró el operador de asignación '='. ¿Quiso colocar '=='?" );}
+        { notifyError( "Se esperaba un comparador y se encontró el operador de asignación '='. ¿Quiso colocar '=='?" );}
     ;
 
 // ************************************************************************************************************************************************************
@@ -389,19 +362,19 @@ comparador
 
 // @InterceptaError: "Falta cierre de paréntesis en condición."
 if
-    : IF condicion cuerpo_ejecutable rama_else ENDIF
+    : IF condicion cuerpo_ejecutable rama_else ENDIF punto_y_coma_obligatorio
         { notifyDetection("Sentencia IF."); }
     // ======================= //
     // INTERCEPCIÓN DE ERRORES //
     // ======================= //
-    | IF error cuerpo_ejecutable rama_else ENDIF
+    | IF error cuerpo_ejecutable rama_else ENDIF punto_y_coma_obligatorio
         { notifyError("Sentencia IF inválida en el lenguaje. Falta cierre de paréntesis en condición."); }
     // =============== //
     // REGLAS DE ERROR //
     // =============== //
-    | IF condicion cuerpo_ejecutable rama_else
+    | IF condicion cuerpo_ejecutable rama_else punto_y_coma_obligatorio
         { notifyError("La sentencia IF debe finalizarse con 'endif'."); }
-    | IF error
+    | IF error punto_y_coma_obligatorio
         { notifyError("Sentencia IF inválida en el lenguaje."); }
     ;
 
@@ -417,11 +390,11 @@ rama_else
 // ************************************************************************************************************************************************************
 
 do_while                        
-    : DO cuerpo_do
+    : DO cuerpo_do ';'
     // ======================= //
     // INTERCEPCIÓN DE ERRORES //
     // ======================= //
-    | DO error
+    | DO error ';'
         { notifyError("Sentencia DO-WHILE inválida."); }
     ;
 
@@ -456,11 +429,11 @@ fin_cuerpo_do
 // ************************************************************************************************************************************************************
 
 impresion
-    : PRINT '(' imprimible ')'
+    : PRINT '(' imprimible ')' punto_y_coma_obligatorio
     // =============== //
     // REGLAS DE ERROR //
-    // =============== //    
-    | PRINT '(' ')'
+    // =============== //
+    | PRINT '(' ')' punto_y_coma_obligatorio
         { notifyError("La sentencia 'print' requiere de al menos un argumento."); }
     ;
 
@@ -512,8 +485,8 @@ termino
     : termino operador_multiplicacion factor
     | factor
         { $$ = $1; }
-    /*| termino operador_multiplicacion error
-        { notifyError("Falta de operando en expresión."); }*/
+    | termino operador_multiplicacion error
+        { notifyError("Falta de operando en expresión."); }
     ;
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -522,8 +495,8 @@ termino_simple
     : termino_simple operador_multiplicacion factor
     | factor_simple
         { $$ = $1; }
-    /*| termino operador_multiplicacion error
-        { notifyError("Falta de operando en expresión."); }*/
+    | termino_simple operador_multiplicacion error
+        { notifyError("Falta de operando en expresión."); }
     ;
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -535,6 +508,7 @@ operador_multiplicacion
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+// Factor que contempla la posibilidad de constantes negativas.
 factor
     : variable
     | constante
@@ -543,6 +517,7 @@ factor
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+// Factor que no contempla la posibilidad de constantes negativas.
 factor_simple
     : variable
     | CTE
@@ -593,7 +568,7 @@ cuerpo_funcion
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 sentencia_retorno
-    : RETURN '(' expresion ')'
+    : RETURN '(' expresion ')' ';'
     ;
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -706,7 +681,7 @@ public Parser(Lexer lexer) {
     this.readAgain = false;
     
     // Descomentar la siguiente línea para activar el debugging.
-    yydebug = true;
+    //yydebug = true;
 }
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -779,9 +754,21 @@ public void descartarTokensHasta(int tokenEsperado) {
  *
  * @param s El mensaje de error por defecto (generalmente "syntax error").
  */
+ // Se ejecuta cada vez que encuentra un token error.
 public void yyerror(String s) {
+    /*
+    // 'yylval' contiene el valor del token que el parser no pudo procesar.
+    String errorMessage;
+    if (yylval != null) {
+        errorMessage = String.format(
+            "Error de sintaxis: token inesperado '%s'.",
+            yylval.sval
+        );
+    } else {
+        errorMessage = "Error de sintaxis: se encontró un token inesperado.";
+    }
 
-    Printer.print("Ocurre un error para el cual la gramática no estaba preparada.");
+    Printer.printBetweenSeparations(errorMessage);*/
 }
 
 // ------------------------------------------------------------------------------------------------------------------------------------------------------------

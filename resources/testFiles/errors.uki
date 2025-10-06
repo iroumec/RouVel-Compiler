@@ -1,0 +1,52 @@
+## >>> ERRORES MÍNIMOS A DETECTAR <<< ##
+
+## Falta de nombre de programa ##
+## Falta de delimitador de programa ##
+## ERRORS { ##
+
+    ## --------------- Falta de “;” al final de las sentencias --------------- ##
+
+    ## --------------- Falta de nombre en función --------------- ##
+
+    ##FUNCION##(uint A) {
+        print(A);
+    }
+    
+    ## --------------- Falta de “,” en declaración de variables --------------- ##
+
+    uint A, B C;
+
+    ## --------------- Falta de nombre de parámetro formal en declaración de función --------------- ##
+
+    FUNC1 (uint ) {
+        return 1UI;
+    }
+
+    ## --------------- Falta de tipo de parámetro formal en declaración de función --------------- ##
+
+    ## --------------- Falta de especificación del parámetro formal al que corresponde el parámetro real --------------- ##
+    
+    ## --------------- Falta argumento en sentencia print --------------- ##
+    
+    ## --------------- Falta de paréntesis de apertura y/o cierre en condición de selecciones e iteraciones --------------- ##
+    
+    ## --------------- Falta de cuerpo en iteraciones. --------------- ##
+
+    DO
+ Falta de endif.
+ Falta de contenido en bloque then/else.
+ Falta de operando en expresión.
+ Falta de operador en expresión.
+ Falta de comparador en comparación.
+
+    ## !Este no nos toca, pero lo tenemos? Temas 10/11: Falta de “,” en lista de variables. ## Bueno. Pero aclaramos que nos toca y que lo contemplamos igual
+    Si nom podemos separar en otro archivo los errores que contemplamos y que no se pedían. minimalErros.uki y errors.uki.
+    
+    ## Falta while ##
+
+    ## Falta de “,” en lista de elementos del lado izquierdo o del lado derecho ##
+
+    ## Falta de le después de cv o cr / Falta de cr o cv antes de le. ##
+    ## Falta de delimitadores { y/o } de la función Lambda. ##
+
+## } ##
