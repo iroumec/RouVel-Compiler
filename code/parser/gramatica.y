@@ -154,7 +154,7 @@ sentencia
 // ********************************************************************************************************************
 
 sentencia_declarativa
-    : declaracion_variable
+    : declaracion_variables
     | declaracion_funcion punto_y_coma_opcional
     ;
 
@@ -219,9 +219,12 @@ sentencia_control
 // Declaración de Variables
 // ********************************************************************************************************************
 
-declaracion_variable
+declaracion_variables
     : UINT lista_variables ';'
-    { notifyDetection("Declaración de variables."); }
+        { notifyDetection("Declaración de variables."); }
+    
+    | UINT ID ';'
+        { notifyDetection("Declaración de variables."); }
     
     // |========================= REGLAS DE ERROR =========================| //
 

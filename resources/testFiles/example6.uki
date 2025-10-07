@@ -1,4 +1,4 @@
 {
-    I := 1UI + 4UI 3UI / 21UI;
+    uint A;
     print ("Hola");
 }
