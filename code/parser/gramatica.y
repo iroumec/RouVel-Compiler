@@ -193,14 +193,14 @@ lista_variables
             notifyError(String.format(
                 "Se encontraron dos variables juntas sin separación. Inserte una ',' entre '%s' y '%s'.",
                 $1, $2));
-            { $$ = $3; }
+            { $$ = $2; }
         }
     | ID ID
         {
             notifyError(String.format(
                 "Se encontraron dos variables juntas sin separación. Inserte una ',' entre '%s' y '%s'.",
                 $1, $2));
-            { $$ = $3; }
+            { $$ = $2; }
         }
     ;
 
@@ -325,7 +325,11 @@ asignacion_simple
 
     | variable DASIG expresion error
         { notifyError("Las asignaciones simples deben terminar con ';'."); }
+        
     | variable error expresion ';'
+        { notifyError("Error en asignación simple. Se esperaba un ':=' entre la variable y la expresión."); }
+
+    | variable expresion ';'
         { notifyError("Error en asignación simple. Se esperaba un ':=' entre la variable y la expresión."); }
     ;
 
@@ -492,8 +496,8 @@ imprimible
 // ********************************************************************************************************************
 
 expresion
-    : expresion operador_suma termino
-    | termino
+    : termino
+    | expresion operador_suma termino
     // =============== //
     // REGLAS DE ERROR //
     // =============== //
@@ -522,7 +526,6 @@ operador_suma
 termino                         
     : termino operador_multiplicacion factor
     | factor
-        { $$ = $1; }
     | termino operador_multiplicacion error
         { notifyError("Falta de operando en expresión."); }
     ;
@@ -532,7 +535,6 @@ termino
 termino_simple
     : termino_simple operador_multiplicacion factor
     | factor_simple
-        { $$ = $1; }
     | termino_simple operador_multiplicacion error
         { notifyError("Falta de operando en expresión."); }
     ;

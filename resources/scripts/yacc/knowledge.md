@@ -68,3 +68,21 @@ $1, $2));
 LOS PEGO ASÍ NOMÁS AHORA. DESPUÉS LOS DETALLO.
 
 ---
+
+asignacion_simple
+: variable DASIG expresion ';'  
+ { notifyDetection("Asignación simple."); }
+
+    // |========================= REGLAS DE ERROR =========================| //
+
+    | variable DASIG expresion error
+        { notifyError("Las asignaciones simples deben terminar con ';'."); }
+
+    | variable error expresion ';'
+        { notifyError("Error en asignación simple. Se esperaba un ':=' entre la variable y la expresión."); }
+
+    | variable expresion ';'
+        { notifyError("Error en asignación simple. Se esperaba un ':=' entre la variable y la expresión."); }
+    ;
+
+El problema está en que, al estar en termino y realizar un lookahead, ve print, por lo que entrá en modo error e intenta reducir. Pero en la pila tiene variable DASIG termino. Aún no redujo a expresión. Por lo que tenemos que obligarlo a que lo haga.

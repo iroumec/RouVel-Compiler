@@ -1,5 +1,4 @@
 PROGRAMA {
-    ##I := 5UI + 4UI##
-    uint A B
-    print("Gdsds")
+    I := 1UI
+    print("Hola");
 }
