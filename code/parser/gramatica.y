@@ -642,6 +642,8 @@ sentencia_retorno
         { notifyError("El retorno no puede estar vacío."); }
     | RETURN expresion ';'
         { notifyError("El resultado a retornar debe ir entre paréntesis."); }
+    | RETURN error
+        { notifyError("Sentencia 'return' inválida."); }
     ;
 
 // --------------------------------------------------------------------------------------------------------------------
