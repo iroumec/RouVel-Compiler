@@ -257,14 +257,14 @@ lista_variables
 
     | lista_variables ID
         {
-            notifyError(String.format(
+            notifyWarning(String.format(
                 "Se encontraron dos variables juntas sin separación. Inserte una ',' entre '%s' y '%s'.",
                 $1, $2));
             { $$ = $2; }
         }
     | ID ID
         {
-            notifyError(String.format(
+            notifyWarning(String.format(
                 "Se encontraron dos variables juntas sin separación. Inserte una ',' entre '%s' y '%s'.",
                 $1, $2));
             { $$ = $2; }
@@ -835,13 +835,10 @@ private final Lexer lexer;
 private int errorsDetected;
 private int warningsDetected;
 
-private boolean readAgain;
-
 public Parser(Lexer lexer) {
     
     this.lexer = lexer;
     this.errorsDetected = this.warningsDetected = 0;
-    this.readAgain = false;
     
     // Descomentar la siguiente línea para activar el debugging.
     yydebug = true;
@@ -864,48 +861,11 @@ int yylex() {
         throw new IllegalStateException("No hay un analizador léxico asignado.");
     }
 
-    Token token = this.getAppropiateToken();
+    Token token = lexer.getNextToken();
 
     this.yylval = new ParserVal(token.getLexema());
 
     return token.getIdentificationCode();
-}
-
-// --------------------------------------------------------------------------------------------------------------------
-
-Token getAppropiateToken() {
-
-    Token token;
-    // Se lee nuevamente el último token.
-    // Útil para recuperar el token de sincronización en reglas de error.
-    if (this.readAgain) {
-        token = lexer.getCurrentToken();
-        this.readAgain = false;
-    } else {
-        token = lexer.getNextToken();
-    }
-
-    return token;
-}
-
-// --------------------------------------------------------------------------------------------------------------------
-
-public void descartarTokensHasta(int tokenEsperado) {
-
-    int t = yylex();
-    
-    // Se pide un token mientras no se halle el token esperado
-    // o el final de archivo.
-    while (t != tokenEsperado && t != EOF) {
-        t = yylex();
-    }
-
-    if (t == EOF) {
-        Printer.printBetweenSeparations("SE LLEGÓ AL FINAL DEL ARCHIVO SIN ENCONTRAR UN TOKEN DE SINCRONIZACION.");
-    }
-
-    // Se actualizá que se halló el token deseado o se llegó al final del archivo.
-    yychar = t;
 }
 
 // --------------------------------------------------------------------------------------------------------------------
@@ -919,53 +879,8 @@ public void descartarTokensHasta(int tokenEsperado) {
  */
  // Se ejecuta cada vez que encuentra un token error.
 public void yyerror(String s) {
-    /*
-    // 'yylval' contiene el valor del token que el parser no pudo procesar.
-    String errorMessage;
-    if (yylval != null) {
-        errorMessage = String.format(
-            "Error de sintaxis: token inesperado '%s'.",
-            yylval.sval
-        );
-    } else {
-        errorMessage = "Error de sintaxis: se encontró un token inesperado.";
-    }
 
-    Printer.printBetweenSeparations(errorMessage);*/
-}
-
-// --------------------------------------------------------------------------------------------------------------------
-
-void readLastTokenAgain() {
-    Printer.print("READ AGAIN");
-    this.readAgain = true;
-}
-
-// --------------------------------------------------------------------------------------------------------------------
-
-void forzarUsoDeNuevoToken() {
-    yylex(); // leer un token y avanzar
-    yychar = -1; // forzar que el parser use el nuevo token
-}
-
-// --------------------------------------------------------------------------------------------------------------------
-
-// El token error no consume automáticamente el token incorrecto.
-// Este debe descartarse explícitamente.
-void descartarTokenError() {
-    // Se fuerza a que en la próxima iteración se llame a yylex(), leyendo otro token.
-    yychar = -1;
-
-    // Se limpia el estado de error.
-    yyerrflag = 0;
-
-    Printer.print("Token de error descartado.");
-}
-
-// --------------------------------------------------------------------------------------------------------------------
-
-void apagarEstadoDeError() {
-    yyerrflag = 0;
+    // Silenciado.
 }
 
 // --------------------------------------------------------------------------------------------------------------------
@@ -995,16 +910,6 @@ void notifyError(String errorMessage) {
         lexer.getNroLinea(), lexer.getNroCaracter(), errorMessage
     ));
     this.errorsDetected++;
-}
-
-// --------------------------------------------------------------------------------------------------------------------
-
-String applySynchronizationFormat(String invalidWord, String synchronizationWord) {
-    return """
-        Se detectó una palabra inválida: '%s'. \
-        Se descartaron todas las palabras inválidas subsiguientes \
-        hasta el punto de sincronización: '%s'. \
-        """.formatted(invalidWord, synchronizationWord);
 }
 
 // --------------------------------------------------------------------------------------------------------------------
