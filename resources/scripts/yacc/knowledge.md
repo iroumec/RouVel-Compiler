@@ -153,3 +153,5 @@ Principio de la regla: normal y erróneo. En otro lugar: normal y admisible.
 ---
 
 Si la posibilidad de error es vacío, como en el nombre de la función, no puede separarse en admisible y normal.
+
+---

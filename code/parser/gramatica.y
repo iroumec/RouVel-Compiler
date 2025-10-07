@@ -37,7 +37,7 @@
 // ********************************************************************************************************************
 
 // No terminales que guardan un String.
-%type <sval> expresion, termino, factor, termino_simple, factor_simple, expresion_flexible, termino_flexible,
+%type <sval> expresion, termino, factor, termino_simple, factor_simple,
             operador_suma, operador_multiplicacion,
             lista_variables, lista_constantes, variable, constante,
             invocacion_funcion, lista_argumentos, argumento
@@ -70,14 +70,26 @@ programa
 
     // |========================= REGLAS DE ERROR =========================| //
 
+    | ID cuerpo_programa_recuperacion
+
     | ID conjunto_sentencias
         { notifyError("Las sentencias del programa deben estar delimitadas por llaves."); }
-    | cuerpo_programa_flexible
-        { notifyError("El programa requiere de un nombre."); }
+
+    // El error se muestra al comienzo y no, al final.
+    | { notifyError("El programa requiere de un nombre."); } programa_sin_nombre
+
     | error ID
         { notifyError("Inicio de programa inválido. Este debe seguir la estructura: <NOMBRE%PROGRAMA> { ... }."); }
+        
     | error EOF
         { notifyError("Se llegó al fin del programa sin encontrar un programa válido."); }
+    ;
+
+// --------------------------------------------------------------------------------------------------------------------
+
+programa_sin_nombre
+    : cuerpo_programa
+    | cuerpo_programa_recuperacion
     ;
 
 // --------------------------------------------------------------------------------------------------------------------
@@ -88,13 +100,13 @@ cuerpo_programa
 
 // --------------------------------------------------------------------------------------------------------------------
 
-cuerpo_programa_flexible
-    : cuerpo_programa
-
-    // |========================= REGLAS DE ERROR =========================| //
-
-    | '{' lista_llaves
+// Marca la distinción entre un programa válido y uno inválido.
+cuerpo_programa_recuperacion
+    : '{' conjunto_sentencias lista_llaves_cierre
         { notifyError("Se encontraron múltiples llaves al final del programa"); }
+
+    | lista_llaves_apertura // El error se presenta al detectar la lista de llaves de paertura y no, al finalizar el programa.
+        { notifyError("Se encontraron múltiples llaves al comienzo del programa"); } conjunto_sentencias '}'
 
     | '{' '}'
         { notifyError("El programa no posee ninguna sentencia."); }
@@ -106,9 +118,16 @@ cuerpo_programa_flexible
 
 // --------------------------------------------------------------------------------------------------------------------
 
-lista_llaves
+lista_llaves_apertura
+    : '{' '{'
+    | lista_llaves_apertura '{'
+    ;
+
+// --------------------------------------------------------------------------------------------------------------------
+
+lista_llaves_cierre
     : '}' '}'
-    | lista_llaves '}'
+    | lista_llaves_cierre '}'
     ;
 
 // --------------------------------------------------------------------------------------------------------------------
@@ -119,29 +138,8 @@ conjunto_sentencias
 
     // |========================= REGLAS DE ERROR =========================| //
 
-    | error punto_sincronizacion_sentencia
+    | error '}'
         { notifyError("Error capturado a nivel de sentencia."); }
-    ;
-
-// --------------------------------------------------------------------------------------------------------------------
-
-punto_sincronizacion_sentencia
-    : ';'
-    | '}'
-    | token_inicio_sentencia
-    | EOF
-    ;
-
-// --------------------------------------------------------------------------------------------------------------------
-
-token_inicio_sentencia
-    : ID
-    | IF
-    | UINT
-    | PRINT
-    | DO
-    | RETURN
-    | WHILE
     ;
 
 // --------------------------------------------------------------------------------------------------------------------
@@ -280,18 +278,30 @@ asignacion_simple
 
     // |========================= REGLAS DE ERROR =========================| //
 
-    | variable DASIG expresion_o_termino error
+    | variable DASIG expresion_o_termino
         { notifyError("Las asignaciones simples deben terminar con ';'."); }
         
-    | variable error expresion_flexible ';'
+    | variable error expresion ';'
         { notifyError("Error en asignación simple. Se esperaba un ':=' entre la variable y la expresión."); }
 
-    | variable expresion_flexible ';'
+    | variable expresion ';'
         { notifyError("Error en asignación simple. Se esperaba un ':=' entre la variable y la expresión."); }
+    | variable DASIG error error
     ;
 
+// --------------------------------------------------------------------------------------------------------------------
+
+// Parche. Por alguna razón, si la regla es "variable DASIG expresion error", nunca la detecta ya que NO REDUCE
+// a expresion.
+// Hace que funcione bien (detecte correctamente el ';' faltante y la siguiente sentencia), siempre y cuando no
+// falten operandos u operadores.
+// Por otro lado, si solo se pone la regla "expresion error", anda bien si falta un operador. Si falta un operando,
+// detecta la falta de punto y coma, pero no muestra el mensaje de error. Para otros casos, no funciona bien.
 expresion_o_termino
-    : expresion_flexible
+    : factor error
+    | expresion operador_suma termino error
+    | termino operador_multiplicacion factor error
+    //| expresion error
     ;
 
 // ********************************************************************************************************************
@@ -350,29 +360,24 @@ lista_constantes
 expresion
     : termino
     | expresion operador_suma termino
-    ;
-
-// --------------------------------------------------------------------------------------------------------------------
-
-expresion_flexible
-    : termino_flexible
-    | expresion_flexible operador_suma termino_flexible
+        { $$ = $3; }
 
     // |========================= REGLAS DE ERROR =========================| //
 
-    | expresion_flexible operador_suma error
+    | expresion operador_suma error
         {
             notifyError(String.format(
                 "Falta de operando en expresión luego de %s %s.",
                 $1, $2)
             );
         }
-    | expresion_flexible termino_simple
+    | expresion termino_simple
         {
             notifyError(String.format(
                 "Falta de operador entre operandos %s y %s.",
                 $1, $2)
             );
+            $$ = $2;
         }
     ;
 
@@ -389,18 +394,12 @@ operador_suma
 
 termino                         
     : termino operador_multiplicacion factor
-    | factor
-    ;
-
-// --------------------------------------------------------------------------------------------------------------------
-
-termino_flexible
-    : termino_flexible operador_multiplicacion error
+        { $$ = $1; }
     | factor
 
     // |========================= REGLAS DE ERROR =========================| //
 
-    | termino_flexible operador_multiplicacion error
+    | termino operador_multiplicacion error
         {
             notifyError(String.format(
                 "Falta de operando en expresión luego de %s %s.",
@@ -409,12 +408,15 @@ termino_flexible
         }
     ;
 
-
 // --------------------------------------------------------------------------------------------------------------------
 
 termino_simple
-    : termino_simple operador_multiplicacion factor
+    : termino_simple operador_multiplicacion factor_simple
+        { $$ = $1; }
     | factor_simple
+
+    // |========================= REGLAS DE ERROR =========================| //
+
     | termino_simple operador_multiplicacion error
         {
             notifyError(String.format(

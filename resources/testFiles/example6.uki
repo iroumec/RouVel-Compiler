@@ -1,4 +1,4 @@
-PROGRAMA {
-    I := 1UI + 4UI * if + 10UI;
+{
+    I := 1UI + 4UI 3UI / 21UI;
     print ("Hola");
 }
