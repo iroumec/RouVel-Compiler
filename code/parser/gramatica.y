@@ -37,7 +37,8 @@
 // ********************************************************************************************************************
 
 // No terminales que guardan un String.
-%type <sval> expresion, termino, factor, termino_simple, factor_simple
+%type <sval> expresion, termino, factor, termino_simple, factor_simple, expresion_flexible, termino_flexible,
+            operador_suma, operador_multiplicacion,
             lista_variables, lista_constantes, variable, constante,
             invocacion_funcion, lista_argumentos, argumento
 
@@ -71,7 +72,7 @@ programa
 
     | ID conjunto_sentencias
         { notifyError("Las sentencias del programa deben estar delimitadas por llaves."); }
-    | cuerpo_programa
+    | cuerpo_programa_flexible
         { notifyError("El programa requiere de un nombre."); }
     | error ID
         { notifyError("Inicio de programa inválido. Este debe seguir la estructura: <NOMBRE%PROGRAMA> { ... }."); }
@@ -83,15 +84,31 @@ programa
 
 cuerpo_programa
     : '{' conjunto_sentencias '}'
+    ;
+
+// --------------------------------------------------------------------------------------------------------------------
+
+cuerpo_programa_flexible
+    : cuerpo_programa
 
     // |========================= REGLAS DE ERROR =========================| //
+
+    | '{' lista_llaves
+        { notifyError("Se encontraron múltiples llaves al final del programa"); }
 
     | '{' '}'
         { notifyError("El programa no posee ninguna sentencia."); }
     | // lambda //
         { notifyError("El programa no posee ningún cuerpo."); }
     | '{' error '}'
-        { notifyError("Sentencia inválida en el lenguaje."); }
+        { notifyError("Las sentencias del programa no tuvieron un cierre adecuado. ¿Algún ';' o '}' faltantes?"); }
+    ;
+
+// --------------------------------------------------------------------------------------------------------------------
+
+lista_llaves
+    : '}' '}'
+    | lista_llaves '}'
     ;
 
 // --------------------------------------------------------------------------------------------------------------------
@@ -263,19 +280,18 @@ asignacion_simple
 
     // |========================= REGLAS DE ERROR =========================| //
 
-    | variable DASIG expresion_o_termino
+    | variable DASIG expresion_o_termino error
         { notifyError("Las asignaciones simples deben terminar con ';'."); }
         
-    | variable error expresion ';'
+    | variable error expresion_flexible ';'
         { notifyError("Error en asignación simple. Se esperaba un ':=' entre la variable y la expresión."); }
 
-    | variable expresion ';'
+    | variable expresion_flexible ';'
         { notifyError("Error en asignación simple. Se esperaba un ':=' entre la variable y la expresión."); }
     ;
 
 expresion_o_termino
-    : termino error
-    | expresion operador_suma termino error
+    : expresion_flexible
     ;
 
 // ********************************************************************************************************************
@@ -334,14 +350,24 @@ lista_constantes
 expresion
     : termino
     | expresion operador_suma termino
+    ;
+
+// --------------------------------------------------------------------------------------------------------------------
+
+expresion_flexible
+    : termino_flexible
+    | expresion_flexible operador_suma termino_flexible
 
     // |========================= REGLAS DE ERROR =========================| //
 
-    | expresion operador_suma error
-        { 
-            notifyError("Falta de operando en expresión."); 
+    | expresion_flexible operador_suma error
+        {
+            notifyError(String.format(
+                "Falta de operando en expresión luego de %s %s.",
+                $1, $2)
+            );
         }
-    | expresion termino_simple
+    | expresion_flexible termino_simple
         {
             notifyError(String.format(
                 "Falta de operador entre operandos %s y %s.",
@@ -354,7 +380,9 @@ expresion
 
 operador_suma                   
     : '+'
+        { $$ = "+"; }
     | '-'
+        { $$ = "-"; }
     ;
 
 // --------------------------------------------------------------------------------------------------------------------
@@ -362,9 +390,25 @@ operador_suma
 termino                         
     : termino operador_multiplicacion factor
     | factor
-    | termino operador_multiplicacion error
-        { notifyError("Falta de operando en expresión."); }
     ;
+
+// --------------------------------------------------------------------------------------------------------------------
+
+termino_flexible
+    : termino_flexible operador_multiplicacion error
+    | factor
+
+    // |========================= REGLAS DE ERROR =========================| //
+
+    | termino_flexible operador_multiplicacion error
+        {
+            notifyError(String.format(
+                "Falta de operando en expresión luego de %s %s.",
+                $1, $2)
+            );
+        }
+    ;
+
 
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -372,14 +416,21 @@ termino_simple
     : termino_simple operador_multiplicacion factor
     | factor_simple
     | termino_simple operador_multiplicacion error
-        { notifyError("Falta de operando en expresión."); }
+        {
+            notifyError(String.format(
+                "Falta de operando en expresión luego de %s %s.",
+                $1, $2)
+            );
+        }
     ;
 
 // --------------------------------------------------------------------------------------------------------------------
 
 operador_multiplicacion
     : '/'
+        { $$ = "/"; }
     | '*'
+        { $$ = "*"; }
     ;
 
 // --------------------------------------------------------------------------------------------------------------------
