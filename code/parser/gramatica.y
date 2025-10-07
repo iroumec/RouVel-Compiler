@@ -66,27 +66,26 @@
 programa
     : ID cuerpo_programa
         { notifyDetection("Programa."); }
-    // =============== //
-    // REGLAS DE ERROR //
-    // =============== //
+
+    // |========================= REGLAS DE ERROR =========================| //
+
     | ID conjunto_sentencias
         { notifyError("Las sentencias del programa deben estar delimitadas por llaves."); }
     | cuerpo_programa
         { notifyError("El programa requiere de un nombre."); }
-    | error
-        {
-            notifyError("Inicio de programa inválido. Este debe seguir la estructura: <NOMBRE%PROGRAMA> { ... }.");
-            descartarTokensHasta(ID); // Se descartan todos los tokens hasta ID.
-        }
+    | error ID
+        { notifyError("Inicio de programa inválido. Este debe seguir la estructura: <NOMBRE%PROGRAMA> { ... }."); }
+    | error EOF
+        { notifyError("Se llegó al fin del programa sin encontrar un programa válido."); }
     ;
 
 // --------------------------------------------------------------------------------------------------------------------
 
 cuerpo_programa
     : '{' conjunto_sentencias '}'
-    // =============== //
-    // REGLAS DE ERROR //
-    // =============== //
+
+    // |========================= REGLAS DE ERROR =========================| //
+
     | '{' '}'
         { notifyError("El programa no posee ninguna sentencia."); }
     | // lambda //
@@ -100,9 +99,9 @@ cuerpo_programa
 conjunto_sentencias
     : sentencia 
     | conjunto_sentencias sentencia 
-    // =============== //
-    // REGLAS DE ERROR //
-    // =============== //
+
+    // |========================= REGLAS DE ERROR =========================| //
+
     | error punto_sincronizacion_sentencia
         { notifyError("Error capturado a nivel de sentencia."); }
     ;
@@ -152,7 +151,57 @@ punto_y_coma_opcional
     ;
 
 // ********************************************************************************************************************
-// Variables
+// Sentencias ejecutables
+// ********************************************************************************************************************
+
+cuerpo_ejecutable
+    : sentencia_ejecutable
+    | bloque_ejecutable
+    ;
+
+// --------------------------------------------------------------------------------------------------------------------
+
+bloque_ejecutable
+    : '{' conjunto_sentencias_ejecutables '}'
+
+    // |========================= REGLAS DE ERROR =========================| //
+
+    | '{' '}'
+        { notifyError("El cuerpo de la sentencia no puede estar vacío."); }
+    ;
+
+// --------------------------------------------------------------------------------------------------------------------
+
+conjunto_sentencias_ejecutables
+    : sentencia_ejecutable
+    | conjunto_sentencias_ejecutables sentencia_ejecutable
+    | error sentencia_ejecutable
+        { notifyError("Error capturado en sentencia ejecutable"); }
+    ;
+
+// --------------------------------------------------------------------------------------------------------------------
+
+sentencia_ejecutable
+    : invocacion_funcion ';' // Contexto en el que es invocada en línea.
+    | invocacion_funcion error
+        { notifyError("La invocación a función debe terminar con ';'."); }
+    | asignacion_simple
+    | asignacion_multiple
+    | sentencia_control
+    | sentencia_retorno
+    | impresion
+    | lambda
+    ;
+
+// --------------------------------------------------------------------------------------------------------------------
+
+sentencia_control
+    : if                                                                
+    | do_while                                                
+    ;
+
+// ********************************************************************************************************************
+// Declaración de Variables
 // ********************************************************************************************************************
 
 declaracion_variable
@@ -185,9 +234,9 @@ lista_variables
     : ID ',' ID
     | lista_variables ',' ID
         { $$ = $3; }
-    // ============================= //
-    // PATRONES DE ERROR ESPECÍFICOS //
-    // ============================= //
+
+    // |========================= REGLAS DE ERROR =========================| //
+
     | lista_variables ID
         {
             notifyError(String.format(
@@ -204,7 +253,34 @@ lista_variables
         }
     ;
 
-// --------------------------------------------------------------------------------------------------------------------
+// ********************************************************************************************************************
+// Asignación Simple
+// ********************************************************************************************************************
+
+asignacion_simple
+    : variable DASIG expresion ';'                              
+        { notifyDetection("Asignación simple."); }
+
+    // |========================= REGLAS DE ERROR =========================| //
+
+    | variable DASIG expresion_o_termino
+        { notifyError("Las asignaciones simples deben terminar con ';'."); }
+        
+    | variable error expresion ';'
+        { notifyError("Error en asignación simple. Se esperaba un ':=' entre la variable y la expresión."); }
+
+    | variable expresion ';'
+        { notifyError("Error en asignación simple. Se esperaba un ':=' entre la variable y la expresión."); }
+    ;
+
+expresion_o_termino
+    : termino error
+    | expresion operador_suma termino error
+    ;
+
+// ********************************************************************************************************************
+// Asignación Múltiple
+// ********************************************************************************************************************
 
 //Estas asignaciones pueden tener un menor número de elementos del lado izquierdo (tema 17).
 asignacion_multiple 
@@ -212,6 +288,8 @@ asignacion_multiple
         { notifyDetection("Asignación múltiple."); }
     | inicio_par_variable_constante ',' lista_constantes ';'
         { notifyDetection("Asignación múltiple."); }
+
+    // |========================= REGLAS DE ERROR =========================| //
 
     | inicio_par_variable_constante error
         { notifyDetection("La asignación múltiple debe terminar con ';'."); }
@@ -238,9 +316,9 @@ lista_constantes
     : constante
     | lista_constantes ',' constante
         { $$ = $3; }
-    // ============================= //
-    // PATRONES DE ERROR ESPECÍFICOS //
-    // ============================= //
+
+    // |========================= REGLAS DE ERROR =========================| //
+
     | lista_constantes constante
         {
             notifyError(String.format(
@@ -250,257 +328,15 @@ lista_constantes
     ;
 
 // ********************************************************************************************************************
-// Expresiones Lambda
-// ********************************************************************************************************************
-
-lambda
-    : '(' parametro_lambda ')' bloque_ejecutable '(' factor ')' ';'
-        { notifyDetection("Expresión lambda."); }
-    | '(' parametro_lambda ')' bloque_ejecutable '(' factor ')' error
-        { notifyDetection("La expresión 'lambda' debe terminar con ';'."); }
-    ;
-
-// --------------------------------------------------------------------------------------------------------------------
-
-parametro_lambda
-    : UINT ID
-    // =============== //
-    // REGLAS DE ERROR //
-    // =============== //
-    | // épsilon
-        { notifyError("La expresión lambda requiere de un parámetro."); }
-    ;
-
-/* ---------------------------------------------------------------------------------------------------- */
-/* Sentencias ejecutables                                                                               */
-/* ---------------------------------------------------------------------------------------------------- */
-
-cuerpo_ejecutable
-    : sentencia_ejecutable
-    | bloque_ejecutable
-    ;
-
-// --------------------------------------------------------------------------------------------------------------------
-
-bloque_ejecutable
-    : '{' conjunto_sentencias_ejecutables '}'
-    // =============== //
-    // REGLAS DE ERROR //
-    // =============== //
-    | '{' '}'
-        { notifyError("El cuerpo de la sentencia no puede estar vacío."); }
-    ;
-
-// --------------------------------------------------------------------------------------------------------------------
-
-// @InterceptaError: "Toda sentencia ejecutable debe terminar con punto y coma."
-conjunto_sentencias_ejecutables
-    : sentencia_ejecutable
-    | conjunto_sentencias_ejecutables sentencia_ejecutable
-    | error sentencia_ejecutable
-        { notifyError("Error capturado en sentencia ejecutable"); }
-    ;
-
-// --------------------------------------------------------------------------------------------------------------------
-
-sentencia_ejecutable
-    : invocacion_funcion ';' // Contexto en el que es invocada en línea.
-    | invocacion_funcion error
-        { notifyError("La invocación a función debe terminar con ';'."); }
-    | asignacion_simple
-    | asignacion_multiple
-    | sentencia_control
-    | sentencia_retorno
-    | impresion
-    | lambda
-    ;
-
-// --------------------------------------------------------------------------------------------------------------------
-
-asignacion_simple
-    : variable DASIG expresion ';'                              
-        { notifyDetection("Asignación simple."); }
-
-    // |========================= REGLAS DE ERROR =========================| //
-
-    | variable DASIG expresion error
-        { notifyError("Las asignaciones simples deben terminar con ';'."); }
-        
-    | variable error expresion ';'
-        { notifyError("Error en asignación simple. Se esperaba un ':=' entre la variable y la expresión."); }
-
-    | variable expresion ';'
-        { notifyError("Error en asignación simple. Se esperaba un ':=' entre la variable y la expresión."); }
-    ;
-
-// --------------------------------------------------------------------------------------------------------------------
-
-sentencia_control
-    : if                                                                
-    | do_while                                                
-    ;
-
-// ********************************************************************************************************************
-// Condición
-// ********************************************************************************************************************
-
-// @LevantaError: "Falta cierre de paréntesis en condición."
-condicion
-    : '(' cuerpo_condicion ')'
-
-    // |========================= REGLAS DE ERROR =========================| //
-    
-    | cuerpo_condicion ')'
-        { notifyError("Falta apertura de paréntesis en condición."); }
-
-    | '(' ')'
-        { notifyError("La condición no puede estar vacía."); }
-
-    | cuerpo_condicion error
-        { notifyError("La condición debe ir entre paréntesis."); }
-
-    | '(' cuerpo_condicion error
-        { notifyError("Falta cierre de paréntesis en condición"); }
-
-    ; 
-    
-// --------------------------------------------------------------------------------------------------------------------
-
-cuerpo_condicion                
-    : expresion comparador expresion
-    // =============== //
-    // REGLAS DE ERROR //
-    // =============== //
-    | expresion 
-        { notifyError("Falta de comparador en comparación."); }
-    ;
-
-// --------------------------------------------------------------------------------------------------------------------
-                                
-comparador                      
-    : '>'
-    | '<'
-    | EQ
-    | LEQ
-    | GEQ
-    | NEQ
-    // ============================= //
-    // PATRONES DE ERROR ESPECÍFICOS //
-    // ============================= //
-    | '='
-        { notifyError( "Se esperaba un comparador y se encontró el operador de asignación '='. ¿Quiso colocar '=='?" );}
-    ;
-
-// ********************************************************************************************************************
-// Sentencia IF
-// ********************************************************************************************************************
-
-// @InterceptaError: "Falta cierre de paréntesis en condición."
-if
-    : IF condicion cuerpo_ejecutable rama_else ENDIF ';'
-        { notifyDetection("Sentencia IF."); }
-    /*// ======================= //
-    // INTERCEPCIÓN DE ERRORES //
-    // ======================= //
-    | IF error cuerpo_ejecutable rama_else ENDIF punto_y_coma_obligatorio
-        { notifyError("Sentencia IF inválida en el lenguaje. Falta cierre de paréntesis en condición."); }*/
-    // =============== //
-    // REGLAS DE ERROR //
-    // =============== //
-    | IF condicion cuerpo_ejecutable rama_else ENDIF error
-        { notifyError("La sentencia IF debe terminar con ';'."); }
-    | IF condicion cuerpo_ejecutable rama_else ';'
-        { notifyError("La sentencia IF debe finalizar con 'endif'."); }
-    | IF condicion cuerpo_ejecutable rama_else error
-        { notifyError("La sentencia IF debe finalizar con 'endif' y ';'."); }
-    | IF error
-        { notifyError("Sentencia IF inválida."); }
-    ;
-
-// --------------------------------------------------------------------------------------------------------------------
-
-rama_else
-    : // lambda //
-    | ELSE cuerpo_ejecutable
-    ;
-
-// ********************************************************************************************************************
-// Sentencia WHILE
-// ********************************************************************************************************************
-
-do_while                        
-    : DO cuerpo_do ';'
-        { notifyDetection("Sentencia 'do-while'."); }  
-    // ======================= //
-    // INTERCEPCIÓN DE ERRORES //
-    // ======================= //
-    | DO cuerpo_do error
-        { notifyError("La sentencia 'do-while' debe terminar con ';'."); }
-    | DO error
-        { notifyError("Sentencia 'do-while' inválida."); }
-    ;
-
-// --------------------------------------------------------------------------------------------------------------------
-
-// @TrasladaError: "Falta cierre de paréntesis en condición."
-cuerpo_do                       
-    : cuerpo_ejecutable fin_cuerpo_do
-    // =============== //
-    // REGLAS DE ERROR //
-    // =============== //
-    | fin_cuerpo_do
-        { notifyError("Debe especificarse un cuerpo para la sentencia do-while."); }
-    | cuerpo_ejecutable condicion
-        { notifyError("Falta 'while'."); }
-    // ======================= //
-    // INTERCEPCIÓN DE ERRORES //
-    // ======================= //
-    /*
-    | cuerpo_ejecutable WHILE error
-        { notifyError("Falta cierre de paréntesis en condición."); }
-    | error fin_cuerpo_do
-        { notifyError("Ha habido un error en el cierre del cuerpo ejecutable."); }*/
-    ;
-
-fin_cuerpo_do
-    : WHILE condicion
-    ;
-
-// ********************************************************************************************************************
-// Sentencia PRINT
-// ********************************************************************************************************************
-
-impresion
-    : PRINT '(' imprimible ')' ';'
-        { notifyDetection("Sentencia PRINT."); }
-    // =============== //
-    // REGLAS DE ERROR //
-    // =============== //
-    | PRINT '(' imprimible ')' error
-        { notifyError("La sentencia 'print' debe finalizar con ';'."); }
-    | PRINT '(' ')' ';'
-        { notifyError("La sentencia 'print' requiere de al menos un argumento."); }
-    | PRINT '(' ')' error
-        { notifyError("La sentencia 'print' requiere de al menos un argumento y debe terminar con ';'."); }
-    ;
-
-// --------------------------------------------------------------------------------------------------------------------
-
-imprimible
-    : STR
-    | expresion
-    ;
-
-// ********************************************************************************************************************
 // Expresiones
 // ********************************************************************************************************************
 
 expresion
     : termino
     | expresion operador_suma termino
-    // =============== //
-    // REGLAS DE ERROR //
-    // =============== //
+
+    // |========================= REGLAS DE ERROR =========================| //
+
     | expresion operador_suma error
         { 
             notifyError("Falta de operando en expresión."); 
@@ -581,48 +417,184 @@ variable
     ;
 
 // ********************************************************************************************************************
+// Condición
+// ********************************************************************************************************************
+
+condicion
+    : condicion_admisible
+
+    // |========================= REGLAS DE ERROR =========================| //
+    
+    | cuerpo_condicion ')'
+        { notifyError("Falta apertura de paréntesis en condición."); }
+
+    | '(' ')'
+        { notifyError("La condición no puede estar vacía."); }
+
+    | cuerpo_condicion error
+        { notifyError("La condición debe ir entre paréntesis."); }
+
+    | '(' cuerpo_condicion error
+        { notifyError("Falta cierre de paréntesis en condición"); }
+
+    ; 
+
+// --------------------------------------------------------------------------------------------------------------------
+
+condicion_admisible
+    : '(' cuerpo_condicion ')'
+    ;
+    
+// --------------------------------------------------------------------------------------------------------------------
+
+cuerpo_condicion                
+    : expresion comparador expresion
+
+    // |========================= REGLAS DE ERROR =========================| //
+
+    | expresion
+        { notifyError("Falta de comparador en comparación."); }
+    ;
+
+// --------------------------------------------------------------------------------------------------------------------
+                                
+comparador                      
+    : '>'
+    | '<'
+    | EQ
+    | LEQ
+    | GEQ
+    | NEQ
+
+    // |========================= REGLAS DE ERROR =========================| //
+
+    | '='
+        { notifyError( "Se esperaba un comparador y se encontró el operador de asignación '='. ¿Quiso colocar '=='?" );}
+    ;
+
+// ********************************************************************************************************************
+// Sentencia IF
+// ********************************************************************************************************************
+
+if
+    : IF condicion cuerpo_ejecutable rama_else ENDIF ';'
+        { notifyDetection("Sentencia IF."); }
+
+    // |========================= REGLAS DE ERROR =========================| //
+
+    | IF condicion cuerpo_ejecutable rama_else ENDIF error
+        { notifyError("La sentencia IF debe terminar con ';'."); }
+    | IF condicion cuerpo_ejecutable rama_else ';'
+        { notifyError("La sentencia IF debe finalizar con 'endif'."); }
+    | IF condicion cuerpo_ejecutable rama_else error
+        { notifyError("La sentencia IF debe finalizar con 'endif' y ';'."); }
+    | IF error
+        { notifyError("Sentencia IF inválida."); }
+    ;
+
+// --------------------------------------------------------------------------------------------------------------------
+
+rama_else
+    : // lambda //
+    | ELSE cuerpo_ejecutable
+    ;
+
+// ********************************************************************************************************************
+// Sentencia WHILE
+// ********************************************************************************************************************
+
+do_while                        
+    : DO cuerpo_do_admisible ';'
+        { notifyDetection("Sentencia 'do-while'."); }  
+    
+    // |========================= REGLAS DE ERROR =========================| //
+
+    | DO cuerpo_do error
+        { notifyError("La sentencia 'do-while' debe terminar con ';'."); }
+    | DO error
+        { notifyError("Sentencia 'do-while' inválida."); }
+    ;
+
+// --------------------------------------------------------------------------------------------------------------------
+
+cuerpo_do                       
+    : cuerpo_do_admisible
+
+    // |========================= REGLAS DE ERROR =========================| //
+
+    | fin_cuerpo_do
+        { notifyError("Debe especificarse un cuerpo para la sentencia do-while."); }
+    | cuerpo_ejecutable condicion
+        { notifyError("Falta 'while'."); }
+    ;
+
+// --------------------------------------------------------------------------------------------------------------------
+
+cuerpo_do_admisible
+    : cuerpo_ejecutable fin_cuerpo_do
+    ;
+
+// --------------------------------------------------------------------------------------------------------------------
+
+fin_cuerpo_do
+    : WHILE condicion
+    ;
+
+// ********************************************************************************************************************
 // Declaración de Función
 // ********************************************************************************************************************
 
 declaracion_funcion
-    : UINT ID '(' conjunto_parametros ')' cuerpo_funcion
+    : UINT ID '(' conjunto_parametros ')' cuerpo_funcion_admisible
         { notifyDetection("Declaración de función."); }
-    // =============== //
-    // REGLAS DE ERROR //
-    // =============== //
+
+    // |========================= REGLAS DE ERROR =========================| //
+
     | UINT '(' conjunto_parametros ')' cuerpo_funcion
-        { notifyError("Falta de nombre en la función."); }
+        { notifyError("La función requiere de un nombre."); }
+
     ;
 
 // --------------------------------------------------------------------------------------------------------------------
 
 cuerpo_funcion
-    : '{' conjunto_sentencias '}'
-    // =============== //
-    // REGLAS DE ERROR //
-    // =============== //
+    : cuerpo_funcion_admisible
+
+    // |========================= REGLAS DE ERROR =========================| //
+
     | '{' '}'
         { notifyError("El cuerpo de la función no puede estar vacío."); }
     ;
 
 // --------------------------------------------------------------------------------------------------------------------
 
+cuerpo_funcion_admisible
+    : '{' conjunto_sentencias '}'
+    ;
+
+// --------------------------------------------------------------------------------------------------------------------
+
 sentencia_retorno
     : RETURN '(' expresion ')' ';'
-    // ===== REGLAS DE ERROR ===== //
+        { notifyDetection("Sentencia 'return'."); }
+    
+    // |========================= REGLAS DE ERROR =========================| //
+
     | RETURN '(' expresion ')' error
         { notifyError("La sentencia 'return' debe terminar con ';'."); }
     | RETURN '(' ')' ';'
         { notifyError("El retorno no puede estar vacío."); }
+    | RETURN expresion ';'
+        { notifyError("El resultado a retornar debe ir entre paréntesis."); }
     ;
 
 // --------------------------------------------------------------------------------------------------------------------
 
 conjunto_parametros
     : lista_parametros
-    // =============== //
-    // REGLAS DE ERROR //
-    // =============== //
+
+    // |========================= REGLAS DE ERROR =========================| //
+
     | // lambda //
         { notifyError("Toda función debe recibir al menos un parámetro."); }
     ;
@@ -632,9 +604,9 @@ conjunto_parametros
 lista_parametros
     : parametro_formal 
     | lista_parametros ',' parametro_formal 
-    // --------------- //
-    // REGLAS DE ERROR //
-    // --------------- //
+
+    // |========================= REGLAS DE ERROR =========================| //
+
     | parametro_vacio
         { notifyError("Se halló un parámetro formal vacío."); }
     ;
@@ -650,6 +622,9 @@ parametro_vacio
 
 parametro_formal
     : semantica_pasaje UINT variable
+
+    // |========================= REGLAS DE ERROR =========================| //
+
     | semantica_pasaje UINT 
         { notifyError("Falta de nombre de parámetro formal en declaración de función."); }
     | semantica_pasaje variable
@@ -661,11 +636,11 @@ parametro_formal
 semantica_pasaje
     : // lambda //
     | CVR
+
+    // |========================= REGLAS DE ERROR =========================| //
+
     | error
-        {
-            notifyError("Semántica de pasaje de parámetro inválida. Se asumirá pasaje de parámetro por defecto.");
-            descartarTokenError();
-        }
+        { notifyError("Semántica de pasaje de parámetro inválida. Se asumirá pasaje de parámetro por defecto."); }
     ;
 
 // ********************************************************************************************************************
@@ -693,11 +668,98 @@ lista_argumentos
 argumento
     : expresion FLECHA ID
         { $$ = $1 + $2 + $3; }
-    // --------------- //
-    // REGLAS DE ERROR //
-    // --------------- //
+
+    // |========================= REGLAS DE ERROR =========================| //
+
     | expresion
         { notifyError("Falta de especificación del parámetro formal al que corresponde el parámetro real."); }
+    ;
+
+// ********************************************************************************************************************
+// Impresión
+// ********************************************************************************************************************
+
+impresion
+    : PRINT imprimible_admisible ';'
+        { notifyDetection("Sentencia 'print'."); }
+
+    // |========================= REGLAS DE ERROR =========================| //
+
+    | PRINT imprimible error
+        { notifyError("La sentencia 'print' debe finalizar con ';'."); }
+    ;
+
+// --------------------------------------------------------------------------------------------------------------------
+
+imprimible
+    : imprimible_admisible
+
+    // |========================= REGLAS DE ERROR =========================| //
+
+    | '(' ')'
+        { notifyError("La sentencia 'print' requiere de al menos un argumento."); }
+
+    | elemento_imprimible
+        { notifyError("El imprimible debe encerrarse entre paréntesis."); }
+    | // épsilon
+        { notifyError("La sentencia 'print' requiere de un argumento entre paréntesis."); }
+    ;
+
+// --------------------------------------------------------------------------------------------------------------------
+
+// Casos de imprimibles que identifican correctamente a la sentencia.
+imprimible_admisible
+    : '(' elemento_imprimible ')'
+    ;
+
+// --------------------------------------------------------------------------------------------------------------------
+
+elemento_imprimible
+    : STR
+    | expresion
+    ;
+
+// ********************************************************************************************************************
+// Expresiones Lambda
+// ********************************************************************************************************************
+
+lambda
+    : parametro_lambda bloque_ejecutable argumento_lambda_admisible ';'
+        { notifyDetection("Expresión lambda."); }
+
+    // |========================= REGLAS DE ERROR =========================| //
+
+    | parametro_lambda bloque_ejecutable argumento_lambda error
+        { notifyDetection("La expresión 'lambda' debe terminar con ';'."); }
+    ;
+
+// --------------------------------------------------------------------------------------------------------------------
+
+argumento_lambda
+    : argumento_lambda_admisible
+
+    // |========================= REGLAS DE ERROR =========================| //
+
+    | '(' ')'
+        { notifyError("El argumento de la expresión 'lambda' no puede estar vacío."); }
+
+    | factor
+        { notifyError("El argumento de la expresión 'lambda' debe ir entre paréntesis"); }
+
+    | // épsilon
+        { notifyError("La expresión 'lambda' requiere de un argumento entre paréntesis."); }
+    ;
+
+// --------------------------------------------------------------------------------------------------------------------
+
+argumento_lambda_admisible
+    : '(' factor ')'
+    ;
+
+// --------------------------------------------------------------------------------------------------------------------
+
+parametro_lambda
+    : '(' UINT ID ')'
     ;
 
 // ====================================================================================================================

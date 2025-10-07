@@ -1,4 +1,4 @@
 PROGRAMA {
-    I := 1UI
-    print("Hola");
+    I := 1UI + 4UI * 7UI + 10UI
+    print ("Hola");
 }

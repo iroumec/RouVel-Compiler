@@ -86,3 +86,70 @@ asignacion_simple
     ;
 
 El problema está en que, al estar en termino y realizar un lookahead, ve print, por lo que entrá en modo error e intenta reducir. Pero en la pila tiene variable DASIG termino. Aún no redujo a expresión. Por lo que tenemos que obligarlo a que lo haga.
+
+La solución es:
+
+asignacion_simple
+: variable DASIG expresion ';'  
+ { notifyDetection("Asignación simple."); }
+
+    // |========================= REGLAS DE ERROR =========================| //
+
+    | variable DASIG termino error
+        { notifyError("Las asignaciones simples deben terminar con ';'."); }
+
+    | variable error expresion ';'
+        { notifyError("Error en asignación simple. Se esperaba un ':=' entre la variable y la expresión."); }
+
+    | variable expresion ';'
+        { notifyError("Error en asignación simple. Se esperaba un ':=' entre la variable y la expresión."); }
+    ;
+
+Con esto, a algo como: "I := 1UI" marca la falta de punto y coma. También funciona para "I := 1UI \* 4UI". Al igual que si se pone /.
+
+Pero no funciona para cosas como: "I := 1UI + 4 UI". Para eso tuvo que agregarse:
+
+Algo así (descartando el cambio anterior), sirve para detectar siempre el ';' faltante:
+
+```
+expresion
+    : termino token_fin_expresion { readLastTokenAgain(); }
+    | expresion operador_suma termino token_fin_expresion { readLastTokenAgain(); }
+
+    // |========================= REGLAS DE ERROR =========================| //
+
+    | expresion operador_suma error
+        {
+            notifyError("Falta de operando en expresión.");
+        }
+    | expresion termino_simple
+        {
+            notifyError(String.format(
+                "Falta de operador entre operandos %s y %s.",
+                $1, $2)
+            );
+        }
+    ;
+
+token_fin_expresion
+    : token_inicio_sentencia
+    | ')'
+    | ';'
+    | '}'
+    | comparador
+    ;
+```
+
+Pero se rompen sentencias como PRINT("Hola");
+
+---
+
+Los admisibles tienen el objetivo de mostrar la mayor cantidad de errores posible y únicamente mostrar la detección si la sentencia es totalmente correcta.
+
+---
+
+Principio de la regla: normal y erróneo. En otro lugar: normal y admisible.
+
+---
+
+Si la posibilidad de error es vacío, como en el nombre de la función, no puede separarse en admisible y normal.
