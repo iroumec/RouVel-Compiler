@@ -1,24 +1,80 @@
 ##
-    En el siguiente programa, se pondrán a prueba todas las estructuras
-    válidas del lenguaje.
+    En el siguiente programa, se pondrán a prueba todas las estructuras válidas del lenguaje.
 ##
 
-PROGRAMA%GENERAL {
-    ## ------------- Sentencias declarativas ------------- ##
+PROGRAMA {
 
-    ## ##
-    ## ------------- Sentencias ejecutables ------------- ##
+    ## ------------------------------------------------------------------------------------------ ##
+    ## --------------------------------| Sentencias declarativas |------------------------------- ##
+    ## ------------------------------------------------------------------------------------------ ##
 
-    ## Asignación simple ##
-    A := 1UI;                           ## Constante ##
-    B := 1UI + 2UI;                     ## Expresión (suma) ##
-    C := 1UI + 2UI / 0.5F+2             ## Expresión (suma y divison) ##
-    D := RETORNASTRING(1UI->N);         ## Retorno de funcion ##
+    ## Declaración de funciones ##
+    uint F0 (uint N)                                                ## Un parametro formal ## 
+    { 
+        return (N);                                                 ## Sentencia RETURN, con identificador ##
+    }                                                               ## Sin punto y coma ##
 
-    ## Asignacion múltiple ##
-    A , B , C = 1UI , 3UI , 1.5         ## Constantes ##
+    uint F1 (cvr uint X)                                            ## Un parámetro formal, semántica CVR ##
+    {
+        return (0UI);                                               ## Sentencia RETURN, con constante ##
+    };                                                              ## Con punto y coma ##
 
-    ## Invocacion de funcion ##
-    F1(A->X);                           ## Un argumento ##
-    F2(4UI->A,1.2+X*5UI/5.6333F-14->C)  ## Lista de argumentos ##
+    uint F2 (uint Y, uint Z)                                        ## Lista de parámetros formales ##
+    {   
+        return (Y/Z);                                               ## Sentencia RETURN, con expresión ##
+    };
+
+    ## Declaración de variables ##
+    uint A;                                                         ## Una variable ##
+    uint B, C, D;                                                   ## Lista de variables ##
+    
+
+    ## ------------------------------------------------------------------------------------------ ##
+    ## --------------------------------| Sentencias ejecutables |-------------------------------- ##
+    ## ------------------------------------------------------------------------------------------ ##
+
+    ## -------- Asignación simple -------- ##
+    A := 1UI;                                                       ## Constante ##
+    B := 1UI + 2UI;                                                 ## Expresión (suma) ##
+    C := 1UI + 2UI / 0.5F+2;                                        ## Expresión (suma y divison) ##
+    D := F0(1UI->N);                                                ## Retorno de funcion ##
+
+    ## -------- Asignacion múltiple -------- ##
+    A = 0UI;                                                        ## Posiblemente válido, asignación simple con símbolo '=' ##
+    A, B, C = 1UI , 3UI , 1.5;                                      ## |variables| == |constantes| ##
+    A, B, C = 2UI, 4UI, 2.5, 3.14;                                  ## |variables|  < |constantes| (Tema 17) ##
+
+    ## -------- Invocación de funcion -------- ##
+    F1(A->X);                                                       ## Un argumento ##
+    F2(4UI->Y,1.2+X*5UI/5.6333F-14->Z);                             ## Lista de argumentos ##
+
+    ## -------- Sentencias de control (con condiciones), impresion y expresiones lambda -------- ##
+    if (A == B)                                                     ## IF simple, condicion igualdad ##
+    {  
+        AUX := 100UI;
+        do {                                                        ## DO con cuerpo ##
+            (uint L) {print(L+AUX);} (5UI);                         ## Expresión lambda en línea (Tema 27) ##
+            (uint L) {print(L-AUX);} (5UI);
+        } while (AUX > F2(AUX->Y,2UI->Z));                          ## Condicion mayor ##
+    }
+    endif;
+
+    if (A+B <= C)                                                   ## IF-ELSE, condicion menor o igual ##
+    {
+        print("Oid mortales");    ## Impresión de cadena de caracteres ##
+        print(A+5UI/F0(0UI->N));                                    ## Impresión de expresión ##
+    }
+    else 
+        do C:=C+1UI; while (C < A+B);                               ## ELSE con cuerpo simple, DO con cuerpo simple , condicion menor ##
+    endif;
+
+
+    ## ------------------------------------------------------------------------------------------ ##
+    ## -----------------------------------------| Otro |----------------------------------------- ##
+    ## ------------------------------------------------------------------------------------------ ##
+
+    ## --------Prefijado obligatorio (Tema 22) y Constantes negativas --------##
+    F1.A := 8UI;
+    F2.X := -1.55 + F1.A;
+    C := -2.7F+12;
 }
