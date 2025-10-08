@@ -1,0 +1,10 @@
+##
+    En el siguiente programa, se pondrán a prueba los casos correspondientes al analizador léxico.
+##
+
+## Rangos de números ##
+0UI
+65534UI
+-3.40282347F+38
+3.40282347F+38
+
