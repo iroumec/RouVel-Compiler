@@ -280,7 +280,7 @@ asignacion_simple
 
     // |========================= REGLAS DE ERROR =========================| //
 
-    | variable DASIG expresion_o_termino
+    | variable DASIG asignable
         { notifyError("Las asignaciones simples deben terminar con ';'."); }
         
     | variable error expresion ';'
@@ -298,7 +298,7 @@ asignacion_simple
 // falten operandos u operadores.
 // Por otro lado, si solo se pone la regla "expresion error", anda bien si falta un operador. Si falta un operando,
 // detecta la falta de punto y coma, pero no muestra el mensaje de error. Para otros casos, no funciona bien.
-expresion_o_termino
+asignable
     : factor error
     | expresion operador_suma termino error
     | termino operador_multiplicacion factor error
@@ -668,7 +668,7 @@ parametro_formal
     | semantica_pasaje UINT 
         { notifyError("Falta de nombre de parámetro formal en declaración de función."); }
     | semantica_pasaje variable
-        { notifyError("Falta de tipo de parámetro formal en declaración de funcion."); }
+        { notifyError("Falta de tipo de parámetro formal en declaración de función."); }
     ; 
 
 // --------------------------------------------------------------------------------------------------------------------
@@ -791,6 +791,12 @@ lambda
 
     | parametro_lambda bloque_ejecutable argumento_lambda error
         { notifyDetection("La expresión 'lambda' debe terminar con ';'."); }
+    | parametro_lambda '{' conjunto_sentencias_ejecutables argumento_lambda error
+        { notifyDetection("Falta delimitador de cierre en expresión 'lambda'."); }
+    | parametro_lambda conjunto_sentencias_ejecutables argumento_lambda error
+        { notifyDetection("Faltan delimitadores en el conjunto de sentencias de la expresión 'lambda'."); }
+    | parametro_lambda conjunto_sentencias_ejecutables '}' argumento_lambda error
+        { notifyDetection("Falta delimitador de apertura en expresión 'lambda'."); }
     ;
 
 // --------------------------------------------------------------------------------------------------------------------
@@ -803,10 +809,7 @@ argumento_lambda
     | '(' ')'
         { notifyError("El argumento de la expresión 'lambda' no puede estar vacío."); }
 
-    | factor
-        { notifyError("El argumento de la expresión 'lambda' debe ir entre paréntesis"); }
-
-    | // épsilon
+    | // lambda //
         { notifyError("La expresión 'lambda' requiere de un argumento entre paréntesis."); }
     ;
 

@@ -163,3 +163,7 @@ El vacío al final no sirve para desambiguar.
 En caso de que falte un punto y coma al final de una sentencia, se buscará otro punto y coma. De no hallarse, el error subirá hasta ser tratado por una regla superior.
 
 // Solucionado. El problema es el vacío al final pareciera... Tipo, poner una opción con algo y una opción sin algo. Hay que poner sí o sí error
+
+---
+
+// TODO: agregar error si aparece sentencia declarativa en el cuerpo de la sentencia if.
