@@ -25,21 +25,40 @@ public final class SymbolTable {
     // --------------------------------------------------------------------------------------------
 
     /**
-     * Agrega un lexema a la tabla si no existe.
+     * Agrega un lexema a la tabla si no existe. Incrementa su referencia.
      */
     public void agregarEntrada(String lexema) {
-        tablaSimbolos.put(lexema, new Symbol(lexema));
+        Symbol entrada = tablaSimbolos.get(lexema);
+        if (entrada == null) {
+            entrada = new Symbol(lexema);
+            tablaSimbolos.put(lexema, entrada);
+        }
+        entrada.incrementarReferencias();
+    }
+
+    /**
+    *  Decrementa la referencia de un lexema. Si llega a 0, elimina la entrada.
+    */
+    public void decrementarReferencia(String lexema) {
+        Symbol entrada = tablaSimbolos.get(lexema);
+        if (entrada == null) {
+            System.out.printf("Error inesperado. Se intentó decrementar la referencia del lexema \"%s\", que no existe.",lexema);
+        }
+        entrada.decrementarReferencias();
+        if(entrada.sinReferencias()) {
+            tablaSimbolos.remove(lexema);
+        }
     }
 
     // --------------------------------------------------------------------------------------------
 
     public void imprimirTabla() {
-        System.out.println("-—————————————————————————————————————————————————————————————————————-");
-        System.out.println(" |        Lexema        |  Tipo  |  Categoría  |  Alcance  |  Extra  |");
+        System.out.println("-———————————————————————————————————————————————————————————————————————————-");
+        System.out.println(" |        Lexema        |  Tipo  |  Categoría  |  Alcance  |  Extra  | Ref |");
         for (Map.Entry<String,Symbol> entrada : tablaSimbolos.entrySet()) {
             System.out.println(entrada.getValue().toString());
         }
-        System.out.println("-—————————————————————————————————————————————————————————————————————-");
+        System.out.println("-———————————————————————————————————————————————————————————————————————————-");
     }
 
 }

@@ -350,6 +350,7 @@ par_variable_constante
 secuencia_variable_sin_coma
     : variable secuencia_variable_sin_coma constante ','
     | variable par_variable_constante constante ','
+    ;
 
 // --------------------------------------------------------------------------------------------------------------------
                                 
@@ -365,6 +366,7 @@ lista_constantes
             notifyError(String.format(
                 "Se encontraron dos constantes juntas sin una coma de separación. Inserte una ',' entre '%s' y '%s'.",
                 $1, $2));
+            // $$ = $1 + '_' + $2;
         }
     ;
 
@@ -472,15 +474,16 @@ factor_simple
 
 constante
     : CTE
-        { altaSymbolTable($1); }
     | '-' CTE
         { 
             $$ = "-" + $2;
+
             if(isUint($$)) {
                 notifyWarning("El número está fuera del rango de uint, se asignará el mínimo del rango.");
                 $$ = "0";
-            }
-            altaSymbolTable($$);
+            } 
+
+            modificarSymbolTable($$,$2);
         }
     ;
 
@@ -952,8 +955,9 @@ public boolean isUint(String number) {
 
 // --------------------------------------------------------------------------------------------------------------------
 
-public void altaSymbolTable(String lexema) {
-    SymbolTable.getInstance().agregarEntrada(lexema);
+public void modificarSymbolTable(String lexemaNuevo, String lexemaAnterior) {
+    SymbolTable.getInstance().decrementarReferencia(lexemaAnterior);
+    SymbolTable.getInstance().agregarEntrada(lexemaNuevo);
 }
 
 // ====================================================================================================================

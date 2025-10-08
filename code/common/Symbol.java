@@ -12,10 +12,12 @@ public class Symbol {
     String type; // Uint, float, etc.
     String category; // Variable, función, etc.
     int scope; // Nivel de anidamiento.
+    int references;
     Object extra; // Extra.
 
     public Symbol(String lexema) {
         this.name = lexema;
+        this.references = 0;
     }
 
     @Override
@@ -25,6 +27,7 @@ public class Symbol {
     int extraSpacesCategory = 11 ;//- Objects.toString(category, "").length();
     int extraSpacesScope = 9 ;//- Objects.toString(scope, "").length();
     int extraSpacesExtra = 7 ;//- Objects.toString(extra, "").length();
+    int extraSpacesReferences = 2;
 
     return " | " +
         name 
@@ -36,7 +39,21 @@ public class Symbol {
         //scope +
             " ".repeat(Math.max(0, extraSpacesScope)) + " | " + 
         //extra +
-            " ".repeat(Math.max(0, extraSpacesExtra)) + " | "
+            " ".repeat(Math.max(0, extraSpacesExtra)) + " | " +
+        references +
+            " ".repeat(Math.max(0, extraSpacesReferences)) + " | "
         ;
+    }
+
+    public void incrementarReferencias(){
+        this.references++;
+    }
+
+    public void decrementarReferencias(){
+        this.references--;
+    }
+
+    public boolean sinReferencias() {
+        return (0 == references);
     }
 }
