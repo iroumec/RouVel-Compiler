@@ -1,0 +1,4 @@
+NUMEROS {
+    A := -54UI;
+    B := "esto es un lexema re largo, estoy verificando si se guarda en la TS, si es que sí entonces el formato que codee no sirve para nada";
+}

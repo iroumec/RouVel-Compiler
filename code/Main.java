@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import lexer.Lexer;
 import parser.Parser;
+import common.SymbolTable;
 import utilities.Printer;
 
 public class Main {
@@ -37,5 +38,7 @@ public class Main {
         int errorsDetected = lexicalAnalyzer.getErrorsDetected() + sintacticalAnalyzer.getErrorsDetected();
 
         System.out.printf("\nSe detectaron %d warnings y %d errores.\n", warningsDetected, errorsDetected);
+        System.out.println("\nTabla de símbolos:");
+        SymbolTable.getInstance().imprimirTabla();
     }
 }

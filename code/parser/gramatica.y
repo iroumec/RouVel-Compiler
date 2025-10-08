@@ -11,6 +11,7 @@
 
     import lexer.Lexer;
     import common.Token;
+    import common.SymbolTable;
     import utilities.Printer;
 %}
 
@@ -457,8 +458,16 @@ factor_simple
 
 constante
     : CTE
+        { altaSymbolTable($1); }
     | '-' CTE
-        { $$ = "-" + $2; }
+        { 
+            $$ = "-" + $2;
+            if(isUint($$)) {
+                notifyWarning("El número está fuera del rango de uint, se asignará el mínimo del rango.");
+                $$ = "0UI";
+            }
+            altaSymbolTable($$);
+        }
     ;
 
 // --------------------------------------------------------------------------------------------------------------------
@@ -842,7 +851,7 @@ public Parser(Lexer lexer) {
     this.errorsDetected = this.warningsDetected = 0;
     
     // Descomentar la siguiente línea para activar el debugging.
-    yydebug = true;
+    // yydebug = true;
 }
 
 // --------------------------------------------------------------------------------------------------------------------
@@ -923,6 +932,18 @@ public int getWarningsDetected() {
 
 public int getErrorsDetected() {
     return this.errorsDetected;
+}
+
+// --------------------------------------------------------------------------------------------------------------------
+
+public boolean isUint(String number) {
+    return number.endsWith("UI");
+}
+
+// --------------------------------------------------------------------------------------------------------------------
+
+public void altaSymbolTable(String lexema) {
+    SymbolTable.getInstance().agregarEntrada(lexema);
 }
 
 // ====================================================================================================================

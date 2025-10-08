@@ -40,7 +40,10 @@ public class VariableTokenFinalizer implements SemanticAction {
         TokenType tokenType = TokenType.fromSymbol(lexema);
 
         // Se agrega el lexema a la tabla de símbolos.
-        SymbolTable.getInstance().agregarEntrada(lexema);
+
+        if (tokenType != TokenType.CTE) { //Las constantes se dan de alta en el análisis sintáctico
+            SymbolTable.getInstance().agregarEntrada(lexema);
+        }
 
         lexicalAnalyzer.setToken(new Token(tokenType, lexema));
     }
