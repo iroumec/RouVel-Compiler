@@ -53,13 +53,13 @@
   35                                  | conjunto_sentencias_ejecutables sentencia_ejecutable
 
   36  sentencia_ejecutable : invocacion_funcion ';'
-  37                       | invocacion_funcion error
-  38                       | asignacion_simple
-  39                       | asignacion_multiple
-  40                       | sentencia_control
-  41                       | sentencia_retorno
-  42                       | impresion
-  43                       | lambda
+  37                       | asignacion_simple
+  38                       | asignacion_multiple
+  39                       | sentencia_control
+  40                       | sentencia_retorno
+  41                       | impresion
+  42                       | lambda
+  43                       | invocacion_funcion error
 
   44  sentencia_control : if
   45                    | do_while
@@ -565,7 +565,7 @@ state 16
 
 state 17
 	sentencia_ejecutable : invocacion_funcion . ';'  (36)
-	sentencia_ejecutable : invocacion_funcion . error  (37)
+	sentencia_ejecutable : invocacion_funcion . error  (43)
 
 	error  shift 89
 	';'  shift 90
@@ -677,39 +677,39 @@ state 26
 
 
 state 27
-	sentencia_ejecutable : asignacion_simple .  (38)
+	sentencia_ejecutable : asignacion_simple .  (37)
+
+	.  reduce 37
+
+
+state 28
+	sentencia_ejecutable : asignacion_multiple .  (38)
 
 	.  reduce 38
 
 
-state 28
-	sentencia_ejecutable : asignacion_multiple .  (39)
+state 29
+	sentencia_ejecutable : sentencia_control .  (39)
 
 	.  reduce 39
 
 
-state 29
-	sentencia_ejecutable : sentencia_control .  (40)
+state 30
+	sentencia_ejecutable : sentencia_retorno .  (40)
 
 	.  reduce 40
 
 
-state 30
-	sentencia_ejecutable : sentencia_retorno .  (41)
+state 31
+	sentencia_ejecutable : impresion .  (41)
 
 	.  reduce 41
 
 
-state 31
-	sentencia_ejecutable : impresion .  (42)
+state 32
+	sentencia_ejecutable : lambda .  (42)
 
 	.  reduce 42
-
-
-state 32
-	sentencia_ejecutable : lambda .  (43)
-
-	.  reduce 43
 
 
 state 33
@@ -1404,9 +1404,9 @@ state 88
 
 
 state 89
-	sentencia_ejecutable : invocacion_funcion error .  (37)
+	sentencia_ejecutable : invocacion_funcion error .  (43)
 
-	.  reduce 37
+	.  reduce 43
 
 
 state 90

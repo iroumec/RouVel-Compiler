@@ -157,6 +157,7 @@ sentencia
 sentencia_declarativa
     : declaracion_variables
     | declaracion_funcion punto_y_coma_opcional
+        { notifyDetection("Declaración de función."); }
     ;
 
 // --------------------------------------------------------------------------------------------------------------------
@@ -197,14 +198,18 @@ conjunto_sentencias_ejecutables
 
 sentencia_ejecutable
     : invocacion_funcion ';' // Contexto en el que es invocada en línea.
-    | invocacion_funcion error
-        { notifyError("La invocación a función debe terminar con ';'."); }
+        { notifyDetection("Invocación de función."); }
     | asignacion_simple
     | asignacion_multiple
     | sentencia_control
     | sentencia_retorno
     | impresion
     | lambda
+
+    // |========================= REGLAS DE ERROR =========================| //
+    
+    | invocacion_funcion error
+        { notifyError("La invocación a función debe terminar con ';'."); }
     ;
 
 // --------------------------------------------------------------------------------------------------------------------
@@ -248,7 +253,7 @@ declaracion_variables
 // --------------------------------------------------------------------------------------------------------------------
 
 lista_variables 
-    : ID ',' ID
+    : ID ',' ID 
     | lista_variables ',' ID
         { $$ = $3; }
 
@@ -464,7 +469,7 @@ constante
             $$ = "-" + $2;
             if(isUint($$)) {
                 notifyWarning("El número está fuera del rango de uint, se asignará el mínimo del rango.");
-                $$ = "0UI";
+                $$ = "0";
             }
             altaSymbolTable($$);
         }
@@ -484,6 +489,7 @@ variable
 
 condicion
     : '(' cuerpo_condicion ')'
+        { notifyDetection("Condición."); }
 
     // |========================= REGLAS DE ERROR =========================| //
     
@@ -602,7 +608,6 @@ fin_cuerpo_do
 
 declaracion_funcion
     : UINT ID '(' conjunto_parametros ')' cuerpo_funcion_admisible
-        { notifyDetection("Declaración de función."); }
 
     // |========================= REGLAS DE ERROR =========================| //
 
@@ -689,18 +694,18 @@ semantica_pasaje
 
 sentencia_retorno
     : RETURN '(' expresion ')' ';'
-        { notifyDetection("Sentencia 'return'."); }
+        { notifyDetection("Sentencia RETURN."); }
     
     // |========================= REGLAS DE ERROR =========================| //
 
     | RETURN '(' expresion ')' error
-        { notifyError("La sentencia 'return' debe terminar con ';'."); }
+        { notifyError("La sentencia RETURN debe terminar con ';'."); }
     | RETURN '(' ')' ';'
         { notifyError("El retorno no puede estar vacío."); }
     | RETURN expresion ';'
         { notifyError("El resultado a retornar debe ir entre paréntesis."); }
     | RETURN error
-        { notifyError("Sentencia 'return' inválida."); }
+        { notifyError("Sentencia RETURN inválida."); }
     ;
 
 // ********************************************************************************************************************
@@ -710,7 +715,6 @@ sentencia_retorno
 invocacion_funcion
     : ID '(' lista_argumentos ')' 
         {
-            notifyDetection("Invocación de función."); 
             $$ = $1 + '(' + $3 + ')';
         }
     ;
@@ -934,7 +938,7 @@ public int getErrorsDetected() {
 // --------------------------------------------------------------------------------------------------------------------
 
 public boolean isUint(String number) {
-    return number.endsWith("UI");
+    return !number.contains(".");
 }
 
 // --------------------------------------------------------------------------------------------------------------------
