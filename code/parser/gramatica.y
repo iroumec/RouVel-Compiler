@@ -103,10 +103,10 @@ cuerpo_programa
 // Marca la distinción entre un programa válido y uno inválido.
 cuerpo_programa_recuperacion
     : '{' conjunto_sentencias lista_llaves_cierre
-        { notifyError("Se encontraron múltiples llaves al final del programa"); }
+        { notifyError("Se encontraron múltiples llaves al final del programa."); }
 
     | lista_llaves_apertura // El error se presenta al detectar la lista de llaves de paertura y no, al finalizar el programa.
-        { notifyError("Se encontraron múltiples llaves al comienzo del programa"); } conjunto_sentencias '}'
+        { notifyError("Se encontraron múltiples llaves al comienzo del programa."); } conjunto_sentencias '}'
 
     | '{' '}'
         { notifyError("El programa no posee ninguna sentencia."); }
@@ -190,8 +190,6 @@ bloque_ejecutable
 conjunto_sentencias_ejecutables
     : sentencia_ejecutable
     | conjunto_sentencias_ejecutables sentencia_ejecutable
-    | error sentencia_ejecutable
-        { notifyError("Error capturado en sentencia ejecutable"); }
     ;
 
 // --------------------------------------------------------------------------------------------------------------------
@@ -224,13 +222,13 @@ declaracion_variables
         { notifyDetection("Declaración de variables."); }
     
     | UINT ID ';'
-        { notifyDetection("Declaración de variables."); }
+        { notifyDetection("Declaración de variable."); }
     
     // |========================= REGLAS DE ERROR =========================| //
 
     | UINT ID error
         {
-            notifyError("La declaración de variables debe terminar con ';'.");
+            notifyError("La declaración de variable debe terminar con ';'.");
         }
     | UINT lista_variables error
         {
@@ -257,14 +255,14 @@ lista_variables
 
     | lista_variables ID
         {
-            notifyWarning(String.format(
+            notifyError(String.format(
                 "Se encontraron dos variables juntas sin separación. Inserte una ',' entre '%s' y '%s'.",
                 $1, $2));
             { $$ = $2; }
         }
     | ID ID
         {
-            notifyWarning(String.format(
+            notifyError(String.format(
                 "Se encontraron dos variables juntas sin separación. Inserte una ',' entre '%s' y '%s'.",
                 $1, $2));
             { $$ = $2; }
@@ -289,7 +287,6 @@ asignacion_simple
 
     | variable expresion ';'
         { notifyError("Error en asignación simple. Se esperaba un ':=' entre la variable y la expresión."); }
-    | variable DASIG error error
     ;
 
 // --------------------------------------------------------------------------------------------------------------------
@@ -351,7 +348,7 @@ lista_constantes
     | lista_constantes constante
         {
             notifyError(String.format(
-                "Se encontraron dos constantes juntas sin una coma de separación. Sugerencia: Inserte una ',' entre '%s' y '%s'.",
+                "Se encontraron dos constantes juntas sin una coma de separación. Inserte una ',' entre '%s' y '%s'.",
                 $1, $2));
         }
     ;
@@ -491,7 +488,7 @@ condicion
         { notifyError("La condición debe ir entre paréntesis."); }
 
     | '(' cuerpo_condicion error
-        { notifyError("Falta cierre de paréntesis en condición"); }
+        { notifyError("Falta cierre de paréntesis en condición."); }
 
     ; 
 
@@ -525,7 +522,7 @@ comparador
     // |========================= REGLAS DE ERROR =========================| //
 
     | '='
-        { notifyError( "Se esperaba un comparador y se encontró el operador de asignación '='. ¿Quiso colocar '=='?" );}
+        { notifyError("Se esperaba un comparador y se encontró el operador de asignación '='. ¿Quiso colocar '=='?"); }
     ;
 
 // ********************************************************************************************************************
@@ -630,24 +627,6 @@ cuerpo_funcion_admisible
 
 // --------------------------------------------------------------------------------------------------------------------
 
-sentencia_retorno
-    : RETURN '(' expresion ')' ';'
-        { notifyDetection("Sentencia 'return'."); }
-    
-    // |========================= REGLAS DE ERROR =========================| //
-
-    | RETURN '(' expresion ')' error
-        { notifyError("La sentencia 'return' debe terminar con ';'."); }
-    | RETURN '(' ')' ';'
-        { notifyError("El retorno no puede estar vacío."); }
-    | RETURN expresion ';'
-        { notifyError("El resultado a retornar debe ir entre paréntesis."); }
-    | RETURN error
-        { notifyError("Sentencia 'return' inválida."); }
-    ;
-
-// --------------------------------------------------------------------------------------------------------------------
-
 conjunto_parametros
     : lista_parametros
 
@@ -698,7 +677,27 @@ semantica_pasaje
     // |========================= REGLAS DE ERROR =========================| //
 
     | error
-        { notifyError("Semántica de pasaje de parámetro inválida. Se asumirá pasaje de parámetro por defecto."); }
+        { notifyError("Semántica de pasaje de parámetro inválida."); }
+    ;
+
+// ********************************************************************************************************************
+// Retorno
+// ********************************************************************************************************************
+
+sentencia_retorno
+    : RETURN '(' expresion ')' ';'
+        { notifyDetection("Sentencia 'return'."); }
+    
+    // |========================= REGLAS DE ERROR =========================| //
+
+    | RETURN '(' expresion ')' error
+        { notifyError("La sentencia 'return' debe terminar con ';'."); }
+    | RETURN '(' ')' ';'
+        { notifyError("El retorno no puede estar vacío."); }
+    | RETURN expresion ';'
+        { notifyError("El resultado a retornar debe ir entre paréntesis."); }
+    | RETURN error
+        { notifyError("Sentencia 'return' inválida."); }
     ;
 
 // ********************************************************************************************************************
