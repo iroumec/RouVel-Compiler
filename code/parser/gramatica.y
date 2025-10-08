@@ -464,7 +464,7 @@ constante
             $$ = "-" + $2;
             if(isUint($$)) {
                 notifyWarning("El número está fuera del rango de uint, se asignará el mínimo del rango.");
-                $$ = "0UI";
+                $$ = "0";
             }
             altaSymbolTable($$);
         }
@@ -931,7 +931,7 @@ public int getErrorsDetected() {
 // --------------------------------------------------------------------------------------------------------------------
 
 public boolean isUint(String number) {
-    return number.endsWith("UI");
+    return !number.contains(".");
 }
 
 // --------------------------------------------------------------------------------------------------------------------

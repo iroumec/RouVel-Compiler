@@ -1,0 +1,24 @@
+##
+    En el siguiente programa, se pondrán a prueba todas las estructuras
+    válidas del lenguaje.
+##
+
+PROGRAMA%GENERAL {
+    ## ------------- Sentencias declarativas ------------- ##
+
+    ## ##
+    ## ------------- Sentencias ejecutables ------------- ##
+
+    ## Asignación simple ##
+    A := 1UI;                           ## Constante ##
+    B := 1UI + 2UI;                     ## Expresión (suma) ##
+    C := 1UI + 2UI / 0.5F+2             ## Expresión (suma y divison) ##
+    D := RETORNASTRING(1UI->N);         ## Retorno de funcion ##
+
+    ## Asignacion múltiple ##
+    A , B , C = 1UI , 3UI , 1.5         ## Constantes ##
+
+    ## Invocacion de funcion ##
+    F1(A->X);                           ## Un argumento ##
+    F2(4UI->A,1.2+X*5UI/5.6333F-14->C)  ## Lista de argumentos ##
+}
