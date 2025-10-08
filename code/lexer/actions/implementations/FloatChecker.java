@@ -90,7 +90,8 @@ public class FloatChecker implements SemanticAction {
 
         }
 
-        return number.replace("E", "F");
+        // Se guarda con "e" como previsión del código intermedio.
+        return number.replace("E", "e");
     }
 
     // --------------------------------------------------------------------------------------------

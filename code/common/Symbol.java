@@ -1,7 +1,5 @@
 package common;
 
-import java.util.Objects;
-
 /*
  * Esta clase se expandirá en
  * etapas posteriores del trabajo.
