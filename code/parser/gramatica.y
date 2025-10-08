@@ -560,12 +560,12 @@ rama_else
 // ********************************************************************************************************************
 
 do_while                        
-    : DO cuerpo_do_admisible ';'
+    : DO cuerpo_do ';'
         { notifyDetection("Sentencia 'do-while'."); }  
     
     // |========================= REGLAS DE ERROR =========================| //
 
-    | DO cuerpo_do error
+    | DO cuerpo_do_recuperacion error
         { notifyError("La sentencia 'do-while' debe terminar con ';'."); }
     | DO error
         { notifyError("Sentencia 'do-while' inválida."); }
@@ -573,8 +573,14 @@ do_while
 
 // --------------------------------------------------------------------------------------------------------------------
 
-cuerpo_do                       
-    : cuerpo_do_admisible
+cuerpo_do
+    : cuerpo_ejecutable fin_cuerpo_do
+    ;
+
+// --------------------------------------------------------------------------------------------------------------------
+
+cuerpo_do_recuperacion                       
+    : cuerpo_do
 
     // |========================= REGLAS DE ERROR =========================| //
 
@@ -582,12 +588,6 @@ cuerpo_do
         { notifyError("Debe especificarse un cuerpo para la sentencia do-while."); }
     | cuerpo_ejecutable condicion
         { notifyError("Falta 'while'."); }
-    ;
-
-// --------------------------------------------------------------------------------------------------------------------
-
-cuerpo_do_admisible
-    : cuerpo_ejecutable fin_cuerpo_do
     ;
 
 // --------------------------------------------------------------------------------------------------------------------
