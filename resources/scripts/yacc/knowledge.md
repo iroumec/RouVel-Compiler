@@ -111,33 +111,34 @@ Pero no funciona para cosas como: "I := 1UI + 4 UI". Para eso tuvo que agregarse
 
 Algo así (descartando el cambio anterior), sirve para detectar siempre el ';' faltante:
 
-```
-expresion
-    : termino token_fin_expresion { readLastTokenAgain(); }
-    | expresion operador_suma termino token_fin_expresion { readLastTokenAgain(); }
+```sh
+    expresion
+        : termino token_fin_expresion { readLastTokenAgain(); }
+        | expresion operador_suma termino token_fin_expresion { readLastTokenAgain(); }
 
-    // |========================= REGLAS DE ERROR =========================| //
+        // |========================= REGLAS DE ERROR =========================| //
 
-    | expresion operador_suma error
-        {
-            notifyError("Falta de operando en expresión.");
-        }
-    | expresion termino_simple
-        {
-            notifyError(String.format(
-                "Falta de operador entre operandos %s y %s.",
-                $1, $2)
-            );
-        }
-    ;
+        | expresion operador_suma error
+            {
+                notifyError("Falta de operando en expresión.");
+            }
+        | expresion termino_simple
+            {
+                notifyError(String.format(
+                    "Falta de operador entre operandos %s y %s.",
+                    $1, $2)
+                );
+            }
+        ;
 
-token_fin_expresion
-    : token_inicio_sentencia
-    | ')'
-    | ';'
-    | '}'
-    | comparador
-    ;
+    token_fin_expresion
+        : token_inicio_sentencia
+        | ')'
+        | ';'
+        | '}'
+        | comparador
+        ;
+
 ```
 
 Pero se rompen sentencias como PRINT("Hola");
@@ -167,3 +168,7 @@ En caso de que falte un punto y coma al final de una sentencia, se buscará otro
 ---
 
 // TODO: agregar error si aparece sentencia declarativa en el cuerpo de la sentencia if.
+
+```
+
+```

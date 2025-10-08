@@ -332,7 +332,7 @@ asignacion_multiple
 // --------------------------------------------------------------------------------------------------------------------
 
 inicio_par_variable_constante
-    : variable par_variable_constante constante 
+    : variable par_variable_constante constante
     ;
 
 // --------------------------------------------------------------------------------------------------------------------
@@ -340,7 +340,16 @@ inicio_par_variable_constante
 par_variable_constante
     : ',' variable par_variable_constante constante ','
     | '='
+
+    | ',' variable par_variable_constante constante
+        { notifyError("Falta coma en la lista de constantes de la asignación múltiple."); }
+    | ',' variable secuencia_variable_sin_coma constante ','
+        { notifyError("Falta coma en la lista de variables de la asignación múltiple."); }
     ;
+
+secuencia_variable_sin_coma
+    : variable secuencia_variable_sin_coma constante ','
+    | variable par_variable_constante constante ','
 
 // --------------------------------------------------------------------------------------------------------------------
                                 
