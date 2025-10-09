@@ -15,7 +15,7 @@ EXPRESIONES {
 
     ## Falta de primer operando ##
     B :=  + 2UI;
-    C :=  - 4.0;                        ## Esto lo detecta como una constante negativa ##
+    C :=  - 4.0;                        ## Esto lo detecta, inevitablemente, como una constante negativa ##
     D :=  * 6UI;
     E :=  / 8UI;
 

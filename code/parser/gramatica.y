@@ -210,7 +210,10 @@ sentencia_ejecutable
     // |========================= REGLAS DE ERROR =========================| //
     
     | invocacion_funcion error
-        { notifyError("La invocación a función debe terminar con ';'."); }
+        { 
+            notifyError("La invocación a función debe terminar con ';'."); 
+            notifyDetection("Invocación de función.");
+        }
     ;
 
 // --------------------------------------------------------------------------------------------------------------------
@@ -857,7 +860,7 @@ public Parser(Lexer lexer) {
     this.errorsDetected = this.warningsDetected = 0;
     
     // Descomentar la siguiente línea para activar el debugging.
-    yydebug = true;
+    // yydebug = true;
 }
 
 // --------------------------------------------------------------------------------------------------------------------
