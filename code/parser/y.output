@@ -108,8 +108,8 @@
   77  expresion : termino
   78            | expresion operador_suma termino
   79            | expresion operador_suma error
-  80            | '+' termino
-  81            | expresion termino_simple
+  80            | expresion termino_simple
+  81            | '+' termino
 
   82  operador_suma : '+'
   83                | '-'
@@ -119,15 +119,9 @@
   86          | termino operador_multiplicacion error
   87          | operador_multiplicacion factor
 
-<<<<<<< HEAD
-  86  termino_simple : termino_simple operador_multiplicacion factor
-  87                 | factor_simple
-  88                 | termino_simple operador_multiplicacion error
-=======
-  88  termino_simple : termino_simple operador_multiplicacion factor_simple
+  88  termino_simple : termino_simple operador_multiplicacion factor
   89                 | factor_simple
   90                 | termino_simple operador_multiplicacion error
->>>>>>> 6be8809a10e6958b6a0beb8d28cac7ae2fd681bb
 
   91  operador_multiplicacion : '/'
   92                          | '*'
@@ -863,7 +857,7 @@ state 44
 
 
 state 45
-	expresion : '+' . termino  (80)
+	expresion : '+' . termino  (81)
 
 	ID  shift 8
 	CTE  shift 43
@@ -926,7 +920,7 @@ state 49
 state 50
 	expresion : expresion . operador_suma termino  (78)
 	expresion : expresion . operador_suma error  (79)
-	expresion : expresion . termino_simple  (81)
+	expresion : expresion . termino_simple  (80)
 	elemento_imprimible : expresion .  (168)
 
 	ID  shift 8
@@ -1063,7 +1057,7 @@ state 61
 state 62
 	expresion : expresion . operador_suma termino  (78)
 	expresion : expresion . operador_suma error  (79)
-	expresion : expresion . termino_simple  (81)
+	expresion : expresion . termino_simple  (80)
 	cuerpo_condicion : expresion . comparador expresion  (108)
 	cuerpo_condicion : expresion .  (109)
 
@@ -1342,7 +1336,7 @@ state 80
 state 81
 	expresion : expresion . operador_suma termino  (78)
 	expresion : expresion . operador_suma error  (79)
-	expresion : expresion . termino_simple  (81)
+	expresion : expresion . termino_simple  (80)
 	sentencia_retorno : RETURN expresion . ';'  (153)
 
 	ID  shift 8
@@ -1482,7 +1476,7 @@ state 91
 	asignacion_simple : variable expresion . ';'  (59)
 	expresion : expresion . operador_suma termino  (78)
 	expresion : expresion . operador_suma error  (79)
-	expresion : expresion . termino_simple  (81)
+	expresion : expresion . termino_simple  (80)
 
 	ID  shift 8
 	CTE  shift 117
@@ -1713,7 +1707,7 @@ state 109
 state 110
 	expresion : expresion . operador_suma termino  (78)
 	expresion : expresion . operador_suma error  (79)
-	expresion : expresion . termino_simple  (81)
+	expresion : expresion . termino_simple  (80)
 	argumento : expresion . FLECHA ID  (158)
 	argumento : expresion .  (159)
 
@@ -1748,47 +1742,28 @@ state 112
 
 
 state 113
-	expresion : '+' termino .  (80)
+	expresion : '+' termino .  (81)
 	termino : termino . operador_multiplicacion factor  (84)
 	termino : termino . operador_multiplicacion error  (86)
 
-<<<<<<< HEAD
-	.  reduce 81
-
-
-state 114
-	operador_suma : '-' .  (82)
-
-	.  reduce 82
-
-
-state 115
-	expresion : expresion termino_simple .  (80)
-	termino_simple : termino_simple . operador_multiplicacion factor  (86)
-	termino_simple : termino_simple . operador_multiplicacion error  (88)
-
-	'/'  shift 120
-	'*'  shift 121
-=======
 	'/'  shift 47
 	'*'  shift 48
->>>>>>> 6be8809a10e6958b6a0beb8d28cac7ae2fd681bb
-	error  reduce 80
-	ID  reduce 80
-	CTE  reduce 80
-	EQ  reduce 80
-	GEQ  reduce 80
-	LEQ  reduce 80
-	NEQ  reduce 80
-	FLECHA  reduce 80
-	';'  reduce 80
-	','  reduce 80
-	'='  reduce 80
-	'+'  reduce 80
-	'-'  reduce 80
-	')'  reduce 80
-	'>'  reduce 80
-	'<'  reduce 80
+	error  reduce 81
+	ID  reduce 81
+	CTE  reduce 81
+	EQ  reduce 81
+	GEQ  reduce 81
+	LEQ  reduce 81
+	NEQ  reduce 81
+	FLECHA  reduce 81
+	';'  reduce 81
+	','  reduce 81
+	'='  reduce 81
+	'+'  reduce 81
+	'-'  reduce 81
+	')'  reduce 81
+	'>'  reduce 81
+	'<'  reduce 81
 
 	operador_multiplicacion  goto 125
 
@@ -1831,28 +1806,28 @@ state 119
 
 
 state 120
-	expresion : expresion termino_simple .  (81)
-	termino_simple : termino_simple . operador_multiplicacion factor_simple  (88)
+	expresion : expresion termino_simple .  (80)
+	termino_simple : termino_simple . operador_multiplicacion factor  (88)
 	termino_simple : termino_simple . operador_multiplicacion error  (90)
 
 	'/'  shift 47
 	'*'  shift 48
-	error  reduce 81
-	ID  reduce 81
-	CTE  reduce 81
-	EQ  reduce 81
-	GEQ  reduce 81
-	LEQ  reduce 81
-	NEQ  reduce 81
-	FLECHA  reduce 81
-	';'  reduce 81
-	','  reduce 81
-	'='  reduce 81
-	'+'  reduce 81
-	'-'  reduce 81
-	')'  reduce 81
-	'>'  reduce 81
-	'<'  reduce 81
+	error  reduce 80
+	ID  reduce 80
+	CTE  reduce 80
+	EQ  reduce 80
+	GEQ  reduce 80
+	LEQ  reduce 80
+	NEQ  reduce 80
+	FLECHA  reduce 80
+	';'  reduce 80
+	','  reduce 80
+	'='  reduce 80
+	'+'  reduce 80
+	'-'  reduce 80
+	')'  reduce 80
+	'>'  reduce 80
+	'<'  reduce 80
 
 	operador_multiplicacion  goto 202
 
@@ -2257,7 +2232,7 @@ state 168
 state 169
 	expresion : expresion . operador_suma termino  (78)
 	expresion : expresion . operador_suma error  (79)
-	expresion : expresion . termino_simple  (81)
+	expresion : expresion . termino_simple  (80)
 	sentencia_retorno : RETURN '(' expresion . ')' ';'  (150)
 	sentencia_retorno : RETURN '(' expresion . ')' error  (151)
 
@@ -2323,7 +2298,7 @@ state 175
 	asignacion_simple : variable error expresion . ';'  (58)
 	expresion : expresion . operador_suma termino  (78)
 	expresion : expresion . operador_suma error  (79)
-	expresion : expresion . termino_simple  (81)
+	expresion : expresion . termino_simple  (80)
 
 	ID  shift 8
 	CTE  shift 117
@@ -2344,7 +2319,7 @@ state 176
 	asignable : expresion . operador_suma termino error  (61)
 	expresion : expresion . operador_suma termino  (78)
 	expresion : expresion . operador_suma error  (79)
-	expresion : expresion . termino_simple  (81)
+	expresion : expresion . termino_simple  (80)
 
 	ID  shift 8
 	CTE  shift 117
@@ -2610,28 +2585,11 @@ state 197
 
 
 state 198
-<<<<<<< HEAD
-	termino_simple : termino_simple operador_multiplicacion . factor  (86)
-	termino_simple : termino_simple operador_multiplicacion . error  (88)
-
-	error  shift 244
-	ID  shift 8
-	CTE  shift 43
-	'-'  shift 45
-	.  error
-
-	factor  goto 245
-	variable  goto 50
-	constante  goto 51
-	invocacion_funcion  goto 52
-
-=======
 	argumento : expresion FLECHA . ID  (158)
 
 	ID  shift 246
 	.  error
 
->>>>>>> 6be8809a10e6958b6a0beb8d28cac7ae2fd681bb
 
 state 199
 	lista_argumentos : lista_argumentos ',' . argumento  (157)
@@ -2667,17 +2625,19 @@ state 201
 
 
 state 202
-	termino_simple : termino_simple operador_multiplicacion . factor_simple  (88)
+	termino_simple : termino_simple operador_multiplicacion . factor  (88)
 	termino_simple : termino_simple operador_multiplicacion . error  (90)
 
 	error  shift 248
 	ID  shift 8
-	CTE  shift 117
+	CTE  shift 43
+	'-'  shift 46
 	.  error
 
-	factor_simple  goto 249
-	variable  goto 123
-	invocacion_funcion  goto 124
+	factor  goto 249
+	variable  goto 54
+	constante  goto 55
+	invocacion_funcion  goto 56
 
 
 state 203
@@ -2740,7 +2700,7 @@ state 208
 state 209
 	expresion : expresion . operador_suma termino  (78)
 	expresion : expresion . operador_suma error  (79)
-	expresion : expresion . termino_simple  (81)
+	expresion : expresion . termino_simple  (80)
 	cuerpo_condicion : expresion comparador expresion .  (108)
 
 	ID  shift 8
@@ -3038,192 +2998,7 @@ state 241
 
 
 state 242
-<<<<<<< HEAD
-	argumento : expresion FLECHA ID .  (156)
-
-	.  reduce 156
-
-
-state 243
-	lista_argumentos : lista_argumentos ',' argumento .  (155)
-
-	.  reduce 155
-
-
-state 244
-	termino_simple : termino_simple operador_multiplicacion error .  (88)
-
-	.  reduce 88
-
-
-state 245
-	termino_simple : termino_simple operador_multiplicacion factor .  (86)
-
-	.  reduce 86
-
-
-state 246
-	rama_else : ELSE cuerpo_ejecutable .  (121)
-
-	.  reduce 121
-
-
-state 247
-	if : IF condicion cuerpo_ejecutable rama_else error .  (118)
-
-	.  reduce 118
-
-
-state 248
-	if : IF condicion cuerpo_ejecutable rama_else ENDIF . ';'  (115)
-	if : IF condicion cuerpo_ejecutable rama_else ENDIF . error  (116)
-
-	error  shift 266
-	';'  shift 267
-	.  error
-
-
-state 249
-	if : IF condicion cuerpo_ejecutable rama_else ';' .  (117)
-
-	.  reduce 117
-
-
-state 250
-	declaracion_funcion : UINT ID '(' conjunto_parametros ')' . cuerpo_funcion_admisible  (130)
-
-	'{'  shift 268
-	.  error
-
-	cuerpo_funcion_admisible  goto 269
-
-
-state 251
-	cuerpo_funcion : '{' . '}'  (133)
-	cuerpo_funcion_admisible : '{' . conjunto_sentencias '}'  (134)
-
-	error  shift 7
-	ID  shift 8
-	PRINT  shift 9
-	IF  shift 10
-	UINT  shift 11
-	DO  shift 12
-	RETURN  shift 13
-	'}'  shift 270
-	'('  shift 15
-	.  error
-
-	variable  goto 16
-	invocacion_funcion  goto 17
-	conjunto_sentencias  goto 271
-	sentencia  goto 22
-	sentencia_ejecutable  goto 23
-	sentencia_declarativa  goto 24
-	declaracion_variables  goto 25
-	declaracion_funcion  goto 26
-	asignacion_simple  goto 27
-	asignacion_multiple  goto 28
-	sentencia_control  goto 29
-	sentencia_retorno  goto 30
-	impresion  goto 31
-	lambda  goto 32
-	if  goto 33
-	do_while  goto 34
-	inicio_par_variable_constante  goto 35
-	parametro_lambda  goto 36
-
-
-state 252
-	cuerpo_funcion : cuerpo_funcion_admisible .  (132)
-
-	.  reduce 132
-
-
-state 253
-	declaracion_funcion : UINT '(' conjunto_parametros ')' cuerpo_funcion .  (131)
-
-	.  reduce 131
-
-
-state 254
-	lista_parametros : lista_parametros ',' parametro_formal .  (138)
-
-	.  reduce 138
-
-
-state 255
-	parametro_formal : semantica_pasaje UINT variable .  (142)
-
-	.  reduce 142
-
-
-state 256
-	declaracion_variables : UINT variable DASIG constante ';' .  (51)
-
-	.  reduce 51
-
-
-state 257
-	sentencia_retorno : RETURN '(' expresion ')' error .  (149)
-
-	.  reduce 149
-
-
-state 258
-	sentencia_retorno : RETURN '(' expresion ')' ';' .  (148)
-
-	.  reduce 148
-
-
-state 259
-	asignable : expresion operador_suma termino . error  (61)
-	expresion : expresion operador_suma termino .  (78)
-	termino : termino . operador_multiplicacion factor  (83)
-	termino : termino . operador_multiplicacion error  (85)
-
-	error  shift 272
-	'/'  shift 120
-	'*'  shift 121
-	ID  reduce 78
-	CTE  reduce 78
-	';'  reduce 78
-	'+'  reduce 78
-	'-'  reduce 78
-
-	operador_multiplicacion  goto 122
-
-
-state 260
-	asignable : termino operador_multiplicacion factor . error  (62)
-	termino : termino operador_multiplicacion factor .  (83)
-
-	error  shift 273
-	ID  reduce 83
-	CTE  reduce 83
-	';'  reduce 83
-	'+'  reduce 83
-	'-'  reduce 83
-	'/'  reduce 83
-	'*'  reduce 83
-
-
-state 261
-	constante_comada : constante ',' .  (70)
-
-	.  reduce 70
-
-
-state 262
-	lista_constantes : lista_constantes ',' constante .  (75)
-
-	.  reduce 75
-
-
-state 263
-	lambda : parametro_lambda '{' conjunto_sentencias_ejecutables argumento_lambda error .  (169)
-=======
 	lambda : parametro_lambda bloque_ejecutable argumento_lambda_admisible ';' .  (169)
->>>>>>> 6be8809a10e6958b6a0beb8d28cac7ae2fd681bb
 
 	.  reduce 169
 
@@ -3266,7 +3041,7 @@ state 248
 
 
 state 249
-	termino_simple : termino_simple operador_multiplicacion factor_simple .  (88)
+	termino_simple : termino_simple operador_multiplicacion factor .  (88)
 
 	.  reduce 88
 

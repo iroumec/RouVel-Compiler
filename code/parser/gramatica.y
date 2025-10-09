@@ -388,20 +388,19 @@ expresion
     // |========================= REGLAS DE ERROR =========================| //
 
     | expresion operador_suma error
-        {
-            notifyError(String.format(
-                "Falta de operando en expresión luego de %s %s.",
-                $1, $2)
-            );
+        {  
+            notifyError(String.format("Falta de operando en expresión luego de %s %s.", $1, $2));
         }
-    | '+' termino
-        { notifyError(String.format("Falta de operando en expresión previo a '+ %s'.",$2)); }
     | expresion termino_simple
         {
-            notifyError(String.format(
-                "Falta de operador entre operandos %s y %s.",
-                $1, $2)
-            );
+            notifyError(String.format("Falta de operador entre operandos %s y %s.", $1, $2));
+            $$ = $2;
+        }
+    // Se especifica únicamente el operador suma ya que, de contemplarse también el operador
+    // de resta, no sería posible distinguir entre una constante negativa o un operando faltante.
+    | '+' termino
+        {
+            notifyError(String.format("Falta de operando en expresión previo a '+ %s'.",$2));
             $$ = $2;
         }
     ;
