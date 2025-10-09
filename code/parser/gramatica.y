@@ -315,6 +315,7 @@ asignable
 // ********************************************************************************************************************
 
 //Estas asignaciones pueden tener un menor número de elementos del lado izquierdo (tema 17).
+/*
 asignacion_multiple 
     : inicio_par_variable_constante ';'
         { notifyDetection("Asignación múltiple."); }
@@ -333,6 +334,13 @@ asignacion_multiple
 
 inicio_par_variable_constante
     : variable par_variable_constante constante
+
+    // |========================= REGLAS DE ERROR =========================| //
+
+    | variable variable par_variable_constante constante ',' constante
+    { notifyError("Falta coma en la lista de variables de la asignación múltiple."); }
+    | variable secuencia_variable_sin_coma constante
+    { notifyError("Falta coma en la lista de variables de la asignación múltiple."); }
     ;
 
 // --------------------------------------------------------------------------------------------------------------------
@@ -340,6 +348,8 @@ inicio_par_variable_constante
 par_variable_constante
     : ',' variable par_variable_constante constante ','
     | '='
+
+    // |========================= REGLAS DE ERROR =========================| //
 
     | ',' variable par_variable_constante constante
         { notifyError("Falta coma en la lista de constantes de la asignación múltiple."); }
@@ -351,6 +361,77 @@ secuencia_variable_sin_coma
     : variable secuencia_variable_sin_coma constante ','
     | variable par_variable_constante constante ','
     ;
+    */
+
+asignacion_multiple 
+    : inicio_par_variable_constante ';'
+        { notifyDetection("Asignación múltiple."); }
+    | inicio_par_variable_constante ',' lista_constantes ';'
+        { notifyDetection("Asignación múltiple."); }
+
+    // |========================= REGLAS DE ERROR =========================| //
+
+    | inicio_par_variable_constante error
+        { notifyDetection("La asignación múltiple debe terminar con ';'."); }
+    | inicio_par_variable_constante ',' lista_constantes error
+        { notifyDetection("La asignación múltiple debe terminar con ';'."); }
+    ;
+
+// --------------------------------------------------------------------------------------------------------------------
+
+inicio_par_variable_constante
+    : variable par_variable_constante constante
+
+    // |========================= REGLAS DE ERROR =========================| //
+
+    | variable variable par_variable_constante constante ',' constante
+    { notifyError("Falta coma en la lista de variables de la asignación múltiple."); }
+    | variable secuencia_variable_sin_coma constante
+    { notifyError("Falta coma en la lista de variables de la asignación múltiple."); }
+    ;
+
+// --------------------------------------------------------------------------------------------------------------------
+
+par_variable_constante
+    : ',' variable par_variable_constante constante ','
+    | '='
+
+    // |========================= REGLAS DE ERROR =========================| //
+
+    | ',' variable par_variable_constante constante
+        { notifyError("Falta coma en la lista de constantes de la asignación múltiple."); }
+    | ',' variable secuencia_variable_sin_coma constante ','
+        { notifyError("Falta coma en la lista de variables de la asignación múltiple."); }
+    ;
+
+secuencia_variable_sin_coma
+    : variable secuencia_variable_sin_coma constante ','
+    | variable par_variable_constante constante ','
+    ;
+
+par_variable
+    : variable ',' variable
+    | variable variable
+    ;
+
+par_constante
+    : constante ',' constante
+    | constante constante
+    ;
+
+/*
+asignacion_multiple
+    : asignacion_pareja ';'
+    | asignacion_pareja ',' lista_constantes ';'
+    ;
+
+asignacion_pareja
+    : variable '=' constante
+    | variable ',' asignacion_pareja ',' constante
+    //| variable asignacion_pareja ',' constante
+    | variable ',' asignacion_pareja constante
+    //| variable asignacion_pareja constante
+    ; */
 
 // --------------------------------------------------------------------------------------------------------------------
                                 
@@ -864,7 +945,7 @@ public Parser(Lexer lexer) {
     this.errorsDetected = this.warningsDetected = 0;
     
     // Descomentar la siguiente línea para activar el debugging.
-    // yydebug = true;
+    yydebug = true;
 }
 
 // --------------------------------------------------------------------------------------------------------------------

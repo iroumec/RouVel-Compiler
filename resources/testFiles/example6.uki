@@ -1,5 +1,6 @@
 PROGRAMA {
-    A, B C = 1UI, 2UI, 3UI;
-    ## D, E, F = 4UI 5UI, 6UI;
-    A if B, D = 3UI, 4UI, 6UI;##
+    ##A, B C = 1UI, 2UI, 3UI;
+    D, E, F = 4UI 5UI, 6UI;
+    A if B, D = 3UI, 4UI, 6UI; ##
+    A B = 1UI 54UI, 11UI;
 }
