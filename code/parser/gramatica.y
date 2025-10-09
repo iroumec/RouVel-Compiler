@@ -394,6 +394,8 @@ expresion
                 $1, $2)
             );
         }
+    | '+' termino
+        { notifyError(String.format("Falta de operando en expresión previo a '+ %s'.",$2)); }
     | expresion termino_simple
         {
             notifyError(String.format(
@@ -429,9 +431,11 @@ termino
                 $1, $2)
             );
         }
+    | operador_multiplicacion factor 
+        { notifyError(String.format("Falta operador previo a '%s %s'",$1,$2)); }
     ;
 
-// --------------------------------------------------------------------------------------------------------------------
+// -------------------------------------------------------------------------------------------------------------------
 
 termino_simple
     : termino_simple operador_multiplicacion factor_simple
@@ -441,12 +445,7 @@ termino_simple
     // |========================= REGLAS DE ERROR =========================| //
 
     | termino_simple operador_multiplicacion error
-        {
-            notifyError(String.format(
-                "Falta de operando en expresión luego de %s %s.",
-                $1, $2)
-            );
-        }
+        { notifyError(String.format("Falta de operando en expresión luego de %s %s.",$1, $2)); }
     ;
 
 // --------------------------------------------------------------------------------------------------------------------
@@ -484,6 +483,8 @@ constante
     | '-' CTE
         { 
             $$ = "-" + $2;
+
+            notifyDetection(String.format("Constante negativa: %s.",$$));
 
             if(isUint($$)) {
                 notifyWarning("El número está fuera del rango de uint, se asignará el mínimo del rango.");

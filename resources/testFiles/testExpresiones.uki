@@ -1,0 +1,4 @@
+EXPRESIONES {
+    A := 5UI * 5UI;
+    B := 5UI * -2.0;
+}
