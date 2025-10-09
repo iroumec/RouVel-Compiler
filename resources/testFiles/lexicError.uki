@@ -1,0 +1,8 @@
+PROGRAMA {
+    ### A, B, C = 3UI, 4UI, 8UI;
+    A B C = 2UI 6UI, 9UI;
+    print(3UI + 5UI + 8UI);###
+
+    A := 3UI
+    print("Hola");
+}

@@ -333,15 +333,6 @@ asignacion_multiple
 
 inicio_par_variable_constante
     : variable par_variable_constante constante
-    | doble_variable par_variable_constante constante_comada constante
-    ;
-
-// --------------------------------------------------------------------------------------------------------------------
-
-// Necesario para permitir la posibilidad de que las priemras dos variables no tengan coma y que no se produzca un shift/reduce con factor.
-doble_variable
-    : variable variable
-        { notifyError(String.format("Falta coma antes de variable '%s' en asignación múltiple.", $2)); }
     ;
 
 // --------------------------------------------------------------------------------------------------------------------
@@ -351,16 +342,20 @@ par_variable_constante
     | '='
     ;
 
+// --------------------------------------------------------------------------------------------------------------------
+
 constante_comada
     : constante ','
     | constante
         { notifyError(String.format("Falta coma luego de constante '%s' en asignación múltiple.", $1)); }
     ;
 
+// --------------------------------------------------------------------------------------------------------------------
+
 variable_comada
     : ',' variable
-    | error variable
-        { notifyError(String.format("Falta coma antes de variable '%s' en asignación múltiple.", $2)); }
+    | variable
+        { notifyError(String.format("Falta coma antes de variable '%s' en asignación múltiple.", $1)); }
     ;
 
 // --------------------------------------------------------------------------------------------------------------------
@@ -467,7 +462,8 @@ operador_multiplicacion
 
 // Factor que contempla la posibilidad de constantes negativas.
 factor
-    : variable
+    : variable error
+    // Token error necesario para evitar shift/reduce en asignación múltiple.
     | constante
     | invocacion_funcion
     ;

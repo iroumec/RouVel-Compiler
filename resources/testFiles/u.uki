@@ -1,4 +1,5 @@
 PROGRAMA {
-    A, B, C = 3UI, 4UI, 8UI;
-    A, B, C, D, E = 2UI 6UI 9UI;
+
+    A := 3UI
+    print("Hola");
 }
