@@ -57,13 +57,15 @@ public final class SymbolTable {
     // --------------------------------------------------------------------------------------------
 
     public void imprimirTabla() {
-        Printer.printBigSeparation();
-        System.out.println(" |        Lexema        |  Tipo  |  Categoría  |  Alcance  |  Extra  | Ref |");
-        Printer.printBigSeparation();
+        Printer.printSeparation();
+        Printer.print("    Tabla de Símbolos");
+        Printer.printSeparation();
+        System.out.println("|        Lexema        |  Tipo  |  Categoría  |  Alcance  |  Extra  | Ref |");
+        Printer.printBigSeparator();
         for (Map.Entry<String, Symbol> entrada : tablaSimbolos.entrySet()) {
             System.out.println(entrada.getValue().toString());
         }
-        Printer.printBigSeparation();
+        Printer.printBigSeparator();
     }
 
 }

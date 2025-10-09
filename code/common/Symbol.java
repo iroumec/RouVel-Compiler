@@ -29,7 +29,7 @@ public class Symbol {
         int extraSpacesExtra = 7;// - Objects.toString(extra, "").length();
         int extraSpacesReferences = 2;
 
-        return " | " +
+        return "| " +
                 name
                 + " ".repeat(Math.max(0, extraSpacesName)) + " | " +
                 // type +

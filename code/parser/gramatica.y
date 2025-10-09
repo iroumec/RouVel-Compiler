@@ -333,46 +333,46 @@ asignacion_simple
 
 //Estas asignaciones pueden tener un menor número de elementos del lado izquierdo (tema 17).
 asignacion_multiple 
-    : inicio_par_variable_constante ';'
+    : inicio_asignacion_par ';'
         { notifyDetection("Asignación múltiple."); }
-    | inicio_par_variable_constante ',' lista_constantes ';'
+    | inicio_asignacion_par ',' lista_constantes ';'
         { notifyDetection("Asignación múltiple."); }
 
     // |========================= REGLAS DE ERROR =========================| //
 
-    | inicio_par_variable_constante error
+    | inicio_asignacion_par error
         { notifyDetection("La asignación múltiple debe terminar con ';'."); }
-    | inicio_par_variable_constante ',' lista_constantes error
+    | inicio_asignacion_par ',' lista_constantes error
         { notifyDetection("La asignación múltiple debe terminar con ';'."); }
     ;
 
 // --------------------------------------------------------------------------------------------------------------------
 
-inicio_par_variable_constante
-    : variable par_variable_constante constante
+inicio_asignacion_par
+    : variable asignacion_par constante
     ;
 
 // --------------------------------------------------------------------------------------------------------------------
 
-par_variable_constante
-    : variable_comada par_variable_constante constante_comada
+asignacion_par
+    : variable_con_coma asignacion_par constante_con_coma
     | '='
     ;
 
 // --------------------------------------------------------------------------------------------------------------------
 
-constante_comada
-    : constante ','
-    | constante
-        { notifyError(String.format("Falta coma luego de constante '%s' en asignación múltiple.", $1)); }
+variable_con_coma
+    : ',' variable
+    | variable
+        { notifyError(String.format("Falta coma antes de variable '%s' en asignación múltiple.", $1)); }
     ;
 
 // --------------------------------------------------------------------------------------------------------------------
 
-variable_comada
-    : ',' variable
-    | variable
-        { notifyError(String.format("Falta coma antes de variable '%s' en asignación múltiple.", $1)); }
+constante_con_coma
+    : constante ','
+    | constante
+        { notifyError(String.format("Falta coma luego de constante '%s' en asignación múltiple.", $1)); }
     ;
 
 // --------------------------------------------------------------------------------------------------------------------

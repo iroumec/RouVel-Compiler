@@ -45,7 +45,6 @@ public class Main {
         Printer.printBigSeparator();
         Printer.printBlankSpace();
 
-        System.out.println("Tabla de símbolos:");
         SymbolTable.getInstance().imprimirTabla();
     }
 }

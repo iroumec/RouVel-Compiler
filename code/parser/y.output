@@ -81,21 +81,21 @@
   58                    | variable error expresion ';'
   59                    | variable expresion ';'
 
-  60  asignacion_multiple : inicio_par_variable_constante ';'
-  61                      | inicio_par_variable_constante ',' lista_constantes ';'
-  62                      | inicio_par_variable_constante error
-  63                      | inicio_par_variable_constante ',' lista_constantes error
+  60  asignacion_multiple : inicio_asignacion_par ';'
+  61                      | inicio_asignacion_par ',' lista_constantes ';'
+  62                      | inicio_asignacion_par error
+  63                      | inicio_asignacion_par ',' lista_constantes error
 
-  64  inicio_par_variable_constante : variable par_variable_constante constante
+  64  inicio_asignacion_par : variable asignacion_par constante
 
-  65  par_variable_constante : variable_comada par_variable_constante constante_comada
-  66                         | '='
+  65  asignacion_par : variable_con_coma asignacion_par constante_con_coma
+  66                 | '='
 
-  67  constante_comada : constante ','
-  68                   | constante
+  67  variable_con_coma : ',' variable
+  68                    | variable
 
-  69  variable_comada : ',' variable
-  70                  | variable
+  69  constante_con_coma : constante ','
+  70                     | constante
 
   71  lista_constantes : constante
   72                   | lista_constantes ',' constante
@@ -299,7 +299,7 @@ state 2
 	lambda  goto 32
 	if  goto 33
 	do_while  goto 34
-	inicio_par_variable_constante  goto 35
+	inicio_asignacion_par  goto 35
 	parametro_lambda  goto 36
 
 
@@ -472,7 +472,7 @@ state 12
 	lambda  goto 32
 	if  goto 33
 	do_while  goto 34
-	inicio_par_variable_constante  goto 35
+	inicio_asignacion_par  goto 35
 	cuerpo_do  goto 76
 	cuerpo_do_recuperacion  goto 77
 	fin_cuerpo_do  goto 78
@@ -540,7 +540,7 @@ state 14
 	lambda  goto 32
 	if  goto 33
 	do_while  goto 34
-	inicio_par_variable_constante  goto 35
+	inicio_asignacion_par  goto 35
 	parametro_lambda  goto 36
 
 
@@ -556,7 +556,7 @@ state 16
 	asignacion_simple : variable . DASIG expresion error  (57)
 	asignacion_simple : variable . error expresion ';'  (58)
 	asignacion_simple : variable . expresion ';'  (59)
-	inicio_par_variable_constante : variable . par_variable_constante constante  (64)
+	inicio_asignacion_par : variable . asignacion_par constante  (64)
 
 	error  shift 87
 	ID  shift 8
@@ -577,8 +577,8 @@ state 16
 	variable  goto 92
 	constante  goto 55
 	invocacion_funcion  goto 56
-	par_variable_constante  goto 93
-	variable_comada  goto 94
+	asignacion_par  goto 93
+	variable_con_coma  goto 94
 
 
 state 17
@@ -630,7 +630,7 @@ state 20
 	lambda  goto 32
 	if  goto 33
 	do_while  goto 34
-	inicio_par_variable_constante  goto 35
+	inicio_asignacion_par  goto 35
 	parametro_lambda  goto 36
 
 
@@ -743,10 +743,10 @@ state 34
 
 
 state 35
-	asignacion_multiple : inicio_par_variable_constante . ';'  (60)
-	asignacion_multiple : inicio_par_variable_constante . ',' lista_constantes ';'  (61)
-	asignacion_multiple : inicio_par_variable_constante . error  (62)
-	asignacion_multiple : inicio_par_variable_constante . ',' lista_constantes error  (63)
+	asignacion_multiple : inicio_asignacion_par . ';'  (60)
+	asignacion_multiple : inicio_asignacion_par . ',' lista_constantes ';'  (61)
+	asignacion_multiple : inicio_asignacion_par . error  (62)
+	asignacion_multiple : inicio_asignacion_par . ',' lista_constantes error  (63)
 
 	error  shift 102
 	';'  shift 103
@@ -783,7 +783,7 @@ state 36
 	lambda  goto 32
 	if  goto 33
 	do_while  goto 34
-	inicio_par_variable_constante  goto 35
+	inicio_asignacion_par  goto 35
 	parametro_lambda  goto 36
 
 
@@ -1107,7 +1107,7 @@ state 63
 	lambda  goto 32
 	if  goto 33
 	do_while  goto 34
-	inicio_par_variable_constante  goto 35
+	inicio_asignacion_par  goto 35
 	parametro_lambda  goto 36
 
 
@@ -1237,7 +1237,7 @@ state 72
 	lambda  goto 32
 	if  goto 33
 	do_while  goto 34
-	inicio_par_variable_constante  goto 35
+	inicio_asignacion_par  goto 35
 	parametro_lambda  goto 36
 
 
@@ -1400,7 +1400,7 @@ state 85
 	lambda  goto 32
 	if  goto 33
 	do_while  goto 34
-	inicio_par_variable_constante  goto 35
+	inicio_asignacion_par  goto 35
 	parametro_lambda  goto 36
 
 
@@ -1453,7 +1453,7 @@ state 88
 
 
 state 89
-	variable_comada : ',' . variable  (69)
+	variable_con_coma : ',' . variable  (67)
 
 	ID  shift 177
 	.  error
@@ -1462,7 +1462,7 @@ state 89
 
 
 state 90
-	par_variable_constante : '=' .  (66)
+	asignacion_par : '=' .  (66)
 
 	.  reduce 66
 
@@ -1488,17 +1488,17 @@ state 91
 
 
 state 92
-	variable_comada : variable .  (70)
+	variable_con_coma : variable .  (68)
 	factor : variable . error  (90)
 
 	error  shift 127
-	ID  reduce 70
-	','  reduce 70
-	'='  reduce 70
+	ID  reduce 68
+	','  reduce 68
+	'='  reduce 68
 
 
 state 93
-	inicio_par_variable_constante : variable par_variable_constante . constante  (64)
+	inicio_asignacion_par : variable asignacion_par . constante  (64)
 
 	CTE  shift 43
 	'-'  shift 46
@@ -1508,7 +1508,7 @@ state 93
 
 
 state 94
-	par_variable_constante : variable_comada . par_variable_constante constante_comada  (65)
+	asignacion_par : variable_con_coma . asignacion_par constante_con_coma  (65)
 
 	ID  shift 177
 	','  shift 89
@@ -1516,8 +1516,8 @@ state 94
 	.  error
 
 	variable  goto 181
-	par_variable_constante  goto 182
-	variable_comada  goto 94
+	asignacion_par  goto 182
+	variable_con_coma  goto 94
 
 
 state 95
@@ -1573,7 +1573,7 @@ state 99
 	lambda  goto 32
 	if  goto 33
 	do_while  goto 34
-	inicio_par_variable_constante  goto 35
+	inicio_asignacion_par  goto 35
 	parametro_lambda  goto 36
 
 
@@ -1590,20 +1590,20 @@ state 101
 
 
 state 102
-	asignacion_multiple : inicio_par_variable_constante error .  (62)
+	asignacion_multiple : inicio_asignacion_par error .  (62)
 
 	.  reduce 62
 
 
 state 103
-	asignacion_multiple : inicio_par_variable_constante ';' .  (60)
+	asignacion_multiple : inicio_asignacion_par ';' .  (60)
 
 	.  reduce 60
 
 
 state 104
-	asignacion_multiple : inicio_par_variable_constante ',' . lista_constantes ';'  (61)
-	asignacion_multiple : inicio_par_variable_constante ',' . lista_constantes error  (63)
+	asignacion_multiple : inicio_asignacion_par ',' . lista_constantes ';'  (61)
+	asignacion_multiple : inicio_asignacion_par ',' . lista_constantes error  (63)
 
 	CTE  shift 43
 	'-'  shift 46
@@ -1639,7 +1639,7 @@ state 105
 	lambda  goto 32
 	if  goto 33
 	do_while  goto 34
-	inicio_par_variable_constante  goto 35
+	inicio_asignacion_par  goto 35
 	parametro_lambda  goto 36
 
 
@@ -1687,7 +1687,7 @@ state 108
 	lambda  goto 32
 	if  goto 33
 	do_while  goto 34
-	inicio_par_variable_constante  goto 35
+	inicio_asignacion_par  goto 35
 	parametro_lambda  goto 36
 	argumento_lambda_admisible  goto 193
 	argumento_lambda  goto 194
@@ -2189,7 +2189,7 @@ state 163
 	lambda  goto 32
 	if  goto 33
 	do_while  goto 34
-	inicio_par_variable_constante  goto 35
+	inicio_asignacion_par  goto 35
 	parametro_lambda  goto 36
 
 
@@ -2343,9 +2343,9 @@ state 177
 
 
 state 178
-	variable_comada : ',' variable .  (69)
+	variable_con_coma : ',' variable .  (67)
 
-	.  reduce 69
+	.  reduce 67
 
 
 state 179
@@ -2355,26 +2355,26 @@ state 179
 
 
 state 180
-	inicio_par_variable_constante : variable par_variable_constante constante .  (64)
+	inicio_asignacion_par : variable asignacion_par constante .  (64)
 
 	.  reduce 64
 
 
 state 181
-	variable_comada : variable .  (70)
+	variable_con_coma : variable .  (68)
 
-	.  reduce 70
+	.  reduce 68
 
 
 state 182
-	par_variable_constante : variable_comada par_variable_constante . constante_comada  (65)
+	asignacion_par : variable_con_coma asignacion_par . constante_con_coma  (65)
 
 	CTE  shift 43
 	'-'  shift 46
 	.  error
 
 	constante  goto 227
-	constante_comada  goto 228
+	constante_con_coma  goto 228
 
 
 state 183
@@ -2406,13 +2406,13 @@ state 183
 	lambda  goto 32
 	if  goto 33
 	do_while  goto 34
-	inicio_par_variable_constante  goto 35
+	inicio_asignacion_par  goto 35
 	parametro_lambda  goto 36
 
 
 state 184
-	asignacion_multiple : inicio_par_variable_constante ',' lista_constantes . ';'  (61)
-	asignacion_multiple : inicio_par_variable_constante ',' lista_constantes . error  (63)
+	asignacion_multiple : inicio_asignacion_par ',' lista_constantes . ';'  (61)
+	asignacion_multiple : inicio_asignacion_par ',' lista_constantes . error  (63)
 	lista_constantes : lista_constantes . ',' constante  (72)
 	lista_constantes : lista_constantes . constante  (73)
 
@@ -2458,7 +2458,7 @@ state 186
 	lambda  goto 32
 	if  goto 33
 	do_while  goto 34
-	inicio_par_variable_constante  goto 35
+	inicio_asignacion_par  goto 35
 	parametro_lambda  goto 36
 	argumento_lambda_admisible  goto 193
 	argumento_lambda  goto 234
@@ -2701,7 +2701,7 @@ state 207
 	lambda  goto 32
 	if  goto 33
 	do_while  goto 34
-	inicio_par_variable_constante  goto 35
+	inicio_asignacion_par  goto 35
 	parametro_lambda  goto 36
 
 
@@ -2850,16 +2850,16 @@ state 226
 
 
 state 227
-	constante_comada : constante . ','  (67)
-	constante_comada : constante .  (68)
+	constante_con_coma : constante . ','  (69)
+	constante_con_coma : constante .  (70)
 
 	','  shift 258
-	CTE  reduce 68
-	'-'  reduce 68
+	CTE  reduce 70
+	'-'  reduce 70
 
 
 state 228
-	par_variable_constante : variable_comada par_variable_constante constante_comada .  (65)
+	asignacion_par : variable_con_coma asignacion_par constante_con_coma .  (65)
 
 	.  reduce 65
 
@@ -2871,13 +2871,13 @@ state 229
 
 
 state 230
-	asignacion_multiple : inicio_par_variable_constante ',' lista_constantes error .  (63)
+	asignacion_multiple : inicio_asignacion_par ',' lista_constantes error .  (63)
 
 	.  reduce 63
 
 
 state 231
-	asignacion_multiple : inicio_par_variable_constante ',' lista_constantes ';' .  (61)
+	asignacion_multiple : inicio_asignacion_par ',' lista_constantes ';' .  (61)
 
 	.  reduce 61
 
@@ -3034,7 +3034,7 @@ state 250
 	lambda  goto 32
 	if  goto 33
 	do_while  goto 34
-	inicio_par_variable_constante  goto 35
+	inicio_asignacion_par  goto 35
 	parametro_lambda  goto 36
 
 
@@ -3081,9 +3081,9 @@ state 257
 
 
 state 258
-	constante_comada : constante ',' .  (67)
+	constante_con_coma : constante ',' .  (69)
 
-	.  reduce 67
+	.  reduce 69
 
 
 state 259
@@ -3151,7 +3151,7 @@ state 265
 	lambda  goto 32
 	if  goto 33
 	do_while  goto 34
-	inicio_par_variable_constante  goto 35
+	inicio_asignacion_par  goto 35
 	parametro_lambda  goto 36
 
 
@@ -3196,7 +3196,7 @@ state 268
 	lambda  goto 32
 	if  goto 33
 	do_while  goto 34
-	inicio_par_variable_constante  goto 35
+	inicio_asignacion_par  goto 35
 	parametro_lambda  goto 36
 
 
