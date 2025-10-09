@@ -1,7 +1,5 @@
 PROGRAMA {
 
-    ##A := 3UI
-    print("Hola");##
-
-    A := -23UI 78UI;
+    A := 45UI
+    print("Hola");
 }

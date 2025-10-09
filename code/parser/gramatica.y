@@ -278,7 +278,7 @@ lista_variables
 // ********************************************************************************************************************
 // Asignación Simple
 // ********************************************************************************************************************
-
+/*
 asignacion_simple
     : variable DASIG expresion ';'                              
         { notifyDetection("Asignación simple."); }
@@ -308,6 +308,23 @@ asignable
     | expresion operador_suma termino error
     | termino operador_multiplicacion factor error
     //| expresion error
+    ;*/
+
+
+asignacion_simple
+    : variable DASIG expresion ';'                              
+        { notifyDetection("Asignación simple."); }
+
+    // |========================= REGLAS DE ERROR =========================| //
+
+    | variable DASIG expresion error
+        { notifyError("Las asignaciones simples deben terminar con ';'."); }
+        
+    | variable error expresion ';'
+        { notifyError("Error en asignación simple. Se esperaba un ':=' entre la variable y la expresión."); }
+
+    | variable expresion ';'
+        { notifyError("Error en asignación simple. Se esperaba un ':=' entre la variable y la expresión."); }
     ;
 
 // ********************************************************************************************************************
@@ -871,7 +888,7 @@ public Parser(Lexer lexer) {
     this.errorsDetected = this.warningsDetected = 0;
     
     // Descomentar la siguiente línea para activar el debugging.
-    //yydebug = true;
+    yydebug = true;
 }
 
 // --------------------------------------------------------------------------------------------------------------------
