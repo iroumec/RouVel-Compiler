@@ -47,11 +47,15 @@ public final class Printer {
     }
 
     public static void printIntroduction(String fileName) {
-        System.out.println('\n');
+        printBlankSpace();
         printBigSeparator();
         System.out.println("| Resultados de la Compilación del Archivo: " + fileName + "                |");
         printBigSeparator();
-        System.out.println('\n');
+        printBlankSpace();
+    }
+
+    public static void printBlankSpace() {
+        System.out.print('\n');
     }
 
     private static boolean wasThereNoSeparatorBefore() {

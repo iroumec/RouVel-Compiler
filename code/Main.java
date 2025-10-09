@@ -32,13 +32,20 @@ public class Main {
         sintacticalAnalyzer.execute();
         Printer.printSeparation();
 
-        System.out.println("\nEl programa tiene " + lexicalAnalyzer.getNroLinea() + " líneas.");
+        String reporte = """
+                    El programa tiene %d líneas. \
+                Se detectaron %d warnings y %d errores. \
+                """.formatted(
+                lexicalAnalyzer.getNroLinea(),
+                lexicalAnalyzer.getWarningsDetected() + sintacticalAnalyzer.getWarningsDetected(),
+                lexicalAnalyzer.getErrorsDetected() + sintacticalAnalyzer.getErrorsDetected());
+        Printer.printBlankSpace();
+        Printer.printBigSeparator();
+        Printer.print(reporte);
+        Printer.printBigSeparator();
+        Printer.printBlankSpace();
 
-        int warningsDetected = lexicalAnalyzer.getWarningsDetected() + sintacticalAnalyzer.getErrorsDetected();
-        int errorsDetected = lexicalAnalyzer.getErrorsDetected() + sintacticalAnalyzer.getErrorsDetected();
-
-        System.out.printf("\nSe detectaron %d warnings y %d errores.\n", warningsDetected, errorsDetected);
-        System.out.println("\nTabla de símbolos:");
+        System.out.println("Tabla de símbolos:");
         SymbolTable.getInstance().imprimirTabla();
     }
 }
