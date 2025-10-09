@@ -22,38 +22,37 @@ public class Symbol {
 
     @Override
     public String toString() {
-    int extraSpacesName = 20 - name.length();
-    int extraSpacesType = 6 ;//- Objects.toString(type, "").length();
-    int extraSpacesCategory = 11 ;//- Objects.toString(category, "").length();
-    int extraSpacesScope = 9 ;//- Objects.toString(scope, "").length();
-    int extraSpacesExtra = 7 ;//- Objects.toString(extra, "").length();
-    int extraSpacesReferences = 2;
+        int extraSpacesName = 20 - name.length();
+        int extraSpacesType = 6;// - Objects.toString(type, "").length();
+        int extraSpacesCategory = 11;// - Objects.toString(category, "").length();
+        int extraSpacesScope = 9;// - Objects.toString(scope, "").length();
+        int extraSpacesExtra = 7;// - Objects.toString(extra, "").length();
+        int extraSpacesReferences = 2;
 
-    return " | " +
-        name 
-            + " ".repeat(Math.max(0, extraSpacesName)) + " | " + 
-        //type +
-            " ".repeat(Math.max(0, extraSpacesType)) + " | " + 
-        //category +
-            " ".repeat(Math.max(0, extraSpacesCategory)) + " | " + 
-        //scope +
-            " ".repeat(Math.max(0, extraSpacesScope)) + " | " + 
-        //extra +
-            " ".repeat(Math.max(0, extraSpacesExtra)) + " | " +
-        references +
-            " ".repeat(Math.max(0, extraSpacesReferences)) + " | "
-        ;
+        return " | " +
+                name
+                + " ".repeat(Math.max(0, extraSpacesName)) + " | " +
+                // type +
+                " ".repeat(Math.max(0, extraSpacesType)) + " | " +
+                // category +
+                " ".repeat(Math.max(0, extraSpacesCategory)) + " | " +
+                // scope +
+                " ".repeat(Math.max(0, extraSpacesScope)) + " | " +
+                // extra +
+                " ".repeat(Math.max(0, extraSpacesExtra)) + " | " +
+                references +
+                " ".repeat(Math.max(0, extraSpacesReferences)) + " | ";
     }
 
-    public void incrementarReferencias(){
+    public void incrementarReferencias() {
         this.references++;
     }
 
-    public void decrementarReferencias(){
+    public void decrementarReferencias() {
         this.references--;
     }
 
     public boolean sinReferencias() {
-        return (0 == references);
+        return references == 0;
     }
 }

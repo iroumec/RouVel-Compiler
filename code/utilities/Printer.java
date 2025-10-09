@@ -3,6 +3,9 @@ package utilities;
 public final class Printer {
 
     private final static String SEPARATOR = "------------------------------------";
+    private final static String OLD_SEPARATION = "-———————————————————————————————————————————————————————————————————————————-";
+    private final static String BIG_SEPARATION = " |=========================================================================|";
+    private final static String BIG_SEPARATOR = "|=========================================================================|";
     private static String lastMessagePrinted = null;
 
     private Printer() {
@@ -31,6 +34,24 @@ public final class Printer {
             System.out.println(SEPARATOR);
             lastMessagePrinted = SEPARATOR;
         }
+    }
+
+    public static void printBigSeparation() {
+
+        System.out.println(BIG_SEPARATION);
+    }
+
+    public static void printBigSeparator() {
+
+        System.out.println(BIG_SEPARATOR);
+    }
+
+    public static void printIntroduction(String fileName) {
+        System.out.println('\n');
+        printBigSeparator();
+        System.out.println("| Resultados de la Compilación del Archivo: " + fileName + "                |");
+        printBigSeparator();
+        System.out.println('\n');
     }
 
     private static boolean wasThereNoSeparatorBefore() {

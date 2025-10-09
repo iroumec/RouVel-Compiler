@@ -120,7 +120,7 @@ public final class DataManager {
         // Estado 8
         Arrays.fill(STATE_TRANSITION_MATRIX[8], 8);
         STATE_TRANSITION_MATRIX[8][charToIndex('"')] = ESTADO_ACEPTACION;
-        STATE_TRANSITION_MATRIX[8][charToIndex('n')] = -8;
+        STATE_TRANSITION_MATRIX[8][charToIndex('n')] = -7;
 
         // Estado 9
         Arrays.fill(STATE_TRANSITION_MATRIX[9], ESTADO_ACEPTACION);
@@ -146,7 +146,7 @@ public final class DataManager {
         Arrays.fill(STATE_TRANSITION_MATRIX[14], ESTADO_ACEPTACION);
 
         // Estado 15
-        Arrays.fill(STATE_TRANSITION_MATRIX[15], -9);
+        Arrays.fill(STATE_TRANSITION_MATRIX[15], -8);
         STATE_TRANSITION_MATRIX[15][charToIndex('#')] = 16;
 
         // Estado 16

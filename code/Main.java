@@ -22,7 +22,7 @@ public class Main {
             return;
         }
 
-        System.out.println("\n=== Resultados de la Compilación del Archivo: " + file.getName() + " ===\n");
+        Printer.printIntroduction(file.getName());
 
         Lexer lexicalAnalyzer = new Lexer(file.getPath());
 
