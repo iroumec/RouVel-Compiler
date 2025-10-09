@@ -79,8 +79,7 @@ programa
     // El error se muestra al comienzo y no, al final.
     | { notifyError("El programa requiere de un nombre."); } programa_sin_nombre
 
-    | error ID
-        { notifyError("Inicio de programa inválido. Este debe seguir la estructura: <NOMBRE%PROGRAMA> { ... }."); }
+    | error { notifyError("Inicio de programa inválido. Se encontraron, previo al nombre del programa, sentencias."); } ID cuerpo_programa
         
     | error EOF
         { notifyError("Se llegó al fin del programa sin encontrar un programa válido."); }
@@ -114,7 +113,7 @@ cuerpo_programa_recuperacion
     | // lambda //
         { notifyError("El programa no posee ningún cuerpo."); }
     | '{' error '}'
-        { notifyError("Las sentencias del programa no tuvieron un cierre adecuado. ¿Algún ';' o '}' faltantes?"); }
+        { notifyError("Cierre inesperado del programa. Verifique llaves '{...}' y puntos y coma ';' faltantes."); }
     ;
 
 // --------------------------------------------------------------------------------------------------------------------
@@ -280,38 +279,6 @@ lista_variables
 // ********************************************************************************************************************
 // Asignación Simple
 // ********************************************************************************************************************
-/*
-asignacion_simple
-    : variable DASIG expresion ';'                              
-        { notifyDetection("Asignación simple."); }
-
-    // |========================= REGLAS DE ERROR =========================| //
-
-    | variable DASIG asignable
-        { notifyError("Las asignaciones simples deben terminar con ';'."); }
-        
-    | variable error expresion ';'
-        { notifyError("Error en asignación simple. Se esperaba un ':=' entre la variable y la expresión."); }
-
-    | variable expresion ';'
-        { notifyError("Error en asignación simple. Se esperaba un ':=' entre la variable y la expresión."); }
-    ;
-
-// --------------------------------------------------------------------------------------------------------------------
-
-// Parche. Por alguna razón, si la regla es "variable DASIG expresion error", nunca la detecta ya que NO REDUCE
-// a expresion.
-// Hace que funcione bien (detecte correctamente el ';' faltante y la siguiente sentencia), siempre y cuando no
-// falten operandos u operadores.
-// Por otro lado, si solo se pone la regla "expresion error", anda bien si falta un operador. Si falta un operando,
-// detecta la falta de punto y coma, pero no muestra el mensaje de error. Para otros casos, no funciona bien.
-asignable
-    : factor error
-    | expresion operador_suma termino error
-    | termino operador_multiplicacion factor error
-    //| expresion error
-    ;*/
-
 
 asignacion_simple
     : variable DASIG expresion ';'                              
@@ -320,13 +287,14 @@ asignacion_simple
     // |========================= REGLAS DE ERROR =========================| //
 
     | variable DASIG expresion error
+        // Nunca reduce por esta regla por alguna razón que se desconoce.
         { notifyError("Las asignaciones simples deben terminar con ';'."); }
-        
-    | variable error expresion ';'
-        { notifyError("Error en asignación simple. Se esperaba un ':=' entre la variable y la expresión."); }
 
     | variable expresion ';'
         { notifyError("Error en asignación simple. Se esperaba un ':=' entre la variable y la expresión."); }
+
+    | variable error
+        { notifyError("Asignación simple inválida."); }
     ;
 
 // ********************************************************************************************************************

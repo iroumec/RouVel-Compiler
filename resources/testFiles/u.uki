@@ -1,5 +1,6 @@
-PROGRAMA {
+if PROGRAMA {
 
-    A := 45UI
+    A := 45UI;
     print("Hola");
+    print("Hi");
 }
