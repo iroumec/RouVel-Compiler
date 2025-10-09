@@ -1,0 +1,28 @@
+EJECUTABLES {
+
+    ## Errores en invocaciones a funciones ##
+    F1(A->X);                   ## Válido ##
+    F1(A->X)                    ## Falta de punto y coma ##
+    F1(A);                      ## Falta de especificación del parámetro formal al que corresponde el parámetro real ##
+
+    ## Errores en asignaciones simples ##
+    A := B;                     ## Válido ##
+    A := B                      ## Falta de punto y coma ##
+    A    B;                     ## Falta de ':=' ##
+
+    ## Errores en asignaciones múltiples ##
+    A = 1UI;                    ## Válido ##
+    A = 1UI, 2.0;               ## Válido ##
+    A = 1UI                     ## Falta de punto y coma ##
+    A = 1UI, 2.0                ## Falta de punto y coma ##
+
+    A, B = 1UI 2.0;             ## Falta de coma entre constantes ##
+    A, B = 1UI 2.0, 3.0 0.0     ## Falta de comas entre constantes ##
+    A B = 1UI, 2.0;             ## Falta de coma entre variables ##
+    A, B C = 1UI, 2.0, 3.0      ## Falta de coma entre variables ##
+    A B C = 1UI 2.0 3.0 0.0     ## Falta de comas ##
+
+    ## Errores en sentencia de control IF ##
+    if (A == B) A := B + 1; endif;                  ## Válido ##
+    if (A == B) A := B + 1; else A := B; endif;     ## Válido ##
+}

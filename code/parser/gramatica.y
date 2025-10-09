@@ -167,9 +167,7 @@ punto_y_coma_opcional
     | ';'
     ;
 
-// ********************************************************************************************************************
-// Sentencias ejecutables
-// ********************************************************************************************************************
+// --------------------------------------------------------------------------------------------------------------------
 
 cuerpo_ejecutable
     : sentencia_ejecutable
@@ -194,7 +192,9 @@ conjunto_sentencias_ejecutables
     | conjunto_sentencias_ejecutables sentencia_ejecutable
     ;
 
-// --------------------------------------------------------------------------------------------------------------------
+// ********************************************************************************************************************
+// Sentencias ejecutables
+// ********************************************************************************************************************
 
 sentencia_ejecutable
     : invocacion_funcion ';' // Contexto en el que es invocada en línea.
@@ -389,7 +389,6 @@ lista_constantes
             notifyError(String.format(
                 "Se encontraron dos constantes juntas sin una coma de separación. Inserte una ',' entre '%s' y '%s'.",
                 $1, $2));
-            // $$ = $1 + '_' + $2;
         }
     ;
 
@@ -443,7 +442,7 @@ termino
     | termino operador_multiplicacion error
         {
             notifyError(String.format(
-                "Falta de operando en expresión luego de %s %s.",
+                "Falta de operando en expresión luego de '%s %s'.",
                 $1, $2)
             );
         }
@@ -461,7 +460,7 @@ termino_simple
     // |========================= REGLAS DE ERROR =========================| //
 
     | termino_simple operador_multiplicacion error
-        { notifyError(String.format("Falta de operando en expresión luego de %s %s.",$1, $2)); }
+        { notifyError(String.format("Falta de operando en expresión luego de '%s %s'.",$1, $2)); }
     ;
 
 // --------------------------------------------------------------------------------------------------------------------

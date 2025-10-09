@@ -16,14 +16,14 @@
 
 
 
-//#line 10 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+//#line 10 "gramatica.y"
     package parser;
 
     import lexer.Lexer;
     import common.Token;
     import common.SymbolTable;
     import utilities.Printer;
-//#line 32 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+//#line 32 "gramatica.y"
 /*typedef union {
     String sval;
 } YYSTYPE; */
@@ -732,7 +732,11 @@ final static String yyrule[] = {
 "parametro_lambda : '(' UINT ID ')'",
 };
 
+<<<<<<< HEAD
 //#line 873 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+=======
+//#line 856 "gramatica.y"
+>>>>>>> 1567ea8a0ce62ad1b7919552b7b7c5484ddce056
 
 // ====================================================================================================================
 // INICIO DE CÓDIGO (opcional)
@@ -1005,103 +1009,103 @@ boolean doaction;
       {
 //########## USER-SUPPLIED ACTIONS ##########
 case 1:
-//#line 70 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+//#line 70 "gramatica.y"
 { notifyDetection("Programa."); }
 break;
 case 3:
-//#line 77 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+//#line 77 "gramatica.y"
 { notifyError("Las sentencias del programa deben estar delimitadas por llaves."); }
 break;
 case 4:
-//#line 80 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+//#line 80 "gramatica.y"
 { notifyError("El programa requiere de un nombre."); }
 break;
 case 6:
-//#line 83 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+//#line 83 "gramatica.y"
 { notifyError("Inicio de programa inválido. Este debe seguir la estructura: <NOMBRE%PROGRAMA> { ... }."); }
 break;
 case 7:
-//#line 86 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+//#line 86 "gramatica.y"
 { notifyError("Se llegó al fin del programa sin encontrar un programa válido."); }
 break;
 case 11:
-//#line 107 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+//#line 107 "gramatica.y"
 { notifyError("Se encontraron múltiples llaves al final del programa."); }
 break;
 case 12:
-//#line 110 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+//#line 110 "gramatica.y"
 { notifyError("Se encontraron múltiples llaves al comienzo del programa."); }
 break;
 case 14:
-//#line 113 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+//#line 113 "gramatica.y"
 { notifyError("El programa no posee ninguna sentencia."); }
 break;
 case 15:
-//#line 115 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+//#line 115 "gramatica.y"
 { notifyError("El programa no posee ningún cuerpo."); }
 break;
 case 16:
-//#line 117 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+//#line 117 "gramatica.y"
 { notifyError("Las sentencias del programa no tuvieron un cierre adecuado. ¿Algún ';' o '}' faltantes?"); }
 break;
 case 23:
-//#line 143 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+//#line 143 "gramatica.y"
 { notifyError("Error capturado a nivel de sentencia."); }
 break;
 case 27:
-//#line 160 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+//#line 160 "gramatica.y"
 { notifyDetection("Declaración de función."); }
 break;
 case 33:
-//#line 187 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+//#line 187 "gramatica.y"
 { notifyError("El cuerpo de la sentencia no puede estar vacío."); }
 break;
 case 36:
-//#line 201 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+//#line 201 "gramatica.y"
 { notifyDetection("Invocación de función."); }
 break;
 case 43:
-//#line 212 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+//#line 212 "gramatica.y"
 { notifyError("La invocación a función debe terminar con ';'."); }
 break;
 case 46:
-//#line 228 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+//#line 228 "gramatica.y"
 { notifyDetection("Declaración de variables."); }
 break;
 case 47:
-//#line 231 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+//#line 231 "gramatica.y"
 { notifyDetection("Declaración de variable."); }
 break;
 case 48:
-//#line 236 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+//#line 236 "gramatica.y"
 {
             notifyError("La declaración de variable debe terminar con ';'.");
         }
 break;
 case 49:
-//#line 240 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+//#line 240 "gramatica.y"
 {
             notifyError("La declaración de variables debe terminar con ';'.");
         }
 break;
 case 50:
-//#line 244 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+//#line 244 "gramatica.y"
 {
             notifyError("Declaración de variables inválida.");
         }
 break;
 case 51:
-//#line 248 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+//#line 248 "gramatica.y"
 {
             notifyError("La declaración de variables y la asignación de un valor a estas debe realizarse en dos sentencias separadas.");
         }
 break;
 case 53:
-//#line 258 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+//#line 258 "gramatica.y"
 { yyval.sval = val_peek(0).sval; }
 break;
 case 54:
-//#line 263 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+//#line 263 "gramatica.y"
 {
             notifyError(String.format(
                 "Se encontraron dos variables juntas sin separación. Inserte una ',' entre '%s' y '%s'.",
@@ -1110,7 +1114,7 @@ case 54:
         }
 break;
 case 55:
-//#line 270 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+//#line 270 "gramatica.y"
 {
             notifyError(String.format(
                 "Se encontraron dos variables juntas sin separación. Inserte una ',' entre '%s' y '%s'.",
@@ -1119,6 +1123,7 @@ case 55:
         }
 break;
 case 56:
+<<<<<<< HEAD
 //#line 316 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
 { notifyDetection("Asignación simple."); }
 break;
@@ -1132,6 +1137,21 @@ case 58:
 break;
 case 59:
 //#line 327 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+=======
+//#line 284 "gramatica.y"
+{ notifyDetection("Asignación simple."); }
+break;
+case 57:
+//#line 289 "gramatica.y"
+{ notifyError("Las asignaciones simples deben terminar con ';'."); }
+break;
+case 58:
+//#line 292 "gramatica.y"
+{ notifyError("Error en asignación simple. Se esperaba un ':=' entre la variable y la expresión."); }
+break;
+case 59:
+//#line 295 "gramatica.y"
+>>>>>>> 1567ea8a0ce62ad1b7919552b7b7c5484ddce056
 { notifyError("Error en asignación simple. Se esperaba un ':=' entre la variable y la expresión."); }
 break;
 case 60:
@@ -1147,6 +1167,7 @@ case 62:
 { notifyDetection("La asignación múltiple debe terminar con ';'."); }
 break;
 case 63:
+<<<<<<< HEAD
 //#line 346 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
 { notifyDetection("La asignación múltiple debe terminar con ';'."); }
 break;
@@ -1164,6 +1185,37 @@ case 72:
 break;
 case 73:
 //#line 388 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+=======
+//#line 320 "gramatica.y"
+{ notifyDetection("Asignación múltiple."); }
+break;
+case 64:
+//#line 322 "gramatica.y"
+{ notifyDetection("Asignación múltiple."); }
+break;
+case 65:
+//#line 327 "gramatica.y"
+{ notifyDetection("La asignación múltiple debe terminar con ';'."); }
+break;
+case 66:
+//#line 329 "gramatica.y"
+{ notifyDetection("La asignación múltiple debe terminar con ';'."); }
+break;
+case 71:
+//#line 350 "gramatica.y"
+{ notifyError(String.format("Falta coma luego de constante '%s' en asignación múltiple.", val_peek(0).sval)); }
+break;
+case 73:
+//#line 358 "gramatica.y"
+{ notifyError(String.format("Falta coma antes de variable '%s' en asignación múltiple.", val_peek(0).sval)); }
+break;
+case 75:
+//#line 366 "gramatica.y"
+{ yyval.sval = val_peek(0).sval; }
+break;
+case 76:
+//#line 371 "gramatica.y"
+>>>>>>> 1567ea8a0ce62ad1b7919552b7b7c5484ddce056
 {
             notifyError(String.format(
                 "Se encontraron dos constantes juntas sin una coma de separación. Inserte una ',' entre '%s' y '%s'.",
@@ -1171,30 +1223,50 @@ case 73:
             /* $$ = $1 + '_' + $2;*/
         }
 break;
+<<<<<<< HEAD
 case 75:
 //#line 403 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
 { yyval.sval = val_peek(0).sval; }
 break;
 case 76:
 //#line 408 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+=======
+case 78:
+//#line 386 "gramatica.y"
+{ yyval.sval = val_peek(0).sval; }
+break;
+case 79:
+//#line 391 "gramatica.y"
+>>>>>>> 1567ea8a0ce62ad1b7919552b7b7c5484ddce056
 {  
             notifyError(String.format("Falta de operando en expresión luego de %s %s.", val_peek(2).sval, val_peek(1).sval));
         }
 break;
+<<<<<<< HEAD
 case 77:
 //#line 412 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+=======
+case 80:
+//#line 395 "gramatica.y"
+>>>>>>> 1567ea8a0ce62ad1b7919552b7b7c5484ddce056
 {
             notifyError(String.format("Falta de operador entre operandos %s y %s.", val_peek(1).sval, val_peek(0).sval));
             yyval.sval = val_peek(0).sval;
         }
 break;
+<<<<<<< HEAD
 case 78:
 //#line 419 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+=======
+case 81:
+//#line 402 "gramatica.y"
+>>>>>>> 1567ea8a0ce62ad1b7919552b7b7c5484ddce056
 {
             notifyError(String.format("Falta de operando en expresión previo a '+ %s'.",val_peek(0).sval));
             yyval.sval = val_peek(0).sval;
         }
 break;
+<<<<<<< HEAD
 case 79:
 //#line 429 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
 { yyval.sval = "+"; }
@@ -1209,13 +1281,30 @@ case 81:
 break;
 case 83:
 //#line 444 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+=======
+case 82:
+//#line 412 "gramatica.y"
+{ yyval.sval = "+"; }
+break;
+case 83:
+//#line 414 "gramatica.y"
+{ yyval.sval = "-"; }
+break;
+case 84:
+//#line 421 "gramatica.y"
+{ yyval.sval = val_peek(2).sval; }
+break;
+case 86:
+//#line 427 "gramatica.y"
+>>>>>>> 1567ea8a0ce62ad1b7919552b7b7c5484ddce056
 {
             notifyError(String.format(
-                "Falta de operando en expresión luego de %s %s.",
+                "Falta de operando en expresión luego de '%s %s'.",
                 val_peek(2).sval, val_peek(1).sval)
             );
         }
 break;
+<<<<<<< HEAD
 case 84:
 //#line 451 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
 { notifyError(String.format("Falta operador previo a '%s %s'",val_peek(1).sval,val_peek(0).sval)); }
@@ -1238,6 +1327,30 @@ case 89:
 break;
 case 97:
 //#line 500 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+=======
+case 87:
+//#line 434 "gramatica.y"
+{ notifyError(String.format("Falta operador previo a '%s %s'",val_peek(1).sval,val_peek(0).sval)); }
+break;
+case 88:
+//#line 441 "gramatica.y"
+{ yyval.sval = val_peek(2).sval; }
+break;
+case 90:
+//#line 447 "gramatica.y"
+{ notifyError(String.format("Falta de operando en expresión luego de '%s %s'.",val_peek(2).sval, val_peek(1).sval)); }
+break;
+case 91:
+//#line 454 "gramatica.y"
+{ yyval.sval = "/"; }
+break;
+case 92:
+//#line 456 "gramatica.y"
+{ yyval.sval = "*"; }
+break;
+case 100:
+//#line 483 "gramatica.y"
+>>>>>>> 1567ea8a0ce62ad1b7919552b7b7c5484ddce056
 { 
             yyval.sval = "-" + val_peek(0).sval;
 
@@ -1251,6 +1364,7 @@ case 97:
             modificarSymbolTable(yyval.sval,val_peek(0).sval);
         }
 break;
+<<<<<<< HEAD
 case 99:
 //#line 519 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
 { yyval.sval = val_peek(2).sval + "." + val_peek(0).sval; }
@@ -1373,10 +1487,135 @@ case 151:
 break;
 case 152:
 //#line 753 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+=======
+case 102:
+//#line 502 "gramatica.y"
+{ yyval.sval = val_peek(2).sval + "." + val_peek(0).sval; }
+break;
+case 103:
+//#line 511 "gramatica.y"
+{ notifyDetection("Condición."); }
+break;
+case 104:
+//#line 516 "gramatica.y"
+{ notifyError("Falta apertura de paréntesis en condición."); }
+break;
+case 105:
+//#line 519 "gramatica.y"
+{ notifyError("La condición no puede estar vacía."); }
+break;
+case 106:
+//#line 522 "gramatica.y"
+{ notifyError("La condición debe ir entre paréntesis."); }
+break;
+case 107:
+//#line 525 "gramatica.y"
+{ notifyError("Falta cierre de paréntesis en condición."); }
+break;
+case 109:
+//#line 537 "gramatica.y"
+{ notifyError("Falta de comparador en comparación."); }
+break;
+case 116:
+//#line 553 "gramatica.y"
+{ notifyError("Se esperaba un comparador y se encontró el operador de asignación '='. ¿Quiso colocar '=='?"); }
+break;
+case 117:
+//#line 562 "gramatica.y"
+{ notifyDetection("Sentencia IF."); }
+break;
+case 118:
+//#line 567 "gramatica.y"
+{ notifyError("La sentencia IF debe terminar con ';'."); }
+break;
+case 119:
+//#line 569 "gramatica.y"
+{ notifyError("La sentencia IF debe finalizar con 'endif'."); }
+break;
+case 120:
+//#line 571 "gramatica.y"
+{ notifyError("La sentencia IF debe finalizar con 'endif' y ';'."); }
+break;
+case 121:
+//#line 573 "gramatica.y"
+{ notifyError("Sentencia IF inválida."); }
+break;
+case 124:
+//#line 589 "gramatica.y"
+{ notifyDetection("Sentencia 'do-while'."); }
+break;
+case 125:
+//#line 594 "gramatica.y"
+{ notifyError("La sentencia 'do-while' debe terminar con ';'."); }
+break;
+case 126:
+//#line 596 "gramatica.y"
+{ notifyError("Sentencia 'do-while' inválida."); }
+break;
+case 129:
+//#line 613 "gramatica.y"
+{ notifyError("Debe especificarse un cuerpo para la sentencia do-while."); }
+break;
+case 130:
+//#line 615 "gramatica.y"
+{ notifyError("Falta 'while'."); }
+break;
+case 133:
+//#line 634 "gramatica.y"
+{ notifyError("La función requiere de un nombre."); }
+break;
+case 135:
+//#line 646 "gramatica.y"
+{ notifyError("El cuerpo de la función no puede estar vacío."); }
+break;
+case 138:
+//#line 663 "gramatica.y"
+{ notifyError("Toda función debe recibir al menos un parámetro."); }
+break;
+case 141:
+//#line 675 "gramatica.y"
+{ notifyError("Se halló un parámetro formal vacío."); }
+break;
+case 145:
+//#line 693 "gramatica.y"
+{ notifyError("Falta de nombre de parámetro formal en declaración de función."); }
+break;
+case 146:
+//#line 695 "gramatica.y"
+{ notifyError("Falta de tipo de parámetro formal en declaración de función."); }
+break;
+case 149:
+//#line 707 "gramatica.y"
+{ notifyError("Semántica de pasaje de parámetro inválida."); }
+break;
+case 150:
+//#line 716 "gramatica.y"
+{ notifyDetection("Sentencia RETURN."); }
+break;
+case 151:
+//#line 721 "gramatica.y"
+{ notifyError("La sentencia RETURN debe terminar con ';'."); }
+break;
+case 152:
+//#line 723 "gramatica.y"
+{ notifyError("El retorno no puede estar vacío."); }
+break;
+case 153:
+//#line 725 "gramatica.y"
+{ notifyError("El resultado a retornar debe ir entre paréntesis."); }
+break;
+case 154:
+//#line 727 "gramatica.y"
+{ notifyError("Sentencia RETURN inválida."); }
+break;
+case 155:
+//#line 736 "gramatica.y"
+>>>>>>> 1567ea8a0ce62ad1b7919552b7b7c5484ddce056
 {
             yyval.sval = val_peek(3).sval + '(' + val_peek(1).sval + ')';
         }
 break;
+<<<<<<< HEAD
 case 154:
 //#line 763 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
 { yyval.sval = val_peek(0).sval; }
@@ -1435,6 +1674,66 @@ case 172:
 break;
 case 173:
 //#line 853 "/home/iroumec/Documents/University/Compiladores e Intérpretes/TPE-Compiler/code/parser/gramatica.y"
+=======
+case 157:
+//#line 746 "gramatica.y"
+{ yyval.sval = val_peek(0).sval; }
+break;
+case 158:
+//#line 753 "gramatica.y"
+{ yyval.sval = val_peek(2).sval + val_peek(1).sval + val_peek(0).sval; }
+break;
+case 159:
+//#line 758 "gramatica.y"
+{ notifyError("Falta de especificación del parámetro formal al que corresponde el parámetro real."); }
+break;
+case 160:
+//#line 767 "gramatica.y"
+{ notifyDetection("Sentencia 'print'."); }
+break;
+case 161:
+//#line 772 "gramatica.y"
+{ notifyError("La sentencia 'print' debe finalizar con ';'."); }
+break;
+case 163:
+//#line 783 "gramatica.y"
+{ notifyError("La sentencia 'print' requiere de al menos un argumento."); }
+break;
+case 164:
+//#line 786 "gramatica.y"
+{ notifyError("El imprimible debe encerrarse entre paréntesis."); }
+break;
+case 165:
+//#line 788 "gramatica.y"
+{ notifyError("La sentencia 'print' requiere de un argumento entre paréntesis."); }
+break;
+case 169:
+//#line 811 "gramatica.y"
+{ notifyDetection("Expresión lambda."); }
+break;
+case 170:
+//#line 816 "gramatica.y"
+{ notifyDetection("La expresión 'lambda' debe terminar con ';'."); }
+break;
+case 171:
+//#line 818 "gramatica.y"
+{ notifyDetection("Falta delimitador de cierre en expresión 'lambda'."); }
+break;
+case 172:
+//#line 820 "gramatica.y"
+{ notifyDetection("Faltan delimitadores en el conjunto de sentencias de la expresión 'lambda'."); }
+break;
+case 173:
+//#line 822 "gramatica.y"
+{ notifyDetection("Falta delimitador de apertura en expresión 'lambda'."); }
+break;
+case 175:
+//#line 833 "gramatica.y"
+{ notifyError("El argumento de la expresión 'lambda' no puede estar vacío."); }
+break;
+case 176:
+//#line 836 "gramatica.y"
+>>>>>>> 1567ea8a0ce62ad1b7919552b7b7c5484ddce056
 { notifyError("La expresión 'lambda' requiere de un argumento entre paréntesis."); }
 break;
 //#line 1364 "Parser.java"
