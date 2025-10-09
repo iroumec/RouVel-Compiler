@@ -1,5 +1,7 @@
 PROGRAMA {
 
-    A := 3UI
-    print("Hola");
+    ##A := 3UI
+    print("Hola");##
+
+    A := 3UI 4UI * -2.0;
 }

@@ -117,7 +117,7 @@
   84          | factor
   85          | termino operador_multiplicacion error
 
-  86  termino_simple : termino_simple operador_multiplicacion factor_simple
+  86  termino_simple : termino_simple operador_multiplicacion factor
   87                 | factor_simple
   88                 | termino_simple operador_multiplicacion error
 
@@ -1686,7 +1686,7 @@ state 114
 
 state 115
 	expresion : expresion termino_simple .  (80)
-	termino_simple : termino_simple . operador_multiplicacion factor_simple  (86)
+	termino_simple : termino_simple . operador_multiplicacion factor  (86)
 	termino_simple : termino_simple . operador_multiplicacion error  (88)
 
 	'/'  shift 120
@@ -2499,17 +2499,19 @@ state 197
 
 
 state 198
-	termino_simple : termino_simple operador_multiplicacion . factor_simple  (86)
+	termino_simple : termino_simple operador_multiplicacion . factor  (86)
 	termino_simple : termino_simple operador_multiplicacion . error  (88)
 
 	error  shift 244
 	ID  shift 8
-	CTE  shift 112
+	CTE  shift 43
+	'-'  shift 45
 	.  error
 
-	factor_simple  goto 245
-	variable  goto 118
-	invocacion_funcion  goto 119
+	factor  goto 245
+	variable  goto 50
+	constante  goto 51
+	invocacion_funcion  goto 52
 
 
 state 199
@@ -2910,7 +2912,7 @@ state 244
 
 
 state 245
-	termino_simple : termino_simple operador_multiplicacion factor_simple .  (86)
+	termino_simple : termino_simple operador_multiplicacion factor .  (86)
 
 	.  reduce 86
 

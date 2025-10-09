@@ -434,7 +434,7 @@ termino
 // --------------------------------------------------------------------------------------------------------------------
 
 termino_simple
-    : termino_simple operador_multiplicacion factor_simple
+    : termino_simple operador_multiplicacion factor
         { $$ = $1; }
     | factor_simple
 
