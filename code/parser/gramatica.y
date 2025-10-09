@@ -197,7 +197,9 @@ conjunto_sentencias_ejecutables
 // ********************************************************************************************************************
 
 sentencia_ejecutable
-    : invocacion_funcion ';' // Contexto en el que es invocada en línea.
+    : invocacion_funcion ';'
+        // Contexto en el que es invocada en línea.
+        // No puede colocarse en las reglas propias porque se usa en factor.
         { notifyDetection("Invocación de función."); }
     | asignacion_simple
     | asignacion_multiple
