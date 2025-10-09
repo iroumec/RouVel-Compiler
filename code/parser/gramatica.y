@@ -315,7 +315,6 @@ asignable
 // ********************************************************************************************************************
 
 //Estas asignaciones pueden tener un menor número de elementos del lado izquierdo (tema 17).
-/*
 asignacion_multiple 
     : inicio_par_variable_constante ';'
         { notifyDetection("Asignación múltiple."); }
@@ -334,104 +333,35 @@ asignacion_multiple
 
 inicio_par_variable_constante
     : variable par_variable_constante constante
+    | doble_variable par_variable_constante constante_comada constante
+    ;
 
-    // |========================= REGLAS DE ERROR =========================| //
+// --------------------------------------------------------------------------------------------------------------------
 
-    | variable variable par_variable_constante constante ',' constante
-    { notifyError("Falta coma en la lista de variables de la asignación múltiple."); }
-    | variable secuencia_variable_sin_coma constante
-    { notifyError("Falta coma en la lista de variables de la asignación múltiple."); }
+// Necesario para permitir la posibilidad de que las priemras dos variables no tengan coma y que no se produzca un shift/reduce con factor.
+doble_variable
+    : variable variable
+        { notifyError(String.format("Falta coma antes de variable '%s' en asignación múltiple.", $2)); }
     ;
 
 // --------------------------------------------------------------------------------------------------------------------
 
 par_variable_constante
-    : ',' variable par_variable_constante constante ','
+    : variable_comada par_variable_constante constante_comada
     | '='
-
-    // |========================= REGLAS DE ERROR =========================| //
-
-    | ',' variable par_variable_constante constante
-        { notifyError("Falta coma en la lista de constantes de la asignación múltiple."); }
-    | ',' variable secuencia_variable_sin_coma constante ','
-        { notifyError("Falta coma en la lista de variables de la asignación múltiple."); }
     ;
 
-secuencia_variable_sin_coma
-    : variable secuencia_variable_sin_coma constante ','
-    | variable par_variable_constante constante ','
-    ;
-    */
-
-asignacion_multiple 
-    : inicio_par_variable_constante ';'
-        { notifyDetection("Asignación múltiple."); }
-    | inicio_par_variable_constante ',' lista_constantes ';'
-        { notifyDetection("Asignación múltiple."); }
-
-    // |========================= REGLAS DE ERROR =========================| //
-
-    | inicio_par_variable_constante error
-        { notifyDetection("La asignación múltiple debe terminar con ';'."); }
-    | inicio_par_variable_constante ',' lista_constantes error
-        { notifyDetection("La asignación múltiple debe terminar con ';'."); }
+constante_comada
+    : constante ','
+    | constante
+        { notifyError(String.format("Falta coma luego de constante '%s' en asignación múltiple.", $1)); }
     ;
 
-// --------------------------------------------------------------------------------------------------------------------
-
-inicio_par_variable_constante
-    : variable par_variable_constante constante
-
-    // |========================= REGLAS DE ERROR =========================| //
-
-    | variable variable par_variable_constante constante ',' constante
-    { notifyError("Falta coma en la lista de variables de la asignación múltiple."); }
-    | variable secuencia_variable_sin_coma constante
-    { notifyError("Falta coma en la lista de variables de la asignación múltiple."); }
+variable_comada
+    : ',' variable
+    | error variable
+        { notifyError(String.format("Falta coma antes de variable '%s' en asignación múltiple.", $2)); }
     ;
-
-// --------------------------------------------------------------------------------------------------------------------
-
-par_variable_constante
-    : ',' variable par_variable_constante constante ','
-    | '='
-
-    // |========================= REGLAS DE ERROR =========================| //
-
-    | ',' variable par_variable_constante constante
-        { notifyError("Falta coma en la lista de constantes de la asignación múltiple."); }
-    | ',' variable secuencia_variable_sin_coma constante ','
-        { notifyError("Falta coma en la lista de variables de la asignación múltiple."); }
-    ;
-
-secuencia_variable_sin_coma
-    : variable secuencia_variable_sin_coma constante ','
-    | variable par_variable_constante constante ','
-    ;
-
-par_variable
-    : variable ',' variable
-    | variable variable
-    ;
-
-par_constante
-    : constante ',' constante
-    | constante constante
-    ;
-
-/*
-asignacion_multiple
-    : asignacion_pareja ';'
-    | asignacion_pareja ',' lista_constantes ';'
-    ;
-
-asignacion_pareja
-    : variable '=' constante
-    | variable ',' asignacion_pareja ',' constante
-    //| variable asignacion_pareja ',' constante
-    | variable ',' asignacion_pareja constante
-    //| variable asignacion_pareja constante
-    ; */
 
 // --------------------------------------------------------------------------------------------------------------------
                                 
@@ -945,7 +875,7 @@ public Parser(Lexer lexer) {
     this.errorsDetected = this.warningsDetected = 0;
     
     // Descomentar la siguiente línea para activar el debugging.
-    yydebug = true;
+    //yydebug = true;
 }
 
 // --------------------------------------------------------------------------------------------------------------------

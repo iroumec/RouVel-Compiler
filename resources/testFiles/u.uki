@@ -1,3 +1,4 @@
 PROGRAMA {
-    print(2UI + uint X := 2UI);
+    A, B, C = 3UI, 4UI, 8UI;
+    A, B, C, D, E = 2UI 6UI 9UI;
 }
