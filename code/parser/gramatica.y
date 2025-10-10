@@ -493,24 +493,25 @@ variable
 // ********************************************************************************************************************
 
 condicion
-    : '(' cuerpo_condicion ')'
+    : parentesis_apertura cuerpo_condicion parentesis_cierre
         { notifyDetection("Condición."); }
 
     // |========================= REGLAS DE ERROR =========================| //
-    
-    | cuerpo_condicion ')'
-        { notifyError("Falta apertura de paréntesis en condición."); }
 
     | '(' ')'
         { notifyError("La condición no puede estar vacía."); }
-
-    | cuerpo_condicion error
-        { notifyError("La condición debe ir entre paréntesis."); }
-
-    | '(' cuerpo_condicion error
-        { notifyError("Falta cierre de paréntesis en condición."); }
-
     ; 
+
+parentesis_apertura
+    : '('
+    | // lambda //
+        { notifyError("Falta apertura de paréntesis en condición."); }
+
+parentesis_cierre
+    : ')'
+    | error
+        { notifyError("Falta cierre de paréntesis en condición."); }
+    ;
     
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -797,13 +798,13 @@ lambda
     // |========================= REGLAS DE ERROR =========================| //
 
     | parametro_lambda bloque_ejecutable argumento_lambda error
-        { notifyDetection("La expresión 'lambda' debe terminar con ';'."); }
+        { notifyError("La expresión 'lambda' debe terminar con ';'."); }
     | parametro_lambda '{' conjunto_sentencias_ejecutables argumento_lambda error
-        { notifyDetection("Falta delimitador de cierre en expresión 'lambda'."); }
+        { notifyError("Falta delimitador de cierre en expresión 'lambda'."); }
     | parametro_lambda conjunto_sentencias_ejecutables argumento_lambda error
-        { notifyDetection("Faltan delimitadores en el conjunto de sentencias de la expresión 'lambda'."); }
+        { notifyError("Faltan delimitadores en el conjunto de sentencias de la expresión 'lambda'."); }
     | parametro_lambda conjunto_sentencias_ejecutables '}' argumento_lambda error
-        { notifyDetection("Falta delimitador de apertura en expresión 'lambda'."); }
+        { notifyError("Falta delimitador de apertura en expresión 'lambda'."); }
     ;
 
 // --------------------------------------------------------------------------------------------------------------------
@@ -855,7 +856,7 @@ public Parser(Lexer lexer) {
     this.errorsDetected = this.warningsDetected = 0;
     
     // Descomentar la siguiente línea para activar el debugging.
-    // yydebug = true;
+    yydebug = true;
 }
 
 // --------------------------------------------------------------------------------------------------------------------
