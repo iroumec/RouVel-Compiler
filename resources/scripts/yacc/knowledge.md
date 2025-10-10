@@ -169,8 +169,4 @@ En caso de que falte un punto y coma al final de una sentencia, se buscará otro
 
 // TODO: agregar error si aparece sentencia declarativa en el cuerpo de la sentencia if.
 
-```
-
-```
-
 java -jar rouvel-compiler.jar resources/testFiles/a.uki
