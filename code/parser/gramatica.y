@@ -618,12 +618,16 @@ fin_cuerpo_do
 // ********************************************************************************************************************
 
 declaracion_funcion
-    : UINT ID '(' conjunto_parametros ')' cuerpo_funcion
+    : UINT ID '(' conjunto_parametros ')' cuerpo_funcion_admisible
+        { notifyDetection("Declaración de función."); }
 
     // |========================= REGLAS DE ERROR =========================| //
 
     | UINT '(' conjunto_parametros ')' cuerpo_funcion
         { notifyError("La función requiere de un nombre."); }
+
+    | UINT ID '(' conjunto_parametros ')' '{' '}'
+        { notifyError("El cuerpo de la función no puede estar vacío."); }
 
     ;
 
