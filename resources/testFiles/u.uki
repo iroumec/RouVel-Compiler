@@ -1,0 +1,6 @@
+PROGRAMA {
+
+    ##B##
+    if (X > 3 print("Hola"); endif;
+    print("Hola");
+}

@@ -293,8 +293,8 @@ asignacion_simple
     | variable expresion ';'
         { notifyError("Error en asignación simple. Se esperaba un ':=' entre la variable y la expresión."); }
 
-    | variable error
-        { notifyError("Asignación simple inválida."); }
+    | variable DASIG error
+        { notifyError("Te faltó sdsffddffd."); }
     ;
 
 // ********************************************************************************************************************
@@ -447,7 +447,7 @@ operador_multiplicacion
 // Factor que contempla la posibilidad de constantes negativas.
 factor
     : variable error
-    // Token error necesario para evitar shift/reduce en asignación múltiple.
+        // Si no se coloca el token error, da shift/reduce con asignación múltiple.
     | constante
     | invocacion_funcion
     ;
@@ -867,7 +867,7 @@ public Parser(Lexer lexer) {
     this.errorsDetected = this.warningsDetected = 0;
     
     // Descomentar la siguiente línea para activar el debugging.
-    // yydebug = true;
+    yydebug = true;
 }
 
 // --------------------------------------------------------------------------------------------------------------------
@@ -906,7 +906,7 @@ int yylex() {
  // Se ejecuta cada vez que encuentra un token error.
 public void yyerror(String s) {
 
-    // Silenciado.
+    System.out.println(s);
 }
 
 // --------------------------------------------------------------------------------------------------------------------
