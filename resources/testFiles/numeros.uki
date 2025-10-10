@@ -1,7 +1,7 @@
 NUMEROS {
     A := 54UI;
     B := 5.5;
-    if (A == 54UI) then A := 5.5; endif;
+    if (A == 54UI) A := 5.5; endif;
     C := 0UI;
     D := -54UI;
 }

@@ -42,7 +42,7 @@ PROGRAMA {
     ## -------- Asignacion múltiple -------- ##
     A = 0UI;                                                        ## Posiblemente válido, asignación simple con símbolo '=' ##
     A, B, C = 1UI , 3UI , 1.5;                                      ## |variables| == |constantes| ##
-    A, B, C = 2UI, 4UI, 2.5, 3.14;                                  ## |variables|  < |constantes| (Tema 17) ##
+    A, B, C = 2UI, 4UI, 2.5, 3.14;                                  ## |variables| =< |constantes| (Tema 17) ##
 
     ## -------- Invocación de funcion -------- ##
     F1(A->X);                                                       ## Un argumento ##
@@ -61,7 +61,7 @@ PROGRAMA {
 
     if (A+B <= C)                                                   ## IF-ELSE, condicion menor o igual ##
     {
-        print("Oid mortales");    ## Impresión de cadena de caracteres ##
+        print("Oid mortales");                                      ## Impresión de cadena de caracteres ##
         print(A+5UI/F0(0UI->N));                                    ## Impresión de expresión ##
     }
     else 

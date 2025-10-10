@@ -472,8 +472,8 @@ constante
             notifyDetection(String.format("Constante negativa: %s.",$$));
 
             if(isUint($$)) {
-                notifyWarning("El número está fuera del rango de uint, se asignará el mínimo del rango.");
-                $$ = "0";
+                notifyError("El número está fuera del rango de uint, se descartará.");
+                $$ = null;
             } 
 
             modificarSymbolTable($$,$2);
@@ -556,6 +556,8 @@ if
         { notifyError("La sentencia IF debe finalizar con 'endif'."); }
     | IF error
         { notifyError("Sentencia IF inválida."); }
+    | IF condicion rama_else ENDIF ';'
+        { notifyError("Falta el bloque de sentencias del IF."); }
     ;
 
 // --------------------------------------------------------------------------------------------------------------------
@@ -563,6 +565,11 @@ if
 rama_else
     : // lambda //
     | ELSE cuerpo_ejecutable
+
+    // |========================= REGLAS DE ERROR =========================| //
+    
+    | ELSE 
+        { notifyError("Falta el bloque de sentencias del ELSE."); }
     ;
 
 // ********************************************************************************************************************
@@ -611,7 +618,7 @@ fin_cuerpo_do
 // ********************************************************************************************************************
 
 declaracion_funcion
-    : UINT ID '(' conjunto_parametros ')' cuerpo_funcion_admisible
+    : UINT ID '(' conjunto_parametros ')' cuerpo_funcion
 
     // |========================= REGLAS DE ERROR =========================| //
 
@@ -856,7 +863,7 @@ public Parser(Lexer lexer) {
     this.errorsDetected = this.warningsDetected = 0;
     
     // Descomentar la siguiente línea para activar el debugging.
-    yydebug = true;
+    // yydebug = true;
 }
 
 // --------------------------------------------------------------------------------------------------------------------
@@ -949,7 +956,9 @@ public boolean isUint(String number) {
 
 public void modificarSymbolTable(String lexemaNuevo, String lexemaAnterior) {
     SymbolTable.getInstance().decrementarReferencia(lexemaAnterior);
-    SymbolTable.getInstance().agregarEntrada(lexemaNuevo);
+    if (lexemaNuevo != null) {
+        SymbolTable.getInstance().agregarEntrada(lexemaNuevo);
+    }
 }
 
 // ====================================================================================================================
