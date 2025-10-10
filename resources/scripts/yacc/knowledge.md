@@ -15,8 +15,6 @@
     // uint A, B C
     // Diría que la coma falta entre A y C.
 
-También, se pide que se chequee que las asignaciones puedan tener un menor número de elementos del lado izquierdo (tema 17). A eso no lo podemos hacer con la gramática, ¿verdad? Lo haríamos en la siguiente etapa, en el análisis semántico.
-
 ---
 
 ## No se muestra error de falta de punto y coma
@@ -67,78 +65,9 @@ $1, $2));
 
 LOS PEGO ASÍ NOMÁS AHORA. DESPUÉS LOS DETALLO.
 
----
-
-asignacion_simple
-: variable DASIG expresion ';'  
- { notifyDetection("Asignación simple."); }
-
-    // |========================= REGLAS DE ERROR =========================| //
-
-    | variable DASIG expresion error
-        { notifyError("Las asignaciones simples deben terminar con ';'."); }
-
-    | variable error expresion ';'
-        { notifyError("Error en asignación simple. Se esperaba un ':=' entre la variable y la expresión."); }
-
-    | variable expresion ';'
-        { notifyError("Error en asignación simple. Se esperaba un ':=' entre la variable y la expresión."); }
-    ;
-
-El problema está en que, al estar en termino y realizar un lookahead, ve print, por lo que entrá en modo error e intenta reducir. Pero en la pila tiene variable DASIG termino. Aún no redujo a expresión. Por lo que tenemos que obligarlo a que lo haga.
-
-La solución es:
-
-asignacion_simple
-: variable DASIG expresion ';'  
- { notifyDetection("Asignación simple."); }
-
-    // |========================= REGLAS DE ERROR =========================| //
-
-    | variable DASIG termino error
-        { notifyError("Las asignaciones simples deben terminar con ';'."); }
-
-    | variable error expresion ';'
-        { notifyError("Error en asignación simple. Se esperaba un ':=' entre la variable y la expresión."); }
-
-    | variable expresion ';'
-        { notifyError("Error en asignación simple. Se esperaba un ':=' entre la variable y la expresión."); }
-    ;
-
-Con esto, a algo como: "I := 1UI" marca la falta de punto y coma. También funciona para "I := 1UI \* 4UI". Al igual que si se pone /.
-
-Pero no funciona para cosas como: "I := 1UI + 4 UI". Para eso tuvo que agregarse:
-
-Algo así (descartando el cambio anterior), sirve para detectar siempre el ';' faltante:
-
 ```sh
-    expresion
-        : termino token_fin_expresion { readLastTokenAgain(); }
-        | expresion operador_suma termino token_fin_expresion { readLastTokenAgain(); }
-
-        // |========================= REGLAS DE ERROR =========================| //
-
-        | expresion operador_suma error
-            {
-                notifyError("Falta de operando en expresión.");
-            }
-        | expresion termino_simple
-            {
-                notifyError(String.format(
-                    "Falta de operador entre operandos %s y %s.",
-                    $1, $2)
-                );
-            }
-        ;
-
-    token_fin_expresion
-        : token_inicio_sentencia
-        | ')'
-        | ';'
-        | '}'
-        | comparador
-        ;
-
+sudo usermod -aG docker $USER \
+&& newgrp docker
 ```
 
 Pero se rompen sentencias como PRINT("Hola");
