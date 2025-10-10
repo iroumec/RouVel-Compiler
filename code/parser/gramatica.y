@@ -553,8 +553,6 @@ if
         { notifyError("La sentencia IF debe terminar con ';'."); }
     | IF condicion cuerpo_ejecutable rama_else ';'
         { notifyError("La sentencia IF debe finalizar con 'endif'."); }
-    | IF condicion cuerpo_ejecutable rama_else error
-        { notifyError("La sentencia IF debe finalizar con 'endif' y ';'."); }
     | IF error
         { notifyError("Sentencia IF inválida."); }
     ;

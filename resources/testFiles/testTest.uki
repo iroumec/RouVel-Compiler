@@ -1,4 +1,0 @@
-PROGRAMA {
-    ##A B;  Falta de := ##
-    A := B
-}

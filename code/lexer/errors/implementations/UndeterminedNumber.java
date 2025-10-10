@@ -35,9 +35,9 @@ public class UndeterminedNumber implements LexicalError {
     public void handleError(Lexer lexicalAnalyzer) {
         lexicalAnalyzer.notifyError("""
                 Número mal formado: '%s'. \
-                \n\t - De ser un entero, debe terminar con el sufijo 'UI'. \
-                \n\t - De ser un flotante y no tener parte decimal, se debe especificar un punto '.' al final. \
-                \nSe asumirá que es un entero y se agregará el sufijo 'UI'. \
+                De ser un entero, debe terminar con el sufijo 'UI'. \
+                Por otro lado, de ser un flotante y no tener parte decimal, se debe especificar un punto '.' al final. \
+                Se asumirá que es un entero y se agregará el sufijo 'UI'. \
                 """.formatted(lexicalAnalyzer.getLexema()));
 
         // Se realiza el agregado del sufijo y las acciones semánticas
