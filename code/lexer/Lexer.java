@@ -66,7 +66,7 @@ public final class Lexer {
         }
 
         // Se imprime el token en la salida.
-        Printer.print(this.currentToken);
+        Printer.printFramed(this.currentToken);
 
         // Se devuelve el token.
         return this.currentToken;
@@ -292,7 +292,7 @@ public final class Lexer {
     // --------------------------------------------------------------------------------------------
 
     public void notifyWarning(String warningMessage) {
-        Printer.printBetweenSeparations(String.format(
+        Printer.printWrapped(String.format(
                 "WARNING SINTÁCTICA: Línea %d, caracter %d: %s",
                 this.getNroLinea(), this.getNroCaracter(), warningMessage));
         this.warningsDetected++;
@@ -307,7 +307,7 @@ public final class Lexer {
     // --------------------------------------------------------------------------------------------
 
     public void notifyError(String errorMessage) {
-        Printer.printBetweenSeparations(String.format(
+        Printer.printWrapped(String.format(
                 "ERROR LÉXICO: Línea %d, caracter %d: %s",
                 this.getNroLinea(), this.getNroCaracter(), errorMessage));
         this.errorsDetected++;

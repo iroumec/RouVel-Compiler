@@ -210,10 +210,7 @@ sentencia_ejecutable
     // |========================= REGLAS DE ERROR =========================| //
     
     | invocacion_funcion error
-        { 
-            notifyError("La invocación a función debe terminar con ';'."); 
-            notifyDetection("Invocación de función.");
-        }
+        { notifyError("La invocación a función debe terminar con ';'."); }
     ;
 
 // --------------------------------------------------------------------------------------------------------------------
@@ -905,7 +902,7 @@ public void yyerror(String s) {
 // --------------------------------------------------------------------------------------------------------------------
 
 void notifyDetection(String message) {
-    Printer.printBetweenSeparations(String.format(
+    Printer.printWrapped(String.format(
         "DETECCIÓN SEMÁNTICA: %s",
         message
     ));
@@ -914,7 +911,7 @@ void notifyDetection(String message) {
 // --------------------------------------------------------------------------------------------------------------------
 
 void notifyWarning(String warningMessage) {
-    Printer.printBetweenSeparations(String.format(
+    Printer.printWrapped(String.format(
         "WARNING SINTÁCTICA: Línea %d, caracter %d: %s",
         lexer.getNroLinea(), lexer.getNroCaracter(), warningMessage
     ));
@@ -924,7 +921,7 @@ void notifyWarning(String warningMessage) {
 // --------------------------------------------------------------------------------------------------------------------
 
 void notifyError(String errorMessage) {
-    Printer.printBetweenSeparations(String.format(
+    Printer.printWrapped(String.format(
         "ERROR SINTÁCTICO: Línea %d, caracter %d: %s",
         lexer.getNroLinea(), lexer.getNroCaracter(), errorMessage
     ));

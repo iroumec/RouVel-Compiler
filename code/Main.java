@@ -28,23 +28,25 @@ public class Main {
 
         Parser sintacticalAnalyzer = new Parser(lexicalAnalyzer);
 
-        Printer.printSeparation();
+        Printer.printSeparator();
         sintacticalAnalyzer.execute();
-        Printer.printSeparation();
+        Printer.printSeparator();
 
         String reporte = """
-                    El programa tiene %d líneas. \
+                El programa tiene %d líneas. \
                 Se detectaron %d warnings y %d errores. \
                 """.formatted(
                 lexicalAnalyzer.getNroLinea(),
                 lexicalAnalyzer.getWarningsDetected() + sintacticalAnalyzer.getWarningsDetected(),
                 lexicalAnalyzer.getErrorsDetected() + sintacticalAnalyzer.getErrorsDetected());
         Printer.printBlankSpace();
-        Printer.printBigSeparator();
-        Printer.print(reporte);
-        Printer.printBigSeparator();
+        Printer.printSeparator();
+        Printer.printCentered("> Compilación Finalizada <");
+        Printer.printCentered(reporte);
+        Printer.printSeparator();
         Printer.printBlankSpace();
 
         SymbolTable.getInstance().imprimirTabla();
+        Printer.printBlankSpace();
     }
 }
