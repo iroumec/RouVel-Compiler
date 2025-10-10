@@ -172,3 +172,5 @@ En caso de que falte un punto y coma al final de una sentencia, se buscará otro
 ```
 
 ```
+
+java -jar rouvel-compiler.jar resources/testFiles/a.uki

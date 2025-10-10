@@ -16,6 +16,7 @@
 
 # Package Files #
 *.jar
+!rouvel-compiler.jar
 *.war
 *.nar
 *.ear
