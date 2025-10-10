@@ -1,16 +1,16 @@
 EJECUTABLES {
 
-    ## Errores en invocaciones a funciones ##
+    ## ----------------------------------| Errores en invocaciones a funciones |---------------------------------- ##
     F1(A->X);                                       ## Válido ##
     F1(A->X)                                        ## Falta de punto y coma ##
     F1(A);                                          ## Falta de especificación del parámetro formal al que corresponde el parámetro real ##
 
-    ## Errores en asignaciones simples ##
+    ## ----------------------------------| Errores en asignaciones simples |---------------------------------- ##
     A := B;                                         ## Válido ##
     ##A := B##                                          ## Falta de punto y coma ##
     A    B;                                         ## Falta de ':=' ##
 
-    ## Errores en asignaciones múltiples ##
+    ## ----------------------------------| Errores en asignaciones múltiples |---------------------------------- ##
     A = 1UI;                                        ## Válido ##
     A = 1UI, 2.0;                                   ## Válido ##
     A = 1UI                                         ## Falta de punto y coma ##
@@ -22,12 +22,42 @@ EJECUTABLES {
     A, B C = 1UI, 2.0, 3.0;                         ## Falta de coma entre variables ##
     A B C = 1UI 2.0 3.0 0.0;                        ## Falta de comas ##
 
-    ## Errores en sentencia de control IF ##
+    ## ----------------------------------| Errores en sentencia de control IF |---------------------------------- ##
+    if (A == B) A := B + 1.; else A := B; endif;    ## Válido ##
     if (A == B) A := B + 1.; endif;                 ## Válido ##
     if (A == B) A := B + 1.; endif                  ## Falta de punto y coma ##
     if (A == B) A := B + 1.;;                       ## Falta de endif ## ## Queda medio feo el doble punto y coma pero tampoco es un caso válido. ##
     if (A == B) A := B + 1.;                        ## Falta de endif y punto y coma ##
-    if {};                                          ## Sentencia IF inválida. ##
+    if uint;                                          ## Sentencia IF inválida. ##
 
-    if (A == B) A := B + 1; else A := B; endif;     ## Válido ##
+    ## ----------------------------------| Errores en sentencia de control DO WHILE |---------------------------------- ##
+    do C := C + 1.5; while (C < 5.0F+25);           ## Válido ##
+    do C := C + 1.5; while (C < 5.0F+25)            ## Falta de punto y coma ##     
+    do C := C + 1.5; (C < 5.0F+25);                 ## Falta de WHILE ##
+    do (C < 5.0F+25); while C + 1.5;                ## DO-WHILE inválido ##
+    do while (C < 5.0F+25);                         ## Falta de cuerpo ejecutable ##
+
+    ## ----------------------------------| Errores en setencia de retorno |---------------------------------- ##
+    return(RETORNO);                                ## Válido ##
+    return(RETORNO)                                 ## Falta de punto y coma ##
+    return();                                       ## Falta de expresión ##
+    return RETORNO;                                 ## Falta de paréntesis a la expresión ##
+    return;                                         ## Sentencia inválida ##
+
+    ## ----------------------------------| Errores de impresión |---------------------------------- ##
+    print("Impresion");                             ## Válido ##
+    print("Impresion")                              ## Falta de punto y coma ##
+    print();                                        ## Falta de argumento ##
+    print "Impresion";                              ## Falta de paréntesis ##
+    print;                                          ## Falta de argumento entre paréntesis ##
+
+    ## ----------------------------------| Errores de expresiones lambda |---------------------------------- ##
+    (uint G) { E := G; } (10.0);                    ## Válido ##
+    (uint G) { E := G; } (10.0)                     ## Falta de punto y coma ##
+    (uint G) { E := G;  (10.0);                     ## Falta de delimitador de cierre ##
+    (uint G) E := G; (10.0);                        ## Falta de delimitadores ##
+    (uint G)  E := G; } (10.0);                     ## Falta de delimitador de apertura ##
+    (uint G) { E := G; } ();                        ## Argumento lambda vacío ##
+    (uint G) { E := G; };                           ## Falta de argumento lambda ##
+
 }
