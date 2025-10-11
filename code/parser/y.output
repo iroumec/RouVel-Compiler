@@ -71,8 +71,8 @@
   48                        | UINT ID ';'
   49                        | UINT ID error
   50                        | UINT lista_variables error
-  51                        | UINT error
-  52                        | UINT variable DASIG constante ';'
+  51                        | UINT variable DASIG constante ';'
+  52                        | UINT error
 
   53  lista_variables : ID ',' ID
   54                  | lista_variables ',' ID
@@ -430,8 +430,8 @@ state 11
 	declaracion_variables : UINT . ID ';'  (48)
 	declaracion_variables : UINT . ID error  (49)
 	declaracion_variables : UINT . lista_variables error  (50)
-	declaracion_variables : UINT . error  (51)
-	declaracion_variables : UINT . variable DASIG constante ';'  (52)
+	declaracion_variables : UINT . variable DASIG constante ';'  (51)
+	declaracion_variables : UINT . error  (52)
 	declaracion_funcion : UINT . ID '(' conjunto_parametros ')' cuerpo_funcion_admisible  (131)
 	declaracion_funcion : UINT . '(' conjunto_parametros ')' cuerpo_funcion  (132)
 	declaracion_funcion : UINT . ID '(' conjunto_parametros ')' '{' '}'  (133)
@@ -1092,9 +1092,9 @@ state 63
 
 
 state 64
-	declaracion_variables : UINT error .  (51)
+	declaracion_variables : UINT error .  (52)
 
-	.  reduce 51
+	.  reduce 52
 
 
 state 65
@@ -1149,7 +1149,7 @@ state 67
 
 
 state 68
-	declaracion_variables : UINT variable . DASIG constante ';'  (52)
+	declaracion_variables : UINT variable . DASIG constante ';'  (51)
 
 	DASIG  shift 150
 	.  error
@@ -2088,7 +2088,7 @@ state 149
 
 
 state 150
-	declaracion_variables : UINT variable DASIG . constante ';'  (52)
+	declaracion_variables : UINT variable DASIG . constante ';'  (51)
 
 	CTE  shift 43
 	'-'  shift 46
@@ -2760,7 +2760,7 @@ state 214
 
 
 state 215
-	declaracion_variables : UINT variable DASIG constante . ';'  (52)
+	declaracion_variables : UINT variable DASIG constante . ';'  (51)
 
 	';'  shift 252
 	.  error
@@ -3047,9 +3047,9 @@ state 251
 
 
 state 252
-	declaracion_variables : UINT variable DASIG constante ';' .  (52)
+	declaracion_variables : UINT variable DASIG constante ';' .  (51)
 
-	.  reduce 52
+	.  reduce 51
 
 
 state 253

@@ -42,6 +42,8 @@ public final class SymbolTable {
         entrada.incrementarReferencias();
     }
 
+    // --------------------------------------------------------------------------------------------
+
     /**
      * Decrementa la referencia de un lexema. Si llega a 0, elimina la entrada.
      */
@@ -120,6 +122,8 @@ public final class SymbolTable {
         return widths;
     }
 
+    // --------------------------------------------------------------------------------------------
+
     /**
      * Distribuye el espacio sobrante entre las columnas, EXCLUYENDO el lexema.
      */
@@ -152,6 +156,8 @@ public final class SymbolTable {
         }
     }
 
+    // --------------------------------------------------------------------------------------------
+
     /**
      * Se construye el string de formato para una fila (ej: "| %-20s | %-10s
      * |").
@@ -164,6 +170,8 @@ public final class SymbolTable {
         return builder.toString();
     }
 
+    // --------------------------------------------------------------------------------------------
+
     /**
      * Se imprime el título y la cabecera de la tabla.
      */
@@ -174,6 +182,8 @@ public final class SymbolTable {
         Printer.print(String.format(format, (Object[]) headers));
         Printer.printSeparator();
     }
+
+    // --------------------------------------------------------------------------------------------
 
     /**
      * Se imprime el cuerpo de la tabla, manejando el ajuste de líneas.
@@ -201,6 +211,8 @@ public final class SymbolTable {
             Printer.printSeparator();
         }
     }
+
+    // --------------------------------------------------------------------------------------------
 
     /**
      * Método auxiliar para dividir un texto si excede un ancho máximo.

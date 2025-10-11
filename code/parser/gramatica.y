@@ -162,7 +162,7 @@ sentencia_declarativa
 // --------------------------------------------------------------------------------------------------------------------
 
 punto_y_coma_opcional
-    : // épsilon
+    : // lambda //
     | ';'
     ;
 
@@ -241,13 +241,13 @@ declaracion_variables
         {
             notifyError("La declaración de variables debe terminar con ';'.");
         }
-    | UINT error
-        {
-            notifyError("Declaración de variables inválida.");
-        }
     | UINT variable DASIG constante ';'
         {
             notifyError("La declaración de variables y la asignación de un valor a estas debe realizarse en dos sentencias separadas.");
+        }
+    | UINT error
+        {
+            notifyError("Declaración de variables inválida.");
         }
     ;
 
@@ -294,7 +294,7 @@ asignacion_simple
         { notifyError("Error en asignación simple. Se esperaba un ':=' entre la variable y la expresión."); }
 
     | variable DASIG error
-        { notifyError("Te faltó sdsffddffd."); }
+        { notifyError("Asignación simple inválida."); }
     ;
 
 // ********************************************************************************************************************
@@ -369,7 +369,7 @@ expresion
 
     | expresion operador_suma error
         {  
-            notifyError(String.format("Falta de operando en expresión luego de %s %s.", $1, $2));
+            notifyError(String.format("Falta de operando en expresión luego de '%s %s'.", $1, $2));
         }
     | expresion termino_simple
         {

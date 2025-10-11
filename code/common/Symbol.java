@@ -20,35 +20,52 @@ public class Symbol {
         this.references = 0;
     }
 
-    public String getLexema() {
-        return this.lexema;
-    }
-
-    public String getType() {
-        return this.type == null ? "" : this.type;
-    }
-
-    public int getScope() {
-        return this.scope;
-    }
-
-    public String getCategory() {
-        return this.category == null ? "" : this.category;
-    }
+    // --------------------------------------------------------------------------------------------
 
     public int getReferences() {
         return this.references;
     }
 
+    // --------------------------------------------------------------------------------------------
+
     public void incrementarReferencias() {
         this.references++;
     }
+
+    // --------------------------------------------------------------------------------------------
 
     public void decrementarReferencias() {
         this.references--;
     }
 
+    // --------------------------------------------------------------------------------------------
+
     public boolean sinReferencias() {
         return references == 0;
     }
+
+    // --------------------------------------------------------------------------------------------
+
+    public String getLexema() {
+        return this.lexema;
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    public String getType() {
+        return this.type == null ? "" : this.type;
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    public int getScope() {
+        return this.scope;
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    public String getCategory() {
+        return this.category == null ? "" : this.category;
+    }
+
 }
