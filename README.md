@@ -23,3 +23,9 @@ Por ejemplo:
 ```sh
 java -jar rouvel-compiler.jar resources/testFiles/ejemplo.uki
 ```
+
+Si desea, puede redirigir la salida a un archivo para observarla mejor. Por ejemplo, en Linux, esto se consigue de la siguiente forma:
+
+```sh
+java -jar rouvel-compiler.jar resources/testFiles/ejemplo.uki > resultados-compilacion.txt
+```
