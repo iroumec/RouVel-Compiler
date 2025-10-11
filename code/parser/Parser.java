@@ -733,7 +733,7 @@ public Parser(Lexer lexer) {
     this.errorsDetected = this.warningsDetected = 0;
     
     // Descomentar la siguiente línea para activar el debugging.
-    yydebug = true;
+    // yydebug = true;
 }
 
 // --------------------------------------------------------------------------------------------------------------------
@@ -772,7 +772,7 @@ int yylex() {
  // Se ejecuta cada vez que encuentra un token error.
 public void yyerror(String s) {
 
-    System.out.println(s);
+    // Silenciado.
 }
 
 // --------------------------------------------------------------------------------------------------------------------
@@ -788,8 +788,8 @@ void notifyDetection(String message) {
 
 void notifyWarning(String warningMessage) {
     Printer.printWrapped(String.format(
-        "WARNING SINTÁCTICA: Línea %d, caracter %d: %s",
-        lexer.getNroLinea(), lexer.getNroCaracter(), warningMessage
+        "WARNING SINTÁCTICA: Línea %d: %s",
+        lexer.getNroLinea(), warningMessage
     ));
     this.warningsDetected++;
 }
@@ -798,8 +798,8 @@ void notifyWarning(String warningMessage) {
 
 void notifyError(String errorMessage) {
     Printer.printWrapped(String.format(
-        "ERROR SINTÁCTICO: Línea %d, caracter %d: %s",
-        lexer.getNroLinea(), lexer.getNroCaracter(), errorMessage
+        "ERROR SINTÁCTICO: Línea %d: %s",
+        lexer.getNroLinea(), errorMessage
     ));
     this.errorsDetected++;
 }

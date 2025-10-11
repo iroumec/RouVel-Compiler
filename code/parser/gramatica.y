@@ -37,23 +37,21 @@
 // Declaración de Tokens y de sus Tipos
 // ********************************************************************************************************************
 
-// No terminales que guardan un String.
-%type <sval> expresion, termino, factor, termino_simple, factor_simple,
-            operador_suma, operador_multiplicacion,
-            lista_variables, lista_constantes, variable, constante,
-            invocacion_funcion, lista_argumentos, argumento
-
-// Asignación de tipo a token y no-terminales.
-// Esto es necesario para ejecutar acciones semánticas como: "$$ = $3".
-// Al declarar que es de tipo sval, ya no es necesario especificar ".sval" junto a los $n.
-%token <sval> ID, CTE, STR  // Los tokens ID, CTE y STR tendrán un valor de tipo String (accedido vía .sval)
-
-// Tokens sin valor semántico asociado (no necesitan tipo).
-%token <sval> EQ, GEQ, LEQ, NEQ, DASIG, FLECHA
-%token PRINT, IF, ELSE, ENDIF, UINT, CVR, DO, WHILE, RETURN
-
 // Token de fin de archivo.
 %token EOF 0
+
+// Estos tokens tendrán un valor de tipo String asociado.
+// Esto es necesario para ejecutar acciones semánticas como: "$$ = $3".
+// Al declarar que es de tipo sval, ya no es necesario especificar ".sval" junto a los $n.
+%token <sval> ID, CTE, STR
+%token <sval> EQ, GEQ, LEQ, NEQ, DASIG, FLECHA
+
+// Tokens sin valor semántico asociado (no necesitan tipo).
+%token PRINT, IF, ELSE, ENDIF, UINT, CVR, DO, WHILE, RETURN
+
+// No terminales cuyo valor semántico asociado es un String.
+%type <sval> expresion, termino, factor, termino_simple, factor_simple, operador_suma, operador_multiplicacion,
+                lista_variables, lista_constantes, variable, constante, invocacion_funcion, lista_argumentos, argumento
 
 // ====================================================================================================================
 // FIN DE DECLARACIONES
@@ -861,7 +859,7 @@ public Parser(Lexer lexer) {
     this.errorsDetected = this.warningsDetected = 0;
     
     // Descomentar la siguiente línea para activar el debugging.
-    yydebug = true;
+    // yydebug = true;
 }
 
 // --------------------------------------------------------------------------------------------------------------------
@@ -892,15 +890,13 @@ int yylex() {
 
 /**
  * Este método es invocado por el parser generado por Byacc/J cada vez que
- * se encuentra un error de sintaxis que no puede ser manejado por una
- * regla gramatical específica con el token 'error'.
+ * se encuentra con un token error.
  *
  * @param s El mensaje de error por defecto (generalmente "syntax error").
  */
- // Se ejecuta cada vez que encuentra un token error.
 public void yyerror(String s) {
 
-    System.out.println(s);
+    // Silenciado, ya que los mensajes son manejados mediante otros métodos.
 }
 
 // --------------------------------------------------------------------------------------------------------------------
@@ -916,8 +912,8 @@ void notifyDetection(String message) {
 
 void notifyWarning(String warningMessage) {
     Printer.printWrapped(String.format(
-        "WARNING SINTÁCTICA: Línea %d, caracter %d: %s",
-        lexer.getNroLinea(), lexer.getNroCaracter(), warningMessage
+        "WARNING SINTÁCTICA: Línea %d: %s",
+        lexer.getNroLinea(), warningMessage
     ));
     this.warningsDetected++;
 }
@@ -926,8 +922,8 @@ void notifyWarning(String warningMessage) {
 
 void notifyError(String errorMessage) {
     Printer.printWrapped(String.format(
-        "ERROR SINTÁCTICO: Línea %d, caracter %d: %s",
-        lexer.getNroLinea(), lexer.getNroCaracter(), errorMessage
+        "ERROR SINTÁCTICO: Línea %d: %s",
+        lexer.getNroLinea(), errorMessage
     ));
     this.errorsDetected++;
 }

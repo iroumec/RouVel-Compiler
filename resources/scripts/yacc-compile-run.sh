@@ -7,6 +7,8 @@ if [ -z "$1" ]; then
     exit 1
 fi
 
+echo "Realizando compilación..."
+
 # Se ejecuta yacc.
 YACC_SCRIPT="$SCRIPT_DIR/yacc/run-yacc.sh"
 chmod +x "$YACC_SCRIPT"
@@ -15,8 +17,8 @@ chmod +x "$YACC_SCRIPT"
 # Se compila el programa.
 JAR_SCRIPT="$SCRIPT_DIR/jar/build-jar.sh"
 chmod +x "$JAR_SCRIPT"
-"$JAR_SCRIPT"
-clear
+# Redirección de la salida para que no se muestre en consola.
+"$JAR_SCRIPT" > /dev/null 2>&1
 
 # Se ejecuta el programa con el archivo pasado.
-java -jar rouvel-compiler.jar "$PWD/resources/testFiles/$1"
+java -jar rouvel-compiler.jar "$1"

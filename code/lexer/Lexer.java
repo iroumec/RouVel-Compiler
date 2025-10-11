@@ -293,8 +293,8 @@ public final class Lexer {
 
     public void notifyWarning(String warningMessage) {
         Printer.printWrapped(String.format(
-                "WARNING LÉXICO: Línea %d, caracter %d: %s",
-                this.getNroLinea(), this.getNroCaracter(), warningMessage));
+                "WARNING LÉXICO: Línea %d: %s",
+                this.getNroLinea(), warningMessage));
         this.warningsDetected++;
     }
 
@@ -308,8 +308,8 @@ public final class Lexer {
 
     public void notifyError(String errorMessage) {
         Printer.printWrapped(String.format(
-                "ERROR LÉXICO: Línea %d, caracter %d: %s",
-                this.getNroLinea(), this.getNroCaracter(), errorMessage));
+                "ERROR LÉXICO: Línea %d: %s",
+                this.getNroLinea(), errorMessage));
         this.errorsDetected++;
     }
 
