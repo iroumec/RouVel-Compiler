@@ -1,9 +1,3 @@
 PROGRAMA {
-
-    ## Debería mostrar una detección ##
-    if (X > 3UI) print("Hola"); endif;
-
-    if (X > 4UI) print("Chau"); endif
-
-    uint A:= 2UI;
+    A := 65536UI;
 }

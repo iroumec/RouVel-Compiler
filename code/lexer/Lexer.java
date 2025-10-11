@@ -293,7 +293,7 @@ public final class Lexer {
 
     public void notifyWarning(String warningMessage) {
         Printer.printWrapped(String.format(
-                "WARNING SINTÁCTICA: Línea %d, caracter %d: %s",
+                "WARNING LÉXICO: Línea %d, caracter %d: %s",
                 this.getNroLinea(), this.getNroCaracter(), warningMessage));
         this.warningsDetected++;
     }
