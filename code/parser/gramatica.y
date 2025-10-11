@@ -303,23 +303,17 @@ asignacion_simple
 
 //Estas asignaciones pueden tener un menor número de elementos del lado izquierdo (tema 17).
 asignacion_multiple 
-    : inicio_asignacion_par ';'
+    : variable asignacion_par constante ';'
         { notifyDetection("Asignación múltiple."); }
-    | inicio_asignacion_par ',' lista_constantes ';'
+    | variable asignacion_par constante ',' lista_constantes ';'
         { notifyDetection("Asignación múltiple."); }
 
     // |========================= REGLAS DE ERROR =========================| //
 
-    | inicio_asignacion_par error
+    | variable asignacion_par constante error
         { notifyDetection("La asignación múltiple debe terminar con ';'."); }
-    | inicio_asignacion_par ',' lista_constantes error
+    | variable asignacion_par constante ',' lista_constantes error
         { notifyDetection("La asignación múltiple debe terminar con ';'."); }
-    ;
-
-// --------------------------------------------------------------------------------------------------------------------
-
-inicio_asignacion_par
-    : variable asignacion_par constante
     ;
 
 // --------------------------------------------------------------------------------------------------------------------
