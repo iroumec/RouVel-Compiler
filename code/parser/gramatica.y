@@ -752,36 +752,34 @@ argumento
 // ********************************************************************************************************************
 
 impresion
-    : PRINT imprimible_admisible ';'
+    : PRINT imprimible ';'
         { notifyDetection("Sentencia 'print'."); }
 
     // |========================= REGLAS DE ERROR =========================| //
 
     | PRINT imprimible error
         { notifyError("La sentencia 'print' debe finalizar con ';'."); }
+    | PRINT imprimible_recuperacion ';'
+    | PRINT imprimible_recuperacion error
+        { notifyError("La sentencia 'print' debe finalizar con ';'."); }
     ;
 
 // --------------------------------------------------------------------------------------------------------------------
 
 imprimible
-    : imprimible_admisible
-
-    // |========================= REGLAS DE ERROR =========================| //
-
-    | '(' ')'
-        { notifyError("La sentencia 'print' requiere de al menos un argumento."); }
-
-    | elemento_imprimible
-        { notifyError("El imprimible debe encerrarse entre paréntesis."); }
-    | // épsilon
-        { notifyError("La sentencia 'print' requiere de un argumento entre paréntesis."); }
+    : '(' elemento_imprimible ')'
     ;
 
 // --------------------------------------------------------------------------------------------------------------------
 
-// Casos de imprimibles que identifican correctamente a la sentencia.
-imprimible_admisible
-    : '(' elemento_imprimible ')'
+imprimible_recuperacion
+    : '(' ')'
+        { notifyError("La sentencia 'print' requiere de al menos un argumento."); }
+
+    | elemento_imprimible
+        { notifyError("El imprimible debe encerrarse entre paréntesis."); }
+    | // lambda //
+        { notifyError("La sentencia 'print' requiere de un argumento entre paréntesis."); }
     ;
 
 // --------------------------------------------------------------------------------------------------------------------

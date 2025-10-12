@@ -169,8 +169,8 @@
  123            | ELSE
 
  124  do_while : DO cuerpo_do ';'
- 125           | DO cuerpo_do error
- 126           | DO cuerpo_do_recuperacion ';'
+ 125           | DO cuerpo_do_recuperacion ';'
+ 126           | DO cuerpo_do error
  127           | DO cuerpo_do_recuperacion error
  128           | DO error
 
@@ -222,32 +222,33 @@
  160  argumento : expresion FLECHA ID
  161            | expresion
 
- 162  impresion : PRINT imprimible_admisible ';'
+ 162  impresion : PRINT imprimible ';'
  163            | PRINT imprimible error
+ 164            | PRINT imprimible_recuperacion ';'
+ 165            | PRINT imprimible_recuperacion error
 
- 164  imprimible : imprimible_admisible
- 165             | '(' ')'
- 166             | elemento_imprimible
- 167             |
+ 166  imprimible : '(' elemento_imprimible ')'
 
- 168  imprimible_admisible : '(' elemento_imprimible ')'
+ 167  imprimible_recuperacion : '(' ')'
+ 168                          | elemento_imprimible
+ 169                          |
 
- 169  elemento_imprimible : STR
- 170                      | expresion
+ 170  elemento_imprimible : STR
+ 171                      | expresion
 
- 171  lambda : parametro_lambda bloque_ejecutable argumento_lambda_admisible ';'
- 172         | parametro_lambda bloque_ejecutable argumento_lambda error
- 173         | parametro_lambda '{' conjunto_sentencias_ejecutables argumento_lambda error
- 174         | parametro_lambda conjunto_sentencias_ejecutables argumento_lambda error
- 175         | parametro_lambda conjunto_sentencias_ejecutables '}' argumento_lambda error
+ 172  lambda : parametro_lambda bloque_ejecutable argumento_lambda_admisible ';'
+ 173         | parametro_lambda bloque_ejecutable argumento_lambda error
+ 174         | parametro_lambda '{' conjunto_sentencias_ejecutables argumento_lambda error
+ 175         | parametro_lambda conjunto_sentencias_ejecutables argumento_lambda error
+ 176         | parametro_lambda conjunto_sentencias_ejecutables '}' argumento_lambda error
 
- 176  argumento_lambda : argumento_lambda_admisible
- 177                   | '(' ')'
- 178                   |
+ 177  argumento_lambda : argumento_lambda_admisible
+ 178                   | '(' ')'
+ 179                   |
 
- 179  argumento_lambda_admisible : '(' factor ')'
+ 180  argumento_lambda_admisible : '(' factor ')'
 
- 180  parametro_lambda : '(' UINT ID ')'
+ 181  parametro_lambda : '(' UINT ID ')'
 
 state 0
 	$accept : . programa $end  (0)
@@ -387,9 +388,11 @@ state 9
 
 
 state 10
-	impresion : PRINT . imprimible_admisible ';'  (162)
+	impresion : PRINT . imprimible ';'  (162)
 	impresion : PRINT . imprimible error  (163)
-	imprimible : .  (167)
+	impresion : PRINT . imprimible_recuperacion ';'  (164)
+	impresion : PRINT . imprimible_recuperacion error  (165)
+	imprimible_recuperacion : .  (169)
 
 	ID  shift 9
 	CTE  shift 44
@@ -399,7 +402,8 @@ state 10
 	'/'  shift 48
 	'*'  shift 49
 	'('  shift 50
-	error  reduce 167
+	error  reduce 169
+	';'  reduce 169
 
 	expresion  goto 51
 	termino  goto 52
@@ -408,8 +412,8 @@ state 10
 	variable  goto 55
 	constante  goto 56
 	invocacion_funcion  goto 57
-	imprimible_admisible  goto 58
-	imprimible  goto 59
+	imprimible  goto 58
+	imprimible_recuperacion  goto 59
 	elemento_imprimible  goto 60
 
 
@@ -456,8 +460,8 @@ state 12
 
 state 13
 	do_while : DO . cuerpo_do ';'  (124)
-	do_while : DO . cuerpo_do error  (125)
-	do_while : DO . cuerpo_do_recuperacion ';'  (126)
+	do_while : DO . cuerpo_do_recuperacion ';'  (125)
+	do_while : DO . cuerpo_do error  (126)
 	do_while : DO . cuerpo_do_recuperacion error  (127)
 	do_while : DO . error  (128)
 
@@ -556,7 +560,7 @@ state 15
 
 
 state 16
-	parametro_lambda : '(' . UINT ID ')'  (180)
+	parametro_lambda : '(' . UINT ID ')'  (181)
 
 	UINT  shift 86
 	.  error
@@ -755,11 +759,11 @@ state 35
 
 
 state 36
-	lambda : parametro_lambda . bloque_ejecutable argumento_lambda_admisible ';'  (171)
-	lambda : parametro_lambda . bloque_ejecutable argumento_lambda error  (172)
-	lambda : parametro_lambda . '{' conjunto_sentencias_ejecutables argumento_lambda error  (173)
-	lambda : parametro_lambda . conjunto_sentencias_ejecutables argumento_lambda error  (174)
-	lambda : parametro_lambda . conjunto_sentencias_ejecutables '}' argumento_lambda error  (175)
+	lambda : parametro_lambda . bloque_ejecutable argumento_lambda_admisible ';'  (172)
+	lambda : parametro_lambda . bloque_ejecutable argumento_lambda error  (173)
+	lambda : parametro_lambda . '{' conjunto_sentencias_ejecutables argumento_lambda error  (174)
+	lambda : parametro_lambda . conjunto_sentencias_ejecutables argumento_lambda error  (175)
+	lambda : parametro_lambda . conjunto_sentencias_ejecutables '}' argumento_lambda error  (176)
 
 	ID  shift 9
 	PRINT  shift 10
@@ -855,9 +859,9 @@ state 44
 
 
 state 45
-	elemento_imprimible : STR .  (169)
+	elemento_imprimible : STR .  (170)
 
-	.  reduce 169
+	.  reduce 170
 
 
 state 46
@@ -898,8 +902,8 @@ state 49
 
 
 state 50
-	imprimible : '(' . ')'  (165)
-	imprimible_admisible : '(' . elemento_imprimible ')'  (168)
+	imprimible : '(' . elemento_imprimible ')'  (166)
+	imprimible_recuperacion : '(' . ')'  (167)
 
 	ID  shift 9
 	CTE  shift 44
@@ -925,14 +929,15 @@ state 51
 	expresion : expresion . operador_suma termino  (76)
 	expresion : expresion . operador_suma error  (77)
 	expresion : expresion . termino_simple  (78)
-	elemento_imprimible : expresion .  (170)
+	elemento_imprimible : expresion .  (171)
 
 	ID  shift 9
 	CTE  shift 115
 	'+'  shift 116
 	'-'  shift 117
-	error  reduce 170
-	')'  reduce 170
+	error  reduce 171
+	';'  reduce 171
+	')'  reduce 171
 
 	termino_simple  goto 118
 	factor_simple  goto 119
@@ -1008,24 +1013,27 @@ state 57
 
 
 state 58
-	impresion : PRINT imprimible_admisible . ';'  (162)
-	imprimible : imprimible_admisible .  (164)
+	impresion : PRINT imprimible . ';'  (162)
+	impresion : PRINT imprimible . error  (163)
 
-	';'  shift 126
-	error  reduce 164
+	error  shift 126
+	';'  shift 127
+	.  error
 
 
 state 59
-	impresion : PRINT imprimible . error  (163)
+	impresion : PRINT imprimible_recuperacion . ';'  (164)
+	impresion : PRINT imprimible_recuperacion . error  (165)
 
-	error  shift 127
+	error  shift 128
+	';'  shift 129
 	.  error
 
 
 state 60
-	imprimible : elemento_imprimible .  (166)
+	imprimible_recuperacion : elemento_imprimible .  (168)
 
-	error  reduce 166
+	.  reduce 168
 
 
 state 61
@@ -1038,7 +1046,7 @@ state 62
 	condicion : '(' . ')'  (102)
 	parentesis_apertura : '(' .  (103)
 
-	')'  shift 128
+	')'  shift 130
 	ID  reduce 103
 	CTE  reduce 103
 	'+'  reduce 103
@@ -1057,7 +1065,7 @@ state 63
 	ID  shift 9
 	PRINT  shift 10
 	IF  shift 11
-	ELSE  shift 129
+	ELSE  shift 131
 	DO  shift 13
 	RETURN  shift 14
 	'{'  shift 72
@@ -1067,7 +1075,7 @@ state 63
 	variable  goto 17
 	invocacion_funcion  goto 18
 	sentencia_ejecutable  goto 73
-	cuerpo_ejecutable  goto 130
+	cuerpo_ejecutable  goto 132
 	bloque_ejecutable  goto 75
 	asignacion_simple  goto 28
 	asignacion_multiple  goto 29
@@ -1077,7 +1085,7 @@ state 63
 	lambda  goto 33
 	if  goto 34
 	do_while  goto 35
-	rama_else  goto 131
+	rama_else  goto 133
 	parametro_lambda  goto 36
 
 
@@ -1092,14 +1100,14 @@ state 64
 	'*'  shift 49
 	.  error
 
-	expresion  goto 132
+	expresion  goto 134
 	termino  goto 52
 	factor  goto 53
 	operador_multiplicacion  goto 54
 	variable  goto 55
 	constante  goto 56
 	invocacion_funcion  goto 57
-	cuerpo_condicion  goto 133
+	cuerpo_condicion  goto 135
 
 
 state 65
@@ -1118,12 +1126,12 @@ state 66
 	declaracion_funcion : UINT ID . '(' conjunto_parametros ')' cuerpo_funcion_admisible  (133)
 	declaracion_funcion : UINT ID . '(' conjunto_parametros ')' '{' '}'  (135)
 
-	error  shift 134
-	ID  shift 135
-	';'  shift 136
-	','  shift 137
+	error  shift 136
+	ID  shift 137
+	';'  shift 138
+	','  shift 139
 	'.'  shift 42
-	'('  shift 138
+	'('  shift 140
 	DASIG  reduce 99
 
 
@@ -1132,18 +1140,18 @@ state 67
 	conjunto_parametros : .  (140)
 	semantica_pasaje : .  (149)
 
-	error  shift 139
-	CVR  shift 140
-	','  shift 141
+	error  shift 141
+	CVR  shift 142
+	','  shift 143
 	ID  reduce 149
 	UINT  reduce 149
 	')'  reduce 140
 
-	conjunto_parametros  goto 142
-	lista_parametros  goto 143
-	parametro_formal  goto 144
-	parametro_vacio  goto 145
-	semantica_pasaje  goto 146
+	conjunto_parametros  goto 144
+	lista_parametros  goto 145
+	parametro_formal  goto 146
+	parametro_vacio  goto 147
+	semantica_pasaje  goto 148
 
 
 state 68
@@ -1152,17 +1160,17 @@ state 68
 	lista_variables : lista_variables . ',' ID  (55)
 	lista_variables : lista_variables . ID  (56)
 
-	error  shift 147
-	ID  shift 148
-	';'  shift 149
-	','  shift 150
+	error  shift 149
+	ID  shift 150
+	';'  shift 151
+	','  shift 152
 	.  error
 
 
 state 69
 	declaracion_variables : UINT variable . DASIG constante ';'  (52)
 
-	DASIG  shift 151
+	DASIG  shift 153
 	.  error
 
 
@@ -1184,7 +1192,7 @@ state 71
 	'/'  reduce 104
 	'*'  reduce 104
 
-	condicion  goto 152
+	condicion  goto 154
 	parentesis_apertura  goto 64
 
 
@@ -1197,14 +1205,14 @@ state 72
 	IF  shift 11
 	DO  shift 13
 	RETURN  shift 14
-	'}'  shift 153
+	'}'  shift 155
 	'('  shift 16
 	.  error
 
 	variable  goto 17
 	invocacion_funcion  goto 18
 	sentencia_ejecutable  goto 102
-	conjunto_sentencias_ejecutables  goto 154
+	conjunto_sentencias_ejecutables  goto 156
 	asignacion_simple  goto 28
 	asignacion_multiple  goto 29
 	sentencia_control  goto 30
@@ -1236,9 +1244,9 @@ state 74
 	'/'  reduce 104
 	'*'  reduce 104
 
-	condicion  goto 155
+	condicion  goto 157
 	parentesis_apertura  goto 64
-	fin_cuerpo_do  goto 156
+	fin_cuerpo_do  goto 158
 
 
 state 75
@@ -1249,19 +1257,19 @@ state 75
 
 state 76
 	do_while : DO cuerpo_do . ';'  (124)
-	do_while : DO cuerpo_do . error  (125)
+	do_while : DO cuerpo_do . error  (126)
 
-	error  shift 157
-	';'  shift 158
+	error  shift 159
+	';'  shift 160
 	.  error
 
 
 state 77
-	do_while : DO cuerpo_do_recuperacion . ';'  (126)
+	do_while : DO cuerpo_do_recuperacion . ';'  (125)
 	do_while : DO cuerpo_do_recuperacion . error  (127)
 
-	error  shift 159
-	';'  shift 160
+	error  shift 161
+	';'  shift 162
 	.  error
 
 
@@ -1288,10 +1296,10 @@ state 80
 	'-'  shift 47
 	'/'  shift 48
 	'*'  shift 49
-	')'  shift 161
+	')'  shift 163
 	.  error
 
-	expresion  goto 162
+	expresion  goto 164
 	termino  goto 52
 	factor  goto 53
 	operador_multiplicacion  goto 54
@@ -1308,7 +1316,7 @@ state 81
 
 	ID  shift 9
 	CTE  shift 115
-	';'  shift 163
+	';'  shift 165
 	'+'  shift 116
 	'-'  shift 117
 	.  error
@@ -1324,7 +1332,7 @@ state 82
 	cuerpo_programa_recuperacion : '{' error . '}'  (18)
 	conjunto_sentencias : error . '}'  (25)
 
-	'}'  shift 164
+	'}'  shift 166
 	.  error
 
 
@@ -1351,13 +1359,13 @@ state 85
 	UINT  shift 12
 	DO  shift 13
 	RETURN  shift 14
-	'}'  shift 165
+	'}'  shift 167
 	'('  shift 16
 	.  error
 
 	variable  goto 17
 	invocacion_funcion  goto 18
-	lista_llaves_cierre  goto 166
+	lista_llaves_cierre  goto 168
 	sentencia  goto 96
 	sentencia_ejecutable  goto 24
 	sentencia_declarativa  goto 25
@@ -1375,9 +1383,9 @@ state 85
 
 
 state 86
-	parametro_lambda : '(' UINT . ID ')'  (180)
+	parametro_lambda : '(' UINT . ID ')'  (181)
 
-	ID  shift 167
+	ID  shift 169
 	.  error
 
 
@@ -1386,7 +1394,7 @@ state 87
 	asignacion_simple : variable DASIG . expresion error  (59)
 	asignacion_simple : variable DASIG . error  (61)
 
-	error  shift 168
+	error  shift 170
 	ID  shift 9
 	CTE  shift 44
 	'+'  shift 46
@@ -1395,7 +1403,7 @@ state 87
 	'*'  shift 49
 	.  error
 
-	expresion  goto 169
+	expresion  goto 171
 	termino  goto 52
 	factor  goto 53
 	operador_multiplicacion  goto 54
@@ -1407,10 +1415,10 @@ state 87
 state 88
 	variable_con_coma : ',' . variable  (68)
 
-	ID  shift 170
+	ID  shift 172
 	.  error
 
-	variable  goto 171
+	variable  goto 173
 
 
 state 89
@@ -1427,7 +1435,7 @@ state 90
 
 	ID  shift 9
 	CTE  shift 115
-	';'  shift 172
+	';'  shift 174
 	'+'  shift 116
 	'-'  shift 117
 	.  error
@@ -1459,19 +1467,19 @@ state 92
 	'-'  shift 47
 	.  error
 
-	constante  goto 173
+	constante  goto 175
 
 
 state 93
 	asignacion_par : variable_con_coma . asignacion_par constante_con_coma  (66)
 
-	ID  shift 170
+	ID  shift 172
 	','  shift 88
 	'='  shift 89
 	.  error
 
-	variable  goto 174
-	asignacion_par  goto 175
+	variable  goto 176
+	asignacion_par  goto 177
 	variable_con_coma  goto 93
 
 
@@ -1514,7 +1522,7 @@ state 98
 
 	variable  goto 17
 	invocacion_funcion  goto 18
-	conjunto_sentencias  goto 176
+	conjunto_sentencias  goto 178
 	sentencia  goto 23
 	sentencia_ejecutable  goto 24
 	sentencia_declarativa  goto 25
@@ -1546,21 +1554,21 @@ state 100
 state 101
 	bloque_ejecutable : '{' . conjunto_sentencias_ejecutables '}'  (34)
 	bloque_ejecutable : '{' . '}'  (35)
-	lambda : parametro_lambda '{' . conjunto_sentencias_ejecutables argumento_lambda error  (173)
+	lambda : parametro_lambda '{' . conjunto_sentencias_ejecutables argumento_lambda error  (174)
 
 	ID  shift 9
 	PRINT  shift 10
 	IF  shift 11
 	DO  shift 13
 	RETURN  shift 14
-	'}'  shift 153
+	'}'  shift 155
 	'('  shift 16
 	.  error
 
 	variable  goto 17
 	invocacion_funcion  goto 18
 	sentencia_ejecutable  goto 102
-	conjunto_sentencias_ejecutables  goto 177
+	conjunto_sentencias_ejecutables  goto 179
 	asignacion_simple  goto 28
 	asignacion_multiple  goto 29
 	sentencia_control  goto 30
@@ -1579,35 +1587,35 @@ state 102
 
 
 state 103
-	lambda : parametro_lambda bloque_ejecutable . argumento_lambda_admisible ';'  (171)
-	lambda : parametro_lambda bloque_ejecutable . argumento_lambda error  (172)
-	argumento_lambda : .  (178)
+	lambda : parametro_lambda bloque_ejecutable . argumento_lambda_admisible ';'  (172)
+	lambda : parametro_lambda bloque_ejecutable . argumento_lambda error  (173)
+	argumento_lambda : .  (179)
 
-	'('  shift 178
-	error  reduce 178
+	'('  shift 180
+	error  reduce 179
 
-	argumento_lambda_admisible  goto 179
-	argumento_lambda  goto 180
+	argumento_lambda_admisible  goto 181
+	argumento_lambda  goto 182
 
 
 state 104
 	conjunto_sentencias_ejecutables : conjunto_sentencias_ejecutables . sentencia_ejecutable  (37)
-	lambda : parametro_lambda conjunto_sentencias_ejecutables . argumento_lambda error  (174)
-	lambda : parametro_lambda conjunto_sentencias_ejecutables . '}' argumento_lambda error  (175)
-	argumento_lambda : .  (178)
+	lambda : parametro_lambda conjunto_sentencias_ejecutables . argumento_lambda error  (175)
+	lambda : parametro_lambda conjunto_sentencias_ejecutables . '}' argumento_lambda error  (176)
+	argumento_lambda : .  (179)
 
 	ID  shift 9
 	PRINT  shift 10
 	IF  shift 11
 	DO  shift 13
 	RETURN  shift 14
-	'}'  shift 181
-	'('  shift 182
-	error  reduce 178
+	'}'  shift 183
+	'('  shift 184
+	error  reduce 179
 
 	variable  goto 17
 	invocacion_funcion  goto 18
-	sentencia_ejecutable  goto 183
+	sentencia_ejecutable  goto 185
 	asignacion_simple  goto 28
 	asignacion_multiple  goto 29
 	sentencia_control  goto 30
@@ -1617,8 +1625,8 @@ state 104
 	if  goto 34
 	do_while  goto 35
 	parametro_lambda  goto 36
-	argumento_lambda_admisible  goto 184
-	argumento_lambda  goto 185
+	argumento_lambda_admisible  goto 186
+	argumento_lambda  goto 187
 
 
 state 105
@@ -1636,7 +1644,7 @@ state 105
 
 	variable  goto 17
 	invocacion_funcion  goto 18
-	conjunto_sentencias  goto 186
+	conjunto_sentencias  goto 188
 	sentencia  goto 23
 	sentencia_ejecutable  goto 24
 	sentencia_declarativa  goto 25
@@ -1674,7 +1682,7 @@ state 108
 
 	ID  shift 9
 	CTE  shift 115
-	FLECHA  shift 187
+	FLECHA  shift 189
 	'+'  shift 116
 	'-'  shift 117
 	','  reduce 161
@@ -1691,8 +1699,8 @@ state 109
 	invocacion_funcion : ID '(' lista_argumentos . ')'  (157)
 	lista_argumentos : lista_argumentos . ',' argumento  (159)
 
-	','  shift 188
-	')'  shift 189
+	','  shift 190
+	')'  shift 191
 	.  error
 
 
@@ -1736,15 +1744,15 @@ state 112
 
 
 state 113
-	imprimible : '(' ')' .  (165)
+	imprimible_recuperacion : '(' ')' .  (167)
 
-	error  reduce 165
+	.  reduce 167
 
 
 state 114
-	imprimible_admisible : '(' elemento_imprimible . ')'  (168)
+	imprimible : '(' elemento_imprimible . ')'  (166)
 
-	')'  shift 190
+	')'  shift 192
 	.  error
 
 
@@ -1790,7 +1798,7 @@ state 118
 	'>'  reduce 78
 	'<'  reduce 78
 
-	operador_multiplicacion  goto 191
+	operador_multiplicacion  goto 193
 
 
 state 119
@@ -1803,7 +1811,7 @@ state 120
 	expresion : expresion operador_suma . termino  (76)
 	expresion : expresion operador_suma . error  (77)
 
-	error  shift 192
+	error  shift 194
 	ID  shift 9
 	CTE  shift 44
 	'-'  shift 47
@@ -1811,7 +1819,7 @@ state 120
 	'*'  shift 49
 	.  error
 
-	termino  goto 193
+	termino  goto 195
 	factor  goto 53
 	operador_multiplicacion  goto 54
 	variable  goto 55
@@ -1835,13 +1843,13 @@ state 123
 	termino : termino operador_multiplicacion . factor  (82)
 	termino : termino operador_multiplicacion . error  (84)
 
-	error  shift 194
+	error  shift 196
 	ID  shift 9
 	CTE  shift 44
 	'-'  shift 47
 	.  error
 
-	factor  goto 195
+	factor  goto 197
 	variable  goto 55
 	constante  goto 56
 	invocacion_funcion  goto 57
@@ -1860,24 +1868,36 @@ state 125
 
 
 state 126
-	impresion : PRINT imprimible_admisible ';' .  (162)
-
-	.  reduce 162
-
-
-state 127
 	impresion : PRINT imprimible error .  (163)
 
 	.  reduce 163
 
 
+state 127
+	impresion : PRINT imprimible ';' .  (162)
+
+	.  reduce 162
+
+
 state 128
+	impresion : PRINT imprimible_recuperacion error .  (165)
+
+	.  reduce 165
+
+
+state 129
+	impresion : PRINT imprimible_recuperacion ';' .  (164)
+
+	.  reduce 164
+
+
+state 130
 	condicion : '(' ')' .  (102)
 
 	.  reduce 102
 
 
-state 129
+state 131
 	rama_else : ELSE . cuerpo_ejecutable  (122)
 	rama_else : ELSE .  (123)
 
@@ -1894,7 +1914,7 @@ state 129
 	variable  goto 17
 	invocacion_funcion  goto 18
 	sentencia_ejecutable  goto 73
-	cuerpo_ejecutable  goto 196
+	cuerpo_ejecutable  goto 198
 	bloque_ejecutable  goto 75
 	asignacion_simple  goto 28
 	asignacion_multiple  goto 29
@@ -1907,27 +1927,27 @@ state 129
 	parametro_lambda  goto 36
 
 
-state 130
+state 132
 	if : IF condicion cuerpo_ejecutable . rama_else ENDIF ';'  (116)
 	if : IF condicion cuerpo_ejecutable . rama_else ENDIF error  (117)
 	if : IF condicion cuerpo_ejecutable . rama_else ';'  (118)
 	rama_else : .  (121)
 
-	ELSE  shift 129
+	ELSE  shift 131
 	ENDIF  reduce 121
 	';'  reduce 121
 
-	rama_else  goto 197
+	rama_else  goto 199
 
 
-state 131
+state 133
 	if : IF condicion rama_else . ENDIF ';'  (120)
 
-	ENDIF  shift 198
+	ENDIF  shift 200
 	.  error
 
 
-state 132
+state 134
 	expresion : expresion . operador_suma termino  (76)
 	expresion : expresion . operador_suma error  (77)
 	expresion : expresion . termino_simple  (78)
@@ -1936,15 +1956,15 @@ state 132
 
 	ID  shift 9
 	CTE  shift 115
-	EQ  shift 199
-	GEQ  shift 200
-	LEQ  shift 201
-	NEQ  shift 202
-	'='  shift 203
+	EQ  shift 201
+	GEQ  shift 202
+	LEQ  shift 203
+	NEQ  shift 204
+	'='  shift 205
 	'+'  shift 116
 	'-'  shift 117
-	'>'  shift 204
-	'<'  shift 205
+	'>'  shift 206
+	'<'  shift 207
 	error  reduce 108
 	')'  reduce 108
 
@@ -1953,177 +1973,177 @@ state 132
 	operador_suma  goto 120
 	variable  goto 121
 	invocacion_funcion  goto 122
-	comparador  goto 206
+	comparador  goto 208
 
 
-state 133
+state 135
 	condicion : parentesis_apertura cuerpo_condicion . parentesis_cierre  (101)
 
-	error  shift 207
-	')'  shift 208
+	error  shift 209
+	')'  shift 210
 	.  error
 
-	parentesis_cierre  goto 209
+	parentesis_cierre  goto 211
 
 
-state 134
+state 136
 	declaracion_variables : UINT ID error .  (50)
 
 	.  reduce 50
 
 
-state 135
+state 137
 	lista_variables : ID ID .  (57)
 
 	.  reduce 57
 
 
-state 136
+state 138
 	declaracion_variables : UINT ID ';' .  (49)
 
 	.  reduce 49
 
 
-state 137
+state 139
 	lista_variables : ID ',' . ID  (54)
 
-	ID  shift 210
+	ID  shift 212
 	.  error
 
 
-state 138
+state 140
 	declaracion_funcion : UINT ID '(' . conjunto_parametros ')' cuerpo_funcion_admisible  (133)
 	declaracion_funcion : UINT ID '(' . conjunto_parametros ')' '{' '}'  (135)
 	conjunto_parametros : .  (140)
 	semantica_pasaje : .  (149)
 
-	error  shift 139
-	CVR  shift 140
-	','  shift 141
+	error  shift 141
+	CVR  shift 142
+	','  shift 143
 	ID  reduce 149
 	UINT  reduce 149
 	')'  reduce 140
 
-	conjunto_parametros  goto 211
-	lista_parametros  goto 143
-	parametro_formal  goto 144
-	parametro_vacio  goto 145
-	semantica_pasaje  goto 146
+	conjunto_parametros  goto 213
+	lista_parametros  goto 145
+	parametro_formal  goto 146
+	parametro_vacio  goto 147
+	semantica_pasaje  goto 148
 
 
-state 139
+state 141
 	semantica_pasaje : error .  (151)
 
 	.  reduce 151
 
 
-state 140
+state 142
 	semantica_pasaje : CVR .  (150)
 
 	.  reduce 150
 
 
-state 141
+state 143
 	parametro_vacio : ',' . parametro_formal  (145)
 	semantica_pasaje : .  (149)
 
-	error  shift 139
-	CVR  shift 140
+	error  shift 141
+	CVR  shift 142
 	ID  reduce 149
 	UINT  reduce 149
 
-	parametro_formal  goto 212
-	semantica_pasaje  goto 146
+	parametro_formal  goto 214
+	semantica_pasaje  goto 148
 
 
-state 142
+state 144
 	declaracion_funcion : UINT '(' conjunto_parametros . ')' cuerpo_funcion  (134)
 
-	')'  shift 213
+	')'  shift 215
 	.  error
 
 
-state 143
+state 145
 	conjunto_parametros : lista_parametros .  (139)
 	lista_parametros : lista_parametros . ',' parametro_formal  (142)
 	parametro_vacio : lista_parametros . ','  (144)
 
-	','  shift 214
+	','  shift 216
 	')'  reduce 139
 
 
-state 144
+state 146
 	lista_parametros : parametro_formal .  (141)
 
 	.  reduce 141
 
 
-state 145
+state 147
 	lista_parametros : parametro_vacio .  (143)
 
 	.  reduce 143
 
 
-state 146
+state 148
 	parametro_formal : semantica_pasaje . UINT variable  (146)
 	parametro_formal : semantica_pasaje . UINT  (147)
 	parametro_formal : semantica_pasaje . variable  (148)
 
-	ID  shift 170
-	UINT  shift 215
+	ID  shift 172
+	UINT  shift 217
 	.  error
 
-	variable  goto 216
+	variable  goto 218
 
 
-state 147
+state 149
 	declaracion_variables : UINT lista_variables error .  (51)
 
 	.  reduce 51
 
 
-state 148
+state 150
 	lista_variables : lista_variables ID .  (56)
 
 	.  reduce 56
 
 
-state 149
+state 151
 	declaracion_variables : UINT lista_variables ';' .  (48)
 
 	.  reduce 48
 
 
-state 150
+state 152
 	lista_variables : lista_variables ',' . ID  (55)
 
-	ID  shift 217
+	ID  shift 219
 	.  error
 
 
-state 151
+state 153
 	declaracion_variables : UINT variable DASIG . constante ';'  (52)
 
 	CTE  shift 44
 	'-'  shift 47
 	.  error
 
-	constante  goto 218
+	constante  goto 220
 
 
-state 152
+state 154
 	fin_cuerpo_do : WHILE condicion .  (132)
 
 	.  reduce 132
 
 
-state 153
+state 155
 	bloque_ejecutable : '{' '}' .  (35)
 
 	.  reduce 35
 
 
-state 154
+state 156
 	bloque_ejecutable : '{' conjunto_sentencias_ejecutables . '}'  (34)
 	conjunto_sentencias_ejecutables : conjunto_sentencias_ejecutables . sentencia_ejecutable  (37)
 
@@ -2132,13 +2152,13 @@ state 154
 	IF  shift 11
 	DO  shift 13
 	RETURN  shift 14
-	'}'  shift 219
+	'}'  shift 221
 	'('  shift 16
 	.  error
 
 	variable  goto 17
 	invocacion_funcion  goto 18
-	sentencia_ejecutable  goto 183
+	sentencia_ejecutable  goto 185
 	asignacion_simple  goto 28
 	asignacion_multiple  goto 29
 	sentencia_control  goto 30
@@ -2150,50 +2170,50 @@ state 154
 	parametro_lambda  goto 36
 
 
-state 155
+state 157
 	cuerpo_do_recuperacion : cuerpo_ejecutable condicion .  (131)
 
 	.  reduce 131
 
 
-state 156
+state 158
 	cuerpo_do : cuerpo_ejecutable fin_cuerpo_do .  (129)
 
 	.  reduce 129
 
 
-state 157
-	do_while : DO cuerpo_do error .  (125)
+state 159
+	do_while : DO cuerpo_do error .  (126)
 
-	.  reduce 125
+	.  reduce 126
 
 
-state 158
+state 160
 	do_while : DO cuerpo_do ';' .  (124)
 
 	.  reduce 124
 
 
-state 159
+state 161
 	do_while : DO cuerpo_do_recuperacion error .  (127)
 
 	.  reduce 127
 
 
-state 160
-	do_while : DO cuerpo_do_recuperacion ';' .  (126)
+state 162
+	do_while : DO cuerpo_do_recuperacion ';' .  (125)
 
-	.  reduce 126
+	.  reduce 125
 
 
-state 161
+state 163
 	sentencia_retorno : RETURN '(' ')' . ';'  (154)
 
-	';'  shift 220
+	';'  shift 222
 	.  error
 
 
-state 162
+state 164
 	expresion : expresion . operador_suma termino  (76)
 	expresion : expresion . operador_suma error  (77)
 	expresion : expresion . termino_simple  (78)
@@ -2204,7 +2224,7 @@ state 162
 	CTE  shift 115
 	'+'  shift 116
 	'-'  shift 117
-	')'  shift 221
+	')'  shift 223
 	.  error
 
 	termino_simple  goto 118
@@ -2214,13 +2234,13 @@ state 162
 	invocacion_funcion  goto 122
 
 
-state 163
+state 165
 	sentencia_retorno : RETURN expresion ';' .  (155)
 
 	.  reduce 155
 
 
-state 164
+state 166
 	cuerpo_programa_recuperacion : '{' error '}' .  (18)
 	conjunto_sentencias : error '}' .  (25)
 
@@ -2235,46 +2255,46 @@ state 164
 	'('  reduce 25
 
 
-state 165
+state 167
 	cuerpo_programa : '{' conjunto_sentencias '}' .  (12)
 	lista_llaves_cierre : '}' . '}'  (21)
 
-	'}'  shift 222
+	'}'  shift 224
 	$end  reduce 12
 
 
-state 166
+state 168
 	cuerpo_programa_recuperacion : '{' conjunto_sentencias lista_llaves_cierre .  (13)
 	lista_llaves_cierre : lista_llaves_cierre . '}'  (22)
 
-	'}'  shift 223
+	'}'  shift 225
 	$end  reduce 13
 
 
-state 167
-	parametro_lambda : '(' UINT ID . ')'  (180)
+state 169
+	parametro_lambda : '(' UINT ID . ')'  (181)
 
-	')'  shift 224
+	')'  shift 226
 	.  error
 
 
-state 168
+state 170
 	asignacion_simple : variable DASIG error .  (61)
 
 	.  reduce 61
 
 
-state 169
+state 171
 	asignacion_simple : variable DASIG expresion . ';'  (58)
 	asignacion_simple : variable DASIG expresion . error  (59)
 	expresion : expresion . operador_suma termino  (76)
 	expresion : expresion . operador_suma error  (77)
 	expresion : expresion . termino_simple  (78)
 
-	error  shift 225
+	error  shift 227
 	ID  shift 9
 	CTE  shift 115
-	';'  shift 226
+	';'  shift 228
 	'+'  shift 116
 	'-'  shift 117
 	.  error
@@ -2286,7 +2306,7 @@ state 169
 	invocacion_funcion  goto 122
 
 
-state 170
+state 172
 	variable : ID .  (99)
 	variable : ID . '.' ID  (100)
 
@@ -2297,48 +2317,48 @@ state 170
 	')'  reduce 99
 
 
-state 171
+state 173
 	variable_con_coma : ',' variable .  (68)
 
 	.  reduce 68
 
 
-state 172
+state 174
 	asignacion_simple : variable expresion ';' .  (60)
 
 	.  reduce 60
 
 
-state 173
+state 175
 	asignacion_multiple : variable asignacion_par constante . ';'  (62)
 	asignacion_multiple : variable asignacion_par constante . ',' lista_constantes ';'  (63)
 	asignacion_multiple : variable asignacion_par constante . error  (64)
 	asignacion_multiple : variable asignacion_par constante . ',' lista_constantes error  (65)
 
-	error  shift 227
-	';'  shift 228
-	','  shift 229
+	error  shift 229
+	';'  shift 230
+	','  shift 231
 	.  error
 
 
-state 174
+state 176
 	variable_con_coma : variable .  (69)
 
 	.  reduce 69
 
 
-state 175
+state 177
 	asignacion_par : variable_con_coma asignacion_par . constante_con_coma  (66)
 
 	CTE  shift 44
 	'-'  shift 47
 	.  error
 
-	constante  goto 230
-	constante_con_coma  goto 231
+	constante  goto 232
+	constante_con_coma  goto 233
 
 
-state 176
+state 178
 	cuerpo_programa_recuperacion : lista_llaves_apertura $$3 conjunto_sentencias . '}'  (15)
 	conjunto_sentencias : conjunto_sentencias . sentencia  (24)
 
@@ -2348,7 +2368,7 @@ state 176
 	UINT  shift 12
 	DO  shift 13
 	RETURN  shift 14
-	'}'  shift 232
+	'}'  shift 234
 	'('  shift 16
 	.  error
 
@@ -2370,24 +2390,24 @@ state 176
 	parametro_lambda  goto 36
 
 
-state 177
+state 179
 	bloque_ejecutable : '{' conjunto_sentencias_ejecutables . '}'  (34)
 	conjunto_sentencias_ejecutables : conjunto_sentencias_ejecutables . sentencia_ejecutable  (37)
-	lambda : parametro_lambda '{' conjunto_sentencias_ejecutables . argumento_lambda error  (173)
-	argumento_lambda : .  (178)
+	lambda : parametro_lambda '{' conjunto_sentencias_ejecutables . argumento_lambda error  (174)
+	argumento_lambda : .  (179)
 
 	ID  shift 9
 	PRINT  shift 10
 	IF  shift 11
 	DO  shift 13
 	RETURN  shift 14
-	'}'  shift 219
-	'('  shift 182
-	error  reduce 178
+	'}'  shift 221
+	'('  shift 184
+	error  reduce 179
 
 	variable  goto 17
 	invocacion_funcion  goto 18
-	sentencia_ejecutable  goto 183
+	sentencia_ejecutable  goto 185
 	asignacion_simple  goto 28
 	asignacion_multiple  goto 29
 	sentencia_control  goto 30
@@ -2397,90 +2417,90 @@ state 177
 	if  goto 34
 	do_while  goto 35
 	parametro_lambda  goto 36
-	argumento_lambda_admisible  goto 184
-	argumento_lambda  goto 233
-
-
-state 178
-	argumento_lambda : '(' . ')'  (177)
-	argumento_lambda_admisible : '(' . factor ')'  (179)
-
-	ID  shift 9
-	CTE  shift 44
-	'-'  shift 47
-	')'  shift 234
-	.  error
-
-	factor  goto 235
-	variable  goto 55
-	constante  goto 56
-	invocacion_funcion  goto 57
-
-
-state 179
-	lambda : parametro_lambda bloque_ejecutable argumento_lambda_admisible . ';'  (171)
-	argumento_lambda : argumento_lambda_admisible .  (176)
-
-	';'  shift 236
-	error  reduce 176
+	argumento_lambda_admisible  goto 186
+	argumento_lambda  goto 235
 
 
 state 180
-	lambda : parametro_lambda bloque_ejecutable argumento_lambda . error  (172)
-
-	error  shift 237
-	.  error
-
-
-state 181
-	lambda : parametro_lambda conjunto_sentencias_ejecutables '}' . argumento_lambda error  (175)
-	argumento_lambda : .  (178)
-
-	'('  shift 178
-	error  reduce 178
-
-	argumento_lambda_admisible  goto 184
-	argumento_lambda  goto 238
-
-
-state 182
-	argumento_lambda : '(' . ')'  (177)
-	argumento_lambda_admisible : '(' . factor ')'  (179)
-	parametro_lambda : '(' . UINT ID ')'  (180)
+	argumento_lambda : '(' . ')'  (178)
+	argumento_lambda_admisible : '(' . factor ')'  (180)
 
 	ID  shift 9
 	CTE  shift 44
-	UINT  shift 86
 	'-'  shift 47
-	')'  shift 234
+	')'  shift 236
 	.  error
 
-	factor  goto 235
+	factor  goto 237
 	variable  goto 55
 	constante  goto 56
 	invocacion_funcion  goto 57
 
 
-state 183
-	conjunto_sentencias_ejecutables : conjunto_sentencias_ejecutables sentencia_ejecutable .  (37)
+state 181
+	lambda : parametro_lambda bloque_ejecutable argumento_lambda_admisible . ';'  (172)
+	argumento_lambda : argumento_lambda_admisible .  (177)
 
-	.  reduce 37
-
-
-state 184
-	argumento_lambda : argumento_lambda_admisible .  (176)
-
-	error  reduce 176
+	';'  shift 238
+	error  reduce 177
 
 
-state 185
-	lambda : parametro_lambda conjunto_sentencias_ejecutables argumento_lambda . error  (174)
+state 182
+	lambda : parametro_lambda bloque_ejecutable argumento_lambda . error  (173)
 
 	error  shift 239
 	.  error
 
 
+state 183
+	lambda : parametro_lambda conjunto_sentencias_ejecutables '}' . argumento_lambda error  (176)
+	argumento_lambda : .  (179)
+
+	'('  shift 180
+	error  reduce 179
+
+	argumento_lambda_admisible  goto 186
+	argumento_lambda  goto 240
+
+
+state 184
+	argumento_lambda : '(' . ')'  (178)
+	argumento_lambda_admisible : '(' . factor ')'  (180)
+	parametro_lambda : '(' . UINT ID ')'  (181)
+
+	ID  shift 9
+	CTE  shift 44
+	UINT  shift 86
+	'-'  shift 47
+	')'  shift 236
+	.  error
+
+	factor  goto 237
+	variable  goto 55
+	constante  goto 56
+	invocacion_funcion  goto 57
+
+
+state 185
+	conjunto_sentencias_ejecutables : conjunto_sentencias_ejecutables sentencia_ejecutable .  (37)
+
+	.  reduce 37
+
+
 state 186
+	argumento_lambda : argumento_lambda_admisible .  (177)
+
+	error  reduce 177
+
+
+state 187
+	lambda : parametro_lambda conjunto_sentencias_ejecutables argumento_lambda . error  (175)
+
+	error  shift 241
+	.  error
+
+
+state 188
 	cuerpo_programa : '{' conjunto_sentencias . '}'  (12)
 	conjunto_sentencias : conjunto_sentencias . sentencia  (24)
 
@@ -2490,7 +2510,7 @@ state 186
 	UINT  shift 12
 	DO  shift 13
 	RETURN  shift 14
-	'}'  shift 240
+	'}'  shift 242
 	'('  shift 16
 	.  error
 
@@ -2512,14 +2532,14 @@ state 186
 	parametro_lambda  goto 36
 
 
-state 187
+state 189
 	argumento : expresion FLECHA . ID  (160)
 
-	ID  shift 241
+	ID  shift 243
 	.  error
 
 
-state 188
+state 190
 	lista_argumentos : lista_argumentos ',' . argumento  (159)
 
 	ID  shift 9
@@ -2537,44 +2557,44 @@ state 188
 	variable  goto 55
 	constante  goto 56
 	invocacion_funcion  goto 57
-	argumento  goto 242
+	argumento  goto 244
 
 
-state 189
+state 191
 	invocacion_funcion : ID '(' lista_argumentos ')' .  (157)
 
 	.  reduce 157
 
 
-state 190
-	imprimible_admisible : '(' elemento_imprimible ')' .  (168)
+state 192
+	imprimible : '(' elemento_imprimible ')' .  (166)
 
-	.  reduce 168
+	.  reduce 166
 
 
-state 191
+state 193
 	termino_simple : termino_simple operador_multiplicacion . factor  (86)
 	termino_simple : termino_simple operador_multiplicacion . error  (88)
 
-	error  shift 243
+	error  shift 245
 	ID  shift 9
 	CTE  shift 44
 	'-'  shift 47
 	.  error
 
-	factor  goto 244
+	factor  goto 246
 	variable  goto 55
 	constante  goto 56
 	invocacion_funcion  goto 57
 
 
-state 192
+state 194
 	expresion : expresion operador_suma error .  (77)
 
 	.  reduce 77
 
 
-state 193
+state 195
 	expresion : expresion operador_suma termino .  (76)
 	termino : termino . operador_multiplicacion factor  (82)
 	termino : termino . operador_multiplicacion error  (84)
@@ -2601,84 +2621,84 @@ state 193
 	operador_multiplicacion  goto 123
 
 
-state 194
+state 196
 	termino : termino operador_multiplicacion error .  (84)
 
 	.  reduce 84
 
 
-state 195
+state 197
 	termino : termino operador_multiplicacion factor .  (82)
 
 	.  reduce 82
 
 
-state 196
+state 198
 	rama_else : ELSE cuerpo_ejecutable .  (122)
 
 	.  reduce 122
 
 
-state 197
+state 199
 	if : IF condicion cuerpo_ejecutable rama_else . ENDIF ';'  (116)
 	if : IF condicion cuerpo_ejecutable rama_else . ENDIF error  (117)
 	if : IF condicion cuerpo_ejecutable rama_else . ';'  (118)
 
-	ENDIF  shift 245
-	';'  shift 246
+	ENDIF  shift 247
+	';'  shift 248
 	.  error
 
 
-state 198
+state 200
 	if : IF condicion rama_else ENDIF . ';'  (120)
 
-	';'  shift 247
+	';'  shift 249
 	.  error
 
 
-state 199
+state 201
 	comparador : EQ .  (111)
 
 	.  reduce 111
 
 
-state 200
+state 202
 	comparador : GEQ .  (113)
 
 	.  reduce 113
 
 
-state 201
+state 203
 	comparador : LEQ .  (112)
 
 	.  reduce 112
 
 
-state 202
+state 204
 	comparador : NEQ .  (114)
 
 	.  reduce 114
 
 
-state 203
+state 205
 	comparador : '=' .  (115)
 
 	.  reduce 115
 
 
-state 204
+state 206
 	comparador : '>' .  (109)
 
 	.  reduce 109
 
 
-state 205
+state 207
 	comparador : '<' .  (110)
 
 	.  reduce 110
 
 
-state 206
+state 208
 	cuerpo_condicion : expresion comparador . expresion  (107)
 
 	ID  shift 9
@@ -2689,7 +2709,7 @@ state 206
 	'*'  shift 49
 	.  error
 
-	expresion  goto 248
+	expresion  goto 250
 	termino  goto 52
 	factor  goto 53
 	operador_multiplicacion  goto 54
@@ -2698,164 +2718,164 @@ state 206
 	invocacion_funcion  goto 57
 
 
-state 207
+state 209
 	parentesis_cierre : error .  (106)
 
 	.  reduce 106
 
 
-state 208
+state 210
 	parentesis_cierre : ')' .  (105)
 
 	.  reduce 105
 
 
-state 209
+state 211
 	condicion : parentesis_apertura cuerpo_condicion parentesis_cierre .  (101)
 
 	.  reduce 101
 
 
-state 210
+state 212
 	lista_variables : ID ',' ID .  (54)
 
 	.  reduce 54
 
 
-state 211
+state 213
 	declaracion_funcion : UINT ID '(' conjunto_parametros . ')' cuerpo_funcion_admisible  (133)
 	declaracion_funcion : UINT ID '(' conjunto_parametros . ')' '{' '}'  (135)
 
-	')'  shift 249
+	')'  shift 251
 	.  error
 
 
-state 212
+state 214
 	parametro_vacio : ',' parametro_formal .  (145)
 
 	.  reduce 145
 
 
-state 213
+state 215
 	declaracion_funcion : UINT '(' conjunto_parametros ')' . cuerpo_funcion  (134)
 
-	'{'  shift 250
+	'{'  shift 252
 	.  error
 
-	cuerpo_funcion_admisible  goto 251
-	cuerpo_funcion  goto 252
+	cuerpo_funcion_admisible  goto 253
+	cuerpo_funcion  goto 254
 
 
-state 214
+state 216
 	lista_parametros : lista_parametros ',' . parametro_formal  (142)
 	parametro_vacio : lista_parametros ',' .  (144)
 	semantica_pasaje : .  (149)
 
-	error  shift 139
-	CVR  shift 140
+	error  shift 141
+	CVR  shift 142
 	ID  reduce 149
 	UINT  reduce 149
 	','  reduce 144
 	')'  reduce 144
 
-	parametro_formal  goto 253
-	semantica_pasaje  goto 146
+	parametro_formal  goto 255
+	semantica_pasaje  goto 148
 
 
-state 215
+state 217
 	parametro_formal : semantica_pasaje UINT . variable  (146)
 	parametro_formal : semantica_pasaje UINT .  (147)
 
-	ID  shift 170
+	ID  shift 172
 	','  reduce 147
 	')'  reduce 147
 
-	variable  goto 254
+	variable  goto 256
 
 
-state 216
+state 218
 	parametro_formal : semantica_pasaje variable .  (148)
 
 	.  reduce 148
 
 
-state 217
+state 219
 	lista_variables : lista_variables ',' ID .  (55)
 
 	.  reduce 55
 
 
-state 218
+state 220
 	declaracion_variables : UINT variable DASIG constante . ';'  (52)
 
-	';'  shift 255
+	';'  shift 257
 	.  error
 
 
-state 219
+state 221
 	bloque_ejecutable : '{' conjunto_sentencias_ejecutables '}' .  (34)
 
 	.  reduce 34
 
 
-state 220
+state 222
 	sentencia_retorno : RETURN '(' ')' ';' .  (154)
 
 	.  reduce 154
 
 
-state 221
+state 223
 	sentencia_retorno : RETURN '(' expresion ')' . ';'  (152)
 	sentencia_retorno : RETURN '(' expresion ')' . error  (153)
 
-	error  shift 256
-	';'  shift 257
+	error  shift 258
+	';'  shift 259
 	.  error
 
 
-state 222
+state 224
 	lista_llaves_cierre : '}' '}' .  (21)
 
 	.  reduce 21
 
 
-state 223
+state 225
 	lista_llaves_cierre : lista_llaves_cierre '}' .  (22)
 
 	.  reduce 22
 
 
-state 224
-	parametro_lambda : '(' UINT ID ')' .  (180)
+state 226
+	parametro_lambda : '(' UINT ID ')' .  (181)
 
-	.  reduce 180
+	.  reduce 181
 
 
-state 225
+state 227
 	asignacion_simple : variable DASIG expresion error .  (59)
 
 	.  reduce 59
 
 
-state 226
+state 228
 	asignacion_simple : variable DASIG expresion ';' .  (58)
 
 	.  reduce 58
 
 
-state 227
+state 229
 	asignacion_multiple : variable asignacion_par constante error .  (64)
 
 	.  reduce 64
 
 
-state 228
+state 230
 	asignacion_multiple : variable asignacion_par constante ';' .  (62)
 
 	.  reduce 62
 
 
-state 229
+state 231
 	asignacion_multiple : variable asignacion_par constante ',' . lista_constantes ';'  (63)
 	asignacion_multiple : variable asignacion_par constante ',' . lista_constantes error  (65)
 
@@ -2863,128 +2883,128 @@ state 229
 	'-'  shift 47
 	.  error
 
-	lista_constantes  goto 258
-	constante  goto 259
+	lista_constantes  goto 260
+	constante  goto 261
 
 
-state 230
+state 232
 	constante_con_coma : constante . ','  (70)
 	constante_con_coma : constante .  (71)
 
-	','  shift 260
+	','  shift 262
 	CTE  reduce 71
 	'-'  reduce 71
 
 
-state 231
+state 233
 	asignacion_par : variable_con_coma asignacion_par constante_con_coma .  (66)
 
 	.  reduce 66
 
 
-state 232
+state 234
 	cuerpo_programa_recuperacion : lista_llaves_apertura $$3 conjunto_sentencias '}' .  (15)
 
 	.  reduce 15
 
 
-state 233
-	lambda : parametro_lambda '{' conjunto_sentencias_ejecutables argumento_lambda . error  (173)
-
-	error  shift 261
-	.  error
-
-
-state 234
-	argumento_lambda : '(' ')' .  (177)
-
-	error  reduce 177
-
-
 state 235
-	argumento_lambda_admisible : '(' factor . ')'  (179)
-
-	')'  shift 262
-	.  error
-
-
-state 236
-	lambda : parametro_lambda bloque_ejecutable argumento_lambda_admisible ';' .  (171)
-
-	.  reduce 171
-
-
-state 237
-	lambda : parametro_lambda bloque_ejecutable argumento_lambda error .  (172)
-
-	.  reduce 172
-
-
-state 238
-	lambda : parametro_lambda conjunto_sentencias_ejecutables '}' argumento_lambda . error  (175)
+	lambda : parametro_lambda '{' conjunto_sentencias_ejecutables argumento_lambda . error  (174)
 
 	error  shift 263
 	.  error
 
 
-state 239
-	lambda : parametro_lambda conjunto_sentencias_ejecutables argumento_lambda error .  (174)
+state 236
+	argumento_lambda : '(' ')' .  (178)
 
-	.  reduce 174
+	error  reduce 178
+
+
+state 237
+	argumento_lambda_admisible : '(' factor . ')'  (180)
+
+	')'  shift 264
+	.  error
+
+
+state 238
+	lambda : parametro_lambda bloque_ejecutable argumento_lambda_admisible ';' .  (172)
+
+	.  reduce 172
+
+
+state 239
+	lambda : parametro_lambda bloque_ejecutable argumento_lambda error .  (173)
+
+	.  reduce 173
 
 
 state 240
+	lambda : parametro_lambda conjunto_sentencias_ejecutables '}' argumento_lambda . error  (176)
+
+	error  shift 265
+	.  error
+
+
+state 241
+	lambda : parametro_lambda conjunto_sentencias_ejecutables argumento_lambda error .  (175)
+
+	.  reduce 175
+
+
+state 242
 	cuerpo_programa : '{' conjunto_sentencias '}' .  (12)
 
 	.  reduce 12
 
 
-state 241
+state 243
 	argumento : expresion FLECHA ID .  (160)
 
 	.  reduce 160
 
 
-state 242
+state 244
 	lista_argumentos : lista_argumentos ',' argumento .  (159)
 
 	.  reduce 159
 
 
-state 243
+state 245
 	termino_simple : termino_simple operador_multiplicacion error .  (88)
 
 	.  reduce 88
 
 
-state 244
+state 246
 	termino_simple : termino_simple operador_multiplicacion factor .  (86)
 
 	.  reduce 86
 
 
-state 245
+state 247
 	if : IF condicion cuerpo_ejecutable rama_else ENDIF . ';'  (116)
 	if : IF condicion cuerpo_ejecutable rama_else ENDIF . error  (117)
 
-	error  shift 264
-	';'  shift 265
+	error  shift 266
+	';'  shift 267
 	.  error
 
 
-state 246
+state 248
 	if : IF condicion cuerpo_ejecutable rama_else ';' .  (118)
 
 	.  reduce 118
 
 
-state 247
+state 249
 	if : IF condicion rama_else ENDIF ';' .  (120)
 
 	.  reduce 120
 
 
-state 248
+state 250
 	expresion : expresion . operador_suma termino  (76)
 	expresion : expresion . operador_suma error  (77)
 	expresion : expresion . termino_simple  (78)
@@ -3004,17 +3024,17 @@ state 248
 	invocacion_funcion  goto 122
 
 
-state 249
+state 251
 	declaracion_funcion : UINT ID '(' conjunto_parametros ')' . cuerpo_funcion_admisible  (133)
 	declaracion_funcion : UINT ID '(' conjunto_parametros ')' . '{' '}'  (135)
 
-	'{'  shift 266
+	'{'  shift 268
 	.  error
 
-	cuerpo_funcion_admisible  goto 267
+	cuerpo_funcion_admisible  goto 269
 
 
-state 250
+state 252
 	cuerpo_funcion : '{' . '}'  (137)
 	cuerpo_funcion_admisible : '{' . conjunto_sentencias '}'  (138)
 
@@ -3025,13 +3045,13 @@ state 250
 	UINT  shift 12
 	DO  shift 13
 	RETURN  shift 14
-	'}'  shift 268
+	'}'  shift 270
 	'('  shift 16
 	.  error
 
 	variable  goto 17
 	invocacion_funcion  goto 18
-	conjunto_sentencias  goto 269
+	conjunto_sentencias  goto 271
 	sentencia  goto 23
 	sentencia_ejecutable  goto 24
 	sentencia_declarativa  goto 25
@@ -3048,107 +3068,107 @@ state 250
 	parametro_lambda  goto 36
 
 
-state 251
+state 253
 	cuerpo_funcion : cuerpo_funcion_admisible .  (136)
 
 	.  reduce 136
 
 
-state 252
+state 254
 	declaracion_funcion : UINT '(' conjunto_parametros ')' cuerpo_funcion .  (134)
 
 	.  reduce 134
 
 
-state 253
+state 255
 	lista_parametros : lista_parametros ',' parametro_formal .  (142)
 
 	.  reduce 142
 
 
-state 254
+state 256
 	parametro_formal : semantica_pasaje UINT variable .  (146)
 
 	.  reduce 146
 
 
-state 255
+state 257
 	declaracion_variables : UINT variable DASIG constante ';' .  (52)
 
 	.  reduce 52
 
 
-state 256
+state 258
 	sentencia_retorno : RETURN '(' expresion ')' error .  (153)
 
 	.  reduce 153
 
 
-state 257
+state 259
 	sentencia_retorno : RETURN '(' expresion ')' ';' .  (152)
 
 	.  reduce 152
 
 
-state 258
+state 260
 	asignacion_multiple : variable asignacion_par constante ',' lista_constantes . ';'  (63)
 	asignacion_multiple : variable asignacion_par constante ',' lista_constantes . error  (65)
 	lista_constantes : lista_constantes . ',' constante  (73)
 	lista_constantes : lista_constantes . constante  (74)
 
-	error  shift 270
+	error  shift 272
 	CTE  shift 44
-	';'  shift 271
-	','  shift 272
+	';'  shift 273
+	','  shift 274
 	'-'  shift 47
 	.  error
 
-	constante  goto 273
+	constante  goto 275
 
 
-state 259
+state 261
 	lista_constantes : constante .  (72)
 
 	.  reduce 72
 
 
-state 260
+state 262
 	constante_con_coma : constante ',' .  (70)
 
 	.  reduce 70
 
 
-state 261
-	lambda : parametro_lambda '{' conjunto_sentencias_ejecutables argumento_lambda error .  (173)
-
-	.  reduce 173
-
-
-state 262
-	argumento_lambda_admisible : '(' factor ')' .  (179)
-
-	.  reduce 179
-
-
 state 263
-	lambda : parametro_lambda conjunto_sentencias_ejecutables '}' argumento_lambda error .  (175)
+	lambda : parametro_lambda '{' conjunto_sentencias_ejecutables argumento_lambda error .  (174)
 
-	.  reduce 175
+	.  reduce 174
 
 
 state 264
+	argumento_lambda_admisible : '(' factor ')' .  (180)
+
+	.  reduce 180
+
+
+state 265
+	lambda : parametro_lambda conjunto_sentencias_ejecutables '}' argumento_lambda error .  (176)
+
+	.  reduce 176
+
+
+state 266
 	if : IF condicion cuerpo_ejecutable rama_else ENDIF error .  (117)
 
 	.  reduce 117
 
 
-state 265
+state 267
 	if : IF condicion cuerpo_ejecutable rama_else ENDIF ';' .  (116)
 
 	.  reduce 116
 
 
-state 266
+state 268
 	declaracion_funcion : UINT ID '(' conjunto_parametros ')' '{' . '}'  (135)
 	cuerpo_funcion_admisible : '{' . conjunto_sentencias '}'  (138)
 
@@ -3159,13 +3179,13 @@ state 266
 	UINT  shift 12
 	DO  shift 13
 	RETURN  shift 14
-	'}'  shift 274
+	'}'  shift 276
 	'('  shift 16
 	.  error
 
 	variable  goto 17
 	invocacion_funcion  goto 18
-	conjunto_sentencias  goto 269
+	conjunto_sentencias  goto 271
 	sentencia  goto 23
 	sentencia_ejecutable  goto 24
 	sentencia_declarativa  goto 25
@@ -3182,19 +3202,19 @@ state 266
 	parametro_lambda  goto 36
 
 
-state 267
+state 269
 	declaracion_funcion : UINT ID '(' conjunto_parametros ')' cuerpo_funcion_admisible .  (133)
 
 	.  reduce 133
 
 
-state 268
+state 270
 	cuerpo_funcion : '{' '}' .  (137)
 
 	.  reduce 137
 
 
-state 269
+state 271
 	conjunto_sentencias : conjunto_sentencias . sentencia  (24)
 	cuerpo_funcion_admisible : '{' conjunto_sentencias . '}'  (138)
 
@@ -3204,7 +3224,7 @@ state 269
 	UINT  shift 12
 	DO  shift 13
 	RETURN  shift 14
-	'}'  shift 275
+	'}'  shift 277
 	'('  shift 16
 	.  error
 
@@ -3226,51 +3246,51 @@ state 269
 	parametro_lambda  goto 36
 
 
-state 270
+state 272
 	asignacion_multiple : variable asignacion_par constante ',' lista_constantes error .  (65)
 
 	.  reduce 65
 
 
-state 271
+state 273
 	asignacion_multiple : variable asignacion_par constante ',' lista_constantes ';' .  (63)
 
 	.  reduce 63
 
 
-state 272
+state 274
 	lista_constantes : lista_constantes ',' . constante  (73)
 
 	CTE  shift 44
 	'-'  shift 47
 	.  error
 
-	constante  goto 276
+	constante  goto 278
 
 
-state 273
+state 275
 	lista_constantes : lista_constantes constante .  (74)
 
 	.  reduce 74
 
 
-state 274
+state 276
 	declaracion_funcion : UINT ID '(' conjunto_parametros ')' '{' '}' .  (135)
 
 	.  reduce 135
 
 
-state 275
+state 277
 	cuerpo_funcion_admisible : '{' conjunto_sentencias '}' .  (138)
 
 	.  reduce 138
 
 
-state 276
+state 278
 	lista_constantes : lista_constantes ',' constante .  (73)
 
 	.  reduce 73
 
 
 35 terminals, 67 nonterminals
-181 grammar rules, 277 states
+182 grammar rules, 279 states
