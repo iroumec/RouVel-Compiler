@@ -411,7 +411,7 @@ termino
             );
         }
     | operador_multiplicacion factor 
-        { notifyError(String.format("Falta operador previo a '%s %s'",$1,$2)); }
+        { notifyError(String.format("Falta operando previo a '%s %s'",$1,$2)); }
     ;
 
 // -------------------------------------------------------------------------------------------------------------------
@@ -487,23 +487,18 @@ variable
 // ********************************************************************************************************************
 
 condicion
-    : parentesis_apertura cuerpo_condicion parentesis_cierre
+    : '(' expresion comparador expresion ')'
         { notifyDetection("Condición."); }
 
     // |========================= REGLAS DE ERROR =========================| //
 
     | '(' ')'
         { notifyError("La condición no puede estar vacía."); }
-    ; 
-
-parentesis_apertura
-    : '('
-    | // lambda //
+    //| cuerpo_condicion
+        //{ notifyDetection("La condición debe ir entre paréntesis."); }
+    | cuerpo_condicion ')'
         { notifyError("Falta apertura de paréntesis en condición."); }
-
-parentesis_cierre
-    : ')'
-    | error
+    | '(' cuerpo_condicion error
         { notifyError("Falta cierre de paréntesis en condición."); }
     ;
     
@@ -548,10 +543,10 @@ if
         { notifyError("La sentencia IF debe terminar con ';'."); }
     | IF condicion cuerpo_ejecutable rama_else ';'
         { notifyError("La sentencia IF debe finalizar con 'endif'."); }
-    | IF error
-        { notifyError("Sentencia IF inválida."); }
     | IF condicion rama_else ENDIF ';'
         { notifyError("Falta el bloque de sentencias del IF."); }
+    | IF error
+        { notifyError("Sentencia IF inválida."); }
     ;
 
 // --------------------------------------------------------------------------------------------------------------------
