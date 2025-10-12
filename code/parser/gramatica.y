@@ -794,39 +794,45 @@ elemento_imprimible
 // ********************************************************************************************************************
 
 lambda
-    : parametro_lambda bloque_ejecutable argumento_lambda_admisible ';'
+    : parametro_lambda bloque_ejecutable argumento_lambda ';'
         { notifyDetection("Expresión lambda."); }
 
     // |========================= REGLAS DE ERROR =========================| //
 
     | parametro_lambda bloque_ejecutable argumento_lambda error
         { notifyError("La expresión 'lambda' debe terminar con ';'."); }
+    | parametro_lambda bloque_ejecutable argumento_lambda_recuperacion ';'
+    | parametro_lambda bloque_ejecutable argumento_lambda_recuperacion error
+        { notifyError("La expresión 'lambda' debe terminar con ';'."); }
+
     | parametro_lambda '{' conjunto_sentencias_ejecutables argumento_lambda error
         { notifyError("Falta delimitador de cierre en expresión 'lambda'."); }
     | parametro_lambda conjunto_sentencias_ejecutables argumento_lambda error
         { notifyError("Faltan delimitadores en el conjunto de sentencias de la expresión 'lambda'."); }
     | parametro_lambda conjunto_sentencias_ejecutables '}' argumento_lambda error
         { notifyError("Falta delimitador de apertura en expresión 'lambda'."); }
+    | parametro_lambda '{' conjunto_sentencias_ejecutables argumento_lambda_recuperacion error
+        { notifyError("Falta delimitador de cierre en expresión 'lambda'."); }
+    | parametro_lambda conjunto_sentencias_ejecutables argumento_lambda_recuperacion error
+        { notifyError("Faltan delimitadores en el conjunto de sentencias de la expresión 'lambda'."); }
+    | parametro_lambda conjunto_sentencias_ejecutables '}' argumento_lambda_recuperacion error
+        { notifyError("Falta delimitador de apertura en expresión 'lambda'."); }
     ;
 
 // --------------------------------------------------------------------------------------------------------------------
 
 argumento_lambda
-    : argumento_lambda_admisible
-
-    // |========================= REGLAS DE ERROR =========================| //
-
-    | '(' ')'
-        { notifyError("El argumento de la expresión 'lambda' no puede estar vacío."); }
-
-    | // lambda //
-        { notifyError("La expresión 'lambda' requiere de un argumento entre paréntesis."); }
+    : '(' factor ')'
     ;
 
 // --------------------------------------------------------------------------------------------------------------------
 
-argumento_lambda_admisible
-    : '(' factor ')'
+argumento_lambda_recuperacion
+    :  '(' ')'
+        { notifyError("El argumento de la expresión 'lambda' no puede estar vacío."); }
+
+    | // lambda //
+        { notifyError("La expresión 'lambda' requiere de un argumento entre paréntesis."); }
     ;
 
 // --------------------------------------------------------------------------------------------------------------------

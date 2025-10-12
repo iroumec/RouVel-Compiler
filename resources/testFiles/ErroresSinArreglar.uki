@@ -6,12 +6,12 @@ P {
     ## if (A == B) A := B + 1.; ##                  ## Falta de endif y punto y coma ##             ## Detecta if invalida ##
 
     ## ----------------------------------| Lambda |---------------------------------- ##
-    ## (uint G) { E := G; } (10.0) ##               ## Falta de punto y coma ##                     ## No detecta, cierre inesperado ##
-    ## (uint G) { E := G;  (10.0); ##               ## Falta de delimitador de cierre ##            ## No detecta, cierre inesperado ## 
-    ## (uint G) E := G; (10.0); ##                  ## Falta de delimitadores ##                    ## No detecta, cierre inesperado ##
-    ## (uint G)  E := G; } (10.0); ##               ## Falta de delimitador de apertura ##          ## No detecta, cierre inesperado ##
-    ##(uint G) { E := G; } (); ##                   ## Argumento lambda vacío ##                    ## No detecta, cierre inesperado ##
-    ## (uint G) { E := G; }; ##                     ## Falta de argumento lambda ##                 ## No detecta, cierre inesperado ##
+    (uint G) { E := G; } (10.0)               ## Falta de punto y coma ##                     ## No detecta, cierre inesperado ##
+    (uint G) { E := G;  (10.0);               ## Falta de delimitador de cierre ##            ## No detecta, cierre inesperado ## 
+    (uint G) E := G; (10.0);                 ## Falta de delimitadores ##                    ## No detecta, cierre inesperado ##
+    (uint G)  E := G; } (10.0);               ## Falta de delimitador de apertura ##          ## No detecta, cierre inesperado ##
+    (uint G) { E := G; } ();                   ## Argumento lambda vacío ##                    ## No detecta, cierre inesperado ##
+    (uint G) { E := G; };                     ## Falta de argumento lambda ##                 ## No detecta, cierre inesperado ##
 
     ## ----------------------------------| Condiciones |---------------------------------- ##
     ## if (7UI + B == 10.0 {
