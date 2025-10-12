@@ -74,13 +74,16 @@ programa
     | ID conjunto_sentencias
         { notifyError("Las sentencias del programa deben estar delimitadas por llaves."); }
 
-    // El error se muestra al comienzo y no, al final.
+    // El error se muestra al comienzo y no al final.
     | { notifyError("El programa requiere de un nombre."); } programa_sin_nombre
 
-    | error { notifyError("Inicio de programa inválido. Se encontraron, previo al nombre del programa, sentencias."); } ID cuerpo_programa
+    | error { notifyError("Inicio de programa inválido. Se encontraron sentencias previo al nombre del programa."); } ID cuerpo_programa
         
     | error EOF
         { notifyError("Se llegó al fin del programa sin encontrar un programa válido."); }
+    
+    | EOF 
+        { notifyError("El archivo está vacío."); }
     ;
 
 // --------------------------------------------------------------------------------------------------------------------
@@ -154,7 +157,6 @@ sentencia
 sentencia_declarativa
     : declaracion_variables
     | declaracion_funcion punto_y_coma_opcional
-        { notifyDetection("Declaración de función."); }
     ;
 
 // --------------------------------------------------------------------------------------------------------------------

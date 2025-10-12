@@ -28,7 +28,7 @@ EJECUTABLES {
     if (A == B) A := B + 1.; endif                  ## Falta de punto y coma ##
     if (A == B) A := B + 1.;;                       ## Falta de endif ## ## Queda medio feo el doble punto y coma pero tampoco es un caso válido. ##
     if (A == B) A := B + 1.;                        ## Falta de endif y punto y coma ##
-    if uint;                                          ## Sentencia IF inválida. ##
+    if uint;                                        ## Sentencia IF inválida. ##
 
     ## ----------------------------------| Errores en sentencia de control DO WHILE |---------------------------------- ##
     do C := C + 1.5; while (C < 5.0F+25);           ## Válido ##

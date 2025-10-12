@@ -1,6 +1,0 @@
-PROGRAMA {
-    ## Esto, por cómo está escrito, debería detectarlo como falta de punto y coma, pero lo detecta como lista de variables porque son dos ID seguidos. ##
-    uint A 
-    A := 1UI 
-    ## Al tener lista_variables y algo que no es "=", da error (descartando DASIG, CTE y '}'), ¿Deberíamos contemplarlo?##
-}

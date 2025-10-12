@@ -1,5 +1,5 @@
 ##
-    En el siguiente programa, se pondrán a prueba los casos correspondientes al analizador léxico.
+    En el siguiente programa, se pondrán a prueba los casos correspondientes al analizador léxico y otros errores contemplados por el grupo.
 ##
 
 ## IMPORTANTE:
@@ -61,4 +61,47 @@ return RETURN
 
 ''Cadena mal escrita''
 "La variable "x" es una variable"
+
+## ----------------------------| Otro |---------------------------- ##
+## -1 ##
+¿
+
+## -2 y -7 ##
+A : 32
+
+## -3 ##
+B := -30U
+
+## -4 ##
+1.3
+.
+0.
+.0
+
+## -5 ##
+1.3F12
+0.2F 1
+0.3F
+
+## -6 ##
+1.2F+2
+3.5F+0
+0.4F+
+0.4F-
+
+## -8 ##
+
+"Hola, Fernando 
+¿Qué tal Felipe?"
+
+## -9 ##
+#
+
+## Invalid Reserved Word ##
+fi
+
+## Other tests ##
+32TR
+14UH
+15UI
 

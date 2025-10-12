@@ -1,5 +1,0 @@
-PROGRAMA {
-
-    if (X > Y print("Hola"); endif;
-
-}
