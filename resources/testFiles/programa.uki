@@ -1,8 +1,0 @@
-PROGRAMA {
-    if (X < 3) print("Jamaica");
-    if endif;
-    if (A > B print("Hola"); endif;
-    if
-    if;
-    if
-}
