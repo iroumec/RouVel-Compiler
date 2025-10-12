@@ -74,9 +74,6 @@
     IF (X UI) print("Caso de error"); endif;
 
     IF (U + 3 B - 7) print("Caso de error"); endif;
-
-    ## !Este no nos toca, pero lo tenemos? Temas 10/11: Falta de “,” en lista de variables. ## Bueno. Pero aclaramos que nos toca y que lo contemplamos igual
-    Si nom podemos separar en otro archivo los errores que contemplamos y que no se pedían. minimalErros.uki y errors.uki.
     
     ## Falta while ##
 

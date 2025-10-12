@@ -6,9 +6,9 @@ P {
     ## if (A == B) A := B + 1.; ##                  ## Falta de endif y punto y coma ##             ## Detecta if invalida ##
 
     ## ----------------------------------| While |---------------------------------- ##
-    ## do C := C + 1.5; while (C < 5.0F+25) ##      ## Falta de punto y coma ##                     ## Detecta do-while invalida ##   
-    ## do C := C + 1.5; (C < 5.0F+25); ##           ## Falta de WHILE ##                            ## Detecta do-while invalida ##
-    ## do while (C < 5.0F+25); ##                   ## Falta de cuerpo ejecutable ##                ## Detecta do-while invalida ##
+    do C := C + 1.5; while (C < 5.0F+25)      ## Falta de punto y coma ##                     ## Detecta do-while invalida ##   
+    do C := C + 1.5; (C < 5.0F+25);           ## Falta de WHILE ##                            ## Detecta do-while invalida ##
+    do while (C < 5.0F+25);                 ## Falta de cuerpo ejecutable ##                ## Detecta do-while invalida ##
 
     ## ----------------------------------| Impresion |---------------------------------- ##
     ## print("Impresion") ##                        ## Falta de punto y coma ##                     ## No detecta, cierre inesperado ##

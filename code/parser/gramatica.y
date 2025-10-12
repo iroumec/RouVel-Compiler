@@ -576,6 +576,9 @@ do_while
     
     // |========================= REGLAS DE ERROR =========================| //
 
+    | DO cuerpo_do_recuperacion ';'
+    | DO cuerpo_do error
+        { notifyError("La sentencia 'do-while' debe terminar con ';'."); }
     | DO cuerpo_do_recuperacion error
         { notifyError("La sentencia 'do-while' debe terminar con ';'."); }
     | DO error
@@ -590,12 +593,8 @@ cuerpo_do
 
 // --------------------------------------------------------------------------------------------------------------------
 
-cuerpo_do_recuperacion                       
-    : cuerpo_do
-
-    // |========================= REGLAS DE ERROR =========================| //
-
-    | fin_cuerpo_do
+cuerpo_do_recuperacion
+    : fin_cuerpo_do
         { notifyError("Debe especificarse un cuerpo para la sentencia do-while."); }
     | cuerpo_ejecutable condicion
         { notifyError("Falta 'while'."); }

@@ -3,7 +3,7 @@
 SCRIPT_DIR="$(dirname "$0")"
 
 if [ -z "$1" ]; then
-    echo "Se debe proporcionar el nombre de un archivo que esté ubicado en la carpeta \"testFiles\"."
+    echo "Se debe proporcionar el nombre de un archivo."
     exit 1
 fi
 
