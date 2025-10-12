@@ -1,0 +1,8 @@
+PROGRAMA {
+
+    ##B##
+    A := 4UI;
+    ##A B, C = Y, P, L;##
+    ##if (X > 3 print("Hola"); endif;##
+    print("Hola");
+}

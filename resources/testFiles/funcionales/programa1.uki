@@ -1,0 +1,15 @@
+P%%%%%%%%%%%%%%%%%% { A := 79UI;
+    if (A > 0UI) if (A > 1UI) 
+do if (A > 2UI) A := A + 1UI; else A := A - 1UI; endif; while (A > 1UI);                                                                                                                                                                                                                                                                                                                                                                endif; 
+    
+    
+    
+
+    
+    endif;
+    do do do do A = 15UI , 28.0 , 2.266654F+9; while ( 1UI < 2UI ); while ( 1UI < 2UI ); while ( 1UI < 2UI ) ;
+    
+
+    
+    while ( 1UI < 2UI );
+}
