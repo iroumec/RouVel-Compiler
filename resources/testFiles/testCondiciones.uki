@@ -16,7 +16,7 @@ CONDICIONES {
     } endif;
 
     ## ----------------------------------| Falta de comparador |---------------------------------- ##
-    if (C 10.0) {                                           ## Detecta ambos falta de operando y comparador ##
+    if (C 10.0) {                                           ## Detecta falta de operando ##
         A := 1.;
     } endif;
 
@@ -40,8 +40,8 @@ CONDICIONES {
     } endif;
 
     ## ----------------------------------| Condición sin paréntesis |---------------------------------- ##
-    if 7UI + B == 10.0 {
+    ## if 7UI + B == 10.0 {
         A := 1.;
-    } endif;
+    } endif; ##
 
 }

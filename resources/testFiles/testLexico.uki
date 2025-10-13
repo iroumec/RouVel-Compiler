@@ -64,6 +64,11 @@ return RETURN
 "La variable "x" es una variable"
 
 ## ----------------------------| Otro |---------------------------- ##
+32TR
+14UH
+15UI
+IDENTIFICADOR45UI
+
 ## -1: Símbolo inválido ##
 ¿
 
@@ -96,9 +101,3 @@ A : 55UI
 fi
 then
 od 
-
-## Other tests ##
-32TR
-14UH
-15UI
-

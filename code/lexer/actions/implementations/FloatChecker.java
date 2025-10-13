@@ -87,7 +87,7 @@ public class FloatChecker implements SemanticAction {
                     El número flotante %s está fuera del rango de representación. \
                     Se asignará el valor 0.0.
                     """.formatted(number));
-
+            number = "0.0";
         }
 
         // Se guarda con "e" como previsión del código intermedio.

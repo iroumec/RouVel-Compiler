@@ -311,9 +311,11 @@ asignacion_multiple
     // |========================= REGLAS DE ERROR =========================| //
 
     | variable asignacion_par constante error
-        { notifyDetection("La asignación múltiple debe terminar con ';'."); }
+        { notifyError("La asignación múltiple debe terminar con ';'."); }
     | variable asignacion_par constante ',' lista_constantes error
-        { notifyDetection("La asignación múltiple debe terminar con ';'."); }
+        { notifyError("La asignación múltiple debe terminar con ';'."); }
+    | variable asignacion_par constante lista_constantes ';'
+        { notifyError(String.format("Falta coma luego de la constante '%s' en asignacion múltiple", $3)); }
     ;
 
 // --------------------------------------------------------------------------------------------------------------------
@@ -398,7 +400,7 @@ operador_suma
 
 termino                         
     : termino operador_multiplicacion factor
-        { $$ = $1; }
+        { $$ = $3; }
     | factor
 
     // |========================= REGLAS DE ERROR =========================| //
@@ -487,7 +489,7 @@ variable
 // ********************************************************************************************************************
 
 condicion
-    : '(' expresion comparador expresion ')'
+    : '(' cuerpo_condicion ')'
         { notifyDetection("Condición."); }
 
     // |========================= REGLAS DE ERROR =========================| //
@@ -504,12 +506,16 @@ condicion
     
 // --------------------------------------------------------------------------------------------------------------------
 
-cuerpo_condicion                
+cuerpo_condicion
     : expresion comparador expresion
 
     // |========================= REGLAS DE ERROR =========================| //
 
-    | expresion
+    | expresion termino_simple
+        { notifyError("Falta de comparador en comparación."); }
+    | expresion operador_suma termino
+        { notifyError("Falta de comparador en comparación."); }
+    | termino
         { notifyError("Falta de comparador en comparación."); }
     ;
 
