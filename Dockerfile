@@ -8,7 +8,7 @@ COPY code /app
 RUN mkdir -p bin && \
     javac -d bin $(find . -name "*.java")
 
-# Etapa 2: Solo ejecución con Java
+# Etapa 2: Solo ejecución con Java.
 FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
 

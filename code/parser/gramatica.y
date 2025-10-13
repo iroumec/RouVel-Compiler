@@ -855,7 +855,7 @@ parametro_lambda
 // Lexer.
 private final Lexer lexer;
 
-// Contadores de la cantidad de errores detectados.
+// Contadores de la cantidad de errores y warnings detectados.
 private int errorsDetected;
 private int warningsDetected;
 
