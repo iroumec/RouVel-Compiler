@@ -13,7 +13,7 @@ A continuación, se detallará la ejecución del programa utilizando el archivo 
 El programa funciona tanto con rutas absolutas como relativas. En `resources/testFiles` se proporcionan códigos de ejemplo para probarlo.
 
 > [!IMPORTANT]
-> Si se encuentra en Windows, antes de compilar un programa, debe asegurarse de que la codificación del archivo sea UTF-8 y el _end line separator_ sea LF, en lugar de CRLF, que es el utilizado por defecto en Windows.
+> Si se encuentra en Windows, antes de compilar un programa, debe asegurarse de que la codificación del archivo sea UTF-8 y el _end line separator_ sea LF, en lugar de CRLF, que es el utilizado por defecto en este sistema operativo.
 
 Para ejecutar el programa, debe posicionarse en la carpeta del proyecto y ejecutar:
 
