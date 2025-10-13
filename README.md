@@ -36,12 +36,13 @@ java -jar rouvel-compiler.jar resources/testFiles/ejemplo.uki > resultados-compi
 ## Adicional
 Si se encuentra en Visual Studio Code y desea utilizar un resaltado de sintaxis para los archivos .uki, puede instalar la extensión proporcionada con dicho fin:
 
-### Opcion 1.
+### Opcion 1
+Desde una terminal en la carpeta del proyecto, ejecutar:
 ```sh
 code --install-extension resources/uki-syntax-0.0.1.vsix
 ```
 
-### Opcion 2.
+### Opcion 2
 - Abrir VS Code.
 - Ir a **Extensiones** (Ctrl+Shif+X o Cmd+Shift+X en macOS).
 - Hacer clic en los tres puntos (...) en la esquina superior derecha.
