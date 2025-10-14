@@ -1,0 +1,13 @@
+digraph DFA {
+    rankdir = LR;
+    node [shape = circle;];
+    eC [shape = doublecircle;style = dashed;color = red;label = "e";];
+    
+    0 -> 15 [label = "\"#\"";];
+    15 -> eC [label = "Otro | -8"; style = dashed;];
+    15 -> 16 [label = "\"#\"";];
+    16 -> 16 [label = "Otro, n [NLD]";];
+    16 -> 17 [label = "\"#\"";];
+    17 -> 16 [label = "Otro, n [NLD]";];
+    17 -> 0 [label = "\"#\"";];
+}

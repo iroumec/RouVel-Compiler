@@ -1,0 +1,3 @@
+PROGRAMA {{
+    print("Hello, World!");
+}
