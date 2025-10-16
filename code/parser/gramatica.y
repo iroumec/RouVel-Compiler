@@ -11,8 +11,11 @@
 
     import lexer.Lexer;
     import common.Token;
-    import common.SymbolTable;
+    import java.util.Stack;
     import utilities.Printer;
+    import common.SymbolTable;
+    import semantic.ReversePolish;
+    import utilities.MessageCollector;
 %}
 
 // ********************************************************************************************************************
@@ -64,26 +67,33 @@
 // ====================================================================================================================
 
 programa
-    : ID cuerpo_programa
+    : nombre_programa cuerpo_programa
         { notifyDetection("Programa."); }
 
     // |========================= REGLAS DE ERROR =========================| //
 
-    | ID cuerpo_programa_recuperacion
+    | nombre_programa cuerpo_programa_recuperacion
 
-    | ID conjunto_sentencias
+    | nombre_programa conjunto_sentencias
         { notifyError("Las sentencias del programa deben estar delimitadas por llaves."); }
 
     // El error se muestra al comienzo y no al final.
     | { notifyError("El programa requiere de un nombre."); } programa_sin_nombre
 
-    | error { notifyError("Inicio de programa inválido. Se encontraron sentencias previo al nombre del programa."); } ID cuerpo_programa
+    | error { notifyError("Inicio de programa inválido. Se encontraron sentencias previo al nombre del programa."); } nombre_programa cuerpo_programa
         
     | error EOF
         { notifyError("Se llegó al fin del programa sin encontrar un programa válido."); }
     
     | EOF 
         { notifyError("El archivo está vacío."); }
+    ;
+
+// --------------------------------------------------------------------------------------------------------------------
+
+nombre_programa
+    : ID
+        { pushScope($1); }
     ;
 
 // --------------------------------------------------------------------------------------------------------------------
@@ -612,44 +622,60 @@ fin_cuerpo_do
 // ********************************************************************************************************************
 
 declaracion_funcion
-    : UINT ID '(' conjunto_parametros ')' cuerpo_funcion_admisible
-        { notifyDetection("Declaración de función."); }
+    : inicio_funcion conjunto_parametros cuerpo_funcion
+        {
+            notifyDetection("Declaración de función.");
+            popScope();    
+        }
 
     // |========================= REGLAS DE ERROR =========================| //
 
-    | UINT '(' conjunto_parametros ')' cuerpo_funcion
-        { notifyError("La función requiere de un nombre."); }
+    | inicio_funcion conjunto_parametros '{' '}'
+        { popScope(); }
 
-    | UINT ID '(' conjunto_parametros ')' '{' '}'
-        { notifyError("El cuerpo de la función no puede estar vacío."); }
+    | inicio_funcion_sin_nombre conjunto_parametros cuerpo_funcion
+        { popScope(); }
 
+    | inicio_funcion_sin_nombre conjunto_parametros '{' '}'
+        {
+            notifyError("El cuerpo de la función no puede estar vacío.");
+            popScope();
+        }
+    ;
+
+// --------------------------------------------------------------------------------------------------------------------
+
+// Separadas con el objetivo de incrementar el ámbito cuando es detectada
+// la declaración de una función.
+inicio_funcion
+    : UINT ID
+        { pushScope($2); }
+    ;
+
+// --------------------------------------------------------------------------------------------------------------------
+
+inicio_funcion_sin_nombre
+    : UINT
+        {
+            pushScope(String.valueOf(lexer.getNroLinea()));
+            notifyError("La función requiere de un nombre.");
+        } 
     ;
 
 // --------------------------------------------------------------------------------------------------------------------
 
 cuerpo_funcion
-    : cuerpo_funcion_admisible
-
-    // |========================= REGLAS DE ERROR =========================| //
-
-    | '{' '}'
-        { notifyError("El cuerpo de la función no puede estar vacío."); }
-    ;
-
-// --------------------------------------------------------------------------------------------------------------------
-
-cuerpo_funcion_admisible
     : '{' conjunto_sentencias '}'
     ;
 
 // --------------------------------------------------------------------------------------------------------------------
 
 conjunto_parametros
-    : lista_parametros
+    : '(' lista_parametros ')'
 
     // |========================= REGLAS DE ERROR =========================| //
 
-    | // lambda //
+    | '(' ')'
         { notifyError("Toda función debe recibir al menos un parámetro."); }
     ;
 
@@ -855,14 +881,22 @@ parametro_lambda
 // Lexer.
 private final Lexer lexer;
 
-// Contadores de la cantidad de errores y warnings detectados.
-private int errorsDetected;
-private int warningsDetected;
+// Contadores de errores y warning detectados.
+private MessageCollector errorCollector, warningCollector;
 
-public Parser(Lexer lexer) {
+// Generacion de código
+private final ReversePolish reversePolish;
+private final Stack<String> scopes;
+
+public Parser(Lexer lexer, MessageCollector errorCollector, MessageCollector warningCollector) {
     
     this.lexer = lexer;
-    this.errorsDetected = this.warningsDetected = 0;
+
+    this.scopes = new Stack<>();
+    this.reversePolish = new ReversePolish();
+
+    this.errorCollector = errorCollector;
+    this.warningCollector = warningCollector;
     
     // Descomentar la siguiente línea para activar el debugging.
     // yydebug = true;
@@ -917,33 +951,33 @@ void notifyDetection(String message) {
 // --------------------------------------------------------------------------------------------------------------------
 
 void notifyWarning(String warningMessage) {
-    Printer.printWrapped(String.format(
+
+    warningCollector.add(String.format(
         "WARNING SINTÁCTICA: Línea %d: %s",
         lexer.getNroLinea(), warningMessage
     ));
-    this.warningsDetected++;
 }
 
 // --------------------------------------------------------------------------------------------------------------------
 
 void notifyError(String errorMessage) {
-    Printer.printWrapped(String.format(
+
+    errorCollector.add(String.format(
         "ERROR SINTÁCTICO: Línea %d: %s",
         lexer.getNroLinea(), errorMessage
     ));
-    this.errorsDetected++;
 }
 
 // --------------------------------------------------------------------------------------------------------------------
 
-public int getWarningsDetected() {
-    return this.warningsDetected;
+void pushScope(String scope) {
+    this.scopes.push(scope);
 }
 
 // --------------------------------------------------------------------------------------------------------------------
 
-public int getErrorsDetected() {
-    return this.errorsDetected;
+void popScope() {
+    this.scopes.pop();
 }
 
 // --------------------------------------------------------------------------------------------------------------------

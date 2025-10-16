@@ -1,5 +1,6 @@
 package lexer;
 
+import common.Symbol;
 import common.Token;
 import common.TokenType;
 import lexer.actions.SemanticAction;
@@ -19,6 +20,7 @@ public final class Lexer {
     private Token currentToken;
     private char lastCharRead;
     private StringBuilder lexema;
+    private Symbol simbolo;
     private final String codigoFuente;
     private int nroLinea, siguienteCaracterALeer, nroCaracter;
     private int warningsDetected, errorsDetected;
@@ -148,6 +150,9 @@ public final class Lexer {
             this.lexema = new StringBuilder();
         else
             this.lexema.setLength(0); // Se limpia el lexema y no hay necesidad de crear uno nuevo.
+
+        if (!simbolo.isEmpty())
+            simbolo.vaciar();
     }
 
     // --------------------------------------------------------------------------------------------
@@ -329,5 +334,17 @@ public final class Lexer {
 
     public void resetearNroCaracter() {
         this.nroCaracter = 0;
+    }
+
+    public Symbol getSimbolo() {
+        return this.simbolo;
+    }
+
+    public void loadLexema(StringBuilder lexema) {
+        this.simbolo.setLexema(lexema);
+    }
+
+    public void loadValue(StringBuilder value) {
+        this.simbolo.setValue(value);
     }
 }

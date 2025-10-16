@@ -33,13 +33,12 @@ public final class SymbolTable {
     /**
      * Agrega un lexema a la tabla si no existe. Incrementa su referencia.
      */
-    public void agregarEntrada(String lexema) {
-        Symbol entrada = tablaSimbolos.get(lexema);
-        if (entrada == null) {
-            entrada = new Symbol(lexema);
-            tablaSimbolos.put(lexema, entrada);
-        }
-        entrada.incrementarReferencias();
+    public void agregarEntrada(Symbol simbolo) {
+        String indice = simbolo.getLexema().toString();
+        if (tablaSimbolos.get(indice) == null)
+            tablaSimbolos.put(indice, simbolo);
+        // else
+        // Ya existe la entrada en la tabla
     }
 
     // --------------------------------------------------------------------------------------------

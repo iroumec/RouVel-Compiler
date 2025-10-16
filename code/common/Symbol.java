@@ -8,15 +8,16 @@ package common;
  */
 public class Symbol {
 
-    String lexema; // Lexema.
+    StringBuilder lexema; // Lexema.
+    StringBuilder value; // Valor real
     String type; // Uint, float, etc.
     String category; // Variable, función, etc.
-    int scope; // Nivel de anidamiento.
+    String scope; // Nivel de anidamiento.
     int references;
 
-    public Symbol(String lexema) {
-        this.lexema = lexema;
-        this.scope = 0;
+    public Symbol() {
+        this.lexema = new StringBuilder("");
+        this.value = new StringBuilder("");
         this.references = 0;
     }
 
@@ -46,7 +47,7 @@ public class Symbol {
 
     // --------------------------------------------------------------------------------------------
 
-    public String getLexema() {
+    public StringBuilder getLexema() {
         return this.lexema;
     }
 
@@ -58,7 +59,7 @@ public class Symbol {
 
     // --------------------------------------------------------------------------------------------
 
-    public int getScope() {
+    public String getScope() {
         return this.scope;
     }
 
@@ -68,4 +69,21 @@ public class Symbol {
         return this.category == null ? "" : this.category;
     }
 
+    public boolean isEmpty() {
+        return lexema.length() == 0 && value.length() == 0 && type.length() == 0;
+    }
+
+    public void vaciar() {
+        this.lexema.setLength(0);
+        this.value.setLength(0);
+        this.references = 0;
+    }
+
+    public void setLexema(StringBuilder lexema) {
+        this.lexema = lexema;
+    }
+
+    public void setValue(StringBuilder value) {
+        this.value = value;
+    }
 }

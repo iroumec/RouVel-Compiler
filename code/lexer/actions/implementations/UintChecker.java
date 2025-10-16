@@ -33,6 +33,7 @@ public class UintChecker implements SemanticAction {
     public void execute(Lexer lexicalAnalyzer) {
 
         String lexema = lexicalAnalyzer.getLexema();
+        lexicalAnalyzer.loadLexema(lexema);
 
         // Se eliminan ceros adicionales a la izquierda.
         lexema = cleanUint(lexema);
@@ -47,6 +48,7 @@ public class UintChecker implements SemanticAction {
             lexema = Integer.toString(MAX_UINT);
         }
 
+        lexicalAnalyzer.loadValue(lexema);
         lexicalAnalyzer.setLexema(lexema);
     }
 
@@ -54,7 +56,7 @@ public class UintChecker implements SemanticAction {
 
     private String cleanUint(String lexema) {
 
-        //Nos deshacemos del sufijo 'UI'
+        // Nos deshacemos del sufijo 'UI'
         String numberPart = lexema.substring(0, lexema.length() - 2);
 
         // (?!$) se asegura de dejar al menos un cero.
