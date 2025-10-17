@@ -11,7 +11,6 @@
 
     import lexer.Lexer;
     import common.Token;
-    import java.util.Stack;
     import utilities.Printer;
     import common.SymbolType;
     import common.SymbolTable;
@@ -95,7 +94,7 @@ programa
 
 nombre_programa
     : ID
-        { pushScope($1); }
+        { this.scopeStack.push($1); }
     ;
 
 // --------------------------------------------------------------------------------------------------------------------
@@ -243,8 +242,8 @@ declaracion_variables
     | UINT ID ';'
         {
             notifyDetection("Declaración de variable.");
-            this.setTypeInTable($2, SymbolType.UINT);
-            this.setCategoryInTable($2, SymbolCategory.VARIABLE);
+            this.symbolTable.setType($2, SymbolType.UINT);
+            this.symbolTable.setCategory($2, SymbolCategory.VARIABLE);
         }
     
     // |========================= REGLAS DE ERROR =========================| //
@@ -298,7 +297,7 @@ lista_variables
 
 asignacion_simple
     : variable DASIG expresion ';'                              
-        { notifyDetection("Asignación simple."); this.setValueInTable($1, $3); }
+        { notifyDetection("Asignación simple."); this.symbolTable.setValue($1, $3); }
 
     // |========================= REGLAS DE ERROR =========================| //
 
@@ -381,7 +380,12 @@ lista_constantes
 expresion
     : termino
     | expresion operador_suma termino
-        { $$ = $3; }
+        { 
+            $$ = $3;
+            notifyDetection($1);
+            notifyDetection($3);
+            notifyDetection($2);
+        }
 
     // |========================= REGLAS DE ERROR =========================| //
 
@@ -497,7 +501,7 @@ constante
                 $$ = null;
             } 
 
-            replaceInTable($$,$2); 
+            this.symbolTable.replaceEntry($$,$2); 
         }
     ;
 
@@ -640,23 +644,23 @@ declaracion_funcion
     : inicio_funcion conjunto_parametros cuerpo_funcion
         {
             notifyDetection("Declaración de función.");
-            this.setTypeInTable($1, SymbolType.UINT);
-            this.setCategoryInTable($1, SymbolCategory.FUNCTION);
-            popScope();    
+            this.symbolTable.setType($1, SymbolType.UINT);
+            this.symbolTable.setCategory($1, SymbolCategory.FUNCTION);
+            this.scopeStack.pop();    
         }
 
     // |========================= REGLAS DE ERROR =========================| //
 
     | inicio_funcion conjunto_parametros '{' '}'
-        { popScope(); }
+        { this.scopeStack.pop(); }
 
     | inicio_funcion_sin_nombre conjunto_parametros cuerpo_funcion
-        { popScope(); }
+        { this.scopeStack.pop(); }
 
     | inicio_funcion_sin_nombre conjunto_parametros '{' '}'
         {
             notifyError("El cuerpo de la función no puede estar vacío.");
-            popScope();
+            this.scopeStack.pop();
         }
     ;
 
@@ -666,7 +670,7 @@ declaracion_funcion
 // la declaración de una función.
 inicio_funcion
     : UINT ID
-        { pushScope($2); $$ = $2; }
+        { this.scopeStack.push($2); $$ = $2; }
     ;
 
 // --------------------------------------------------------------------------------------------------------------------
@@ -674,7 +678,7 @@ inicio_funcion
 inicio_funcion_sin_nombre
     : UINT
         {
-            pushScope(String.valueOf(lexer.getNroLinea()));
+            this.scopeStack.push(String.valueOf(lexer.getNroLinea()));
             notifyError("La función requiere de un nombre.");
         } 
     ;
@@ -720,8 +724,8 @@ parametro_vacio
 parametro_formal
     : semantica_pasaje UINT variable
         {
-            this.setTypeInTable($3, SymbolType.UINT);
-            this.setCategoryInTable($3, SymbolCategory.PARAMETER);
+            this.symbolTable.setType($3, SymbolType.UINT);
+            this.symbolTable.setCategory($3, SymbolCategory.PARAMETER);
         }
 
     // |========================= REGLAS DE ERROR =========================| //
@@ -900,25 +904,27 @@ parametro_lambda
 // ====================================================================================================================
 
 // Lexer.
-private final Lexer lexer;
 
 // Contadores de errores y warning detectados.
-private MessageCollector errorCollector, warningCollector;
 
 // Generacion de código
+private final Lexer lexer;
+private final ScopeStack scopeStack;
+private final SymbolTable symbolTable;
 private final ReversePolish reversePolish;
-private final Stack<String> scopes;
+private MessageCollector errorCollector, warningCollector;
 
-public Parser(Lexer lexer, MessageCollector errorCollector, MessageCollector warningCollector) {
+public Parser(Lexer lexer, SymbolTable symbolTable,
+                MessageCollector errorCollector, MessageCollector warningCollector) {
     
     this.lexer = lexer;
-
-    this.scopes = new Stack<>();
-    this.reversePolish = new ReversePolish();
-
+    this.symbolTable = symbolTable;
     this.errorCollector = errorCollector;
     this.warningCollector = warningCollector;
     
+    this.scopeStack = new ScopeStack();
+    this.reversePolish = new ReversePolish();
+
     // Descomentar la siguiente línea para activar el debugging.
     // yydebug = true;
 }
@@ -991,44 +997,8 @@ void notifyError(String errorMessage) {
 
 // --------------------------------------------------------------------------------------------------------------------
 
-void pushScope(String scope) {
-    this.scopes.push(scope);
-}
-
-// --------------------------------------------------------------------------------------------------------------------
-
-void popScope() {
-    this.scopes.pop();
-}
-
-// --------------------------------------------------------------------------------------------------------------------
-
 public boolean isUint(String number) {
     return !number.contains(".");
-}
-
-// --------------------------------------------------------------------------------------------------------------------
-
-public void replaceInTable(String oldLexema, String newLexema) {
-    SymbolTable.getInstance().replaceEntry(oldLexema, newLexema);
-}
-
-// --------------------------------------------------------------------------------------------------------------------
-
-public void setTypeInTable(String lexema, SymbolType type) {
-    SymbolTable.getInstance().setType(lexema, type);
-}
-
-// --------------------------------------------------------------------------------------------------------------------
-
-public void setValueInTable(String lexema, String value) {
-    SymbolTable.getInstance().setValue(lexema, value);
-}
-
-// --------------------------------------------------------------------------------------------------------------------
-
-public void setCategoryInTable(String lexema, SymbolCategory category) {
-    SymbolTable.getInstance().setCategory(lexema, category);
 }
 
 // ====================================================================================================================

@@ -1,0 +1,3 @@
+PROGRAMA {
+    A := A + 1UI;
+}

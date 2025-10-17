@@ -34,6 +34,7 @@ public class Main {
 
     private static void startCompilation(File file) {
 
+        SymbolTable symbolTable = SymbolTable.getInstance();
         MessageCollector errorCollector = new MessageCollector();
         MessageCollector warningCollector = new MessageCollector();
 
@@ -41,7 +42,7 @@ public class Main {
 
         Lexer lexicalAnalyzer = new Lexer(file.getPath());
 
-        Parser sintacticalAnalyzer = new Parser(lexicalAnalyzer, errorCollector, warningCollector);
+        Parser sintacticalAnalyzer = new Parser(lexicalAnalyzer, symbolTable, errorCollector, warningCollector);
 
         Printer.printSeparator();
         sintacticalAnalyzer.execute();
