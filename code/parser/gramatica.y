@@ -13,6 +13,7 @@
     import common.Token;
     import java.util.Stack;
     import utilities.Printer;
+    import common.SymbolType;
     import common.SymbolTable;
     import semantic.ReversePolish;
     import utilities.MessageCollector;
@@ -239,7 +240,7 @@ declaracion_variables
         { notifyDetection("Declaración de variables."); }
     
     | UINT ID ';'
-        { notifyDetection("Declaración de variable."); }
+        { notifyDetection("Declaración de variable."); this.setTypeInTable($2, SymbolType.UINT); }
     
     // |========================= REGLAS DE ERROR =========================| //
 
@@ -484,14 +485,14 @@ constante
 
             modificarSymbolTable($$,$2);
         */
-           notifyDetection(String.format("Constante negativa: -%s.",$2));
+            notifyDetection(String.format("Constante negativa: -%s.",$2));
 
             if(isUint($2)) {
                 notifyError("El número está fuera del rango de uint, se descartará.");
                 $$ = null;
             } 
 
-            modificarSymbolTable($$,$2); 
+            replaceInTable($$,$2); 
         }
     ;
 
@@ -997,16 +998,20 @@ public boolean isUint(String number) {
 
 // --------------------------------------------------------------------------------------------------------------------
 
-/*public void modificarSymbolTable(String lexemaNuevo, String lexemaAnterior) {
-    SymbolTable.getInstance().decrementarReferencia(lexemaAnterior);
-    if (lexemaNuevo != null) {
-        Symbol symbol = SymbolTable.getInstance().getSymbol(lexemaAnterior).getNegative();
-        SymbolTable.getInstance().addEntry(lexemaNuevo,symbol);
-    }
-}*/
+public void replaceInTable(String oldLexema, String newLexema) {
+    SymbolTable.getInstance().replaceEntry(oldLexema, newLexema);
+}
 
-public void modificarTabla(String lexema) {
-    SymbolTable.getInstance().replaceEntry(lexema);
+// --------------------------------------------------------------------------------------------------------------------
+
+public void setTypeInTable(String lexema, SymbolType type) {
+
+    System.out.println(type);
+
+    //SymbolTable.getInstance().setType(lexema, type);
+
+    System.out.println(SymbolTable.getInstance().getSymbol(lexema));
+    System.out.println(SymbolTable.getInstance().getSymbol(lexema).getTypeAsString());
 }
 
 // ====================================================================================================================

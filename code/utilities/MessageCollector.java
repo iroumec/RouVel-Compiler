@@ -27,6 +27,12 @@ public class MessageCollector {
 
     // --------------------------------------------------------------------------------------------------------------------
 
+    public boolean hasMessages() {
+        return this.messages.size() > 0;
+    }
+
+    // --------------------------------------------------------------------------------------------------------------------
+
     public void showMessages() {
 
         for (String message : messages) {

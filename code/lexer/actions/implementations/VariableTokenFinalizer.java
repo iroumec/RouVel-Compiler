@@ -2,9 +2,6 @@ package lexer.actions.implementations;
 
 import lexer.Lexer;
 import lexer.actions.SemanticAction;
-import common.TokenType;
-import common.SymbolTable;
-import common.Token;
 
 /**
  * VTF:

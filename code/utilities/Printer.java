@@ -133,7 +133,6 @@ public final class Printer {
 
     public static void printBlankSpace() {
         print('\n');
-        lastMessagePrinted = "\n";
     }
 
     private static boolean wasThereNoSeparatorBefore() {

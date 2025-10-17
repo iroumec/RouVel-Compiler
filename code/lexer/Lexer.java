@@ -4,7 +4,7 @@ import common.Symbol;
 import common.Token;
 import common.TokenType;
 import common.SymbolType;
-import common.SymbolCategory;
+import common.SymbolTable;
 import lexer.actions.SemanticAction;
 import lexer.errors.LexicalError;
 import lexer.errors.implementations.BadCommentInitialization;
@@ -15,13 +15,13 @@ import lexer.errors.implementations.NewLineInString;
 import lexer.errors.implementations.NoExponent;
 import lexer.errors.implementations.NoExponentSign;
 import lexer.errors.implementations.UndeterminedNumber;
+import lexer.errors.implementations.UnknownToken;
 import utilities.Printer;
 
 public final class Lexer {
 
     private Token currentToken;
     private char lastCharRead;
-    private Symbol simbolo;
     private final String codigoFuente;
     private int nroLinea, siguienteCaracterALeer, nroCaracter;
     private int warningsDetected, errorsDetected;
@@ -29,7 +29,7 @@ public final class Lexer {
 
     // --------------------------------------------------------------------------------------------
 
-    private final SymbolType type;
+    private SymbolType type;
     private final StringBuilder value;
     private final StringBuilder lexema;
 
@@ -51,6 +51,10 @@ public final class Lexer {
         this.codigoFuente = DataManager.loadSourceCode(sourceCodePath);
         this.matrizTransicionEstados = DataManager.getStateTransitionMatrix();
         this.matrizAccionesSemanticas = DataManager.getSemanticActionsMatrix();
+
+        this.type = null;
+        this.value = new StringBuilder();
+        this.lexema = new StringBuilder();
     }
 
     // --------------------------------------------------------------------------------------------
@@ -155,13 +159,9 @@ public final class Lexer {
     private void cleanSearch() {
         // Se limpia el token actual.
         this.currentToken = null;
-        if (this.lexema == null)
-            this.lexema = new StringBuilder();
-        else
-            this.lexema.setLength(0); // Se limpia el lexema y no hay necesidad de crear uno nuevo.
-
-        if (!simbolo.isEmpty())
-            simbolo.vaciar();
+        this.type = null;
+        this.value.setLength(0);
+        this.lexema.setLength(0);
     }
 
     // --------------------------------------------------------------------------------------------
@@ -352,7 +352,7 @@ public final class Lexer {
         TokenType tokenType = TokenType.fromSymbol(this.lexema.toString());
 
         if (tokenType == null) {
-            UnknownToken.getInstance().handleError(lexicalAnalyzer);
+            UnknownToken.getInstance().handleError(this);
         } else {
             this.currentToken = new Token(tokenType, null);
         }
@@ -363,10 +363,10 @@ public final class Lexer {
     public void finalizeVariableToken() {
 
         Symbol symbol = this.generateSymbol();
-        TokenType tokenType = TokenType.fromSymbol(lexema);
+        TokenType tokenType = TokenType.fromSymbol(lexema.toString());
 
         // Se agrega el lexema a la tabla de símbolos.
-        SymbolTable.getInstance().agregarEntrada(lexema, simbolo);
+        SymbolTable.getInstance().addEntry(lexema.toString(), symbol);
 
         this.currentToken = new Token(tokenType, this.lexema.toString());
     }
@@ -379,24 +379,15 @@ public final class Lexer {
 
     // --------------------------------------------------------------------------------------------
 
-    /**
-     * Si se setea un tipo o categoría, un símbolo debe ser creado.
-     */
-    public boolean canASymbolBeCreated() {
-        return this.type != null || this.category != null;
-    }
-
-    // --------------------------------------------------------------------------------------------
-
     public void loadLexema(String lexema) {
-        this.simbolo.setLexema(lexema);
+        this.lexema.append(lexema);
     }
 
     // --------------------------------------------------------------------------------------------
 
     public void loadValue(String value) {
-        this.simbolo.setValue(value);
-    } 
+        this.value.append(value);
+    }
 
     // --------------------------------------------------------------------------------------------
 

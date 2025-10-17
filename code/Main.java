@@ -5,6 +5,7 @@ import java.io.IOException;
 import lexer.Lexer;
 import parser.Parser;
 import common.SymbolTable;
+import utilities.MessageCollector;
 import utilities.Printer;
 
 public class Main {
@@ -33,17 +34,20 @@ public class Main {
 
     private static void startCompilation(File file) {
 
+        MessageCollector errorCollector = new MessageCollector();
+        MessageCollector warningCollector = new MessageCollector();
+
         Printer.printIntroduction(file.getName());
 
         Lexer lexicalAnalyzer = new Lexer(file.getPath());
 
-        Parser sintacticalAnalyzer = new Parser(lexicalAnalyzer);
+        Parser sintacticalAnalyzer = new Parser(lexicalAnalyzer, errorCollector, warningCollector);
 
         Printer.printSeparator();
         sintacticalAnalyzer.execute();
         Printer.printSeparator();
 
-        printReport(lexicalAnalyzer, sintacticalAnalyzer);
+        printReport(lexicalAnalyzer.getNroLinea(), errorCollector, warningCollector);
     }
 
     // --------------------------------------------------------------------------------------------
@@ -54,15 +58,15 @@ public class Main {
 
     // --------------------------------------------------------------------------------------------
 
-    private static void printReport(Lexer lexer, Parser parser) {
+    private static void printReport(int lines, MessageCollector errorCollector, MessageCollector warningCollector) {
 
         String report = """
                 El programa tiene %d líneas. \
                 Se detectaron %d warnings y %d errores. \
                 """.formatted(
-                lexer.getNroLinea(),
-                lexer.getWarningsDetected() + parser.getWarningsDetected(),
-                lexer.getErrorsDetected() + parser.getErrorsDetected());
+                lines,
+                warningCollector.getNumberOfMessages(),
+                errorCollector.getNumberOfMessages());
 
         Printer.printBlankSpace();
         Printer.printSeparator();
@@ -70,6 +74,22 @@ public class Main {
         Printer.printCentered(report);
         Printer.printSeparator();
         Printer.printBlankSpace();
+
+        if (warningCollector.hasMessages()) {
+            Printer.printSeparator();
+            Printer.printCentered("> Warnings <");
+            warningCollector.showMessages();
+            Printer.printSeparator();
+            Printer.printBlankSpace();
+        }
+
+        if (errorCollector.hasMessages()) {
+            Printer.printSeparator();
+            Printer.printCentered("> Errores <");
+            errorCollector.showMessages();
+            Printer.printSeparator();
+            Printer.printBlankSpace();
+        }
 
         SymbolTable.getInstance().imprimirTabla();
         Printer.printBlankSpace();

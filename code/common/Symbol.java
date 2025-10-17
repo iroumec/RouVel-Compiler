@@ -15,10 +15,17 @@ public class Symbol {
         this.references = 0;
     }
 
-    private Symbol(StringBuilder lexema, StringBuilder value, int references) {
-        this.lexema = lexema;
-        this.value = value;
+    private Symbol(String lexema, String value, int references) {
+        this.lexema = new StringBuilder(lexema);
+        this.value = new StringBuilder(value);
         this.references = references;
+    }
+
+    public Symbol(String lexema, String value, SymbolType type) {
+        this.lexema = new StringBuilder(lexema);
+        this.value = new StringBuilder(value);
+        this.type = type;
+        this.references = 0;
     }
 
     // --------------------------------------------------------------------------------------------
@@ -47,8 +54,8 @@ public class Symbol {
 
     // --------------------------------------------------------------------------------------------
 
-    public StringBuilder getLexema() {
-        return this.lexema;
+    public String getLexema() {
+        return this.lexema.toString();
     }
 
     // --------------------------------------------------------------------------------------------
@@ -60,9 +67,26 @@ public class Symbol {
     // --------------------------------------------------------------------------------------------
 
     public SymbolType getType() {
-        return this.type == null ? "" : this.type;
+        return this.type == null ? null : this.type;
     }
-    
+
+    // --------------------------------------------------------------------------------------------
+
+    void setType(SymbolType symbolType) {
+
+        if (symbolType == null) {
+            throw new IllegalArgumentException("El tipo del símbolo no puede ser nulo.");
+        }
+
+        this.type = symbolType;
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    public String getTypeAsString() {
+        return this.type == null ? "" : this.type.toString();
+    }
+
     // --------------------------------------------------------------------------------------------
 
     public String getScope() {
@@ -72,17 +96,11 @@ public class Symbol {
     // --------------------------------------------------------------------------------------------
 
     public String getCategory() {
-        return this.category == null ? "" : this.category;
+        return this.category == null ? "" : this.category.toString();
     }
 
     public boolean isEmpty() {
         return lexema.length() == 0 && value.length() == 0 && type.length() == 0;
-    }
-
-    public void vaciar() {
-        this.lexema.setLength(0);
-        this.value.setLength(0);
-        this.references = 0;
     }
 
     public void setLexema(StringBuilder lexema) {
@@ -94,6 +112,11 @@ public class Symbol {
     }
 
     public Symbol getNegative() {
-        return new Symbol("-" + lexema,"-" + value,references);
+        return new Symbol("-" + lexema, "-" + value, references);
+    }
+
+    @Override
+    public String toString() {
+        return this.lexema.toString();
     }
 }

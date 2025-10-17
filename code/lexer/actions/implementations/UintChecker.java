@@ -1,5 +1,6 @@
 package lexer.actions.implementations;
 
+import common.SymbolType;
 import lexer.Lexer;
 import lexer.actions.SemanticAction;
 
@@ -33,10 +34,9 @@ public class UintChecker implements SemanticAction {
     public void execute(Lexer lexicalAnalyzer) {
 
         String lexema = lexicalAnalyzer.getLexema();
-        lexicalAnalyzer.loadLexema(lexema);
 
         // Se eliminan ceros adicionales a la izquierda.
-        lexema = cleanUint(lexema); 
+        lexema = cleanUint(lexema);
 
         if (!isInRange(lexema)) {
 

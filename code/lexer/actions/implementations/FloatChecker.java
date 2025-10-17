@@ -2,6 +2,7 @@ package lexer.actions.implementations;
 
 import java.math.BigDecimal;
 
+import common.SymbolType;
 import lexer.Lexer;
 import lexer.actions.SemanticAction;
 
@@ -84,7 +85,7 @@ public class FloatChecker implements SemanticAction {
 
     // --------------------------------------------------------------------------------------------
 
-    private String parseToFloat(String lexema, Lexer lexicalAnalyzer) { 
+    private String parseToFloat(String lexema, Lexer lexicalAnalyzer) {
 
         String number = transformToScientific(lexema);
 
