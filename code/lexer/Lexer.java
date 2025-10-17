@@ -3,6 +3,8 @@ package lexer;
 import common.Symbol;
 import common.Token;
 import common.TokenType;
+import common.SymbolType;
+import common.SymbolCategory;
 import lexer.actions.SemanticAction;
 import lexer.errors.LexicalError;
 import lexer.errors.implementations.BadCommentInitialization;
@@ -19,12 +21,19 @@ public final class Lexer {
 
     private Token currentToken;
     private char lastCharRead;
-    private StringBuilder lexema;
     private Symbol simbolo;
     private final String codigoFuente;
     private int nroLinea, siguienteCaracterALeer, nroCaracter;
     private int warningsDetected, errorsDetected;
     private final int estadoInicio, estadoAceptacion;
+
+    // --------------------------------------------------------------------------------------------
+
+    private final SymbolType type;
+    private final StringBuilder value;
+    private final StringBuilder lexema;
+
+    // --------------------------------------------------------------------------------------------
 
     private final int[][] matrizTransicionEstados;
     private final SemanticAction[][][] matrizAccionesSemanticas;
@@ -336,15 +345,62 @@ public final class Lexer {
         this.nroCaracter = 0;
     }
 
-    public Symbol getSimbolo() {
-        return this.simbolo;
+    // --------------------------------------------------------------------------------------------
+
+    public void finalizeFixedToken() {
+
+        TokenType tokenType = TokenType.fromSymbol(this.lexema.toString());
+
+        if (tokenType == null) {
+            UnknownToken.getInstance().handleError(lexicalAnalyzer);
+        } else {
+            this.currentToken = new Token(tokenType, null);
+        }
     }
 
-    public void loadLexema(StringBuilder lexema) {
+    // --------------------------------------------------------------------------------------------
+
+    public void finalizeVariableToken() {
+
+        Symbol symbol = this.generateSymbol();
+        TokenType tokenType = TokenType.fromSymbol(lexema);
+
+        // Se agrega el lexema a la tabla de símbolos.
+        SymbolTable.getInstance().agregarEntrada(lexema, simbolo);
+
+        this.currentToken = new Token(tokenType, this.lexema.toString());
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    private Symbol generateSymbol() {
+        return new Symbol(this.lexema.toString(), this.value.toString(), this.type);
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    /**
+     * Si se setea un tipo o categoría, un símbolo debe ser creado.
+     */
+    public boolean canASymbolBeCreated() {
+        return this.type != null || this.category != null;
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    public void loadLexema(String lexema) {
         this.simbolo.setLexema(lexema);
     }
 
-    public void loadValue(StringBuilder value) {
+    // --------------------------------------------------------------------------------------------
+
+    public void loadValue(String value) {
         this.simbolo.setValue(value);
+    } 
+
+    // --------------------------------------------------------------------------------------------
+
+    public void loadType(SymbolType type) {
+        this.type = type;
     }
 }

@@ -15,7 +15,7 @@ public final class SymbolTable {
 
     // --------------------------------------------------------------------------------------------
 
-    private final Map<String, Symbol> tablaSimbolos = new HashMap<>();
+    private final Map<String, Symbol> symbolTable = new HashMap<>();
 
     // --------------------------------------------------------------------------------------------
 
@@ -33,10 +33,10 @@ public final class SymbolTable {
     /**
      * Agrega un lexema a la tabla si no existe. Incrementa su referencia.
      */
-    public void agregarEntrada(Symbol simbolo) {
-        String indice = simbolo.getLexema().toString();
-        if (tablaSimbolos.get(indice) == null)
-            tablaSimbolos.put(indice, simbolo);
+    public void addEntry(String lexema, Symbol simbolo) {
+        if (symbolTable.get(lexema) == null)
+            symbolTable.put(lexema, simbolo);
+        simbolo.incrementarReferencias();
         // else
         // Ya existe la entrada en la tabla
     }
@@ -46,8 +46,8 @@ public final class SymbolTable {
     /**
      * Decrementa la referencia de un lexema. Si llega a 0, elimina la entrada.
      */
-    public void decrementarReferencia(String lexema) {
-        Symbol entrada = tablaSimbolos.get(lexema);
+    /*public void decrementarReferencia(String lexema) {
+        Symbol entrada = symbolTable.get(lexema);
         if (entrada == null) {
             Printer.printWrapped(String.format(
                     "Error inesperado. Se intentó decrementar la referencia del lexema \"%s\", que no existe.",
@@ -55,8 +55,56 @@ public final class SymbolTable {
         }
         entrada.decrementarReferencias();
         if (entrada.sinReferencias()) {
-            tablaSimbolos.remove(lexema);
+            symbolTable.remove(lexema);
         }
+    }*/
+
+    // --------------------------------------------------------------------------------------------
+
+    /**
+     * Remplaza una entrada en la tabla de símbolos.
+     */
+    /*public void replaceEntry(String oldLexema, String newLexema) {
+
+        if (oldLexema == null || newLexema == null) {
+            return;
+        } else {
+            Symbol symbol = this.symbolTable.get(oldLexema);
+            this.decrementarReferencia(oldLexema);
+
+            this.agregarEntrada(symbol, newLexema);
+
+            this.agregarEntrada(lexemaNuevo);
+        }
+    }*/
+
+    /**
+     * Reemplaza una entrada en la tabla por otra. Se utiliza únicamente en la detección de constantes negativas.
+     */
+    public void switchEntrySign(String lexema) {
+        Symbol entrada = symbolTable.get(lexema);
+        if (entrada == null) {
+            Printer.printWrapped(String.format(
+                    "Error inesperado. Se intentó decrementar la referencia del lexema \"%s\", que no existe.",
+                    lexema));
+        }
+
+        // Decrementa las referencias del simbolo anterior.
+        entrada.decrementarReferencias();
+
+        // Si el símbolo queda sin referencias, se da de baja de la tabla de símbolos.
+        if (entrada.sinReferencias()) {
+            symbolTable.remove(lexema);
+        }
+
+        // Alta de la tabla de símbolos.
+        this.addEntry("-"+lexema,entrada.getNegative());
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    public Symbol getSymbol(String lexema) {
+        return symbolTable.get(lexema);
     }
 
     // ============================================================================================
@@ -67,13 +115,13 @@ public final class SymbolTable {
      * Método principal que coordina la impresión de la tabla de símbolos.
      */
     public void imprimirTabla() {
-        if (tablaSimbolos.isEmpty()) {
+        if (symbolTable.isEmpty()) {
             Printer.printWrapped("La tabla de símbolos está vacía.");
             return;
         }
 
         // Se analizan y calculan los anchos de columna.
-        String[] headers = { "Lexema", "Tipo", "Categoría", "Alcance", "Referencias" };
+        String[] headers = { "Lexema", "Valor", "Tipo", "Categoría", "Alcance", "Referencias" };
         Map<String, Integer> columnWidths = calculateColumnWidths(headers);
 
         // Se crean las plantillas para las filas y separadores.
@@ -105,7 +153,7 @@ public final class SymbolTable {
         // Por ejemplo, que el lexema no ocupe más del 50% del ancho de la consola.
         int maxLexemaWidth = Printer.getLineWidth() / 2;
 
-        for (Symbol symbol : tablaSimbolos.values()) {
+        for (Symbol symbol : symbolTable.values()) {
             // Se usa Math.min para no superar el ancho máximo del lexema.
             int lexemaLength = symbol.getLexema().length();
             widths.put("Lexema", Math.min(maxLexemaWidth, Math.max(widths.get("Lexema"), lexemaLength)));
@@ -189,7 +237,7 @@ public final class SymbolTable {
      */
     private void printBody(String rowFormat, String[] headers, Map<String, Integer> widths) {
 
-        for (Symbol symbol : tablaSimbolos.values()) {
+        for (Symbol symbol : symbolTable.values()) {
             List<String> lexemaLines = wrapText(symbol.getLexema(), widths.get("Lexema"));
 
             // Imprime la primera (o única) línea con todos los datos.

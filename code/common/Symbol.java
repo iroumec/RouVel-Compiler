@@ -1,24 +1,24 @@
 package common;
 
-/*
- * Esta clase se expandirá en
- * etapas posteriores del trabajo.
- * 
- * POR AHORA SOLO FUNCIONA COMO UNA PLANTILLA.
- */
 public class Symbol {
 
-    StringBuilder lexema; // Lexema.
-    StringBuilder value; // Valor real
-    String type; // Uint, float, etc.
-    String category; // Variable, función, etc.
-    String scope; // Nivel de anidamiento.
-    int references;
+    private String scope; // Nivel de anidamiento.
+    private int references;
+    private SymbolType type;
+    private StringBuilder value; // Valor real
+    private StringBuilder lexema; // Lexema.
+    private SymbolCategory category;
 
     public Symbol() {
         this.lexema = new StringBuilder("");
         this.value = new StringBuilder("");
         this.references = 0;
+    }
+
+    private Symbol(StringBuilder lexema, StringBuilder value, int references) {
+        this.lexema = lexema;
+        this.value = value;
+        this.references = references;
     }
 
     // --------------------------------------------------------------------------------------------
@@ -53,10 +53,16 @@ public class Symbol {
 
     // --------------------------------------------------------------------------------------------
 
-    public String getType() {
-        return this.type == null ? "" : this.type;
+    public StringBuilder getValue() {
+        return this.value;
     }
 
+    // --------------------------------------------------------------------------------------------
+
+    public SymbolType getType() {
+        return this.type == null ? "" : this.type;
+    }
+    
     // --------------------------------------------------------------------------------------------
 
     public String getScope() {
@@ -85,5 +91,9 @@ public class Symbol {
 
     public void setValue(StringBuilder value) {
         this.value = value;
+    }
+
+    public Symbol getNegative() {
+        return new Symbol("-" + lexema,"-" + value,references);
     }
 }

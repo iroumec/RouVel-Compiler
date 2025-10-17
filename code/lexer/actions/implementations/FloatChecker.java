@@ -39,8 +39,14 @@ public class FloatChecker implements SemanticAction {
         String lexema = lexicalAnalyzer.getLexema();
 
         lexema = cleanFloat(lexema);
+        lexema = parseToFloat(lexema, lexicalAnalyzer);
 
-        lexicalAnalyzer.setLexema(parseToFloat(lexema, lexicalAnalyzer));
+        lexicalAnalyzer.loadLexema(lexema);
+
+        lexicalAnalyzer.loadType(SymbolType.FLOAT);
+
+        // Se guarda con "e" como previsión del código intermedio.
+        lexicalAnalyzer.loadValue(lexema.replace("F", "e"));
     }
 
     // --------------------------------------------------------------------------------------------
@@ -78,7 +84,7 @@ public class FloatChecker implements SemanticAction {
 
     // --------------------------------------------------------------------------------------------
 
-    private String parseToFloat(String lexema, Lexer lexicalAnalyzer) {
+    private String parseToFloat(String lexema, Lexer lexicalAnalyzer) { 
 
         String number = transformToScientific(lexema);
 
@@ -90,8 +96,7 @@ public class FloatChecker implements SemanticAction {
             number = "0.0";
         }
 
-        // Se guarda con "e" como previsión del código intermedio.
-        return number.replace("E", "e");
+        return number.replace("E", "F");
     }
 
     // --------------------------------------------------------------------------------------------

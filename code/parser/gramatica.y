@@ -472,7 +472,7 @@ factor_simple
 constante
     : CTE
     | '-' CTE
-        { 
+        {/* 
             $$ = "-" + $2;
 
             notifyDetection(String.format("Constante negativa: %s.",$$));
@@ -483,6 +483,15 @@ constante
             } 
 
             modificarSymbolTable($$,$2);
+        */
+           notifyDetection(String.format("Constante negativa: -%s.",$2));
+
+            if(isUint($2)) {
+                notifyError("El número está fuera del rango de uint, se descartará.");
+                $$ = null;
+            } 
+
+            modificarSymbolTable($$,$2); 
         }
     ;
 
@@ -988,11 +997,16 @@ public boolean isUint(String number) {
 
 // --------------------------------------------------------------------------------------------------------------------
 
-public void modificarSymbolTable(String lexemaNuevo, String lexemaAnterior) {
+/*public void modificarSymbolTable(String lexemaNuevo, String lexemaAnterior) {
     SymbolTable.getInstance().decrementarReferencia(lexemaAnterior);
     if (lexemaNuevo != null) {
-        SymbolTable.getInstance().agregarEntrada(lexemaNuevo);
+        Symbol symbol = SymbolTable.getInstance().getSymbol(lexemaAnterior).getNegative();
+        SymbolTable.getInstance().addEntry(lexemaNuevo,symbol);
     }
+}*/
+
+public void modificarTabla(String lexema) {
+    SymbolTable.getInstance().replaceEntry(lexema);
 }
 
 // ====================================================================================================================

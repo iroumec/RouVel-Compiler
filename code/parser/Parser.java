@@ -29,7 +29,7 @@
 //#line 35 "gramatica.y"
 /*typedef union {
     String sval;
-} YYSTYPE; */
+} YYSTYPE; */ */
 //#line 31 "Parser.java"
 
 

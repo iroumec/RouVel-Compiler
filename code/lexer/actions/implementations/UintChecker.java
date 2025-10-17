@@ -36,7 +36,7 @@ public class UintChecker implements SemanticAction {
         lexicalAnalyzer.loadLexema(lexema);
 
         // Se eliminan ceros adicionales a la izquierda.
-        lexema = cleanUint(lexema);
+        lexema = cleanUint(lexema); 
 
         if (!isInRange(lexema)) {
 
@@ -49,7 +49,7 @@ public class UintChecker implements SemanticAction {
         }
 
         lexicalAnalyzer.loadValue(lexema);
-        lexicalAnalyzer.setLexema(lexema);
+        lexicalAnalyzer.loadType(SymbolType.UINT);
     }
 
     // --------------------------------------------------------------------------------------------
