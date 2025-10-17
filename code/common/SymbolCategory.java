@@ -2,6 +2,8 @@ package common;
 
 public enum SymbolCategory {
     VARIABLE("Variable"),
+    PARAMETER("Parameter"), // Formal parameter
+    ARGUMENT("Argument"), // Real parameter
     FUNCTION("Function");
 
     private String text;

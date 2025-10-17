@@ -109,6 +109,17 @@ public final class SymbolTable {
         }
     }
 
+    // --------------------------------------------------------------------------------------------
+
+    public void setCategory(String lexema, SymbolCategory category) {
+
+        Symbol symbol = this.symbolTable.get(lexema);
+
+        if (symbol != null) {
+            symbol.setCategory(category);
+        }
+    }
+
     // ============================================================================================
     // Impresión de la Tabla (Objetivo Estéticos)
     // ============================================================================================

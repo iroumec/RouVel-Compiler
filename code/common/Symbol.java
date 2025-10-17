@@ -66,13 +66,14 @@ public class Symbol {
 
     // --------------------------------------------------------------------------------------------
 
-    void setType(SymbolType symbolType) {
+    void setType(SymbolType newType) {
+        this.type = newType;
+    }
 
-        if (symbolType == null) {
-            throw new IllegalArgumentException("El tipo del símbolo no puede ser nulo.");
-        }
+    // --------------------------------------------------------------------------------------------
 
-        this.type = symbolType;
+    void setCategory(SymbolCategory newCategory) {
+        this.category = newCategory;
     }
 
     // --------------------------------------------------------------------------------------------

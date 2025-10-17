@@ -3,4 +3,8 @@ YES {
     uint A;
 
     A := 4UI;
+
+    uint FUN1(uint H) {
+        return (3UI);
+    }
 }

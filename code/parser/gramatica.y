@@ -15,6 +15,7 @@
     import utilities.Printer;
     import common.SymbolType;
     import common.SymbolTable;
+    import common.SymbolCategory;
     import semantic.ReversePolish;
     import utilities.MessageCollector;
 %}
@@ -54,7 +55,7 @@
 %token PRINT, IF, ELSE, ENDIF, UINT, CVR, DO, WHILE, RETURN
 
 // No terminales cuyo valor semántico asociado es un String.
-%type <sval> expresion, termino, factor, termino_simple, factor_simple, operador_suma, operador_multiplicacion,
+%type <sval> expresion, termino, factor, termino_simple, factor_simple, operador_suma, operador_multiplicacion, inicio_funcion,
                 lista_variables, lista_constantes, variable, constante, invocacion_funcion, lista_argumentos, argumento
 
 // ====================================================================================================================
@@ -240,7 +241,11 @@ declaracion_variables
         { notifyDetection("Declaración de variables."); }
     
     | UINT ID ';'
-        { notifyDetection("Declaración de variable."); this.setTypeInTable($2, SymbolType.UINT); }
+        {
+            notifyDetection("Declaración de variable.");
+            this.setTypeInTable($2, SymbolType.UINT);
+            this.setCategoryInTable($2, SymbolCategory.VARIABLE);
+        }
     
     // |========================= REGLAS DE ERROR =========================| //
 
@@ -635,6 +640,8 @@ declaracion_funcion
     : inicio_funcion conjunto_parametros cuerpo_funcion
         {
             notifyDetection("Declaración de función.");
+            this.setTypeInTable($1, SymbolType.UINT);
+            this.setCategoryInTable($1, SymbolCategory.FUNCTION);
             popScope();    
         }
 
@@ -659,7 +666,7 @@ declaracion_funcion
 // la declaración de una función.
 inicio_funcion
     : UINT ID
-        { pushScope($2); }
+        { pushScope($2); $$ = $2; }
     ;
 
 // --------------------------------------------------------------------------------------------------------------------
@@ -712,6 +719,10 @@ parametro_vacio
 
 parametro_formal
     : semantica_pasaje UINT variable
+        {
+            this.setTypeInTable($3, SymbolType.UINT);
+            this.setCategoryInTable($3, SymbolCategory.PARAMETER);
+        }
 
     // |========================= REGLAS DE ERROR =========================| //
 
@@ -1012,6 +1023,12 @@ public void setTypeInTable(String lexema, SymbolType type) {
 
 public void setValueInTable(String lexema, String value) {
     SymbolTable.getInstance().setValue(lexema, value);
+}
+
+// --------------------------------------------------------------------------------------------------------------------
+
+public void setCategoryInTable(String lexema, SymbolCategory category) {
+    SymbolTable.getInstance().setCategory(lexema, category);
 }
 
 // ====================================================================================================================
