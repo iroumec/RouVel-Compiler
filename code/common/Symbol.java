@@ -9,12 +9,6 @@ public class Symbol {
     private StringBuilder lexema; // Lexema.
     private SymbolCategory category;
 
-    public Symbol() {
-        this.lexema = new StringBuilder("");
-        this.value = new StringBuilder("");
-        this.references = 0;
-    }
-
     private Symbol(String lexema, String value, int references) {
         this.lexema = new StringBuilder(lexema);
         this.value = new StringBuilder(value);
@@ -60,8 +54,8 @@ public class Symbol {
 
     // --------------------------------------------------------------------------------------------
 
-    public StringBuilder getValue() {
-        return this.value;
+    public String getValue() {
+        return this.value.toString();
     }
 
     // --------------------------------------------------------------------------------------------
@@ -90,7 +84,7 @@ public class Symbol {
     // --------------------------------------------------------------------------------------------
 
     public String getScope() {
-        return this.scope;
+        return this.scope == null ? "Global" : this.scope;
     }
 
     // --------------------------------------------------------------------------------------------
@@ -103,12 +97,14 @@ public class Symbol {
         return lexema.length() == 0 && value.length() == 0 && type.length() == 0;
     }
 
-    public void setLexema(StringBuilder lexema) {
-        this.lexema = lexema;
+    public void setLexema(String lexema) {
+        this.lexema.setLength(0);
+        this.lexema.append(lexema);
     }
 
-    public void setValue(StringBuilder value) {
-        this.value = value;
+    public void setValue(String value) {
+        this.value.setLength(0);
+        this.value.append(value);
     }
 
     public Symbol getNegative() {

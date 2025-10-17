@@ -293,7 +293,7 @@ lista_variables
 
 asignacion_simple
     : variable DASIG expresion ';'                              
-        { notifyDetection("Asignación simple."); }
+        { notifyDetection("Asignación simple."); this.setValueInTable($1, $3); }
 
     // |========================= REGLAS DE ERROR =========================| //
 
@@ -1005,13 +1005,13 @@ public void replaceInTable(String oldLexema, String newLexema) {
 // --------------------------------------------------------------------------------------------------------------------
 
 public void setTypeInTable(String lexema, SymbolType type) {
+    SymbolTable.getInstance().setType(lexema, type);
+}
 
-    System.out.println(type);
+// --------------------------------------------------------------------------------------------------------------------
 
-    //SymbolTable.getInstance().setType(lexema, type);
-
-    System.out.println(SymbolTable.getInstance().getSymbol(lexema));
-    System.out.println(SymbolTable.getInstance().getSymbol(lexema).getTypeAsString());
+public void setValueInTable(String lexema, String value) {
+    SymbolTable.getInstance().setValue(lexema, value);
 }
 
 // ====================================================================================================================

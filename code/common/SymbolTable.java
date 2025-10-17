@@ -33,39 +33,17 @@ public final class SymbolTable {
     /**
      * Agrega un lexema a la tabla si no existe. Incrementa su referencia.
      */
-    public void addEntry(String lexema, Symbol simbolo) {
-        System.out.println(lexema);
-        System.out.println(simbolo);
-        if (symbolTable.get(lexema) == null) {
-            System.out.println("Entré para el lexema: " + lexema);
-            symbolTable.put(lexema, simbolo);
+    public void addEntry(String lexema, Symbol newSymbol) {
+
+        Symbol symbol = this.symbolTable.get(lexema);
+
+        if (symbol == null) {
+            symbolTable.put(lexema, newSymbol);
+            newSymbol.incrementarReferencias();
+        } else {
+            symbol.incrementarReferencias();
         }
-        simbolo.incrementarReferencias();
-        System.out.println(simbolo.getReferences());
-        // else
-        // Ya existe la entrada en la tabla
     }
-
-    // --------------------------------------------------------------------------------------------
-
-    /**
-     * Decrementa la referencia de un lexema. Si llega a 0, elimina la entrada.
-     */
-    /*
-     * public void decrementarReferencia(String lexema) {
-     * Symbol entrada = symbolTable.get(lexema);
-     * if (entrada == null) {
-     * Printer.printWrapped(String.format(
-     * "Error inesperado. Se intentó decrementar la referencia del lexema \"%s\", que no existe."
-     * ,
-     * lexema));
-     * }
-     * entrada.decrementarReferencias();
-     * if (entrada.sinReferencias()) {
-     * symbolTable.remove(lexema);
-     * }
-     * }
-     */
 
     // --------------------------------------------------------------------------------------------
 
@@ -89,6 +67,7 @@ public final class SymbolTable {
      * detección de constantes negativas.
      */
     public void switchEntrySign(String lexema) {
+
         Symbol entrada = symbolTable.get(lexema);
         if (entrada == null) {
             Printer.printWrapped(String.format(
@@ -112,23 +91,22 @@ public final class SymbolTable {
 
     public void setType(String lexema, SymbolType type) {
 
-        Symbol symbol = new Symbol();
+        Symbol symbol = this.symbolTable.get(lexema);
 
         if (symbol != null) {
-
-            System.out.println(symbol.getTypeAsString());
-            System.out.println(symbol);
-
             symbol.setType(type);
-
-            System.out.println(symbol.getTypeAsString());
         }
     }
 
     // --------------------------------------------------------------------------------------------
 
-    public Symbol getSymbol(String lexema) {
-        return symbolTable.get(lexema);
+    public void setValue(String lexema, String value) {
+
+        Symbol symbol = this.symbolTable.get(lexema);
+
+        if (symbol != null) {
+            symbol.setValue(value);
+        }
     }
 
     // ============================================================================================
@@ -268,7 +246,7 @@ public final class SymbolTable {
             String firstLexema = lexemaLines.isEmpty() ? "" : lexemaLines.get(0);
             Printer.print(String.format(rowFormat,
                     firstLexema,
-                    symbol.getValue().length(),
+                    symbol.getValue(),
                     symbol.getTypeAsString(),
                     symbol.getCategory(),
                     String.valueOf(symbol.getScope()),

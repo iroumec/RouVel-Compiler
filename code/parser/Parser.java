@@ -877,13 +877,13 @@ public void replaceInTable(String oldLexema, String newLexema) {
 // --------------------------------------------------------------------------------------------------------------------
 
 public void setTypeInTable(String lexema, SymbolType type) {
+    SymbolTable.getInstance().setType(lexema, type);
+}
 
-    System.out.println(type);
+// --------------------------------------------------------------------------------------------------------------------
 
-    //SymbolTable.getInstance().setType(lexema, type);
-
-    System.out.println(SymbolTable.getInstance().getSymbol(lexema));
-    System.out.println(SymbolTable.getInstance().getSymbol(lexema).getTypeAsString());
+public void setValueInTable(String lexema, String value) {
+    SymbolTable.getInstance().setValue(lexema, value);
 }
 
 // ====================================================================================================================
@@ -1163,7 +1163,7 @@ case 58:
 break;
 case 59:
 //#line 296 "gramatica.y"
-{ notifyDetection("Asignación simple."); }
+{ notifyDetection("Asignación simple."); this.setValueInTable(val_peek(3).sval, val_peek(1).sval); }
 break;
 case 60:
 //#line 302 "gramatica.y"
