@@ -120,6 +120,17 @@ public final class SymbolTable {
         }
     }
 
+    // --------------------------------------------------------------------------------------------
+
+    public Symbol getSymbol(String lexema) {
+        Symbol symbol = symbolTable.get(lexema);
+        if (symbol == null) {
+            Printer.printWrapped(String.format("Error inesperado. Se intentó obtener el símbolo asociado al lexema \"%s\", que no existe.",lexema));
+        }
+        return symbol; 
+    }
+    
+
     // ============================================================================================
     // Impresión de la Tabla (Objetivo Estéticos)
     // ============================================================================================

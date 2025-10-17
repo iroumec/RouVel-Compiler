@@ -55,7 +55,7 @@
 
 // No terminales cuyo valor semántico asociado es un String.
 %type <sval> expresion, termino, factor, termino_simple, factor_simple, operador_suma, operador_multiplicacion, inicio_funcion,
-                lista_variables, lista_constantes, variable, constante, invocacion_funcion, lista_argumentos, argumento
+                lista_variables, lista_constantes, variable, constante, invocacion_funcion, lista_argumentos, argumento, comparador
 
 // ====================================================================================================================
 // FIN DE DECLARACIONES
@@ -228,7 +228,7 @@ sentencia_ejecutable
 
 sentencia_control
     : if                                                                
-    | do_while                                                
+    | iteracion                                                
     ;
 
 // ********************************************************************************************************************
@@ -297,7 +297,13 @@ lista_variables
 
 asignacion_simple
     : variable DASIG expresion ';'                              
-        { notifyDetection("Asignación simple."); this.symbolTable.setValue($1, $3); }
+        { 
+            notifyDetection("Asignación simple."); 
+            this.symbolTable.setValue($1, $3);
+            
+            reversePolish.addPolish($1);
+            reversePolish.addPolish($2);
+        }
 
     // |========================= REGLAS DE ERROR =========================| //
 
@@ -319,7 +325,11 @@ asignacion_simple
 //Estas asignaciones pueden tener un menor número de elementos del lado izquierdo (tema 17).
 asignacion_multiple 
     : variable asignacion_par constante ';'
-        { notifyDetection("Asignación múltiple."); }
+        { 
+            reversePolish.correctlyLocate($1,"=",$3);
+
+            notifyDetection("Asignación múltiple."); 
+        }
     | variable asignacion_par constante ',' lista_constantes ';'
         { notifyDetection("Asignación múltiple."); }
 
@@ -344,6 +354,10 @@ asignacion_par
 
 variable_con_coma
     : ',' variable
+        { reversePolish.addPolish($2); }
+
+    // |========================= REGLAS DE ERROR =========================| //
+
     | variable
         { notifyError(String.format("Falta coma antes de variable '%s' en asignación múltiple.", $1)); }
     ;
@@ -352,6 +366,10 @@ variable_con_coma
 
 constante_con_coma
     : constante ','
+        { reversePolish.addPolish($1); }
+
+    // |========================= REGLAS DE ERROR =========================| //
+
     | constante
         { notifyError(String.format("Falta coma luego de constante '%s' en asignación múltiple.", $1)); }
     ;
@@ -360,6 +378,7 @@ constante_con_coma
                                 
 lista_constantes
     : constante
+        { reversePolish.addPolish($1); }
     | lista_constantes ',' constante
         { $$ = $3; }
 
@@ -382,9 +401,7 @@ expresion
     | expresion operador_suma termino
         { 
             $$ = $3;
-            notifyDetection($1);
-            notifyDetection($3);
-            notifyDetection($2);
+            reversePolish.addPolish($2);
         }
 
     // |========================= REGLAS DE ERROR =========================| //
@@ -420,7 +437,10 @@ operador_suma
 
 termino                         
     : termino operador_multiplicacion factor
-        { $$ = $3; }
+        {   
+            reversePolish.addPolish($2);
+            $$ = $3; 
+        }
     | factor
 
     // |========================= REGLAS DE ERROR =========================| //
@@ -440,7 +460,10 @@ termino
 
 termino_simple
     : termino_simple operador_multiplicacion factor
-        { $$ = $1; }
+        {   
+            reversePolish.addPolish($2);
+            $$ = $1;
+        }
     | factor_simple
 
     // |========================= REGLAS DE ERROR =========================| //
@@ -464,7 +487,13 @@ operador_multiplicacion
 factor
     : variable error
         // Si no se coloca el token error, da shift/reduce con asignación múltiple.
+        {
+            reversePolish.addPolish($1);
+        }
     | constante
+        {
+            reversePolish.addPolish($1);
+        }
     | invocacion_funcion
     ;
 
@@ -473,7 +502,13 @@ factor
 // Factor que no contempla la posibilidad de constantes negativas.
 factor_simple
     : variable
+        {
+            reversePolish.addPolish($1);
+        }
     | CTE
+        {
+            reversePolish.addPolish($1);
+        }
     | invocacion_funcion
     ;
 
@@ -519,7 +554,11 @@ variable
 
 condicion
     : '(' cuerpo_condicion ')'
-        { notifyDetection("Condición."); }
+        { 
+            //if(!errorState)
+            reversePolish.addFalseBifurcation();
+            notifyDetection("Condición."); 
+        }
 
     // |========================= REGLAS DE ERROR =========================| //
 
@@ -537,6 +576,9 @@ condicion
 
 cuerpo_condicion
     : expresion comparador expresion
+        {
+            reversePolish.addPolish($2);
+        }
 
     // |========================= REGLAS DE ERROR =========================| //
 
@@ -552,7 +594,13 @@ cuerpo_condicion
                                 
 comparador                      
     : '>'
+        {
+            $$ = ">";
+        }
     | '<'
+        {
+            $$ = "<";
+        }
     | EQ
     | LEQ
     | GEQ
@@ -568,9 +616,12 @@ comparador
 // Sentencia IF
 // ********************************************************************************************************************
 
-if
-    : IF condicion cuerpo_ejecutable rama_else ENDIF ';'
-        { notifyDetection("Sentencia IF."); }
+/*if
+    : IF condicion { reversePolish.addFalseBifurcation(); } cuerpo_ejecutable { reversePolish.addInconditionalBifurcation(); } rama_else ENDIF ';'
+        {
+            reversePolish.completeSelection();
+            notifyDetection("Sentencia IF."); 
+        }
 
     // |========================= REGLAS DE ERROR =========================| //
 
@@ -582,6 +633,37 @@ if
         { notifyError("Falta el bloque de sentencias del IF."); }
     | IF error
         { notifyError("Sentencia IF inválida."); }
+    ;*/
+
+if 
+    : IF condicion cuerpo_if
+        { 
+            reversePolish.completeSelection();
+            notifyDetection("Sentencia IF."); 
+        }
+    ; 
+    // |========================= REGLAS DE ERROR =========================| //
+    | IF condicion cuerpo_if_error
+    | IF error
+        { notifyError("Sentencia IF inválida."); }
+    ;
+
+cuerpo_if 
+    : cuerpo_then rama_else ENDIF ';'
+    ;
+
+cuerpo_if_error
+    : cuerpo_then rama_else ENDIF error 
+        { notifyError("La sentencia IF debe terminar con ';'."); }
+    | cuerpo_then rama_else ';'
+        { notifyError("La sentencia IF debe finalizar con 'endif'."); }
+    | rama_else ENDIF ';'
+        { notifyError("Falta el bloque de sentencias del IF."); }
+    ;
+
+cuerpo_then 
+    : cuerpo_ejecutable
+        { reversePolish.addInconditionalBifurcation(); }
     ;
 
 // --------------------------------------------------------------------------------------------------------------------
@@ -599,17 +681,21 @@ rama_else
 // ********************************************************************************************************************
 // Sentencia WHILE
 // ********************************************************************************************************************
+iteracion 
+    : { reversePolish.registerDoBody(); } do_while 
+    ;
+
 
 do_while                        
-    : DO cuerpo_do ';'
+    : DO cuerpo_iteracion ';'
         { notifyDetection("Sentencia 'do-while'."); }  
     
     // |========================= REGLAS DE ERROR =========================| //
 
-    | DO cuerpo_do_recuperacion ';'
-    | DO cuerpo_do error
+    | DO cuerpo_iteracion_recuperacion ';'
+    | DO cuerpo_iteracion error
         { notifyError("La sentencia 'do-while' debe terminar con ';'."); }
-    | DO cuerpo_do_recuperacion error
+    | DO cuerpo_iteracion_recuperacion error
         { notifyError("La sentencia 'do-while' debe terminar con ';'."); }
     | DO error
         { notifyError("Sentencia 'do-while' inválida."); }
@@ -617,14 +703,19 @@ do_while
 
 // --------------------------------------------------------------------------------------------------------------------
 
-cuerpo_do
-    : cuerpo_ejecutable fin_cuerpo_do
+cuerpo_iteracion
+    : cuerpo_do fin_cuerpo_iteracion
+    ;
+
+cuerpo_do 
+    : cuerpo_ejecutable
+        {}
     ;
 
 // --------------------------------------------------------------------------------------------------------------------
 
-cuerpo_do_recuperacion
-    : fin_cuerpo_do
+cuerpo_iteracion_recuperacion
+    : fin_cuerpo_iteracion
         { notifyError("Debe especificarse un cuerpo para la sentencia do-while."); }
     | cuerpo_ejecutable condicion
         { notifyError("Falta 'while'."); }
@@ -632,8 +723,9 @@ cuerpo_do_recuperacion
 
 // --------------------------------------------------------------------------------------------------------------------
 
-fin_cuerpo_do
+fin_cuerpo_iteracion
     : WHILE condicion
+        { reversePolish.addTrueBifurcation(); }
     ;
 
 // ********************************************************************************************************************
@@ -754,7 +846,10 @@ semantica_pasaje
 
 sentencia_retorno
     : RETURN '(' expresion ')' ';'
-        { notifyDetection("Sentencia RETURN."); }
+        { 
+            reversePolish.addPolish("return");
+            notifyDetection("Sentencia RETURN."); 
+        }
     
     // |========================= REGLAS DE ERROR =========================| //
 
@@ -805,7 +900,10 @@ argumento
 
 impresion
     : PRINT imprimible ';'
-        { notifyDetection("Sentencia 'print'."); }
+        { 
+            reversePolish.addPolish("print");
+            notifyDetection("Sentencia 'print'."); 
+        }
 
     // |========================= REGLAS DE ERROR =========================| //
 
@@ -913,6 +1011,7 @@ private final ScopeStack scopeStack;
 private final SymbolTable symbolTable;
 private final ReversePolish reversePolish;
 private MessageCollector errorCollector, warningCollector;
+private boolean errorState;
 
 public Parser(Lexer lexer, SymbolTable symbolTable,
                 MessageCollector errorCollector, MessageCollector warningCollector) {
@@ -923,7 +1022,7 @@ public Parser(Lexer lexer, SymbolTable symbolTable,
     this.warningCollector = warningCollector;
     
     this.scopeStack = new ScopeStack();
-    this.reversePolish = new ReversePolish();
+    this.reversePolish = ReversePolish.getInstance();
 
     // Descomentar la siguiente línea para activar el debugging.
     // yydebug = true;

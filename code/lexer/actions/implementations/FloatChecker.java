@@ -42,7 +42,7 @@ public class FloatChecker implements SemanticAction {
         lexema = cleanFloat(lexema);
         lexema = parseToFloat(lexema, lexicalAnalyzer);
 
-        lexicalAnalyzer.loadLexema(lexema);
+        //lexicalAnalyzer.loadLexema(lexema);
 
         lexicalAnalyzer.loadType(SymbolType.FLOAT);
 

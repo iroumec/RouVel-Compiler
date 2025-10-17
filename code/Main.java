@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import lexer.Lexer;
 import parser.Parser;
+import semantic.ReversePolish;
 import common.SymbolTable;
 import utilities.MessageCollector;
 import utilities.Printer;
@@ -94,5 +95,7 @@ public class Main {
 
         SymbolTable.getInstance().imprimirTabla();
         Printer.printBlankSpace();
+
+        Printer.print(ReversePolish.getInstance().toString());
     }
 }
