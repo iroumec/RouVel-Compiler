@@ -222,6 +222,7 @@ sentencia_ejecutable
     
     | invocacion_funcion error
         { notifyError("La invocación a función debe terminar con ';'."); }
+    //| asignacion_multiple_erronea
     ;
 
 // --------------------------------------------------------------------------------------------------------------------
@@ -322,16 +323,32 @@ asignacion_simple
 // Asignación Múltiple
 // ********************************************************************************************************************
 
+/*asignacion_multiple_erronea
+    : lista_variables ',' variable asignacion_par constante ';'
+        { notifyError("No puede haber más variables que constantes."); }
+    ;*/
+
 //Estas asignaciones pueden tener un menor número de elementos del lado izquierdo (tema 17).
 asignacion_multiple 
     : variable asignacion_par constante ';'
         { 
-            reversePolish.correctlyLocate($1,"=",$3);
+            reversePolish.addPolish($1);
+            reversePolish.addPolish($3);
+
+            reversePolish.rearrangePairs();
 
             notifyDetection("Asignación múltiple."); 
         }
     | variable asignacion_par constante ',' lista_constantes ';'
-        { notifyDetection("Asignación múltiple."); }
+        { 
+            reversePolish.addPolish($1);
+            reversePolish.addPolish($3);
+
+            reversePolish.rearrangePairs();
+
+            notifyWarning(String.format("Se descartarán las constantes posteriores a %s",$3)); //TP3
+            notifyDetection("Asignación múltiple.");
+        }
 
     // |========================= REGLAS DE ERROR =========================| //
 
@@ -378,7 +395,6 @@ constante_con_coma
                                 
 lista_constantes
     : constante
-        { reversePolish.addPolish($1); }
     | lista_constantes ',' constante
         { $$ = $3; }
 
