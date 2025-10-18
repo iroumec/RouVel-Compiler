@@ -215,9 +215,9 @@
  153  parametro_vacio : lista_parametros ','
  154                  | ',' parametro_formal
 
- 155  parametro_formal : semantica_pasaje UINT variable
+ 155  parametro_formal : semantica_pasaje UINT ID
  156                   | semantica_pasaje UINT
- 157                   | semantica_pasaje variable
+ 157                   | semantica_pasaje ID
 
  158  semantica_pasaje :
  159                   | CVR
@@ -1367,10 +1367,10 @@ state 82
 	ID  reduce 158
 	UINT  reduce 158
 
-	lista_parametros  goto 172
-	parametro_formal  goto 173
-	parametro_vacio  goto 174
-	semantica_pasaje  goto 175
+	semantica_pasaje  goto 172
+	lista_parametros  goto 173
+	parametro_formal  goto 174
+	parametro_vacio  goto 175
 
 
 state 83
@@ -2342,8 +2342,8 @@ state 170
 	ID  reduce 158
 	UINT  reduce 158
 
+	semantica_pasaje  goto 172
 	parametro_formal  goto 232
-	semantica_pasaje  goto 175
 
 
 state 171
@@ -2353,37 +2353,35 @@ state 171
 
 
 state 172
-	conjunto_parametros : '(' lista_parametros . ')'  (148)
-	lista_parametros : lista_parametros . ',' parametro_formal  (151)
-	parametro_vacio : lista_parametros . ','  (153)
+	parametro_formal : semantica_pasaje . UINT ID  (155)
+	parametro_formal : semantica_pasaje . UINT  (156)
+	parametro_formal : semantica_pasaje . ID  (157)
 
-	','  shift 233
-	')'  shift 234
+	ID  shift 233
+	UINT  shift 234
 	.  error
 
 
 state 173
+	conjunto_parametros : '(' lista_parametros . ')'  (148)
+	lista_parametros : lista_parametros . ',' parametro_formal  (151)
+	parametro_vacio : lista_parametros . ','  (153)
+
+	','  shift 235
+	')'  shift 236
+	.  error
+
+
+state 174
 	lista_parametros : parametro_formal .  (150)
 
 	.  reduce 150
 
 
-state 174
+state 175
 	lista_parametros : parametro_vacio .  (152)
 
 	.  reduce 152
-
-
-state 175
-	parametro_formal : semantica_pasaje . UINT variable  (155)
-	parametro_formal : semantica_pasaje . UINT  (156)
-	parametro_formal : semantica_pasaje . variable  (157)
-
-	ID  shift 180
-	UINT  shift 235
-	.  error
-
-	variable  goto 236
 
 
 state 176
@@ -2465,7 +2463,6 @@ state 180
 	ID  reduce 101
 	','  reduce 101
 	'='  reduce 101
-	')'  reduce 101
 
 
 state 181
@@ -3099,6 +3096,21 @@ state 232
 
 
 state 233
+	parametro_formal : semantica_pasaje ID .  (157)
+
+	.  reduce 157
+
+
+state 234
+	parametro_formal : semantica_pasaje UINT . ID  (155)
+	parametro_formal : semantica_pasaje UINT .  (156)
+
+	ID  shift 281
+	','  reduce 156
+	')'  reduce 156
+
+
+state 235
 	lista_parametros : lista_parametros ',' . parametro_formal  (151)
 	parametro_vacio : lista_parametros ',' .  (153)
 	semantica_pasaje : .  (158)
@@ -3110,31 +3122,14 @@ state 233
 	','  reduce 153
 	')'  reduce 153
 
-	parametro_formal  goto 281
-	semantica_pasaje  goto 175
-
-
-state 234
-	conjunto_parametros : '(' lista_parametros ')' .  (148)
-
-	.  reduce 148
-
-
-state 235
-	parametro_formal : semantica_pasaje UINT . variable  (155)
-	parametro_formal : semantica_pasaje UINT .  (156)
-
-	ID  shift 180
-	','  reduce 156
-	')'  reduce 156
-
-	variable  goto 282
+	semantica_pasaje  goto 172
+	parametro_formal  goto 282
 
 
 state 236
-	parametro_formal : semantica_pasaje variable .  (157)
+	conjunto_parametros : '(' lista_parametros ')' .  (148)
 
-	.  reduce 157
+	.  reduce 148
 
 
 state 237
@@ -3456,15 +3451,15 @@ state 280
 
 
 state 281
-	lista_parametros : lista_parametros ',' parametro_formal .  (151)
+	parametro_formal : semantica_pasaje UINT ID .  (155)
 
-	.  reduce 151
+	.  reduce 155
 
 
 state 282
-	parametro_formal : semantica_pasaje UINT variable .  (155)
+	lista_parametros : lista_parametros ',' parametro_formal .  (151)
 
-	.  reduce 155
+	.  reduce 151
 
 
 state 283

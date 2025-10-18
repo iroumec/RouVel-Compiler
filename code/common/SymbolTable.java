@@ -122,12 +122,28 @@ public final class SymbolTable {
 
     // --------------------------------------------------------------------------------------------
 
+    public void setScope(String lexema, String scope) {
+        String newLexema = scope + ":" + lexema;
+        Symbol simbolo = this.symbolTable.remove(lexema);
+        simbolo.setLexema(newLexema);
+        addEntry(newLexema,simbolo);
+
+    }
+
+    // --------------------------------------------------------------------------------------------
+
     public Symbol getSymbol(String lexema) {
         Symbol symbol = symbolTable.get(lexema);
         if (symbol == null) {
             Printer.printWrapped(String.format("Error inesperado. Se intentó obtener el símbolo asociado al lexema \"%s\", que no existe.",lexema));
         }
         return symbol; 
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    public boolean entryExists(String entry) {
+        return this.symbolTable.containsKey(entry);
     }
     
 

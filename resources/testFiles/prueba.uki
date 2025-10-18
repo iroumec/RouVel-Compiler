@@ -1,11 +1,19 @@
-PROGRAMA {
-    ##PRECIO := FLETE + COSTO * 1.5;##
-    ##Z := A * B * 2.5 + C * 5UI + D;##
-    ##if (A - B > C + 1UI) { A := B + C; } else { A := B - C; } endif;##
-    ##if (A - B > C + 1UI) { A := B + C; } endif;##
-    ##do { A := B + C; } while (A - B > C + 1UI);##
-    ##print(A);##
-    ##return (A);##
-    ##A, B, C = 1.,2.,3.,4.;##
-    (uint A){if(A>1UI)print("Hola");endif;}(3UI);
+PRUEBA {
+    uint A;
+    uint B;
+    B := 5.;
+    uint F1(uint X) {
+        uint A;
+        ##B := A;##
+        PRUEBA.B := A;
+
+        uint F2(uint X) {
+            F1.A := PRUEBA.B;
+            ##PRUEBA.A := A2.KK;##
+        }
+    };
+
+    uint A2(uint Y) {
+        uint KK;
+    }
 }

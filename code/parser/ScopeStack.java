@@ -37,4 +37,20 @@ public class ScopeStack {
         Iterable<String> iterable = () -> stack.descendingIterator();
         return String.join(":", iterable);
     }
+
+    // --------------------------------------------------------------------------------------------
+
+    public boolean isReacheable(String scope) {
+        if(asText().indexOf(scope) == 0) //Si el ámbito es el nombre de programa
+            return true;
+        return asText().contains(":" + scope + ":");
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    public String getScopeRoad(String scope) {
+        if(asText().indexOf(scope) == 0)
+            return scope + ":";
+        return asText().split(":" + scope + ":",2)[0] + ":" + scope + ":";
+    }
 }

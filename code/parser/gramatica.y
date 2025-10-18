@@ -55,7 +55,7 @@
 
 // No terminales cuyo valor semántico asociado es un String.
 %type <sval> expresion, termino, factor, termino_simple, factor_simple, operador_suma, operador_multiplicacion, inicio_funcion,
-                lista_variables, lista_constantes, variable, constante, invocacion_funcion, lista_argumentos, argumento, comparador
+                lista_variables, lista_constantes, variable, constante, invocacion_funcion, lista_argumentos, argumento, comparador, semantica_pasaje
 
 // ====================================================================================================================
 // FIN DE DECLARACIONES
@@ -245,6 +245,7 @@ declaracion_variables
             notifyDetection("Declaración de variable.");
             this.symbolTable.setType($2, SymbolType.UINT);
             this.symbolTable.setCategory($2, SymbolCategory.VARIABLE);
+            this.symbolTable.setScope($2,scopeStack.asText());
         }
     
     // |========================= REGLAS DE ERROR =========================| //
@@ -300,7 +301,7 @@ asignacion_simple
     : variable DASIG expresion ';'                              
         { 
             notifyDetection("Asignación simple."); 
-            this.symbolTable.setValue($1, $3);
+            this.symbolTable.setValue($1, $3);//yo no pondría esto, cuando $3 es una expresion queda mal
             
             reversePolish.addPolish($1);
             reversePolish.addPolish($2);
@@ -560,8 +561,22 @@ constante
 
 variable
     : ID
+        {
+            if (!this.symbolTable.entryExists(this.scopeStack.asText()+":"+$1)) { //Si entra por aca, la variable debe ser local
+                notifyError(String.format("Variable %s no declarada.",$1));
+            }
+        }
     | ID '.' ID
-        { $$ = $1 + "." + $3; }
+        { 
+            if (!this.scopeStack.isReacheable($1)) 
+                notifyError(String.format("Variable %s no declarada (no visible).",$3));
+            else {
+                if (!this.symbolTable.entryExists(this.scopeStack.getScopeRoad($1)+$3))
+                    notifyError(String.format("Variable %s no declarada en el ámbito %s.",$3,$1));
+            }
+
+            $$ = $1 + "." + $3; 
+        }
     ;
 
 // ********************************************************************************************************************
@@ -830,17 +845,20 @@ parametro_vacio
 // --------------------------------------------------------------------------------------------------------------------
 
 parametro_formal
-    : semantica_pasaje UINT variable
+    : semantica_pasaje UINT ID
         {
             this.symbolTable.setType($3, SymbolType.UINT);
             this.symbolTable.setCategory($3, SymbolCategory.PARAMETER);
+            this.symbolTable.setScope($3,scopeStack.asText());
+            //hay que guardar la semantica en la tabla
+
         }
 
     // |========================= REGLAS DE ERROR =========================| //
 
     | semantica_pasaje UINT 
         { notifyError("Falta de nombre de parámetro formal en declaración de función."); }
-    | semantica_pasaje variable
+    | semantica_pasaje ID
         { notifyError("Falta de tipo de parámetro formal en declaración de función."); }
     ; 
 
@@ -848,7 +866,9 @@ parametro_formal
 
 semantica_pasaje
     : // lambda //
+        { $$ = "CV"; }
     | CVR
+        { $$ = "CVR"; }
 
     // |========================= REGLAS DE ERROR =========================| //
 
