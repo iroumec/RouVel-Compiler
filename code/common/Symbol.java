@@ -2,7 +2,6 @@ package common;
 
 public class Symbol {
 
-    private String scope; // Nivel de anidamiento.
     private int references;
     private SymbolType type;
     private StringBuilder value; // Valor real
@@ -80,12 +79,6 @@ public class Symbol {
 
     public String getTypeAsString() {
         return this.type == null ? "" : this.type.toString();
-    }
-
-    // --------------------------------------------------------------------------------------------
-
-    public String getScope() {
-        return this.scope == null ? "Global" : this.scope;
     }
 
     // --------------------------------------------------------------------------------------------

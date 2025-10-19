@@ -100,12 +100,14 @@ public final class SymbolTable {
 
     // --------------------------------------------------------------------------------------------
 
-    public void setValue(String lexema, String value) {
+    // TODO: copyValue from to...
+    public void setValue(String lexema, String valueLexema) {
 
         Symbol symbol = this.symbolTable.get(lexema);
+        Symbol value = this.symbolTable.get(valueLexema);
 
-        if (symbol != null) {
-            symbol.setValue(value);
+        if (symbol != null && value != null) {
+            symbol.setValue(value.getValue());
         }
     }
 
@@ -123,10 +125,10 @@ public final class SymbolTable {
     // --------------------------------------------------------------------------------------------
 
     public void setScope(String lexema, String scope) {
-        String newLexema = scope + ":" + lexema;
+        String newLexema = lexema + ":" + scope;
         Symbol simbolo = this.symbolTable.remove(lexema);
         simbolo.setLexema(newLexema);
-        addEntry(newLexema,simbolo);
+        addEntry(newLexema, simbolo);
 
     }
 
@@ -135,9 +137,11 @@ public final class SymbolTable {
     public Symbol getSymbol(String lexema) {
         Symbol symbol = symbolTable.get(lexema);
         if (symbol == null) {
-            Printer.printWrapped(String.format("Error inesperado. Se intentó obtener el símbolo asociado al lexema \"%s\", que no existe.",lexema));
+            Printer.printWrapped(String.format(
+                    "Error inesperado. Se intentó obtener el símbolo asociado al lexema \"%s\", que no existe.",
+                    lexema));
         }
-        return symbol; 
+        return symbol;
     }
 
     // --------------------------------------------------------------------------------------------
@@ -145,7 +149,6 @@ public final class SymbolTable {
     public boolean entryExists(String entry) {
         return this.symbolTable.containsKey(entry);
     }
-    
 
     // ============================================================================================
     // Impresión de la Tabla (Objetivo Estéticos)
@@ -161,7 +164,7 @@ public final class SymbolTable {
         }
 
         // Se analizan y calculan los anchos de columna.
-        String[] headers = { "Lexema", "Valor", "Tipo", "Categoría", "Alcance", "Referencias" };
+        String[] headers = { "Lexema", "Valor", "Tipo", "Categoría", "Referencias" };
         Map<String, Integer> columnWidths = calculateColumnWidths(headers);
 
         // Se crean las plantillas para las filas y separadores.
@@ -200,7 +203,6 @@ public final class SymbolTable {
             widths.put("Valor", Math.max(widths.get("Valor"), symbol.getValue().length()));
             widths.put("Tipo", Math.max(widths.get("Tipo"), symbol.getTypeAsString().length()));
             widths.put("Categoría", Math.max(widths.get("Categoría"), symbol.getCategory().length()));
-            widths.put("Alcance", Math.max(widths.get("Alcance"), String.valueOf(symbol.getScope()).length()));
             widths.put("Referencias",
                     Math.max(widths.get("Referencias"), String.valueOf(symbol.getReferences()).length()));
         }
@@ -287,7 +289,6 @@ public final class SymbolTable {
                     symbol.getValue(),
                     symbol.getTypeAsString(),
                     symbol.getCategory(),
-                    String.valueOf(symbol.getScope()),
                     String.valueOf(symbol.getReferences())));
 
             // Imprime las líneas restantes del lexema si existen.

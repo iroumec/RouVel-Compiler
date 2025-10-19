@@ -1,0 +1,13 @@
+TEST {
+    print(3UI + 24UI);
+
+    uint A;
+
+    uint H;
+
+    print();
+
+    A := 7UI + 89UI;
+
+    A, H = 7UI, 9UI;
+}

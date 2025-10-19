@@ -54,8 +54,9 @@
 %token PRINT, IF, ELSE, ENDIF, UINT, CVR, DO, WHILE, RETURN
 
 // No terminales cuyo valor semántico asociado es un String.
-%type <sval> expresion, termino, factor, termino_simple, factor_simple, operador_suma, operador_multiplicacion, inicio_funcion,
-                lista_variables, lista_constantes, variable, constante, invocacion_funcion, lista_argumentos, argumento, comparador, semantica_pasaje
+%type <sval> expresion, termino, factor, termino_simple, factor_simple, operador_suma, operador_multiplicacion,
+                inicio_funcion, lista_variables, lista_constantes, variable, constante, invocacion_funcion,
+                lista_argumentos, argumento, comparador, semantica_pasaje, parametro_lambda, argumento_lambda
 
 // ====================================================================================================================
 // FIN DE DECLARACIONES
@@ -69,17 +70,21 @@
 
 programa
     : nombre_programa cuerpo_programa
-        { notifyDetection("Programa."); }
+        {
+            if (!errorState) {
+                notifyDetection("Programa.");
+            } else {
+                errorState = false;
+            }
+        }
 
     // |========================= REGLAS DE ERROR =========================| //
-
-    | nombre_programa cuerpo_programa_recuperacion
 
     | nombre_programa conjunto_sentencias
         { notifyError("Las sentencias del programa deben estar delimitadas por llaves."); }
 
     // El error se muestra al comienzo y no al final.
-    | { notifyError("El programa requiere de un nombre."); } programa_sin_nombre
+    | { notifyError("El programa requiere de un nombre."); } cuerpo_programa
 
     | error { notifyError("Inicio de programa inválido. Se encontraron sentencias previo al nombre del programa."); } nombre_programa cuerpo_programa
         
@@ -99,33 +104,23 @@ nombre_programa
 
 // --------------------------------------------------------------------------------------------------------------------
 
-programa_sin_nombre
-    : cuerpo_programa
-    | cuerpo_programa_recuperacion
-    ;
-
-// --------------------------------------------------------------------------------------------------------------------
-
 cuerpo_programa
     : '{' conjunto_sentencias '}'
-    ;
 
-// --------------------------------------------------------------------------------------------------------------------
+    // |========================= REGLAS DE ERROR =========================| //
 
-// Marca la distinción entre un programa válido y uno inválido.
-cuerpo_programa_recuperacion
-    : '{' conjunto_sentencias lista_llaves_cierre
-        { notifyError("Se encontraron múltiples llaves al final del programa."); }
+    | '{' conjunto_sentencias lista_llaves_cierre
+        { notifyError("Se encontraron múltiples llaves al final del programa."); errorState = true; }
 
     | lista_llaves_apertura // El error se presenta al detectar la lista de llaves de paertura y no, al finalizar el programa.
-        { notifyError("Se encontraron múltiples llaves al comienzo del programa."); } conjunto_sentencias '}'
+        { notifyError("Se encontraron múltiples llaves al comienzo del programa."); errorState = true; } conjunto_sentencias '}'
 
     | '{' '}'
-        { notifyError("El programa no posee ninguna sentencia."); }
+        { notifyError("El programa no posee ninguna sentencia."); errorState = true; }
     | // lambda //
-        { notifyError("El programa no posee ningún cuerpo."); }
+        { notifyError("El programa no posee ningún cuerpo."); errorState = true; }
     | '{' error '}'
-        { notifyError("Cierre inesperado del programa. Verifique llaves '{...}' y puntos y coma ';' faltantes."); }
+        { notifyError("Cierre inesperado del programa. Verifique llaves '{...}' y puntos y coma ';' faltantes."); errorState = true; }
     ;
 
 // --------------------------------------------------------------------------------------------------------------------
@@ -301,7 +296,7 @@ asignacion_simple
     : variable DASIG expresion ';'                              
         { 
             notifyDetection("Asignación simple."); 
-            this.symbolTable.setValue($1, $3);//yo no pondría esto, cuando $3 es una expresion queda mal
+            this.symbolTable.setValue(this.appendScope($1), $3);//yo no pondría esto, cuando $3 es una expresion queda mal
             
             reversePolish.addPolish($1);
             reversePolish.addPolish($2);
@@ -323,11 +318,6 @@ asignacion_simple
 // ********************************************************************************************************************
 // Asignación Múltiple
 // ********************************************************************************************************************
-
-/*asignacion_multiple_erronea
-    : lista_variables ',' variable asignacion_par constante ';'
-        { notifyError("No puede haber más variables que constantes."); }
-    ;*/
 
 //Estas asignaciones pueden tener un menor número de elementos del lado izquierdo (tema 17).
 asignacion_multiple 
@@ -503,7 +493,7 @@ operador_multiplicacion
 // Factor que contempla la posibilidad de constantes negativas.
 factor
     : variable error
-        // Si no se coloca el token error, da shift/reduce con asignación múltiple.
+        // Si no se coloca el token error, da reduce/reduce con asignación múltiple.
         {
             reversePolish.addPolish($1);
         }
@@ -586,21 +576,24 @@ variable
 condicion
     : '(' cuerpo_condicion ')'
         { 
-            //if(!errorState)
-            reversePolish.addFalseBifurcation();
-            notifyDetection("Condición."); 
+            if (!errorState) {
+                reversePolish.addFalseBifurcation();
+                notifyDetection("Condición."); 
+            } else {
+                errorState = false;
+            }
         }
 
     // |========================= REGLAS DE ERROR =========================| //
 
     | '(' ')'
-        { notifyError("La condición no puede estar vacía."); }
+        { notifyError("La condición no puede estar vacía."); errorState = true; }
     //| cuerpo_condicion
         //{ notifyDetection("La condición debe ir entre paréntesis."); }
     | cuerpo_condicion ')'
-        { notifyError("Falta apertura de paréntesis en condición."); }
+        { notifyError("Falta apertura de paréntesis en condición."); errorState = true; }
     | '(' cuerpo_condicion error
-        { notifyError("Falta cierre de paréntesis en condición."); }
+        { notifyError("Falta cierre de paréntesis en condición."); errorState = true; }
     ;
     
 // --------------------------------------------------------------------------------------------------------------------
@@ -614,11 +607,11 @@ cuerpo_condicion
     // |========================= REGLAS DE ERROR =========================| //
 
     | expresion termino_simple
-        { notifyError("Falta de comparador en comparación."); }
+        { notifyError("Falta de comparador en comparación."); errorState = true; }
     | expresion operador_suma termino
-        { notifyError("Falta de comparador en comparación."); }
+        { notifyError("Falta de comparador en comparación."); errorState = true; }
     | termino
-        { notifyError("Falta de comparador en comparación."); }
+        { notifyError("Falta de comparador en comparación."); errorState = true; }
     ;
 
 // --------------------------------------------------------------------------------------------------------------------
@@ -647,49 +640,35 @@ comparador
 // Sentencia IF
 // ********************************************************************************************************************
 
-/*if
-    : IF condicion { reversePolish.addFalseBifurcation(); } cuerpo_ejecutable { reversePolish.addInconditionalBifurcation(); } rama_else ENDIF ';'
-        {
-            reversePolish.completeSelection();
-            notifyDetection("Sentencia IF."); 
-        }
-
-    // |========================= REGLAS DE ERROR =========================| //
-
-    | IF condicion cuerpo_ejecutable rama_else ENDIF error
-        { notifyError("La sentencia IF debe terminar con ';'."); }
-    | IF condicion cuerpo_ejecutable rama_else ';'
-        { notifyError("La sentencia IF debe finalizar con 'endif'."); }
-    | IF condicion rama_else ENDIF ';'
-        { notifyError("Falta el bloque de sentencias del IF."); }
-    | IF error
-        { notifyError("Sentencia IF inválida."); }
-    ;*/
-
 if 
     : IF condicion cuerpo_if
         { 
-            reversePolish.completeSelection();
-            notifyDetection("Sentencia IF."); 
+            if (!errorState) {
+                reversePolish.completeSelection();
+                notifyDetection("Sentencia IF."); 
+            } else {
+                errorState = false;
+            }
         }
     ; 
+
     // |========================= REGLAS DE ERROR =========================| //
-    | IF condicion cuerpo_if_error
+
     | IF error
         { notifyError("Sentencia IF inválida."); }
     ;
 
 cuerpo_if 
     : cuerpo_then rama_else ENDIF ';'
-    ;
 
-cuerpo_if_error
-    : cuerpo_then rama_else ENDIF error 
-        { notifyError("La sentencia IF debe terminar con ';'."); }
+    // |========================= REGLAS DE ERROR =========================| //
+
+    | cuerpo_then rama_else ENDIF error 
+        { notifyError("La sentencia IF debe terminar con ';'."); errorState = true; }
     | cuerpo_then rama_else ';'
-        { notifyError("La sentencia IF debe finalizar con 'endif'."); }
+        { notifyError("La sentencia IF debe finalizar con 'endif'."); errorState = true; }
     | rama_else ENDIF ';'
-        { notifyError("Falta el bloque de sentencias del IF."); }
+        { notifyError("Falta el bloque de sentencias del IF."); errorState = true; }
     ;
 
 cuerpo_then 
@@ -706,7 +685,7 @@ rama_else
     // |========================= REGLAS DE ERROR =========================| //
     
     | ELSE 
-        { notifyError("Falta el bloque de sentencias del ELSE."); }
+        { notifyError("Falta el bloque de sentencias del ELSE."); errorState = true; }
     ;
 
 // ********************************************************************************************************************
@@ -764,26 +743,24 @@ fin_cuerpo_iteracion
 // ********************************************************************************************************************
 
 declaracion_funcion
-    : inicio_funcion conjunto_parametros cuerpo_funcion
+    : inicio_funcion conjunto_parametros '{' conjunto_sentencias '}'
         {
-            notifyDetection("Declaración de función.");
-            this.symbolTable.setType($1, SymbolType.UINT);
-            this.symbolTable.setCategory($1, SymbolCategory.FUNCTION);
-            this.scopeStack.pop();    
+            if (!errorState) {
+                notifyDetection("Declaración de función.");
+                this.symbolTable.setType($1, SymbolType.UINT);
+                this.symbolTable.setCategory($1, SymbolCategory.FUNCTION);
+                this.scopeStack.pop();    
+            } else {
+                errorState = false;
+            }
         }
 
     // |========================= REGLAS DE ERROR =========================| //
 
     | inicio_funcion conjunto_parametros '{' '}'
-        { this.scopeStack.pop(); }
-
-    | inicio_funcion_sin_nombre conjunto_parametros cuerpo_funcion
-        { this.scopeStack.pop(); }
-
-    | inicio_funcion_sin_nombre conjunto_parametros '{' '}'
         {
-            notifyError("El cuerpo de la función no puede estar vacío.");
             this.scopeStack.pop();
+            notifyError("El cuerpo de la función no puede estar vacío.");
         }
     ;
 
@@ -794,22 +771,15 @@ declaracion_funcion
 inicio_funcion
     : UINT ID
         { this.scopeStack.push($2); $$ = $2; }
-    ;
+    
+    // |========================= REGLAS DE ERROR =========================| //
 
-// --------------------------------------------------------------------------------------------------------------------
-
-inicio_funcion_sin_nombre
-    : UINT
+    | UINT
         {
             this.scopeStack.push(String.valueOf(lexer.getNroLinea()));
             notifyError("La función requiere de un nombre.");
+            errorState = true;
         } 
-    ;
-
-// --------------------------------------------------------------------------------------------------------------------
-
-cuerpo_funcion
-    : '{' conjunto_sentencias '}'
     ;
 
 // --------------------------------------------------------------------------------------------------------------------
@@ -866,9 +836,9 @@ parametro_formal
 
 semantica_pasaje
     : // lambda //
-        { $$ = "CV"; }
+        { $$ = "cv"; }
     | CVR
-        { $$ = "CVR"; }
+        { $$ = "cvr"; }
 
     // |========================= REGLAS DE ERROR =========================| //
 
@@ -936,36 +906,34 @@ argumento
 
 impresion
     : PRINT imprimible ';'
-        { 
-            reversePolish.addPolish("print");
-            notifyDetection("Sentencia 'print'."); 
+        {
+            if (!errorState) {
+                reversePolish.addPolish("print");
+                notifyDetection("Sentencia 'print'.");
+            } else {
+                errorState = false;
+            }
         }
 
     // |========================= REGLAS DE ERROR =========================| //
 
     | PRINT imprimible error
-        { notifyError("La sentencia 'print' debe finalizar con ';'."); }
-    | PRINT imprimible_recuperacion ';'
-    | PRINT imprimible_recuperacion error
-        { notifyError("La sentencia 'print' debe finalizar con ';'."); }
+        { notifyError("La sentencia 'print' debe finalizar con ';'."); errorState = false; }
     ;
 
 // --------------------------------------------------------------------------------------------------------------------
 
 imprimible
     : '(' elemento_imprimible ')'
-    ;
 
-// --------------------------------------------------------------------------------------------------------------------
+    // |========================= REGLAS DE ERROR =========================| //
 
-imprimible_recuperacion
-    : '(' ')'
-        { notifyError("La sentencia 'print' requiere de al menos un argumento."); }
-
+    | '(' ')'
+        { notifyError("La sentencia 'print' requiere de al menos un argumento."); errorState = true; }
     | elemento_imprimible
-        { notifyError("El imprimible debe encerrarse entre paréntesis."); }
+        { notifyError("El imprimible debe encerrarse entre paréntesis."); errorState = true; }
     | // lambda //
-        { notifyError("La sentencia 'print' requiere de un argumento entre paréntesis."); }
+        { notifyError("La sentencia 'print' requiere de un argumento entre paréntesis."); errorState = true; }
     ;
 
 // --------------------------------------------------------------------------------------------------------------------
@@ -981,50 +949,51 @@ elemento_imprimible
 
 lambda
     : parametro_lambda bloque_ejecutable argumento_lambda ';'
-        { notifyDetection("Expresión lambda."); }
+        { 
+            if (!errorState) {
+                notifyDetection("Expresión lambda.");
+                this.symbolTable.setValue($1, $3);
+            } else {
+                errorState = false;
+            }
+        }
 
     // |========================= REGLAS DE ERROR =========================| //
 
     | parametro_lambda bloque_ejecutable argumento_lambda error
-        { notifyError("La expresión 'lambda' debe terminar con ';'."); }
-    | parametro_lambda bloque_ejecutable argumento_lambda_recuperacion ';'
-    | parametro_lambda bloque_ejecutable argumento_lambda_recuperacion error
-        { notifyError("La expresión 'lambda' debe terminar con ';'."); }
+        { notifyError("La expresión 'lambda' debe terminar con ';'."); errorState = false; }
 
     | parametro_lambda '{' conjunto_sentencias_ejecutables argumento_lambda error
-        { notifyError("Falta delimitador de cierre en expresión 'lambda'."); }
+        { notifyError("Falta delimitador de cierre en expresión 'lambda'."); errorState = false; }
     | parametro_lambda conjunto_sentencias_ejecutables argumento_lambda error
-        { notifyError("Faltan delimitadores en el conjunto de sentencias de la expresión 'lambda'."); }
+        { notifyError("Faltan delimitadores en el conjunto de sentencias de la expresión 'lambda'."); errorState = false; }
     | parametro_lambda conjunto_sentencias_ejecutables '}' argumento_lambda error
-        { notifyError("Falta delimitador de apertura en expresión 'lambda'."); }
-    | parametro_lambda '{' conjunto_sentencias_ejecutables argumento_lambda_recuperacion error
-        { notifyError("Falta delimitador de cierre en expresión 'lambda'."); }
-    | parametro_lambda conjunto_sentencias_ejecutables argumento_lambda_recuperacion error
-        { notifyError("Faltan delimitadores en el conjunto de sentencias de la expresión 'lambda'."); }
-    | parametro_lambda conjunto_sentencias_ejecutables '}' argumento_lambda_recuperacion error
-        { notifyError("Falta delimitador de apertura en expresión 'lambda'."); }
+        { notifyError("Falta delimitador de apertura en expresión 'lambda'."); errorState = false; }
     ;
 
 // --------------------------------------------------------------------------------------------------------------------
 
 argumento_lambda
     : '(' factor ')'
-    ;
+        { $$ = $2; }
 
-// --------------------------------------------------------------------------------------------------------------------
+    // |========================= REGLAS DE ERROR =========================| //
 
-argumento_lambda_recuperacion
-    :  '(' ')'
-        { notifyError("El argumento de la expresión 'lambda' no puede estar vacío."); }
+    | '(' ')'
+        { notifyError("El argumento de la expresión 'lambda' no puede estar vacío."); errorState = true; }
 
     | // lambda //
-        { notifyError("La expresión 'lambda' requiere de un argumento entre paréntesis."); }
+        { notifyError("La expresión 'lambda' requiere de un argumento entre paréntesis."); errorState = true; }
     ;
 
 // --------------------------------------------------------------------------------------------------------------------
 
 parametro_lambda
     : '(' UINT ID ')'
+        {
+            $$ = $3;
+            this.symbolTable.setType($3, SymbolType.UINT);
+        }
     ;
 
 // ====================================================================================================================
@@ -1037,25 +1006,19 @@ parametro_lambda
 // INICIO DE CÓDIGO (opcional)
 // ====================================================================================================================
 
-// Lexer.
-
-// Contadores de errores y warning detectados.
-
-// Generacion de código
 private final Lexer lexer;
+private boolean errorState;
 private final ScopeStack scopeStack;
 private final SymbolTable symbolTable;
 private final ReversePolish reversePolish;
 private MessageCollector errorCollector, warningCollector;
-private boolean errorState;
 
-public Parser(Lexer lexer, SymbolTable symbolTable,
-                MessageCollector errorCollector, MessageCollector warningCollector) {
+public Parser(Lexer lexer, MessageCollector errorCollector, MessageCollector warningCollector) {
     
     this.lexer = lexer;
-    this.symbolTable = symbolTable;
     this.errorCollector = errorCollector;
     this.warningCollector = warningCollector;
+    this.symbolTable = SymbolTable.getInstance();
     
     this.scopeStack = new ScopeStack();
     this.reversePolish = ReversePolish.getInstance();
@@ -1128,6 +1091,12 @@ void notifyError(String errorMessage) {
         "ERROR SINTÁCTICO: Línea %d: %s",
         lexer.getNroLinea(), errorMessage
     ));
+}
+
+// --------------------------------------------------------------------------------------------------------------------
+
+private String appendScope(String lexema) {
+    return lexema + ":" + this.scopeStack.asText();
 }
 
 // --------------------------------------------------------------------------------------------------------------------
