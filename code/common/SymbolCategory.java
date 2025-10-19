@@ -6,6 +6,7 @@ public enum SymbolCategory {
     CVR_PARAMETER("CVR Parameter"),
     CV_PARAMETER("CV Parameter"),
     ARGUMENT("Argument"), // Real parameter
+    CONSTANT("Constant"),
     FUNCTION("Function");
 
     private String text;

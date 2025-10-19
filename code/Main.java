@@ -92,7 +92,7 @@ public class Main {
             Printer.printBlankSpace();
         }
 
-        SymbolTable.getInstance().imprimirTabla();
+        SymbolTable.getInstance().print();
         Printer.printBlankSpace();
 
         Printer.print(ReversePolish.getInstance().toString());

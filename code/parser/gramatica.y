@@ -241,7 +241,7 @@ declaracion_variables
             notifyDetection("Declaración de variable.");
             this.symbolTable.setType($2, SymbolType.UINT);
             this.symbolTable.setCategory($2, SymbolCategory.VARIABLE);
-            this.symbolTable.setScope($2,scopeStack.asText());
+            this.symbolTable.setScope($2, scopeStack.asText());
         }
     
     // |========================= REGLAS DE ERROR =========================| //
@@ -529,18 +529,7 @@ factor_simple
 constante
     : CTE
     | '-' CTE
-        {/* 
-            $$ = "-" + $2;
-
-            notifyDetection(String.format("Constante negativa: %s.",$$));
-
-            if(isUint($$)) {
-                notifyError("El número está fuera del rango de uint, se descartará.");
-                $$ = null;
-            } 
-
-            modificarSymbolTable($$,$2);
-        */
+        {
             notifyDetection(String.format("Constante negativa: -%s.",$2));
 
             if(isUint($2)) {

@@ -1,6 +1,6 @@
 MAIN {
 
-    ##uint B;##
+    uint B;
 
     uint FUN1 (cvr uint A, uint B, uint C, cvr uint J) {
 

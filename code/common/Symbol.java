@@ -18,48 +18,53 @@ public class Symbol {
         this.lexema = new StringBuilder(lexema);
         this.value = new StringBuilder(value);
         this.type = type;
+
+        if (type != null) {
+            this.category = SymbolCategory.CONSTANT;
+        }
+
         this.references = 0;
     }
 
     // --------------------------------------------------------------------------------------------
 
-    public int getReferences() {
+    int getReferences() {
         return this.references;
     }
 
     // --------------------------------------------------------------------------------------------
 
-    public void incrementarReferencias() {
+    void incrementarReferencias() {
         this.references++;
     }
 
     // --------------------------------------------------------------------------------------------
 
-    public void decrementarReferencias() {
+    void decrementarReferencias() {
         this.references--;
     }
 
     // --------------------------------------------------------------------------------------------
 
-    public boolean sinReferencias() {
+    boolean hasNoReferences() {
         return references == 0;
     }
 
     // --------------------------------------------------------------------------------------------
 
-    public String getLexema() {
+    String getLexema() {
         return this.lexema.toString();
     }
 
     // --------------------------------------------------------------------------------------------
 
-    public String getValue() {
+    String getValue() {
         return this.value.toString();
     }
 
     // --------------------------------------------------------------------------------------------
 
-    public SymbolType getType() {
+    SymbolType getType() {
         return this.type == null ? null : this.type;
     }
 
@@ -77,14 +82,8 @@ public class Symbol {
 
     // --------------------------------------------------------------------------------------------
 
-    public String getTypeAsString() {
-        return this.type == null ? "" : this.type.toString();
-    }
-
-    // --------------------------------------------------------------------------------------------
-
-    public String getCategory() {
-        return this.category == null ? "" : this.category.toString();
+    public SymbolCategory getCategory() {
+        return this.category;
     }
 
     public boolean isEmpty() {
