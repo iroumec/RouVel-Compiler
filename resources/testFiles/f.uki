@@ -1,0 +1,6 @@
+MAIN {
+
+    uint FUN1 (cvr uint A, uint B, uint C, cvr uint J) {
+        return 3UI;
+    }
+}

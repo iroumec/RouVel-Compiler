@@ -145,7 +145,7 @@ conjunto_sentencias
 
     // |========================= REGLAS DE ERROR =========================| //
 
-    | error '}'
+    | error ';'
         { notifyError("Error capturado a nivel de sentencia."); }
     ;
 
@@ -277,14 +277,14 @@ lista_variables
             notifyError(String.format(
                 "Se encontraron dos variables juntas sin separación. Inserte una ',' entre '%s' y '%s'.",
                 $1, $2));
-            { $$ = $2; }
+            $$ = $2;
         }
     | ID ID
         {
             notifyError(String.format(
                 "Se encontraron dos variables juntas sin separación. Inserte una ',' entre '%s' y '%s'.",
                 $1, $2));
-            { $$ = $2; }
+            $$ = $2;
         }
     ;
 
@@ -817,10 +817,11 @@ parametro_vacio
 parametro_formal
     : semantica_pasaje UINT ID
         {
-            this.symbolTable.setType($3, SymbolType.UINT);
-            this.symbolTable.setCategory($3, SymbolCategory.PARAMETER);
-            this.symbolTable.setScope($3,scopeStack.asText());
-            //hay que guardar la semantica en la tabla
+            if (!errorState) {
+                this.symbolTable.setType($3, SymbolType.UINT);
+                this.symbolTable.setCategory($3, ($1 == "CVR" ? SymbolCategory.CVR_PARAMETER : SymbolCategory.CV_PARAMETER));
+                this.symbolTable.setScope($3,scopeStack.asText());
+            }
 
         }
 
@@ -836,14 +837,14 @@ parametro_formal
 
 semantica_pasaje
     : // lambda //
-        { $$ = "cv"; }
+        { $$ = "CV"; }
     | CVR
-        { $$ = "cvr"; }
+        { $$ = "CVR"; }
 
     // |========================= REGLAS DE ERROR =========================| //
 
     | error
-        { notifyError("Semántica de pasaje de parámetro inválida."); }
+        { notifyError("Semántica de pasaje de parámetro inválida."); errorState = true; }
     ;
 
 // ********************************************************************************************************************

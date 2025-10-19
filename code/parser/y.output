@@ -33,7 +33,7 @@
 
   21  conjunto_sentencias : sentencia
   22                      | conjunto_sentencias sentencia
-  23                      | error '}'
+  23                      | error ';'
 
   24  sentencia : sentencia_ejecutable
   25            | sentencia_declarativa
@@ -359,9 +359,9 @@ state 8
 
 
 state 9
-	conjunto_sentencias : error . '}'  (23)
+	conjunto_sentencias : error . ';'  (23)
 
-	'}'  shift 40
+	';'  shift 40
 	.  error
 
 
@@ -796,7 +796,7 @@ state 39
 
 
 state 40
-	conjunto_sentencias : error '}' .  (23)
+	conjunto_sentencias : error ';' .  (23)
 
 	.  reduce 23
 
@@ -1219,9 +1219,10 @@ state 71
 
 state 72
 	cuerpo_programa : '{' error . '}'  (16)
-	conjunto_sentencias : error . '}'  (23)
+	conjunto_sentencias : error . ';'  (23)
 
 	'}'  shift 154
+	';'  shift 40
 	.  error
 
 
@@ -2137,17 +2138,8 @@ state 153
 
 state 154
 	cuerpo_programa : '{' error '}' .  (16)
-	conjunto_sentencias : error '}' .  (23)
 
-	$end  reduce 16
-	ID  reduce 23
-	PRINT  reduce 23
-	IF  reduce 23
-	UINT  reduce 23
-	DO  reduce 23
-	RETURN  reduce 23
-	'}'  reduce 23
-	'('  reduce 23
+	.  reduce 16
 
 
 state 155

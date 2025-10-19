@@ -3,6 +3,8 @@ package common;
 public enum SymbolCategory {
     VARIABLE("Variable"),
     PARAMETER("Parameter"), // Formal parameter
+    CVR_PARAMETER("CVR Parameter"),
+    CV_PARAMETER("CV Parameter"),
     ARGUMENT("Argument"), // Real parameter
     FUNCTION("Function");
 
