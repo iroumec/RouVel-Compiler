@@ -1,4 +1,4 @@
-package common;
+package lexer.token;
 
 public class Token {
 

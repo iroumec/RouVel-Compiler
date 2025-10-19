@@ -10,7 +10,7 @@
     package parser;
 
     import lexer.Lexer;
-    import common.Token;
+    import lexer.token.Token;
     import utilities.Printer;
     import common.SymbolType;
     import common.SymbolTable;
@@ -57,7 +57,8 @@
 // No terminales cuyo valor semántico asociado es un String.
 %type <sval> expresion, termino, factor, termino_simple, factor_simple, operador_suma, operador_multiplicacion,
                 inicio_funcion, lista_variables, lista_constantes, variable, constante, invocacion_funcion,
-                lista_argumentos, argumento, comparador, semantica_pasaje, parametro_lambda, argumento_lambda
+                lista_argumentos, argumento, comparador, semantica_pasaje, parametro_lambda, argumento_lambda,
+                variable_con_coma, constante_con_coma
 
 // ====================================================================================================================
 // FIN DE DECLARACIONES
@@ -268,6 +269,15 @@ declaracion_variables
 
 lista_variables 
     : ID ',' ID 
+        {
+            this.symbolTable.setType($1, SymbolType.UINT);
+            this.symbolTable.setCategory($1, SymbolCategory.VARIABLE);
+            this.symbolTable.setScope($1, scopeStack.asText());
+
+            this.symbolTable.setType($3, SymbolType.UINT);
+            this.symbolTable.setCategory($3, SymbolCategory.VARIABLE);
+            this.symbolTable.setScope($3, scopeStack.asText());
+        }
     | lista_variables ',' ID
         { $$ = $3; }
 
@@ -304,6 +314,9 @@ asignacion_simple
             this.symbolTable.removeEntry($1);
 
             reversePolish.addPolish($1);
+
+            this.reversePolish.makeTemporalPolishesDefinitive();
+
             reversePolish.addPolish($2);
         }
 
@@ -331,7 +344,12 @@ asignacion_multiple
             reversePolish.addPolish($1);
             reversePolish.addPolish($3);
 
+            // Se remueve la entrada sin el scope.
+            this.symbolTable.removeEntry($1);
+
             reversePolish.rearrangePairs();
+
+            this.symbolTable.setValue(this.scopeStack.appendScope($1), $3);//yo no pondría esto, cuando $3 es una expresion queda mal
 
             notifyDetection("Asignación múltiple."); 
         }
@@ -340,7 +358,12 @@ asignacion_multiple
             reversePolish.addPolish($1);
             reversePolish.addPolish($3);
 
+            // Se remueve la entrada sin el scope.
+            this.symbolTable.removeEntry($1);
+
             reversePolish.rearrangePairs();
+
+            this.symbolTable.setValue(this.scopeStack.appendScope($1), $3);//yo no pondría esto, cuando $3 es una expresion queda mal
 
             notifyWarning(String.format("Se descartarán las constantes posteriores a %s",$3)); //TP3
             notifyDetection("Asignación múltiple.");
@@ -360,6 +383,7 @@ asignacion_multiple
 
 asignacion_par
     : variable_con_coma asignacion_par constante_con_coma
+        { this.symbolTable.setValue(this.scopeStack.appendScope($1), $3); } //yo no pondría esto, cuando $3 es una expresion queda mal
     | '='
     ;
 
@@ -367,7 +391,12 @@ asignacion_par
 
 variable_con_coma
     : ',' variable
-        { reversePolish.addPolish($2); }
+        {
+            $$ = $2;
+            reversePolish.addPolish($2);
+            // Se remueve la entrada sin el scope.
+            this.symbolTable.removeEntry($2);
+        }
 
     // |========================= REGLAS DE ERROR =========================| //
 
@@ -413,7 +442,7 @@ expresion
     | expresion operador_suma termino
         { 
             $$ = $3;
-            reversePolish.addPolish($2);
+            reversePolish.addTemporalPolish($2);
         }
 
     // |========================= REGLAS DE ERROR =========================| //
@@ -450,7 +479,7 @@ operador_suma
 termino                         
     : termino operador_multiplicacion factor
         {   
-            reversePolish.addPolish($2);
+            reversePolish.addTemporalPolish($2);
             $$ = $3; 
         }
     | factor
@@ -473,7 +502,7 @@ termino
 termino_simple
     : termino_simple operador_multiplicacion factor
         {   
-            reversePolish.addPolish($2);
+            reversePolish.addTemporalPolish($2);
             $$ = $1;
         }
     | factor_simple
@@ -500,11 +529,11 @@ factor
     : variable error
         // Si no se coloca el token error, da reduce/reduce con asignación múltiple.
         {
-            reversePolish.addPolish($1);
+            reversePolish.addTemporalPolish($1);
         }
     | constante
         {
-            reversePolish.addPolish($1);
+            reversePolish.addTemporalPolish($1);
         }
     | invocacion_funcion
     ;
@@ -515,11 +544,11 @@ factor
 factor_simple
     : variable
         {
-            reversePolish.addPolish($1);
+            reversePolish.addTemporalPolish($1);
         }
     | CTE
         {
-            reversePolish.addPolish($1);
+            reversePolish.addTemporalPolish($1);
         }
     | invocacion_funcion
     ;
@@ -713,7 +742,6 @@ cuerpo_iteracion
 
 cuerpo_do 
     : cuerpo_ejecutable
-        {}
     ;
 
 // --------------------------------------------------------------------------------------------------------------------
@@ -743,7 +771,8 @@ declaracion_funcion
                 notifyDetection("Declaración de función.");
                 this.symbolTable.setType($1, SymbolType.UINT);
                 this.symbolTable.setCategory($1, SymbolCategory.FUNCTION);
-                this.scopeStack.pop();    
+                this.scopeStack.pop();
+                this.symbolTable.setScope($1, this.scopeStack.asText());
             } else {
                 errorState = false;
             }
@@ -816,7 +845,6 @@ parametro_formal
                 this.symbolTable.setCategory($3, ($1 == "CVR" ? SymbolCategory.CVR_PARAMETER : SymbolCategory.CV_PARAMETER));
                 this.symbolTable.setScope($3,scopeStack.asText());
             }
-
         }
 
     // |========================= REGLAS DE ERROR =========================| //
@@ -903,6 +931,8 @@ impresion
     : PRINT imprimible ';'
         {
             if (!errorState) {
+                // Se añaden las polacas correspondiente al imprimible.
+                this.reversePolish.makeTemporalPolishesDefinitive();
                 reversePolish.addPolish("print");
                 notifyDetection("Sentencia 'print'.");
             } else {
@@ -913,7 +943,11 @@ impresion
     // |========================= REGLAS DE ERROR =========================| //
 
     | PRINT imprimible error
-        { notifyError("La sentencia 'print' debe finalizar con ';'."); errorState = false; }
+        {
+            errorState = false;
+            this.reversePolish.emptyTemporalPolishes();
+            notifyError("La sentencia 'print' debe finalizar con ';'.");
+        }
     ;
 
 // --------------------------------------------------------------------------------------------------------------------
@@ -926,7 +960,11 @@ imprimible
     | '(' ')'
         { notifyError("La sentencia 'print' requiere de al menos un argumento."); errorState = true; }
     | elemento_imprimible
-        { notifyError("El imprimible debe encerrarse entre paréntesis."); errorState = true; }
+        {
+            errorState = true;
+            this.reversePolish.emptyTemporalPolishes();
+            notifyError("El imprimible debe encerrarse entre paréntesis.");
+        }
     | // lambda //
         { notifyError("La sentencia 'print' requiere de un argumento entre paréntesis."); errorState = true; }
     ;
@@ -948,6 +986,9 @@ lambda
             if (!errorState) {
                 notifyDetection("Expresión lambda.");
                 this.symbolTable.setValue($1, $3);
+
+                // El argumento no se agrega como polaca.
+                this.reversePolish.emptyTemporalPolishes();
             } else {
                 errorState = false;
             }

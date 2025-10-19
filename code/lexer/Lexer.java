@@ -1,8 +1,6 @@
 package lexer;
 
 import common.Symbol;
-import common.Token;
-import common.TokenType;
 import common.SymbolType;
 import common.SymbolTable;
 import lexer.actions.SemanticAction;
@@ -16,6 +14,8 @@ import lexer.errors.implementations.NoExponent;
 import lexer.errors.implementations.NoExponentSign;
 import lexer.errors.implementations.UndeterminedNumber;
 import lexer.errors.implementations.UnknownToken;
+import lexer.token.Token;
+import lexer.token.TokenType;
 import utilities.Printer;
 
 public final class Lexer {

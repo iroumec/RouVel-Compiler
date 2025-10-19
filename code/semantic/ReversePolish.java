@@ -1,22 +1,25 @@
 package semantic;
 
 import java.util.List;
-import java.util.Stack;
+import java.util.Deque;
 import java.util.ArrayList;
+import java.util.ArrayDeque;
 import java.util.Collections;
-import common.TokenType;
+
+import lexer.token.TokenType;
 
 public final class ReversePolish {
 
     private static final ReversePolish INSTANCE = new ReversePolish();
 
     private List<String> polishes;
-
-    private Stack<Integer> stackedBifurcation;
+    private final List<String> temporalPolishes;
+    private final Deque<Integer> stackedBifurcation;
 
     private ReversePolish() {
         this.polishes = new ArrayList<>();
-        this.stackedBifurcation = new Stack<>();
+        this.temporalPolishes = new ArrayList<>();
+        this.stackedBifurcation = new ArrayDeque<>();
     }
 
     public static ReversePolish getInstance() {
@@ -26,20 +29,6 @@ public final class ReversePolish {
     public void addPolish(String symbol) {
         // this.polishes.add(new Polish(symbol));
         this.polishes.add(symbol);
-    }
-
-    @Override
-    public String toString() {
-
-        StringBuilder out = new StringBuilder();
-        int nroPolaca = 1;
-        // for (Polish polish : this.polishes) {
-        for (String polish : this.polishes) {
-            out.append(nroPolaca + " ").append(polish).append('\n');
-            nroPolaca++;
-        }
-
-        return out.toString();
     }
 
     public void addFalseBifurcation() {
@@ -93,4 +82,46 @@ public final class ReversePolish {
         }
     }
 
+    /**
+     * No siempre todos los factores deben agregarse a la polaca. Acá se guardarán
+     * estos y, luego,
+     * de ser necesarios, se añaden.
+     * 
+     */
+
+    public void addTemporalPolish(String polish) {
+
+        this.temporalPolishes.add(polish);
+    }
+
+    public void makeTemporalPolishesDefinitive() {
+
+        for (String polish : this.temporalPolishes) {
+            polishes.add(polish);
+        }
+
+        this.emptyTemporalPolishes();
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    public void emptyTemporalPolishes() {
+        this.temporalPolishes.clear();
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    @Override
+    public String toString() {
+
+        StringBuilder out = new StringBuilder();
+        int nroPolaca = 1;
+        // for (Polish polish : this.polishes) {
+        for (String polish : this.polishes) {
+            out.append(nroPolaca + " ").append(polish).append('\n');
+            nroPolaca++;
+        }
+
+        return out.toString();
+    }
 }

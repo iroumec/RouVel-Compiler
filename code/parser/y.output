@@ -575,8 +575,8 @@ state 18
 	variable  goto 83
 	constante  goto 55
 	invocacion_funcion  goto 56
-	asignacion_par  goto 84
-	variable_con_coma  goto 85
+	variable_con_coma  goto 84
+	asignacion_par  goto 85
 
 
 state 19
@@ -1376,6 +1376,19 @@ state 83
 
 
 state 84
+	asignacion_par : variable_con_coma . asignacion_par constante_con_coma  (65)
+
+	ID  shift 169
+	','  shift 80
+	'='  shift 81
+	.  error
+
+	variable  goto 172
+	variable_con_coma  goto 84
+	asignacion_par  goto 173
+
+
+state 85
 	asignacion_multiple : variable asignacion_par . constante ';'  (60)
 	asignacion_multiple : variable asignacion_par . constante ',' lista_constantes ';'  (61)
 	asignacion_multiple : variable asignacion_par . constante error  (62)
@@ -1386,20 +1399,7 @@ state 84
 	'-'  shift 46
 	.  error
 
-	constante  goto 172
-
-
-state 85
-	asignacion_par : variable_con_coma . asignacion_par constante_con_coma  (65)
-
-	ID  shift 169
-	','  shift 80
-	'='  shift 81
-	.  error
-
-	variable  goto 173
-	asignacion_par  goto 174
-	variable_con_coma  goto 85
+	constante  goto 174
 
 
 state 86
@@ -2315,38 +2315,38 @@ state 171
 
 
 state 172
-	asignacion_multiple : variable asignacion_par constante . ';'  (60)
-	asignacion_multiple : variable asignacion_par constante . ',' lista_constantes ';'  (61)
-	asignacion_multiple : variable asignacion_par constante . error  (62)
-	asignacion_multiple : variable asignacion_par constante . ',' lista_constantes error  (63)
-	asignacion_multiple : variable asignacion_par constante . lista_constantes ';'  (64)
-
-	error  shift 225
-	CTE  shift 43
-	';'  shift 226
-	','  shift 227
-	'-'  shift 46
-	.  error
-
-	lista_constantes  goto 228
-	constante  goto 229
-
-
-state 173
 	variable_con_coma : variable .  (68)
 
 	.  reduce 68
 
 
-state 174
+state 173
 	asignacion_par : variable_con_coma asignacion_par . constante_con_coma  (65)
 
 	CTE  shift 43
 	'-'  shift 46
 	.  error
 
-	constante  goto 230
-	constante_con_coma  goto 231
+	constante  goto 225
+	constante_con_coma  goto 226
+
+
+state 174
+	asignacion_multiple : variable asignacion_par constante . ';'  (60)
+	asignacion_multiple : variable asignacion_par constante . ',' lista_constantes ';'  (61)
+	asignacion_multiple : variable asignacion_par constante . error  (62)
+	asignacion_multiple : variable asignacion_par constante . ',' lista_constantes error  (63)
+	asignacion_multiple : variable asignacion_par constante . lista_constantes ';'  (64)
+
+	error  shift 227
+	CTE  shift 43
+	';'  shift 228
+	','  shift 229
+	'-'  shift 46
+	.  error
+
+	lista_constantes  goto 230
+	constante  goto 231
 
 
 state 175
@@ -2923,18 +2923,33 @@ state 224
 
 
 state 225
+	constante_con_coma : constante . ','  (69)
+	constante_con_coma : constante .  (70)
+
+	','  shift 261
+	CTE  reduce 70
+	'-'  reduce 70
+
+
+state 226
+	asignacion_par : variable_con_coma asignacion_par constante_con_coma .  (65)
+
+	.  reduce 65
+
+
+state 227
 	asignacion_multiple : variable asignacion_par constante error .  (62)
 
 	.  reduce 62
 
 
-state 226
+state 228
 	asignacion_multiple : variable asignacion_par constante ';' .  (60)
 
 	.  reduce 60
 
 
-state 227
+state 229
 	asignacion_multiple : variable asignacion_par constante ',' . lista_constantes ';'  (61)
 	asignacion_multiple : variable asignacion_par constante ',' . lista_constantes error  (63)
 
@@ -2942,43 +2957,28 @@ state 227
 	'-'  shift 46
 	.  error
 
-	lista_constantes  goto 261
-	constante  goto 229
+	lista_constantes  goto 262
+	constante  goto 231
 
 
-state 228
+state 230
 	asignacion_multiple : variable asignacion_par constante lista_constantes . ';'  (64)
 	lista_constantes : lista_constantes . ',' constante  (72)
 	lista_constantes : lista_constantes . constante  (73)
 
 	CTE  shift 43
-	';'  shift 262
-	','  shift 263
+	';'  shift 263
+	','  shift 264
 	'-'  shift 46
 	.  error
 
-	constante  goto 264
-
-
-state 229
-	lista_constantes : constante .  (71)
-
-	.  reduce 71
-
-
-state 230
-	constante_con_coma : constante . ','  (69)
-	constante_con_coma : constante .  (70)
-
-	','  shift 265
-	CTE  reduce 70
-	'-'  reduce 70
+	constante  goto 265
 
 
 state 231
-	asignacion_par : variable_con_coma asignacion_par constante_con_coma .  (65)
+	lista_constantes : constante .  (71)
 
-	.  reduce 65
+	.  reduce 71
 
 
 state 232
@@ -3162,6 +3162,12 @@ state 260
 
 
 state 261
+	constante_con_coma : constante ',' .  (69)
+
+	.  reduce 69
+
+
+state 262
 	asignacion_multiple : variable asignacion_par constante ',' lista_constantes . ';'  (61)
 	asignacion_multiple : variable asignacion_par constante ',' lista_constantes . error  (63)
 	lista_constantes : lista_constantes . ',' constante  (72)
@@ -3170,20 +3176,20 @@ state 261
 	error  shift 271
 	CTE  shift 43
 	';'  shift 272
-	','  shift 263
+	','  shift 264
 	'-'  shift 46
 	.  error
 
-	constante  goto 264
+	constante  goto 265
 
 
-state 262
+state 263
 	asignacion_multiple : variable asignacion_par constante lista_constantes ';' .  (64)
 
 	.  reduce 64
 
 
-state 263
+state 264
 	lista_constantes : lista_constantes ',' . constante  (72)
 
 	CTE  shift 43
@@ -3193,16 +3199,10 @@ state 263
 	constante  goto 273
 
 
-state 264
+state 265
 	lista_constantes : lista_constantes constante .  (73)
 
 	.  reduce 73
-
-
-state 265
-	constante_con_coma : constante ',' .  (69)
-
-	.  reduce 69
 
 
 state 266

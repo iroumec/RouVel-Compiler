@@ -1,4 +1,5 @@
 TEST {
+
     print(3UI + 24UI);
 
     uint A;
@@ -9,5 +10,11 @@ TEST {
 
     A := 7UI + 89UI;
 
+    print(8UI);
+
     A, H = 7UI, 9UI;
+
+    uint B, J;
+
+    ## B, J, H = 8UI + 7UI, 6UI / 7.0, 1UI; ##
 }

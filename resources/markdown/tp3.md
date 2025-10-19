@@ -37,3 +37,9 @@ Sí y no. StringBuilder es mejor si tenés que hacer muchas concatenaciones. Si 
 Lo digo porque ahora estamos con Simbolo en lexer, y para vaciarlo cada vez, pensé en hacer lo de setLength(0), así no se crean objetos por cada token
 Sí, es buena
 joya, además casi todos los atributos de simbolo son string
+
+¿Se deben mostrar las constantes en la tabla de símbolos? Y ¿el nombre del programa?
+
+En la polaca, ¿debemos poner todas las expresiones como tal o podemos optimizarla realizando cálculos de antemano?
+
+¿En la polaca debería verse el ámbito de la variable?

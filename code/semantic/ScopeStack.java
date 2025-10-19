@@ -5,12 +5,16 @@ import java.util.Deque;
 
 public class ScopeStack {
 
-    private final Deque<String> stack = new ArrayDeque<>();
+    private final Deque<String> stack;
+
+    public ScopeStack() {
+        this.stack = new ArrayDeque<>();
+    }
 
     // --------------------------------------------------------------------------------------------
 
-    public void push(String text) {
-        stack.push(text);
+    public void push(String scope) {
+        stack.push(scope);
     }
 
     // --------------------------------------------------------------------------------------------
@@ -59,4 +63,6 @@ public class ScopeStack {
             return scope + ":";
         return asText().split(":" + scope + ":", 2)[0] + ":" + scope + ":";
     }
+
+    // --------------------------------------------------------------------------------------------
 }

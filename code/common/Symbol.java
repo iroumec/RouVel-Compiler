@@ -82,25 +82,25 @@ public class Symbol {
 
     // --------------------------------------------------------------------------------------------
 
-    public SymbolCategory getCategory() {
+    SymbolCategory getCategory() {
         return this.category;
     }
 
-    public boolean isEmpty() {
+    boolean isEmpty() {
         return lexema.length() == 0 && value.length() == 0 && type.length() == 0;
     }
 
-    public void setLexema(String lexema) {
+    void setLexema(String lexema) {
         this.lexema.setLength(0);
         this.lexema.append(lexema);
     }
 
-    public void setValue(String value) {
+    void setValue(String value) {
         this.value.setLength(0);
         this.value.append(value);
     }
 
-    public Symbol getNegative() {
+    Symbol getNegative() {
         return new Symbol("-" + lexema, "-" + value, references);
     }
 
