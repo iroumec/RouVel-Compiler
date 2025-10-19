@@ -99,7 +99,7 @@ programa
 
 nombre_programa
     : ID
-        { this.scopeStack.push($1); }
+        { this.scopeStack.push($1); this.symbolTable.removeEntry($1); }
     ;
 
 // --------------------------------------------------------------------------------------------------------------------
@@ -1014,8 +1014,14 @@ private final SymbolTable symbolTable;
 private final ReversePolish reversePolish;
 private MessageCollector errorCollector, warningCollector;
 
+// --------------------------------------------------------------------------------------------------------------------
+
 public Parser(Lexer lexer, MessageCollector errorCollector, MessageCollector warningCollector) {
     
+    if (lexer == null) {
+        throw new IllegalStateException("El analizador sintáctico requiere de la designación de un analizador léxico..");
+    }
+
     this.lexer = lexer;
     this.errorCollector = errorCollector;
     this.warningCollector = warningCollector;
@@ -1039,11 +1045,7 @@ public void execute() {
 // --------------------------------------------------------------------------------------------------------------------
 
 // Método yylex() invocado durante yyparse().
-int yylex() {
-
-    if (lexer == null) {
-        throw new IllegalStateException("No hay un analizador léxico asignado.");
-    }
+private int yylex() {
 
     Token token = lexer.getNextToken();
 
@@ -1060,14 +1062,14 @@ int yylex() {
  *
  * @param s El mensaje de error por defecto (generalmente "syntax error").
  */
-public void yyerror(String s) {
+private void yyerror(String s) {
 
     // Silenciado, ya que los mensajes son manejados mediante otros métodos.
 }
 
 // --------------------------------------------------------------------------------------------------------------------
 
-void notifyDetection(String message) {
+private void notifyDetection(String message) {
     Printer.printWrapped(String.format(
         "DETECCIÓN SEMÁNTICA: %s",
         message
@@ -1076,7 +1078,7 @@ void notifyDetection(String message) {
 
 // --------------------------------------------------------------------------------------------------------------------
 
-void notifyWarning(String warningMessage) {
+private void notifyWarning(String warningMessage) {
 
     warningCollector.add(String.format(
         "WARNING SINTÁCTICA: Línea %d: %s",
@@ -1086,7 +1088,7 @@ void notifyWarning(String warningMessage) {
 
 // --------------------------------------------------------------------------------------------------------------------
 
-void notifyError(String errorMessage) {
+private void notifyError(String errorMessage) {
 
     errorCollector.add(String.format(
         "ERROR SINTÁCTICO: Línea %d: %s",
@@ -1102,7 +1104,7 @@ private String appendScope(String lexema) {
 
 // --------------------------------------------------------------------------------------------------------------------
 
-public boolean isUint(String number) {
+private boolean isUint(String number) {
     return !number.contains(".");
 }
 

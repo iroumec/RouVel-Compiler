@@ -738,7 +738,7 @@ final static String yyrule[] = {
 "parametro_lambda : '(' UINT ID ')'",
 };
 
-//#line 1006 "gramatica.y"
+//#line 1005 "gramatica.y"
 
 // ====================================================================================================================
 // INICIO DE CÓDIGO (opcional)
@@ -751,8 +751,14 @@ private final SymbolTable symbolTable;
 private final ReversePolish reversePolish;
 private MessageCollector errorCollector, warningCollector;
 
+// --------------------------------------------------------------------------------------------------------------------
+
 public Parser(Lexer lexer, MessageCollector errorCollector, MessageCollector warningCollector) {
     
+    if (lexer == null) {
+        throw new IllegalStateException("El analizador sintáctico requiere de la designación de un analizador léxico..");
+    }
+
     this.lexer = lexer;
     this.errorCollector = errorCollector;
     this.warningCollector = warningCollector;
@@ -776,11 +782,7 @@ public void execute() {
 // --------------------------------------------------------------------------------------------------------------------
 
 // Método yylex() invocado durante yyparse().
-int yylex() {
-
-    if (lexer == null) {
-        throw new IllegalStateException("No hay un analizador léxico asignado.");
-    }
+private int yylex() {
 
     Token token = lexer.getNextToken();
 
@@ -797,14 +799,14 @@ int yylex() {
  *
  * @param s El mensaje de error por defecto (generalmente "syntax error").
  */
-public void yyerror(String s) {
+private void yyerror(String s) {
 
     // Silenciado, ya que los mensajes son manejados mediante otros métodos.
 }
 
 // --------------------------------------------------------------------------------------------------------------------
 
-void notifyDetection(String message) {
+private void notifyDetection(String message) {
     Printer.printWrapped(String.format(
         "DETECCIÓN SEMÁNTICA: %s",
         message
@@ -813,7 +815,7 @@ void notifyDetection(String message) {
 
 // --------------------------------------------------------------------------------------------------------------------
 
-void notifyWarning(String warningMessage) {
+private void notifyWarning(String warningMessage) {
 
     warningCollector.add(String.format(
         "WARNING SINTÁCTICA: Línea %d: %s",
@@ -823,7 +825,7 @@ void notifyWarning(String warningMessage) {
 
 // --------------------------------------------------------------------------------------------------------------------
 
-void notifyError(String errorMessage) {
+private void notifyError(String errorMessage) {
 
     errorCollector.add(String.format(
         "ERROR SINTÁCTICO: Línea %d: %s",
@@ -839,14 +841,14 @@ private String appendScope(String lexema) {
 
 // --------------------------------------------------------------------------------------------------------------------
 
-public boolean isUint(String number) {
+private boolean isUint(String number) {
     return !number.contains(".");
 }
 
 // ====================================================================================================================
 // FIN DE CÓDIGO
 // ====================================================================================================================
-//#line 778 "Parser.java"
+//#line 780 "Parser.java"
 //###############################################################
 // method: yylexdebug : check lexer state
 //###############################################################
@@ -1032,7 +1034,7 @@ case 8:
 break;
 case 9:
 //#line 102 "gramatica.y"
-{ this.scopeStack.push(val_peek(0).sval); }
+{ this.scopeStack.push(val_peek(0).sval); this.symbolTable.removeEntry(val_peek(0).sval); }
 break;
 case 11:
 //#line 113 "gramatica.y"
@@ -1532,74 +1534,73 @@ case 148:
                 this.symbolTable.setType(val_peek(0).sval, SymbolType.UINT);
                 this.symbolTable.setCategory(val_peek(0).sval, (val_peek(2).sval == "CVR" ? SymbolCategory.CVR_PARAMETER : SymbolCategory.CV_PARAMETER));
                 this.symbolTable.setScope(val_peek(0).sval,scopeStack.asText());
-                /*hay que guardar la semantica en la tabla*/
             }
 
         }
 break;
 case 149:
-//#line 832 "gramatica.y"
+//#line 831 "gramatica.y"
 { notifyError("Falta de nombre de parámetro formal en declaración de función."); }
 break;
 case 150:
-//#line 834 "gramatica.y"
+//#line 833 "gramatica.y"
 { notifyError("Falta de tipo de parámetro formal en declaración de función."); }
 break;
 case 151:
-//#line 841 "gramatica.y"
+//#line 840 "gramatica.y"
 { yyval.sval = "CV"; }
 break;
 case 152:
-//#line 843 "gramatica.y"
+//#line 842 "gramatica.y"
 { yyval.sval = "CVR"; }
 break;
 case 153:
-//#line 848 "gramatica.y"
+//#line 847 "gramatica.y"
 { notifyError("Semántica de pasaje de parámetro inválida."); errorState = true; }
 break;
 case 154:
-//#line 857 "gramatica.y"
+//#line 856 "gramatica.y"
 { 
             reversePolish.addPolish("return");
             notifyDetection("Sentencia RETURN."); 
         }
 break;
 case 155:
-//#line 865 "gramatica.y"
+//#line 864 "gramatica.y"
 { notifyError("La sentencia RETURN debe terminar con ';'."); }
 break;
 case 156:
-//#line 867 "gramatica.y"
+//#line 866 "gramatica.y"
 { notifyError("El retorno no puede estar vacío."); }
 break;
 case 157:
-//#line 869 "gramatica.y"
+//#line 868 "gramatica.y"
 { notifyError("El resultado a retornar debe ir entre paréntesis."); }
 break;
 case 158:
-//#line 871 "gramatica.y"
+//#line 870 "gramatica.y"
 { notifyError("Sentencia RETURN inválida."); }
 break;
 case 159:
-//#line 880 "gramatica.y"
+//#line 879 "gramatica.y"
 {
             yyval.sval = val_peek(3).sval + '(' + val_peek(1).sval + ')';
         }
 break;
 case 161:
-//#line 890 "gramatica.y"
+//#line 889 "gramatica.y"
 { yyval.sval = val_peek(0).sval; }
 break;
 case 162:
-//#line 897 "gramatica.y"
+//#line 896 "gramatica.y"
 { yyval.sval = val_peek(2).sval + val_peek(1).sval + val_peek(0).sval; }
 break;
 case 163:
-//#line 902 "gramatica.y"
+//#line 901 "gramatica.y"
 { notifyError("Falta de especificación del parámetro formal al que corresponde el parámetro real."); }
 break;
 case 164:
-//#line 911 "gramatica.y"
+//#line 910 "gramatica.y"
 {
             if (!errorState) {
                 reversePolish.addPolish("print");
@@ -1610,23 +1611,23 @@ case 164:
         }
 break;
 case 165:
-//#line 923 "gramatica.y"
+//#line 922 "gramatica.y"
 { notifyError("La sentencia 'print' debe finalizar con ';'."); errorState = false; }
 break;
 case 167:
-//#line 934 "gramatica.y"
+//#line 933 "gramatica.y"
 { notifyError("La sentencia 'print' requiere de al menos un argumento."); errorState = true; }
 break;
 case 168:
-//#line 936 "gramatica.y"
+//#line 935 "gramatica.y"
 { notifyError("El imprimible debe encerrarse entre paréntesis."); errorState = true; }
 break;
 case 169:
-//#line 938 "gramatica.y"
+//#line 937 "gramatica.y"
 { notifyError("La sentencia 'print' requiere de un argumento entre paréntesis."); errorState = true; }
 break;
 case 172:
-//#line 954 "gramatica.y"
+//#line 953 "gramatica.y"
 { 
             if (!errorState) {
                 notifyDetection("Expresión lambda.");
@@ -1637,41 +1638,41 @@ case 172:
         }
 break;
 case 173:
-//#line 966 "gramatica.y"
+//#line 965 "gramatica.y"
 { notifyError("La expresión 'lambda' debe terminar con ';'."); errorState = false; }
 break;
 case 174:
-//#line 969 "gramatica.y"
+//#line 968 "gramatica.y"
 { notifyError("Falta delimitador de cierre en expresión 'lambda'."); errorState = false; }
 break;
 case 175:
-//#line 971 "gramatica.y"
+//#line 970 "gramatica.y"
 { notifyError("Faltan delimitadores en el conjunto de sentencias de la expresión 'lambda'."); errorState = false; }
 break;
 case 176:
-//#line 973 "gramatica.y"
+//#line 972 "gramatica.y"
 { notifyError("Falta delimitador de apertura en expresión 'lambda'."); errorState = false; }
 break;
 case 177:
-//#line 980 "gramatica.y"
+//#line 979 "gramatica.y"
 { yyval.sval = val_peek(1).sval; }
 break;
 case 178:
-//#line 985 "gramatica.y"
+//#line 984 "gramatica.y"
 { notifyError("El argumento de la expresión 'lambda' no puede estar vacío."); errorState = true; }
 break;
 case 179:
-//#line 988 "gramatica.y"
+//#line 987 "gramatica.y"
 { notifyError("La expresión 'lambda' requiere de un argumento entre paréntesis."); errorState = true; }
 break;
 case 180:
-//#line 995 "gramatica.y"
+//#line 994 "gramatica.y"
 {
             yyval.sval = val_peek(1).sval;
             this.symbolTable.setType(val_peek(1).sval, SymbolType.UINT);
         }
 break;
-//#line 1598 "Parser.java"
+//#line 1599 "Parser.java"
 //########## END OF USER-SUPPLIED ACTIONS ##########
     }//switch
     //#### Now let's reduce... ####

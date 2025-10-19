@@ -47,6 +47,13 @@ public final class SymbolTable {
 
     // --------------------------------------------------------------------------------------------
 
+    public void removeEntry(String lexema) {
+
+        this.symbolTable.remove(lexema);
+    }
+
+    // --------------------------------------------------------------------------------------------
+
     /**
      * Remplaza una entrada en la tabla de símbolos.
      */

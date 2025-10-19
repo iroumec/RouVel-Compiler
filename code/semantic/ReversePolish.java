@@ -91,7 +91,6 @@ public final class ReversePolish {
             polishes.set(j * 3 + indexFirstVariable + 1, constants.get(j));
             polishes.set(j * 3 + indexFirstVariable + 2, ":=");
         }
-
     }
 
 }
