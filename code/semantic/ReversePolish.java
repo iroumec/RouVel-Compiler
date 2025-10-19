@@ -7,6 +7,7 @@ import java.util.ArrayDeque;
 import java.util.Collections;
 
 import lexer.token.TokenType;
+import utilities.Printer;
 
 public final class ReversePolish {
 
@@ -107,6 +108,22 @@ public final class ReversePolish {
 
     public void emptyTemporalPolishes() {
         this.temporalPolishes.clear();
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    public void print() {
+
+        Printer.printSeparator();
+        Printer.printCentered("Polaca Inversa");
+        Printer.printSeparator();
+
+        int nroPolaca = 0;
+        for (String polish : this.polishes) {
+            Printer.printFramed(++nroPolaca + " " + polish);
+        }
+
+        Printer.printSeparator();
     }
 
     // --------------------------------------------------------------------------------------------

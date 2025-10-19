@@ -1,0 +1,20 @@
+NEW {
+
+    uint X, F;
+
+    X := 8UI;
+
+    J := O;
+
+    F := 1UI;
+
+    X := A;
+
+    B := X;
+
+    X := 9UI + A;
+
+    uint J;
+
+    J := F;
+}

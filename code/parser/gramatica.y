@@ -306,18 +306,28 @@ lista_variables
 asignacion_simple
     : variable DASIG expresion ';'                              
         { 
-            notifyDetection("Asignación simple.");
 
-            this.symbolTable.setValue(this.scopeStack.appendScope($1), $3);//yo no pondría esto, cuando $3 es una expresion queda mal
-            
-            // Se remueve la entrada sin el scope.
-            this.symbolTable.removeEntry($1);
+            if (!errorState) {
+                
+                notifyDetection("Asignación simple.");
 
-            reversePolish.addPolish($1);
+                this.symbolTable.setValue($1, $3);//yo no pondría esto, cuando $3 es una expresion queda mal
 
-            this.reversePolish.makeTemporalPolishesDefinitive();
+                reversePolish.addPolish($1);
 
-            reversePolish.addPolish($2);
+                this.reversePolish.makeTemporalPolishesDefinitive();
+
+                reversePolish.addPolish($2);
+            } else {
+
+                // Se decrementan las referencias, puesto a que se está frente a una referencia no válida.
+                this.symbolTable.removeEntry($1);
+                this.symbolTable.removeEntry($3);
+
+                this.reversePolish.emptyTemporalPolishes();
+
+                errorState = false;
+            }
         }
 
     // |========================= REGLAS DE ERROR =========================| //
@@ -344,9 +354,6 @@ asignacion_multiple
             reversePolish.addPolish($1);
             reversePolish.addPolish($3);
 
-            // Se remueve la entrada sin el scope.
-            this.symbolTable.removeEntry($1);
-
             reversePolish.rearrangePairs();
 
             this.symbolTable.setValue(this.scopeStack.appendScope($1), $3);//yo no pondría esto, cuando $3 es una expresion queda mal
@@ -357,9 +364,6 @@ asignacion_multiple
         { 
             reversePolish.addPolish($1);
             reversePolish.addPolish($3);
-
-            // Se remueve la entrada sin el scope.
-            this.symbolTable.removeEntry($1);
 
             reversePolish.rearrangePairs();
 
@@ -576,16 +580,24 @@ variable
     : ID
         {
             if (!this.symbolTable.entryExists(this.scopeStack.appendScope($1))) { //Si entra por aca, la variable debe ser local
+                errorState = true;
                 notifyError(String.format("Variable %s no declarada.", $1));
+            } else {
+                
+                // A la entrada sin el scope, se le agrega el scope.
+                // Se combina con otra entrada en caso de coincidir el scope.
+                this.symbolTable.setScope($1, scopeStack.asText());
+                $$ = this.scopeStack.appendScope($1);
             }
         }
     | ID '.' ID
         { 
-            if (!this.scopeStack.isReacheable($1)) 
+            if (!this.scopeStack.isReacheable($1)) {
+                errorState = true;
                 notifyError(String.format("Variable %s no declarada (no visible).",$3));
-            else {
-                if (!this.symbolTable.entryExists(this.scopeStack.getScopeRoad($1)+$3))
-                    notifyError(String.format("Variable '%s' no declarada en el ámbito '%s'.",$3,$1));
+            } else if (!this.symbolTable.entryExists(this.scopeStack.getScopeRoad($1)+$3)) {
+                errorState = true;
+                notifyError(String.format("Variable '%s' no declarada en el ámbito '%s'.",$3,$1));
             }
 
             $$ = $1 + "." + $3; 
@@ -799,7 +811,7 @@ inicio_funcion
 
     | UINT
         {
-            this.scopeStack.push(String.valueOf(lexer.getNroLinea()));
+            this.scopeStack.push("error");
             notifyError("La función requiere de un nombre.");
             errorState = true;
         } 
@@ -1099,6 +1111,7 @@ private int yylex() {
  */
 private void yyerror(String s) {
 
+    // TODO: lo mejor sería no silenciar este método.
     // Silenciado, ya que los mensajes son manejados mediante otros métodos.
 }
 

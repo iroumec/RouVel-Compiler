@@ -93,8 +93,11 @@ public class Main {
         }
 
         SymbolTable.getInstance().print();
+
         Printer.printBlankSpace();
 
-        Printer.print(ReversePolish.getInstance().toString());
+        ReversePolish.getInstance().print();
+
+        Printer.printBlankSpace();
     }
 }
