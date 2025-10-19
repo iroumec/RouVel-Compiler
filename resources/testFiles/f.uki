@@ -1,6 +1,13 @@
 MAIN {
 
+    ##uint B;##
+
     uint FUN1 (cvr uint A, uint B, uint C, cvr uint J) {
-        return 3UI;
+
+        uint B;
+
+        B := 7UI;
+
+        return(3UI);
     }
 }

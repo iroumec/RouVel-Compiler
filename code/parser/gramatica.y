@@ -14,6 +14,7 @@
     import utilities.Printer;
     import common.SymbolType;
     import common.SymbolTable;
+    import semantic.ScopeStack;
     import common.SymbolCategory;
     import semantic.ReversePolish;
     import utilities.MessageCollector;
@@ -295,9 +296,13 @@ lista_variables
 asignacion_simple
     : variable DASIG expresion ';'                              
         { 
-            notifyDetection("Asignación simple."); 
-            this.symbolTable.setValue(this.appendScope($1), $3);//yo no pondría esto, cuando $3 es una expresion queda mal
+            notifyDetection("Asignación simple.");
+
+            this.symbolTable.setValue(this.scopeStack.appendScope($1), $3);//yo no pondría esto, cuando $3 es una expresion queda mal
             
+            // Se remueve la entrada sin el scope.
+            this.symbolTable.removeEntry($1);
+
             reversePolish.addPolish($1);
             reversePolish.addPolish($2);
         }
@@ -552,8 +557,8 @@ constante
 variable
     : ID
         {
-            if (!this.symbolTable.entryExists(this.scopeStack.asText()+":"+$1)) { //Si entra por aca, la variable debe ser local
-                notifyError(String.format("Variable %s no declarada.",$1));
+            if (!this.symbolTable.entryExists(this.scopeStack.appendScope($1))) { //Si entra por aca, la variable debe ser local
+                notifyError(String.format("Variable %s no declarada.", $1));
             }
         }
     | ID '.' ID
@@ -562,7 +567,7 @@ variable
                 notifyError(String.format("Variable %s no declarada (no visible).",$3));
             else {
                 if (!this.symbolTable.entryExists(this.scopeStack.getScopeRoad($1)+$3))
-                    notifyError(String.format("Variable %s no declarada en el ámbito %s.",$3,$1));
+                    notifyError(String.format("Variable '%s' no declarada en el ámbito '%s'.",$3,$1));
             }
 
             $$ = $1 + "." + $3; 
@@ -1094,12 +1099,6 @@ private void notifyError(String errorMessage) {
         "ERROR SINTÁCTICO: Línea %d: %s",
         lexer.getNroLinea(), errorMessage
     ));
-}
-
-// --------------------------------------------------------------------------------------------------------------------
-
-private String appendScope(String lexema) {
-    return lexema + ":" + this.scopeStack.asText();
 }
 
 // --------------------------------------------------------------------------------------------------------------------
