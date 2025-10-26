@@ -439,13 +439,49 @@ lista_constantes
         }
     ;
 
+// Estas asignaciones pueden tener un menor número de elementos del lado izquierdo (tema 17).
 // TODO: hay que cambiar toda la impresión de las listas para hacer que esto funcione bien.
 multiple_assignment
     : list_of_variables '=' list_of_constants
         {
-            
-        
-        
+            if (!errorState) {
+                // Conversión de la lista de variables a arreglo de strings, eliminando espacios alrededor de cada elemento.
+                String[] variables = $1.split("\\s*,\\s*");
+                String[] constants = $3.split("\\s*,\\s*");
+
+                if (variables.length > constants.length) {
+
+                    notifyError(String.format(
+                            "El número de variables del lado izquierdo de la asignación (%d) no puede superar el número de constantes del lado derecho de la asignación (%d).",
+                            variables.length, constants.length));
+
+                } else {
+                
+                    if (variables.length < constants.length) {
+                
+                        notifyWarning("El número de");
+
+                    }
+
+                    // En este punto, la lista de variables y constantes tendrá la misma longitud.
+                    for (int i = 0; i < variables.length; i++) {
+                        
+                        String variable = variables[i];
+                        String constant = constants[i];
+                                        
+
+                        this.symbolTable.setValue(variable, constant);
+                        reversePolish.addPolish(variable);
+                        reversePolish.addPolish(constant);
+                        // Se agrega un DASIG ya que son varias asignaciones simples.
+                        reversePolish.addPolish(":=");
+                    }
+
+                    notifyDetection("Asignación múltiple.");
+                }
+            } else {
+                errorState = false;
+            }
         }
     ;
 
@@ -453,17 +489,26 @@ multiple_assignment
 list_of_variables
     : variable 
     | list_of_variables ',' variable
-        { $$ = $3; }
+        { $$ = $1 + ',' + $3; }
 
     // |========================= REGLAS DE ERROR =========================| //
 
     | list_of_variables variable
         {
+
+            // Conversión de la lista de variables a arreglo de strings, eliminando espacios alrededor de cada elemento.
+            String[] variables = $1.split("\\s*,\\s*");
+            String lastVariable = variables[variables.length - 1];
+
             notifyError(String.format(
                 "Se encontraron dos variables juntas sin separación. Inserte una ',' entre '%s' y '%s'.",
-                $1, $2));
-            $$ = $2;
+                lastVariable, $2));
             errorState = true;
+
+            // Se agrega una coma para respetar el formato en reglas siguientes.
+            // Si no se agregara la coma, de entrar nuevamente a esta regla, la separación de las variables no
+            // funcionaría adecuadamente.
+            $$ = $1 + ',' + $2;
         }
     ;
 
@@ -476,10 +521,18 @@ list_of_constants
 
     | list_of_constants constante
         {
+            String[] constants = $1.split("\\s*,\\s*");
+            String lastConstant = constants[constants.length - 1];
+
             notifyError(String.format(
                 "Se encontraron dos constantes juntas sin una coma de separación. Inserte una ',' entre '%s' y '%s'.",
-                $1, $2));
+                lastConstant, $2));
             errorState = true;
+
+            // Se agrega una coma para respetar el formato en reglas siguientes.
+            // Si no se agregara la coma, de entrar nuevamente a esta regla, la separación de las constantes no
+            // funcionaría adecuadamente.
+            $$ = $1 + ',' + $2;
         }
     ;
 
