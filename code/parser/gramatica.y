@@ -60,6 +60,8 @@
                 lista_argumentos, argumento, comparador, semantica_pasaje, parametro_lambda, argumento_lambda,
                 variable_con_coma, constante_con_coma
 
+%type <sval> list_of_variables, list_of_constants, multiple_assignment
+
 // ====================================================================================================================
 // FIN DE DECLARACIONES
 // ====================================================================================================================
@@ -437,6 +439,50 @@ lista_constantes
         }
     ;
 
+// TODO: hay que cambiar toda la impresión de las listas para hacer que esto funcione bien.
+multiple_assignment
+    : list_of_variables '=' list_of_constants
+        {
+            
+        
+        
+        }
+    ;
+
+// Es diferente la lista de variables de la lista de identificadores, lo que ahora se llama "lista de variables".
+list_of_variables
+    : variable 
+    | list_of_variables ',' variable
+        { $$ = $3; }
+
+    // |========================= REGLAS DE ERROR =========================| //
+
+    | list_of_variables variable
+        {
+            notifyError(String.format(
+                "Se encontraron dos variables juntas sin separación. Inserte una ',' entre '%s' y '%s'.",
+                $1, $2));
+            $$ = $2;
+            errorState = true;
+        }
+    ;
+
+list_of_constants
+    : constante
+    | list_of_constants ',' constante
+        { $$ = $3; }
+
+    // |========================= REGLAS DE ERROR =========================| //
+
+    | list_of_constants constante
+        {
+            notifyError(String.format(
+                "Se encontraron dos constantes juntas sin una coma de separación. Inserte una ',' entre '%s' y '%s'.",
+                $1, $2));
+            errorState = true;
+        }
+    ;
+
 // ********************************************************************************************************************
 // Expresiones
 // ********************************************************************************************************************
@@ -533,6 +579,8 @@ factor
     : variable error
         // Si no se coloca el token error, da reduce/reduce con asignación múltiple.
         {
+            // TODO: esto es un parche. Debe verse mejor después.
+            this.errorCollector.removeLast(); // Debido a que se usa el token error.
             reversePolish.addTemporalPolish($1);
         }
     | constante
@@ -1026,11 +1074,11 @@ lambda
         { notifyError("La expresión 'lambda' debe terminar con ';'."); errorState = false; }
 
     | parametro_lambda '{' conjunto_sentencias_ejecutables argumento_lambda error
-        { notifyError("Falta delimitador de cierre en expresión 'lambda'."); errorState = false; }
+        { replaceLastErrorWith("Falta delimitador de cierre en expresión 'lambda'."); errorState = false; }
     | parametro_lambda conjunto_sentencias_ejecutables argumento_lambda error
-        { notifyError("Faltan delimitadores en el conjunto de sentencias de la expresión 'lambda'."); errorState = false; }
+        { replaceLastErrorWith("Faltan delimitadores en el conjunto de sentencias de la expresión 'lambda'."); errorState = false; }
     | parametro_lambda conjunto_sentencias_ejecutables '}' argumento_lambda error
-        { notifyError("Falta delimitador de apertura en expresión 'lambda'."); errorState = false; }
+        { replaceLastErrorWith("Falta delimitador de apertura en expresión 'lambda'."); errorState = false; }
     ;
 
 // --------------------------------------------------------------------------------------------------------------------
@@ -1121,12 +1169,13 @@ private int yylex() {
  * Este método es invocado por el parser generado por Byacc/J cada vez que
  * se encuentra con un token error.
  *
+ * En caso de que el error sea tratado en la gramática, este será remplazado
+ * posteriormente por un mensaje de error más apropiado.
+ *
  * @param s El mensaje de error por defecto (generalmente "syntax error").
  */
 private void yyerror(String s) {
-
-    // TODO: lo mejor sería no silenciar este método.
-    // Silenciado, ya que los mensajes son manejados mediante otros métodos.
+    notifyError(s);
 }
 
 // --------------------------------------------------------------------------------------------------------------------
@@ -1153,6 +1202,16 @@ private void notifyWarning(String warningMessage) {
 private void notifyError(String errorMessage) {
 
     errorCollector.add(String.format(
+        "ERROR SINTÁCTICO: Línea %d: %s",
+        lexer.getNroLinea(), errorMessage
+    ));
+}
+
+// --------------------------------------------------------------------------------------------------------------------
+
+private void replaceLastErrorWith(String errorMessage) {
+
+    errorCollector.replaceLastWith(String.format(
         "ERROR SINTÁCTICO: Línea %d: %s",
         lexer.getNroLinea(), errorMessage
     ));

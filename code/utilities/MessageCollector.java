@@ -21,6 +21,19 @@ public class MessageCollector {
 
     // --------------------------------------------------------------------------------------------------------------------
 
+    public void removeLast() {
+        this.messages.removeLast();
+    }
+
+    // --------------------------------------------------------------------------------------------------------------------
+
+    public void replaceLastWith(String message) {
+        this.messages.removeLast();
+        this.messages.add(message);
+    }
+
+    // --------------------------------------------------------------------------------------------------------------------
+
     public int getNumberOfMessages() {
         return this.messages.size();
     }
