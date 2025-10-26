@@ -260,6 +260,8 @@ declaration_of_variables
         }
     ;
 
+// --------------------------------------------------------------------------------------------------------------------
+
 list_of_identifiers
     : identifier
     | list_of_identifiers ',' identifier
@@ -286,13 +288,16 @@ list_of_identifiers
         }
     ;
 
+// --------------------------------------------------------------------------------------------------------------------
+
+// Separado de variable ya que las acciones semánticas a realizar son distintas.
 identifier
     : ID
         {
             this.symbolTable.setType($1, SymbolType.UINT);
             this.symbolTable.setCategory($1, SymbolCategory.VARIABLE);
+            this.symbolTable.setScope($1, scopeStack.asText());
             $$ = this.scopeStack.appendScope($1);
-            this.symbolTable.replaceEntry($1, $$);
         }
     ;
 
@@ -399,6 +404,8 @@ multiple_assignment
         { notifyError("La asignación múltiple debe terminar con ';'."); }
     ;
 
+// --------------------------------------------------------------------------------------------------------------------
+
 // Esta regla es recursiva a derecha para evitar shift/reduce.
 list_of_variables
     : variable '='
@@ -425,6 +432,8 @@ list_of_variables
             $$ = $1 + ',' + $2;
         }
     ;
+
+// --------------------------------------------------------------------------------------------------------------------
 
 list_of_constants
     : constante
