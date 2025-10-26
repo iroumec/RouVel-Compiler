@@ -10,7 +10,15 @@ MAIN {
         return (MAIN.A);
     }
 
+    uint B;
     B := 3UI;
 
     print("Bye");
+
+    uint FUNC2(cvr uint Z) {
+    
+        uint A, B, C, D;
+
+        A, B, C, D = 32UI, 15UI, 9UI, 7UI;
+    }
 }

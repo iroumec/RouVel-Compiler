@@ -56,10 +56,10 @@
 
 // No terminales cuyo valor semántico asociado es un String.
 %type <sval> expresion, termino, factor, termino_simple, factor_simple, operador_suma, operador_multiplicacion,
-                inicio_funcion, lista_variables, lista_constantes, variable, constante, invocacion_funcion,
+                inicio_funcion, lista_variables, variable, constante, invocacion_funcion,
                 lista_argumentos, argumento, comparador, semantica_pasaje, parametro_lambda, argumento_lambda,
-                variable_con_coma, constante_con_coma
 
+%type <sval> identifier, list_of_identifiers
 %type <sval> list_of_variables, list_of_constants, multiple_assignment
 
 // ====================================================================================================================
@@ -165,7 +165,7 @@ sentencia
 // ********************************************************************************************************************
 
 sentencia_declarativa
-    : declaracion_variables
+    : declaration_of_variables
     | declaracion_funcion punto_y_coma_opcional
     ;
 
@@ -211,7 +211,7 @@ sentencia_ejecutable
         // No puede colocarse en las reglas propias porque se usa en factor.
         { notifyDetection("Invocación de función."); }
     | asignacion_simple
-    | asignacion_multiple
+    | multiple_assignment
     | sentencia_control
     | sentencia_retorno
     | impresion
@@ -301,6 +301,67 @@ lista_variables
         }
     ;
 
+declaration_of_variables
+    : UINT list_of_identifiers ';'
+        {
+            if (!errorState) {
+                { notifyDetection("Declaración de variables."); }
+            } else {
+                errorState = false;
+            }
+        }
+        // |========================= REGLAS DE ERROR =========================| //
+
+    | UINT list_of_identifiers error
+        {
+            notifyError("La declaración de variables debe terminar con ';'.");
+        }
+    | UINT identifier DASIG constante ';'
+        {
+            notifyError("La declaración de variables y la asignación de un valor a estas debe realizarse en dos sentencias separadas.");
+        }
+    | UINT error
+        {
+            notifyError("Declaración de variables inválida.");
+        }
+    ;
+
+list_of_identifiers
+    : identifier
+    | list_of_identifiers ',' identifier
+        { $$ = $1 + ',' + $3; }
+
+    // |========================= REGLAS DE ERROR =========================| //
+
+    | list_of_identifiers ID
+        {
+
+            // Conversión de la lista de variables a arreglo de strings, eliminando espacios alrededor de cada elemento.
+            String[] variables = $1.split("\\s*,\\s*");
+            String lastVariable = variables[variables.length - 1];
+
+            notifyError(String.format(
+                "Se encontraron dos variables juntas sin separación. Inserte una ',' entre '%s' y '%s'.",
+                lastVariable, $2));
+            errorState = true;
+
+            // Se agrega una coma para respetar el formato en reglas siguientes.
+            // Si no se agregara la coma, de entrar nuevamente a esta regla, la separación de las variables no
+            // funcionaría adecuadamente.
+            $$ = $1 + ',' + $2;
+        }
+    ;
+
+identifier
+    : ID
+        {
+            this.symbolTable.setType($1, SymbolType.UINT);
+            this.symbolTable.setCategory($1, SymbolCategory.VARIABLE);
+            $$ = this.scopeStack.appendScope($1);
+            this.symbolTable.replaceEntry($1, $$);
+        }
+    ;
+
 // ********************************************************************************************************************
 // Asignación Simple
 // ********************************************************************************************************************
@@ -349,126 +410,38 @@ asignacion_simple
 // Asignación Múltiple
 // ********************************************************************************************************************
 
-//Estas asignaciones pueden tener un menor número de elementos del lado izquierdo (tema 17).
-asignacion_multiple 
-    : variable asignacion_par constante ';'
-        { 
-            reversePolish.addPolish($1);
-            reversePolish.addPolish($3);
-
-            reversePolish.rearrangePairs();
-
-            this.symbolTable.setValue(this.scopeStack.appendScope($1), $3);//yo no pondría esto, cuando $3 es una expresion queda mal
-
-            notifyDetection("Asignación múltiple."); 
-        }
-    | variable asignacion_par constante ',' lista_constantes ';'
-        { 
-            reversePolish.addPolish($1);
-            reversePolish.addPolish($3);
-
-            reversePolish.rearrangePairs();
-
-            this.symbolTable.setValue(this.scopeStack.appendScope($1), $3);//yo no pondría esto, cuando $3 es una expresion queda mal
-
-            notifyWarning(String.format("Se descartarán las constantes posteriores a %s",$3)); //TP3
-            notifyDetection("Asignación múltiple.");
-        }
-
-    // |========================= REGLAS DE ERROR =========================| //
-
-    | variable asignacion_par constante error
-        { notifyError("La asignación múltiple debe terminar con ';'."); }
-    | variable asignacion_par constante ',' lista_constantes error
-        { notifyError("La asignación múltiple debe terminar con ';'."); }
-    | variable asignacion_par constante lista_constantes ';'
-        { notifyError(String.format("Falta coma luego de la constante '%s' en asignacion múltiple", $3)); }
-    ;
-
-// --------------------------------------------------------------------------------------------------------------------
-
-asignacion_par
-    : variable_con_coma asignacion_par constante_con_coma
-        { this.symbolTable.setValue(this.scopeStack.appendScope($1), $3); } //yo no pondría esto, cuando $3 es una expresion queda mal
-    | '='
-    ;
-
-// --------------------------------------------------------------------------------------------------------------------
-
-variable_con_coma
-    : ',' variable
-        {
-            $$ = $2;
-            reversePolish.addPolish($2);
-            // Se remueve la entrada sin el scope.
-            this.symbolTable.removeEntry($2);
-        }
-
-    // |========================= REGLAS DE ERROR =========================| //
-
-    | variable
-        { notifyError(String.format("Falta coma antes de variable '%s' en asignación múltiple.", $1)); }
-    ;
-
-// --------------------------------------------------------------------------------------------------------------------
-
-constante_con_coma
-    : constante ','
-        { reversePolish.addPolish($1); }
-
-    // |========================= REGLAS DE ERROR =========================| //
-
-    | constante
-        { notifyError(String.format("Falta coma luego de constante '%s' en asignación múltiple.", $1)); }
-    ;
-
-// --------------------------------------------------------------------------------------------------------------------
-                                
-lista_constantes
-    : constante
-    | lista_constantes ',' constante
-        { $$ = $3; }
-
-    // |========================= REGLAS DE ERROR =========================| //
-
-    | lista_constantes constante
-        {
-            notifyError(String.format(
-                "Se encontraron dos constantes juntas sin una coma de separación. Inserte una ',' entre '%s' y '%s'.",
-                $1, $2));
-        }
-    ;
-
 // Estas asignaciones pueden tener un menor número de elementos del lado izquierdo (tema 17).
-// TODO: hay que cambiar toda la impresión de las listas para hacer que esto funcione bien.
 multiple_assignment
-    : list_of_variables '=' list_of_constants
+    : list_of_variables list_of_constants ';'
         {
             if (!errorState) {
                 // Conversión de la lista de variables a arreglo de strings, eliminando espacios alrededor de cada elemento.
                 String[] variables = $1.split("\\s*,\\s*");
-                String[] constants = $3.split("\\s*,\\s*");
+                String[] constants = $2.split("\\s*,\\s*");
 
                 if (variables.length > constants.length) {
 
                     notifyError(String.format(
-                            "El número de variables del lado izquierdo de la asignación (%d) no puede superar el número de constantes del lado derecho de la asignación (%d).",
+                            "El número de variables (%d) del lado izquierdo de la asignación "
+                            + "no puede superar el número de constantes (%d) en el lado derecho.",
                             variables.length, constants.length));
 
                 } else {
                 
                     if (variables.length < constants.length) {
-                
-                        notifyWarning("El número de");
 
+                        notifyWarning(String.format(
+                                "El número de variables (%d) en el lado izquierdo de la asignación "
+                                + "es menor al número de constantes (%d) en el lado derecho de esta. "
+                                + "Las constantes sobrantes serán descartadas.",
+                                variables.length, constants.length));
                     }
 
                     // En este punto, la lista de variables y constantes tendrá la misma longitud.
                     for (int i = 0; i < variables.length; i++) {
                         
                         String variable = variables[i];
-                        String constant = constants[i];
-                                        
+                        String constant = constants[i];   
 
                         this.symbolTable.setValue(variable, constant);
                         reversePolish.addPolish(variable);
@@ -480,20 +453,27 @@ multiple_assignment
                     notifyDetection("Asignación múltiple.");
                 }
             } else {
+
+                notifyError("Hola");
                 errorState = false;
             }
         }
+
+    // |========================= REGLAS DE ERROR =========================| //
+
+    | list_of_variables DASIG list_of_constants error
+        { notifyError("La asignación múltiple debe terminar con ';'."); }
     ;
 
-// Es diferente la lista de variables de la lista de identificadores, lo que ahora se llama "lista de variables".
+// Esta regla es recursiva a derecha para evitar shift/reduce.
 list_of_variables
-    : variable 
-    | list_of_variables ',' variable
+    : variable '='
+    | variable ',' list_of_variables
         { $$ = $1 + ',' + $3; }
 
     // |========================= REGLAS DE ERROR =========================| //
 
-    | list_of_variables variable
+    | variable list_of_variables
         {
 
             // Conversión de la lista de variables a arreglo de strings, eliminando espacios alrededor de cada elemento.
@@ -515,7 +495,7 @@ list_of_variables
 list_of_constants
     : constante
     | list_of_constants ',' constante
-        { $$ = $3; }
+        { $$ = $1 + ',' + $3; }
 
     // |========================= REGLAS DE ERROR =========================| //
 

@@ -1,0 +1,6 @@
+T {
+
+    uint A, B, C, D;
+
+    A, B, C, D = 32UI, 15UI, 9UI, 7UI;
+}
