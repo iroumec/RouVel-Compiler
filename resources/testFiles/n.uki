@@ -19,6 +19,10 @@ MAIN {
     
         uint A, B, C, D;
 
-        A, B, C, D = 32UI, 15UI, 9UI, 7UI;
+        A, B, C, D = 32UI, 15UI, 9UI, 7UI, 89UI;
+
+        Z := 3UI;
+
+        MAIN.A = 5UI;
     }
 }
