@@ -77,7 +77,7 @@ public class SymbolTablePrinter {
         for (Symbol symbol : symbols) {
 
             // Las constante no se tienen en cuenta.
-            if (symbol.getCategory() != SymbolCategory.CONSTANT) {
+            if (true /* symbol.getCategory() != SymbolCategory.CONSTANT */) {
 
                 // Se usa Math.min para no superar el ancho máximo del lexema.
                 int lexemaLength = symbol.getLexema().length();
@@ -167,7 +167,7 @@ public class SymbolTablePrinter {
         for (Symbol symbol : symbols) {
 
             // Las constantes no se imprimen.
-            if (symbol.getCategory() != SymbolCategory.CONSTANT) {
+            if (true/* symbol.getCategory() != SymbolCategory.CONSTANT */) {
 
                 List<String> lexemaLines = wrapText(symbol.getLexema(), widths.get("Lexema"));
 

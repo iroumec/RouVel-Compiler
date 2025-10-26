@@ -1,0 +1,14 @@
+MAIN {
+    print("Hola");
+
+    print(3UI + 8UI - 2.0 / 9.0F+2);
+
+    uint A;
+    A := 3UI + 8UI;
+
+    uint FUNC1(uint B) {
+        return (MAIN.A);
+    }
+
+    print("Bye");
+}

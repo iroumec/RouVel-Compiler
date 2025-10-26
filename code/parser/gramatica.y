@@ -101,7 +101,7 @@ programa
 
 nombre_programa
     : ID
-        { this.scopeStack.push($1); this.symbolTable.removeEntry($1); }
+        { this.scopeStack.push($1); this.symbolTable.setCategory($1, SymbolCategory.PROGRAM); }
     ;
 
 // --------------------------------------------------------------------------------------------------------------------
@@ -592,15 +592,20 @@ variable
         }
     | ID '.' ID
         { 
+            String scopedVariable = $3 + this.scopeStack.getScopeRoad($1);
+
             if (!this.scopeStack.isReacheable($1)) {
                 errorState = true;
                 notifyError(String.format("Variable %s no declarada (no visible).",$3));
-            } else if (!this.symbolTable.entryExists(this.scopeStack.getScopeRoad($1)+$3)) {
+            } else if (!this.symbolTable.entryExists(scopedVariable)) {
                 errorState = true;
                 notifyError(String.format("Variable '%s' no declarada en el ámbito '%s'.",$3,$1));
             }
 
-            $$ = $1 + "." + $3; 
+            $$ = scopedVariable;
+
+            // Se remplaza el identificador sin ámbito por su versión con ámbito.
+            this.symbolTable.replaceEntry($3, $$); 
         }
     ;
 
@@ -785,6 +790,7 @@ declaracion_funcion
                 this.symbolTable.setCategory($1, SymbolCategory.FUNCTION);
                 this.scopeStack.pop();
                 this.symbolTable.setScope($1, this.scopeStack.asText());
+                this.reversePolish.addPolish("> VOLVIENDO AL ÁMBITO ANTERIOR <");
             } else {
                 errorState = false;
             }
@@ -805,7 +811,7 @@ declaracion_funcion
 // la declaración de una función.
 inicio_funcion
     : UINT ID
-        { this.scopeStack.push($2); $$ = $2; }
+        { this.scopeStack.push($2); $$ = $2; this.reversePolish.addPolish("> NUEVO ÁMBITO <"); /* TODO: mejorar esto. Por ahora así para debugging */ }
     
     // |========================= REGLAS DE ERROR =========================| //
 
@@ -887,9 +893,14 @@ semantica_pasaje
 
 sentencia_retorno
     : RETURN '(' expresion ')' ';'
-        { 
-            reversePolish.addPolish("return");
-            notifyDetection("Sentencia RETURN."); 
+        {
+            if (!errorState) {
+                this.reversePolish.makeTemporalPolishesDefinitive();
+                reversePolish.addPolish("return");
+                notifyDetection("Sentencia 'return'.");
+            } else {
+                errorState = false;
+            }
         }
     
     // |========================= REGLAS DE ERROR =========================| //
@@ -985,6 +996,9 @@ imprimible
 
 elemento_imprimible
     : STR
+        {
+            reversePolish.addTemporalPolish($1);
+        }
     | expresion
     ;
 

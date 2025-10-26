@@ -7,6 +7,7 @@ public enum SymbolCategory {
     CV_PARAMETER("CV Parameter"),
     ARGUMENT("Argument"), // Real parameter
     CONSTANT("Constant"),
+    PROGRAM("Program Name"),
     FUNCTION("Function");
 
     private String text;

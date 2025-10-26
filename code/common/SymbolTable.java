@@ -58,7 +58,7 @@ public final class SymbolTable {
             return;
         } else {
             Symbol symbol = this.symbolTable.get(oldLexema);
-            symbol.decrementarReferencias();
+            this.decreaseReferences(oldLexema, symbol);
 
             this.addEntry(newLexema, symbol);
         }

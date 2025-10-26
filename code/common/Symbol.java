@@ -19,7 +19,11 @@ public class Symbol {
         this.value = new StringBuilder(value);
         this.type = type;
 
-        if (type != null) {
+        if (lexema.startsWith("\"") && lexema.endsWith("\"")) {
+            this.type = SymbolType.STRING;
+        }
+
+        if (this.type != null) {
             this.category = SymbolCategory.CONSTANT;
         }
 
