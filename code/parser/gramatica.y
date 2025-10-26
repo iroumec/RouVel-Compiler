@@ -56,7 +56,7 @@
 
 // No terminales cuyo valor semántico asociado es un String.
 %type <sval> expresion, termino, factor, termino_simple, factor_simple, operador_suma, operador_multiplicacion,
-                inicio_funcion, lista_variables, variable, constante, invocacion_funcion,
+                inicio_funcion, variable, constante, invocacion_funcion,
                 lista_argumentos, argumento, comparador, semantica_pasaje, parametro_lambda, argumento_lambda,
 
 %type <sval> identifier, list_of_identifiers
@@ -234,72 +234,6 @@ sentencia_control
 // ********************************************************************************************************************
 // Declaración de Variables
 // ********************************************************************************************************************
-
-declaracion_variables
-    : UINT lista_variables ';'
-        { notifyDetection("Declaración de variables."); }
-    
-    | UINT ID ';'
-        {
-            notifyDetection("Declaración de variable.");
-            this.symbolTable.setType($2, SymbolType.UINT);
-            this.symbolTable.setCategory($2, SymbolCategory.VARIABLE);
-            this.symbolTable.setScope($2, scopeStack.asText());
-        }
-    
-    // |========================= REGLAS DE ERROR =========================| //
-
-    | UINT ID error
-        {
-            notifyError("La declaración de variable debe terminar con ';'.");
-        }
-    | UINT lista_variables error
-        {
-            notifyError("La declaración de variables debe terminar con ';'.");
-        }
-    | UINT variable DASIG constante ';'
-        {
-            notifyError("La declaración de variables y la asignación de un valor a estas debe realizarse en dos sentencias separadas.");
-        }
-    | UINT error
-        {
-            notifyError("Declaración de variables inválida.");
-        }
-    ;
-
-// --------------------------------------------------------------------------------------------------------------------
-
-lista_variables 
-    : ID ',' ID 
-        {
-            this.symbolTable.setType($1, SymbolType.UINT);
-            this.symbolTable.setCategory($1, SymbolCategory.VARIABLE);
-            this.symbolTable.setScope($1, scopeStack.asText());
-
-            this.symbolTable.setType($3, SymbolType.UINT);
-            this.symbolTable.setCategory($3, SymbolCategory.VARIABLE);
-            this.symbolTable.setScope($3, scopeStack.asText());
-        }
-    | lista_variables ',' ID
-        { $$ = $3; }
-
-    // |========================= REGLAS DE ERROR =========================| //
-
-    | lista_variables ID
-        {
-            notifyError(String.format(
-                "Se encontraron dos variables juntas sin separación. Inserte una ',' entre '%s' y '%s'.",
-                $1, $2));
-            $$ = $2;
-        }
-    | ID ID
-        {
-            notifyError(String.format(
-                "Se encontraron dos variables juntas sin separación. Inserte una ',' entre '%s' y '%s'.",
-                $1, $2));
-            $$ = $2;
-        }
-    ;
 
 declaration_of_variables
     : UINT list_of_identifiers ';'
