@@ -55,8 +55,8 @@
 %token PRINT, IF, ELSE, ENDIF, UINT, CVR, DO, WHILE, RETURN
 
 // No terminales cuyo valor semántico asociado es un String.
-%type <sval> expresion, termino, factor, termino_simple, factor_simple, operador_suma, operador_multiplicacion,
-                inicio_funcion, variable, constante, invocacion_funcion,
+%type <sval> expression, termino, factor, termino_simple, factor_simple, operador_suma, operador_multiplicacion,
+                inicio_funcion, variable, constant, invocacion_funcion,
                 lista_argumentos, argumento, comparador, semantica_pasaje, parametro_lambda, argumento_lambda,
 
 %type <sval> identifier, list_of_identifiers
@@ -72,8 +72,8 @@
 // INICIO DE REGLAS
 // ====================================================================================================================
 
-programa
-    : nombre_programa cuerpo_programa
+program
+    : program_name program_body
         {
             if (!errorState) {
                 notifyDetection("Programa.");
@@ -84,13 +84,13 @@ programa
 
     // |========================= REGLAS DE ERROR =========================| //
 
-    | nombre_programa conjunto_sentencias
+    | program_name statement_list
         { notifyError("Las sentencias del programa deben estar delimitadas por llaves."); }
 
     // El error se muestra al comienzo y no al final.
-    | { notifyError("El programa requiere de un nombre."); } cuerpo_programa
+    | { notifyError("El programa requiere de un nombre."); } program_body
 
-    | error { notifyError("Inicio de programa inválido. Se encontraron sentencias previo al nombre del programa."); } nombre_programa cuerpo_programa
+    | error { notifyError("Inicio de programa inválido. Se encontraron sentencias previas al nombre del programa."); } program_name program_body
         
     | error EOF
         { notifyError("Se llegó al fin del programa sin encontrar un programa válido."); }
@@ -101,23 +101,23 @@ programa
 
 // --------------------------------------------------------------------------------------------------------------------
 
-nombre_programa
+program_name
     : ID
         { this.scopeStack.push($1); this.symbolTable.setCategory($1, SymbolCategory.PROGRAM); }
     ;
 
 // --------------------------------------------------------------------------------------------------------------------
 
-cuerpo_programa
-    : '{' conjunto_sentencias '}'
+program_body
+    : '{' statement_list '}'
 
     // |========================= REGLAS DE ERROR =========================| //
 
-    | '{' conjunto_sentencias lista_llaves_cierre
+    | '{' statement_list close_brace_list
         { notifyError("Se encontraron múltiples llaves al final del programa."); errorState = true; }
 
-    | lista_llaves_apertura // El error se presenta al detectar la lista de llaves de paertura y no, al finalizar el programa.
-        { notifyError("Se encontraron múltiples llaves al comienzo del programa."); errorState = true; } conjunto_sentencias '}'
+    | open_brace_list // El error se presenta al detectar la lista de llaves de paertura y no, al finalizar el programa.
+        { notifyError("Se encontraron múltiples llaves al comienzo del programa."); errorState = true; } statement_list '}'
 
     | '{' '}'
         { notifyError("El programa no posee ninguna sentencia."); errorState = true; }
@@ -129,23 +129,23 @@ cuerpo_programa
 
 // --------------------------------------------------------------------------------------------------------------------
 
-lista_llaves_apertura
+open_brace_list
     : '{' '{'
-    | lista_llaves_apertura '{'
+    | open_brace_list '{'
     ;
 
 // --------------------------------------------------------------------------------------------------------------------
 
-lista_llaves_cierre
+close_brace_list
     : '}' '}'
-    | lista_llaves_cierre '}'
+    | close_brace_list '}'
     ;
 
 // --------------------------------------------------------------------------------------------------------------------
                 
-conjunto_sentencias
-    : sentencia 
-    | conjunto_sentencias sentencia 
+statement_list
+    : statement 
+    | statement_list statement 
 
     // |========================= REGLAS DE ERROR =========================| //
 
@@ -155,16 +155,16 @@ conjunto_sentencias
 
 // --------------------------------------------------------------------------------------------------------------------
 
-sentencia
-    : sentencia_ejecutable 
-    | sentencia_declarativa
+statement
+    : executable_statement 
+    | declarative_statement
     ;
 
 // ********************************************************************************************************************
 // Sentencias declarativas
 // ********************************************************************************************************************
 
-sentencia_declarativa
+declarative_statement
     : declaration_of_variables
     | declaracion_funcion punto_y_coma_opcional
     ;
@@ -179,7 +179,7 @@ punto_y_coma_opcional
 // --------------------------------------------------------------------------------------------------------------------
 
 cuerpo_ejecutable
-    : sentencia_ejecutable
+    : executable_statement
     | bloque_ejecutable
     ;
 
@@ -197,15 +197,15 @@ bloque_ejecutable
 // --------------------------------------------------------------------------------------------------------------------
 
 conjunto_sentencias_ejecutables
-    : sentencia_ejecutable
-    | conjunto_sentencias_ejecutables sentencia_ejecutable
+    : executable_statement
+    | conjunto_sentencias_ejecutables executable_statement
     ;
 
 // ********************************************************************************************************************
 // Sentencias ejecutables
 // ********************************************************************************************************************
 
-sentencia_ejecutable
+executable_statement
     : invocacion_funcion ';'
         // Contexto en el que es invocada en línea.
         // No puede colocarse en las reglas propias porque se usa en factor.
@@ -250,7 +250,7 @@ declaration_of_variables
         {
             notifyError("La declaración de variables debe terminar con ';'.");
         }
-    | UINT identifier DASIG constante ';'
+    | UINT identifier DASIG constant ';'
         {
             notifyError("La declaración de variables y la asignación de un valor a estas debe realizarse en dos sentencias separadas.");
         }
@@ -306,7 +306,7 @@ identifier
 // ********************************************************************************************************************
 
 asignacion_simple
-    : variable DASIG expresion ';'                              
+    : variable DASIG expression ';'                              
         { 
 
             if (!errorState) {
@@ -334,11 +334,11 @@ asignacion_simple
 
     // |========================= REGLAS DE ERROR =========================| //
 
-    | variable DASIG expresion error
+    | variable DASIG expression error
         // Nunca reduce por esta regla por alguna razón que se desconoce.
         { notifyError("Las asignaciones simples deben terminar con ';'."); }
 
-    | variable expresion ';'
+    | variable expression ';'
         { notifyError("Error en asignación simple. Se esperaba un ':=' entre la variable y la expresión."); }
 
     | variable DASIG error
@@ -436,13 +436,13 @@ list_of_variables
 // --------------------------------------------------------------------------------------------------------------------
 
 list_of_constants
-    : constante
-    | list_of_constants ',' constante
+    : constant
+    | list_of_constants ',' constant
         { $$ = $1 + ',' + $3; }
 
     // |========================= REGLAS DE ERROR =========================| //
 
-    | list_of_constants constante
+    | list_of_constants constant
         {
             String[] constants = $1.split("\\s*,\\s*");
             String lastConstant = constants[constants.length - 1];
@@ -463,9 +463,9 @@ list_of_constants
 // Expresiones
 // ********************************************************************************************************************
 
-expresion
+expression
     : termino
-    | expresion operador_suma termino
+    | expression operador_suma termino
         { 
             $$ = $3;
             reversePolish.addTemporalPolish($2);
@@ -473,11 +473,11 @@ expresion
 
     // |========================= REGLAS DE ERROR =========================| //
 
-    | expresion operador_suma error
+    | expression operador_suma error
         {  
             notifyError(String.format("Falta de operando en expresión luego de '%s %s'.", $1, $2));
         }
-    | expresion termino_simple
+    | expression termino_simple
         {
             notifyError(String.format("Falta de operador entre operandos %s y %s.", $1, $2));
             $$ = $2;
@@ -559,7 +559,7 @@ factor
             this.errorCollector.removeLast(); // Debido a que se usa el token error.
             reversePolish.addTemporalPolish($1);
         }
-    | constante
+    | constant
         {
             reversePolish.addTemporalPolish($1);
         }
@@ -583,7 +583,7 @@ factor_simple
 
 // --------------------------------------------------------------------------------------------------------------------
 
-constante
+constant
     : CTE
     | '-' CTE
         {
@@ -663,16 +663,16 @@ condicion
 // --------------------------------------------------------------------------------------------------------------------
 
 cuerpo_condicion
-    : expresion comparador expresion
+    : expression comparador expression
         {
             reversePolish.addPolish($2);
         }
 
     // |========================= REGLAS DE ERROR =========================| //
 
-    | expresion termino_simple
+    | expression termino_simple
         { notifyError("Falta de comparador en comparación."); errorState = true; }
-    | expresion operador_suma termino
+    | expression operador_suma termino
         { notifyError("Falta de comparador en comparación."); errorState = true; }
     | termino
         { notifyError("Falta de comparador en comparación."); errorState = true; }
@@ -806,7 +806,7 @@ fin_cuerpo_iteracion
 // ********************************************************************************************************************
 
 declaracion_funcion
-    : inicio_funcion conjunto_parametros '{' conjunto_sentencias '}'
+    : inicio_funcion conjunto_parametros '{' statement_list '}'
         {
             if (!errorState) {
                 notifyDetection("Declaración de función.");
@@ -916,7 +916,7 @@ semantica_pasaje
 // ********************************************************************************************************************
 
 sentencia_retorno
-    : RETURN '(' expresion ')' ';'
+    : RETURN '(' expression ')' ';'
         {
             if (!errorState) {
                 this.reversePolish.makeTemporalPolishesDefinitive();
@@ -929,11 +929,11 @@ sentencia_retorno
     
     // |========================= REGLAS DE ERROR =========================| //
 
-    | RETURN '(' expresion ')' error
+    | RETURN '(' expression ')' error
         { notifyError("La sentencia RETURN debe terminar con ';'."); }
     | RETURN '(' ')' ';'
         { notifyError("El retorno no puede estar vacío."); }
-    | RETURN expresion ';'
+    | RETURN expression ';'
         { notifyError("El resultado a retornar debe ir entre paréntesis."); }
     | RETURN error
         { notifyError("Sentencia RETURN inválida."); }
@@ -961,12 +961,12 @@ lista_argumentos
 // --------------------------------------------------------------------------------------------------------------------
 
 argumento
-    : expresion FLECHA ID
+    : expression FLECHA ID
         { $$ = $1 + $2 + $3; }
 
     // |========================= REGLAS DE ERROR =========================| //
 
-    | expresion
+    | expression
         { notifyError("Falta de especificación del parámetro formal al que corresponde el parámetro real."); }
     ;
 
@@ -1023,7 +1023,7 @@ elemento_imprimible
         {
             reversePolish.addTemporalPolish($1);
         }
-    | expresion
+    | expression
     ;
 
 // ********************************************************************************************************************

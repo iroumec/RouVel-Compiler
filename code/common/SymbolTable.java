@@ -14,11 +14,18 @@ public final class SymbolTable {
 
     // --------------------------------------------------------------------------------------------
 
+    /**
+     * Constructor.
+     */
     private SymbolTable() {
     }
 
     // --------------------------------------------------------------------------------------------
 
+    /**
+     * 
+     * @return Una instancia de la tabla de símbolos.
+     */
     public static SymbolTable getInstance() {
         return INSTANCE;
     }
@@ -50,7 +57,10 @@ public final class SymbolTable {
     // --------------------------------------------------------------------------------------------
 
     /**
-     * Remplaza una entrada en la tabla de símbolos.
+     * Remplaza una entrada en la tabla por otra.
+     * 
+     * @param oldLexema Entrada a remplazar.
+     * @param newLexema Entrada por la que se hará el remplazo.
      */
     public void replaceEntry(String oldLexema, String newLexema) {
 
@@ -64,9 +74,12 @@ public final class SymbolTable {
         }
     }
 
+    // --------------------------------------------------------------------------------------------
+
     /**
-     * Reemplaza una entrada en la tabla por otra. Se utiliza únicamente en la
-     * detección de constantes negativas.
+     * Remplaza una entrada de la tabla de símbolos por su versión negativa.
+     * 
+     * @param lexema Lexema cuya entrada será remplazada.
      */
     public void switchEntrySign(String lexema) {
 
@@ -81,6 +94,12 @@ public final class SymbolTable {
 
     // --------------------------------------------------------------------------------------------
 
+    /**
+     * Modifica el tipo de un símbolo.
+     * 
+     * @param lexema Lexema que mapea al símbolo.
+     * @param type   Nuevo tipo del símbolo.
+     */
     public void setType(String lexema, SymbolType type) {
 
         Symbol symbol = this.symbolTable.get(lexema);
@@ -135,8 +154,9 @@ public final class SymbolTable {
      * Se decrementa, de no ser nulo, la cantidad de referencias del símbolo.
      * Si el número de referencias del símbolo llega a cero, se elimina de la tabla.
      * 
-     * @param lexema
-     * @param symbol
+     * @param lexema Lexema del símbolo a decrementar sus referencias. Útil para
+     *               mostrar mensajes de error en caso de que el símbolo sea nulo.
+     * @param symbol Símbolo cuyas referencias serán decrementadas.
      */
     private void decreaseReferences(String lexema, Symbol symbol) {
 
@@ -171,6 +191,8 @@ public final class SymbolTable {
     public boolean entryExists(String entry) {
         return this.symbolTable.containsKey(entry);
     }
+
+    // --------------------------------------------------------------------------------------------
 
     public void print() {
         SymbolTablePrinter.getInstance().print(this.symbolTable.values());

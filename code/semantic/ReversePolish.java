@@ -4,9 +4,6 @@ import java.util.List;
 import java.util.Deque;
 import java.util.ArrayList;
 import java.util.ArrayDeque;
-import java.util.Collections;
-
-import lexer.token.TokenType;
 import utilities.Printer;
 
 public final class ReversePolish {
@@ -58,29 +55,6 @@ public final class ReversePolish {
         this.stackedBifurcation.pop();
         this.polishes.set(this.polishes.size() - 2, Integer.toString(this.stackedBifurcation.pop()));
         this.polishes.set(this.polishes.size() - 1, "TB");
-    }
-
-    public void rearrangePairs() {
-        int lastIndex = polishes.size() - 1;
-        int i = lastIndex - 2;
-        while (i >= 0 && TokenType.fromSymbol(polishes.get(i)) == TokenType.CTE)
-            i--;
-        int pairAmount = lastIndex - 2 - i + 1;
-        int indexFirstVariable = lastIndex - (pairAmount * 2) + 1;
-
-        String firstVariable = this.polishes.remove(lastIndex - 1);
-        this.polishes.add(indexFirstVariable, firstVariable);
-
-        ArrayList<String> multipleAsignation = new ArrayList<>(
-                this.polishes.subList(indexFirstVariable, lastIndex + 1));
-        List<String> constants = multipleAsignation.subList(pairAmount, pairAmount * 2);
-        polishes.addAll(Collections.nCopies(pairAmount, null));
-
-        for (int j = 0; j < pairAmount; j++) {
-            polishes.set(j * 3 + indexFirstVariable, multipleAsignation.get(j));
-            polishes.set(j * 3 + indexFirstVariable + 1, constants.get(j));
-            polishes.set(j * 3 + indexFirstVariable + 2, ":=");
-        }
     }
 
     /**
