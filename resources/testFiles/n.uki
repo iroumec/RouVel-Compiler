@@ -19,6 +19,7 @@ MAIN {
     
         uint A, B, C, D;
 
+        ## Acá hay un tema... El valor en la tabla de símbolos no debería asignarse hasta que se invoque la función...###
         A, B, C, D = 32UI, 15UI, 9UI, 7UI, 89UI;
 
         Z := 3UI;
