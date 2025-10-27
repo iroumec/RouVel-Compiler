@@ -8,28 +8,39 @@ import java.util.Map;
 
 import utilities.Printer;
 
-public class SymbolTablePrinter {
+/**
+ * Clase responsable de la impresión formateada de la tabla de símbolos.
+ * 
+ * Implementa el patrón Singleton utilizando el idiom "Initialization-on-demand
+ * holder",
+ * el cual es thread-safe y garantiza la inicialización diferida sin necesidad
+ * de sincronización explícita.
+ */
+public final class SymbolTablePrinter {
 
-    private static SymbolTablePrinter INSTANCE;
+    // ============================================================================================
+    // Singleton thread-safe y lazy-loaded
+    // ============================================================================================
 
     private SymbolTablePrinter() {
     }
 
-    public static SymbolTablePrinter getInstance() {
-
-        if (INSTANCE == null) {
-            INSTANCE = new SymbolTablePrinter();
-        }
-
-        return INSTANCE;
+    private static class Holder {
+        private static final SymbolTablePrinter INSTANCE = new SymbolTablePrinter();
     }
 
-    static void printSymbolTable() {
-
+    public static SymbolTablePrinter getInstance() {
+        return Holder.INSTANCE;
     }
 
     // ============================================================================================
-    // Impresión de la Tabla (Objetivo Estéticos)
+    // Configuración
+    // ============================================================================================
+
+    private static final String[] HEADERS = { "Lexema", "Valor", "Tipo", "Categoría", "Referencias" };
+
+    // ============================================================================================
+    // Impresión de la Tabla de Símbolos
     // ============================================================================================
 
     /**
@@ -41,55 +52,41 @@ public class SymbolTablePrinter {
             return;
         }
 
-        // Se analizan y calculan los anchos de columna.
-        String[] headers = { "Lexema", "Valor", "Tipo", "Categoría", "Referencias" };
-        Map<String, Integer> columnWidths = calculateColumnWidths(headers, symbols);
+        // Se calculan los anchos de las columnas.
+        Map<String, Integer> columnWidths = calculateColumnWidths(HEADERS, symbols);
 
-        // Se crean las plantillas para las filas y separadores.
-        String rowFormat = buildRowFormat(headers, columnWidths);
+        // Se crean las plantillas de formato.
+        String rowFormat = buildRowFormat(HEADERS, columnWidths);
 
-        // Se imprime toda la tabla.
-        printHeader(rowFormat, headers);
-        printBody(rowFormat, headers, columnWidths, symbols);
+        // Se imprime el encabezado y cuerpo de la tabla.
+        printHeader(rowFormat, HEADERS);
+        printBody(rowFormat, columnWidths, symbols);
 
-        // Se imprime el separador al final de la tabla.
         Printer.printSeparator();
     }
 
-    // =====================================================================
-    // MÉTODOS PRIVADOS AUXILIARES
-    // =====================================================================
+    // ============================================================================================
+    // Métodos auxiliares
+    // ============================================================================================
 
     /**
-     * Calcula los anchos de columna, aplicando un límite máximo a la columna del
-     * lexema.
+     * Calcula los anchos de columna a partir de los encabezados y el contenido.
+     * Aplica un límite máximo al ancho de la columna "Lexema".
      */
     private Map<String, Integer> calculateColumnWidths(String[] headers, Collection<Symbol> symbols) {
         Map<String, Integer> widths = new LinkedHashMap<>();
-        for (String header : headers) {
-            widths.put(header, header.length()); // Ancho mínimo es el del encabezado.
-        }
+        for (String header : headers)
+            widths.put(header, header.length());
 
-        // Se define un ancho máximo para el lexema como un porcentaje del total.
-        // Por ejemplo, que el lexema no ocupe más del 50% del ancho de la consola.
         int maxLexemaWidth = Printer.getLineWidth() / 2;
 
-        for (Symbol symbol : symbols) {
-
-            // Las constante no se tienen en cuenta.
-            if (true /* symbol.getCategory() != SymbolCategory.CONSTANT */) {
-
-                // Se usa Math.min para no superar el ancho máximo del lexema.
-                int lexemaLength = symbol.getLexema().length();
-                widths.put("Lexema", Math.min(maxLexemaWidth, Math.max(widths.get("Lexema"), lexemaLength)));
-                widths.put("Valor", Math.max(widths.get("Valor"), symbol.getValue().length()));
-                widths.put("Tipo", Math.max(widths.get("Tipo"), this.convertToText(symbol.getType()).length()));
-                widths.put("Categoría",
-                        Math.max(widths.get("Categoría"), this.convertToText(symbol.getCategory()).length()));
-                widths.put("Referencias",
-                        Math.max(widths.get("Referencias"), String.valueOf(symbol.getReferences()).length()));
-            }
-        }
+        symbols.forEach(symbol -> {
+            widths.compute("Lexema", (_, v) -> Math.min(maxLexemaWidth, Math.max(v, symbol.getLexema().length())));
+            widths.compute("Valor", (_, v) -> Math.max(v, symbol.getValue().length()));
+            widths.compute("Tipo", (_, v) -> Math.max(v, safeToString(symbol.getType()).length()));
+            widths.compute("Categoría", (_, v) -> Math.max(v, safeToString(symbol.getCategory()).length()));
+            widths.compute("Referencias", (_, v) -> Math.max(v, String.valueOf(symbol.getReferences()).length()));
+        });
 
         distributeExtraSpace(headers, widths);
         return widths;
@@ -98,33 +95,30 @@ public class SymbolTablePrinter {
     // --------------------------------------------------------------------------------------------
 
     /**
-     * Distribuye el espacio sobrante entre las columnas, EXCLUYENDO el lexema.
+     * Distribuye el espacio sobrante entre las columnas, excluyendo el "Lexema".
      */
     private void distributeExtraSpace(String[] headers, Map<String, Integer> widths) {
         int requiredWidth = widths.values().stream().mapToInt(Integer::intValue).sum() + (headers.length * 3) + 1;
         int extraSpace = Printer.getLineWidth() - requiredWidth;
 
-        if (extraSpace > 0) {
-            // El espacio extra se reparte solo entre las columnas secundarias.
-            int otherColumnsCount = headers.length - 1;
-            if (otherColumnsCount > 0) {
-                int spacePerColumn = extraSpace / otherColumnsCount;
-                for (String header : headers) {
-                    if (!header.equals("Lexema")) { // No se agrega espacio extra al lexema.
-                        widths.put(header, widths.get(header) + spacePerColumn);
-                    }
-                }
+        if (extraSpace <= 0)
+            return;
 
-                // El resto se puede repartir entre las columnas restantes de forma simple.
-                int remainingSpace = extraSpace % otherColumnsCount;
-                for (String header : headers) {
-                    if (remainingSpace == 0)
-                        break;
-                    if (!header.equals("Lexema")) {
-                        widths.put(header, widths.get(header) + 1);
-                        remainingSpace--;
-                    }
+        int otherColumns = headers.length - 1;
+        if (otherColumns <= 0)
+            return;
+
+        int spacePerColumn = extraSpace / otherColumns;
+        int remaining = extraSpace % otherColumns;
+
+        for (String header : headers) {
+            if (!header.equals("Lexema")) {
+                int newWidth = widths.get(header) + spacePerColumn;
+                if (remaining > 0) {
+                    newWidth++;
+                    remaining--;
                 }
+                widths.put(header, newWidth);
             }
         }
     }
@@ -132,8 +126,7 @@ public class SymbolTablePrinter {
     // --------------------------------------------------------------------------------------------
 
     /**
-     * Se construye el string de formato para una fila (ej: "| %-20s | %-10s
-     * |").
+     * Construye el formato de impresión para cada fila (ej: "| %-20s | %-10s |").
      */
     private String buildRowFormat(String[] headers, Map<String, Integer> widths) {
         StringBuilder builder = new StringBuilder("|");
@@ -146,7 +139,7 @@ public class SymbolTablePrinter {
     // --------------------------------------------------------------------------------------------
 
     /**
-     * Se imprime el título y la cabecera de la tabla.
+     * Imprime la cabecera de la tabla.
      */
     private void printHeader(String format, String[] headers) {
         Printer.printSeparator();
@@ -159,73 +152,52 @@ public class SymbolTablePrinter {
     // --------------------------------------------------------------------------------------------
 
     /**
-     * Se imprime el cuerpo de la tabla, manejando el ajuste de líneas.
+     * Imprime el cuerpo de la tabla de símbolos.
+     * Maneja el ajuste de texto para lexemas largos.
      */
-    private void printBody(String rowFormat, String[] headers, Map<String, Integer> widths,
-            Collection<Symbol> symbols) {
-
+    private void printBody(String rowFormat, Map<String, Integer> widths, Collection<Symbol> symbols) {
         for (Symbol symbol : symbols) {
+            List<String> lexemaLines = wrapText(symbol.getLexema(), widths.get("Lexema"));
 
-            // Las constantes no se imprimen.
-            if (true/* symbol.getCategory() != SymbolCategory.CONSTANT */) {
+            // Primera línea con todos los datos.
+            Printer.print(String.format(rowFormat,
+                    lexemaLines.get(0),
+                    symbol.getValue(),
+                    safeToString(symbol.getType()),
+                    safeToString(symbol.getCategory()),
+                    String.valueOf(symbol.getReferences())));
 
-                List<String> lexemaLines = wrapText(symbol.getLexema(), widths.get("Lexema"));
-
-                // Imprime la primera (o única) línea con todos los datos.
-                String firstLexema = lexemaLines.isEmpty() ? "" : lexemaLines.get(0);
-                Printer.print(String.format(rowFormat,
-                        firstLexema,
-                        symbol.getValue(),
-                        convertToText(symbol.getType()),
-                        symbol.getCategory(),
-                        String.valueOf(symbol.getReferences())));
-
-                // Imprime las líneas restantes del lexema si existen.
-                for (int i = 1; i < lexemaLines.size(); i++) {
-                    // CORRECCIÓN: Ahora tiene 5 argumentos (1 para el lexema + 4 vacíos).
-                    Printer.print(String.format(rowFormat, lexemaLines.get(i), "", "", "", ""));
-                }
-
-                Printer.printSeparator();
+            // Líneas adicionales solo para el lexema.
+            for (int i = 1; i < lexemaLines.size(); i++) {
+                Printer.print(String.format(rowFormat, lexemaLines.get(i), "", "", "", ""));
             }
-        }
-    }
 
-    // --------------------------------------------------------------------------------------------
-
-    private String convertToText(SymbolType type) {
-
-        if (type != null) {
-            return type.toString();
-        } else {
-            return "";
-        }
-    }
-
-    // --------------------------------------------------------------------------------------------
-
-    private String convertToText(SymbolCategory category) {
-
-        if (category != null) {
-            return category.toString();
-        } else {
-            return "";
+            Printer.printSeparator();
         }
     }
 
     // --------------------------------------------------------------------------------------------
 
     /**
-     * Método auxiliar para dividir un texto si excede un ancho máximo.
+     * Convierte un objeto a texto de forma segura.
+     * Retorna cadena vacía si es null.
+     */
+    private String safeToString(Object o) {
+        return o == null ? "" : o.toString();
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    /**
+     * Divide un texto largo en varias líneas, según un ancho máximo.
      */
     private List<String> wrapText(String text, int maxWidth) {
-        List<String> lines = new ArrayList<>();
-        if (text == null || text.isEmpty()) {
-            lines.add("");
-            return lines;
-        }
-        for (int i = 0; i < text.length(); i += maxWidth) {
-            lines.add(text.substring(i, Math.min(text.length(), i + maxWidth)));
+        if (text == null || text.isEmpty())
+            return List.of("");
+        int len = text.length();
+        List<String> lines = new ArrayList<>((len + maxWidth - 1) / maxWidth);
+        for (int i = 0; i < len; i += maxWidth) {
+            lines.add(text.substring(i, Math.min(len, i + maxWidth)));
         }
         return lines;
     }
