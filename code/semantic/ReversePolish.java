@@ -8,15 +8,19 @@ import utilities.Printer;
 
 public final class ReversePolish {
 
+    private static final String EXIT_TEXT = "Leaving scope";
+    private static final String ENTRY_TEXT = "Entering scope";
+
     private static final ReversePolish INSTANCE = new ReversePolish();
 
-    private static final String ENTRY_TEXT = "Entering scope";
-    private static final String EXIT_TEXT = "Leaving scope";
+    // --------------------------------------------------------------------------------------------
 
     private int polishNumber;
     private final List<Element> elements;
     private final List<String> temporalPolishes;
     private final Deque<Integer> stackedBifurcation;
+
+    // --------------------------------------------------------------------------------------------
 
     private ReversePolish() {
         this.polishNumber = 0;
@@ -25,68 +29,85 @@ public final class ReversePolish {
         this.stackedBifurcation = new ArrayDeque<>();
     }
 
+    // --------------------------------------------------------------------------------------------
+
     public static ReversePolish getInstance() {
         return INSTANCE;
     }
+
+    // --------------------------------------------------------------------------------------------
+    // Agregado de Polacas
+    // --------------------------------------------------------------------------------------------
 
     public void addPolish(String symbol) {
         this.elements.add(new Polish(symbol, ++this.polishNumber));
     }
 
+    // --------------------------------------------------------------------------------------------
+    // Agregado de Separadores
+    // --------------------------------------------------------------------------------------------
+
     public void addEntrySeparation(String separationLabel) {
         this.addSeparation(separationLabel, ENTRY_TEXT);
     }
+
+    // --------------------------------------------------------------------------------------------
 
     public void addExitSeparation(String separationLabel) {
         this.addSeparation(separationLabel, EXIT_TEXT);
     }
 
+    // --------------------------------------------------------------------------------------------
+
     private void addSeparation(String separationLabel, String prefixLabel) {
         this.elements.add(new Separator(separationLabel, prefixLabel));
     }
 
-    public void addFalseBifurcation() {
-        this.stackedBifurcation.push(++this.polishNumber);
-        this.elements.add(new Polish("FB", ++polishNumber));
-    }
-
-    public void addInconditionalBifurcation() {
-        System.out.println("Entré acá, supuestamente");
-        this.stackedBifurcation.push(++this.polishNumber);
-        this.completeBifurcation();
-        this.elements.add(new Polish("IB", ++polishNumber));
-    }
-
-    public void completeBifurcation() {
-        int bifurcationIndex = this.stackedBifurcation.pop();
-        this.elements.add(bifurcationIndex, new Polish(String.valueOf(polishNumber + 1), bifurcationIndex));
-    }
+    // --------------------------------------------------------------------------------------------
+    // Construcción de la Polaca de Iteraciones
+    // --------------------------------------------------------------------------------------------
 
     public void stackBifurcationPoint() {
         this.stackedBifurcation.push(this.polishNumber + 1);
     }
+
+    // --------------------------------------------------------------------------------------------
 
     public void connectToLastBifurcationPoint() {
         int bifurcationPoint = this.stackedBifurcation.pop();
         this.elements.add(new Polish(String.valueOf(bifurcationPoint), ++this.polishNumber));
     }
 
+    // --------------------------------------------------------------------------------------------
+    // Construcción de la Polaca de Selecciones
+    // --------------------------------------------------------------------------------------------
+
     public void promiseBifurcationPoint() {
         this.stackedBifurcation.push(++this.polishNumber);
     }
+
+    // --------------------------------------------------------------------------------------------
 
     public void fulfillLastBifurcationPointPromise() {
         int bifurcationIndex = this.stackedBifurcation.pop();
         this.elements.add(bifurcationIndex, new Polish(String.valueOf(polishNumber + 1), bifurcationIndex));
     }
 
+    // --------------------------------------------------------------------------------------------
+
     public int getLastPromise() {
         return this.stackedBifurcation.pop();
     }
 
+    // --------------------------------------------------------------------------------------------
+
     public void fulfillPromise(int bifurcationPoint) {
         this.elements.add(bifurcationPoint, new Polish(String.valueOf(polishNumber + 1), bifurcationPoint));
     }
+
+    // --------------------------------------------------------------------------------------------
+    //
+    // --------------------------------------------------------------------------------------------
 
     /**
      * No siempre todos los factores deben agregarse a la polaca. Acá se guardarán

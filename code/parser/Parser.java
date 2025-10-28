@@ -1534,7 +1534,7 @@ case 122:
 break;
 case 123:
 //#line 820 "gramatica.y"
-{ this.reversePolish.stackBifurcationPoint(); }
+{ this.reversePolish.promiseBifurcationPoint(); }
 break;
 case 125:
 //#line 829 "gramatica.y"

@@ -817,7 +817,7 @@ do_while
 
 do_while_start
     : DO
-        { this.reversePolish.stackBifurcationPoint(); }
+        { this.reversePolish.promiseBifurcationPoint(); }
     ;
 
 cuerpo_iteracion
