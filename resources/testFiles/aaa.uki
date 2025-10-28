@@ -7,7 +7,7 @@ MAIN {
     } else {
         print("FALSE-START");
 
-        if (X > 3) {
+        if (X > 3UI) {
             print("FALSE-TRUE");
         } else {
             print("FALSE-FALSE");

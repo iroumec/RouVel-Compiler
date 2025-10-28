@@ -1083,10 +1083,9 @@ lambda
         { 
             if (!errorState) {
 
+                // Se llena el punto de agregación reservado con la asignación
+                // del argumento al parámetro.
                 this.reversePolish.fillLastAggregatePoint($1, $3, ":=");
-
-                // Se agregan todas las polacas del bloque ejecutable.
-                //this.reversePolish.makeTemporalPolishesDefinitive();
 
                 notifyDetection("Expresión lambda.");
                 this.reversePolish.addSeparation("Leaving lambda expression body...");
@@ -1210,7 +1209,7 @@ private void yyerror(String s) {
 
 private void notifyDetection(String message) {
     Printer.printWrapped(String.format(
-        "DETECCIÓN SEMÁNTICA: %s",
+        "DETECCIÓN SINTÁCTICA: %s",
         message
     ));
 }
