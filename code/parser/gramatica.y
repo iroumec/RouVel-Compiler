@@ -1083,9 +1083,7 @@ lambda
         { 
             if (!errorState) {
 
-                this.reversePolish.addPolish($1);
-                this.reversePolish.addPolish($3);
-                this.reversePolish.addPolish(":=");
+                this.reversePolish.fillLastAggregatePoint($1, $3, ":=");
 
                 // Se agregan todas las polacas del bloque ejecutable.
                 //this.reversePolish.makeTemporalPolishesDefinitive();

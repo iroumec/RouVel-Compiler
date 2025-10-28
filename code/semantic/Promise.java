@@ -5,6 +5,8 @@ package semantic;
  * pueden completarse en un futuro en el que la cantidad actual de separaciones
  * no es la que había al momento en el que se realizó la promesa. Como
  * resultado, el índice de la polaca podría ser erróneo.
+ * 
+ * Lo mismo con los AggregatePoints.
  */
 public record Promise(int bifurcationPoint, int separations) {
 

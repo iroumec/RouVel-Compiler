@@ -17,7 +17,7 @@ public final class ReversePolish {
     private final List<Element> elements;
     private final List<String> temporalPolishes;
     private final Deque<Promise> stackedPromises;
-    private final Deque<Integer> aggregatePoints;
+    private final Deque<AggregatePoint> aggregatePoints;
 
     // --------------------------------------------------------------------------------------------
 
@@ -65,7 +65,7 @@ public final class ReversePolish {
 
     public void connectToLastBifurcationPoint() {
         Promise promise = this.stackedPromises.pop();
-        this.elements.add(new Polish(String.valueOf(promise.bifurcationPoint()), ++this.polishNumber));
+        this.elements.add(new BifurcationPoint(String.valueOf(promise.bifurcationPoint()), ++this.polishNumber));
     }
 
     // --------------------------------------------------------------------------------------------
@@ -94,7 +94,8 @@ public final class ReversePolish {
         // ya que ocupan lugar en la lista.
         this.elements.remove(promise.bifurcationPoint() - 1);
         this.elements.add(promise.bifurcationPoint() - 1,
-                new Polish(String.valueOf(polishNumber + 1), promise.bifurcationPoint() - promise.separations()));
+                new BifurcationPoint(String.valueOf(polishNumber + 1),
+                        promise.bifurcationPoint() - promise.separations()));
     }
 
     // --------------------------------------------------------------------------------------------
@@ -102,21 +103,25 @@ public final class ReversePolish {
     // --------------------------------------------------------------------------------------------
 
     public void setAggregatePoint() {
-        this.aggregatePoints.push(polishNumber);
+        // Comienza a partir del último elemento, con `polishNumber` como primer número
+        // de polaca.
+        this.aggregatePoints.push(new AggregatePoint(this.elements.size(), polishNumber));
     }
 
     // --------------------------------------------------------------------------------------------
 
     public void fillLastAggregatePoint(String... symbols) {
-        int aggregatePoint = this.aggregatePoints.pop();
-        int startIndex = aggregatePoint;
+        AggregatePoint aggregatePoint = this.aggregatePoints.pop();
+
+        int index = aggregatePoint.startIndex();
+        int polishNumber = aggregatePoint.firstPolishNumber();
 
         for (String symbol : symbols) {
-            this.elements.add(new Polish(symbol, ++aggregatePoint));
+            this.elements.add(++index, new Polish(symbol, ++polishNumber));
         }
 
         // Incrementar a todos los elementos *posteriores* a los nuevos.
-        this.elements.subList(startIndex + symbols.length, elements.size())
+        this.elements.subList(aggregatePoint.startIndex() + symbols.length + 1, elements.size())
                 .forEach(e -> e.increaseNumber(symbols.length));
     }
 
