@@ -2,7 +2,7 @@ package utilities;
 
 public final class Printer {
 
-    private final static int LINE_WIDTH = 120;
+    private final static int LINE_WIDTH = 130;
     private final static String SEPARATOR;
     private static String lastMessagePrinted = null;
 

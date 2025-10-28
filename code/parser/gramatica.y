@@ -56,7 +56,7 @@
 %token PRINT, IF, ELSE, ENDIF, UINT, CVR, DO, WHILE, RETURN
 
 // No terminales cuyo valor semántico asociado es un String.
-%type <sval> expression, termino, factor, termino_simple, factor_simple, operador_suma, operador_multiplicacion,
+%type <sval> expression, term, factor, term_simple, factor_simple, operador_suma, operador_multiplicacion,
                 inicio_funcion, variable, constant, invocacion_funcion,
                 lista_argumentos, argumento, comparador, semantica_pasaje, parametro_lambda, argumento_lambda,
 
@@ -246,7 +246,12 @@ declaration_of_variables
     : UINT list_of_identifiers ';'
         {
             if (!errorState) {
-                { notifyDetection("Declaración de variables."); }
+
+                if ($2.split("\\s*,\\s*").length == 1) {
+                    notifyDetection("Declaración de variable.");
+                } else {
+                    notifyDetection("Declaración de variables.");
+                }
             } else {
                 errorState = false;
             }
@@ -472,8 +477,8 @@ list_of_constants
 // ********************************************************************************************************************
 
 expression
-    : termino
-    | expression operador_suma termino
+    : term
+    | expression operador_suma term
         { 
             $$ = $3;
             reversePolish.addTemporalPolish($2);
@@ -485,14 +490,14 @@ expression
         {  
             notifyError(String.format("Falta de operando en expresión luego de '%s %s'.", $1, $2));
         }
-    | expression termino_simple
+    | expression term_simple
         {
             notifyError(String.format("Falta de operador entre operandos %s y %s.", $1, $2));
             $$ = $2;
         }
     // Se especifica únicamente el operador suma ya que, de contemplarse también el operador
     // de resta, no sería posible distinguir entre una constante negativa o un operando faltante.
-    | '+' termino
+    | '+' term
         {
             notifyError(String.format("Falta de operando en expresión previo a '+ %s'.",$2));
             $$ = $2;
@@ -510,8 +515,8 @@ operador_suma
 
 // --------------------------------------------------------------------------------------------------------------------
 
-termino                         
-    : termino operador_multiplicacion factor
+term                         
+    : term operador_multiplicacion factor
         {   
             reversePolish.addTemporalPolish($2);
             $$ = $3; 
@@ -520,7 +525,7 @@ termino
 
     // |========================= REGLAS DE ERROR =========================| //
 
-    | termino operador_multiplicacion error
+    | term operador_multiplicacion error
         {
             notifyError(String.format(
                 "Falta de operando en expresión luego de '%s %s'.",
@@ -533,8 +538,8 @@ termino
 
 // -------------------------------------------------------------------------------------------------------------------
 
-termino_simple
-    : termino_simple operador_multiplicacion factor
+term_simple
+    : term_simple operador_multiplicacion factor
         {   
             reversePolish.addTemporalPolish($2);
             $$ = $1;
@@ -543,7 +548,7 @@ termino_simple
 
     // |========================= REGLAS DE ERROR =========================| //
 
-    | termino_simple operador_multiplicacion error
+    | term_simple operador_multiplicacion error
         { notifyError(String.format("Falta de operando en expresión luego de '%s %s'.",$1, $2)); }
     ;
 
@@ -678,11 +683,11 @@ cuerpo_condicion
 
     // |========================= REGLAS DE ERROR =========================| //
 
-    | expression termino_simple
+    | expression term_simple
         { notifyError("Falta de comparador en comparación."); errorState = true; }
-    | expression operador_suma termino
+    | expression operador_suma term
         { notifyError("Falta de comparador en comparación."); errorState = true; }
-    | termino
+    | term
         { notifyError("Falta de comparador en comparación."); errorState = true; }
     ;
 
@@ -1209,8 +1214,8 @@ private void yyerror(String s) {
 
 private void notifyDetection(String message) {
     Printer.printWrapped(String.format(
-        "DETECCIÓN SINTÁCTICA: %s",
-        message
+        "DETECCIÓN SINTÁCTICA: Línea %d: %s",
+        lexer.getNroLinea(), message
     ));
 }
 

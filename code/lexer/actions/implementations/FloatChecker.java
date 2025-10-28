@@ -42,7 +42,7 @@ public class FloatChecker implements SemanticAction {
         lexema = cleanFloat(lexema);
         lexema = parseToFloat(lexema, lexicalAnalyzer);
 
-        //lexicalAnalyzer.loadLexema(lexema);
+        // lexicalAnalyzer.loadLexema(lexema);
 
         lexicalAnalyzer.loadType(SymbolType.FLOAT);
 
@@ -90,7 +90,7 @@ public class FloatChecker implements SemanticAction {
         String number = transformToScientific(lexema);
 
         if (!isInRange(number)) {
-            lexicalAnalyzer.notifyWarning("""
+            lexicalAnalyzer.notifyError("""
                     El número flotante %s está fuera del rango de representación. \
                     Se asignará el valor 0.0.
                     """.formatted(number));

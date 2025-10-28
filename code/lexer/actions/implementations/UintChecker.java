@@ -40,7 +40,7 @@ public class UintChecker implements SemanticAction {
 
         if (!isInRange(lexema)) {
 
-            lexicalAnalyzer.notifyWarning("""
+            lexicalAnalyzer.notifyError("""
                     El número %s está fuera del rango de uint. \
                     Se ajustará al máximo en el rango permitido \
                     [0, %d]. \

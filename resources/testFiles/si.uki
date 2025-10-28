@@ -1,0 +1,110 @@
+MAIN {##
+    En el siguiente programa, se pondrán a prueba los casos correspondientes al analizador léxico y otros errores contemplados por el grupo.
+    En el resultado de la compilación estarán presentes errores sintácticos pero no deben ser atendidos.
+##
+
+## IMPORTANTE:
+    En la etapa del análisis léxico no es capaz de detectar constantes 
+    negativas, únicamente evalúa el valor absoluto de las mismas ##
+
+## ----------------------------| Constantes con el primer y último valor dentro del rango |---------------------------- ## 
+
+    uint FUNC(uint B, cvr uint A) {
+        return(3UI);
+    }
+
+0UI
+65535UI
+-3.40282347F+38
+-340282347000000000000000000000000000000.
+3.40282347F+38
+340282347000000000000000000000000000000.
+
+## ----------------------------| Constantes con el primer y último valor fuera del rango |---------------------------- ##
+-1UI
+65536UI
+-340282347000000000000000000000000000001.
+340282347000000000000000000000000000001.
+
+## ----------------------------| Punto flotante |---------------------------- ##
+2.5F+34                             ## Parte entera con parte decimal, exponente positivo ##
+2.5F-1                              ## Parte entera con parte decimal, exponente negativo ##
+1.2                                 ## Parte entera con parte decimal, sin exponente##
+8.F+4                               ## Parte entera sin parte decimal, exponente positivo ##
+3.F-5                               ## Parte entera sin parte decimal, exponente negativo ##
+1.                                  ## Parte entera sin parte decimal, sin exponente ##
+.2F+10                              ## Parte decimal sin parte entera, exponente positivo ##
+.3F-3                               ## Parte decimal sin parte entera, exponente negativo ##
+.6                                  ## Parte decimal sin parte entera, sin exponente ##
+0.0
+0.
+.0
+000.000
+
+## ----------------------------| Identificadores |---------------------------- ##
+IDEN%MENOS%DE%VEINTE
+IDENTIF%MAS%DE%VEINTE
+ID3NT1F1C4D0R
+
+ID3NT1F1C@DOR 
+
+## ----------------------------| Palabras reservadas |---------------------------- ##
+if IF 
+while WHILE 
+do DO 
+else ELSE
+uint UINT 
+print PRINT 
+endif ENDIF 
+return RETURN
+
+## ----------------------------| Comentarios |---------------------------- ##
+## Los comentarios los descarta, no se verán en el resultado de la compilacion ##
+# Comentario mal hecho #
+
+## ----------------------------| Cadenas |---------------------------- ##
+"Cadena bien escrita"
+
+''Cadena mal escrita''
+"La variable "x" es una variable"
+
+## ----------------------------| Otro |---------------------------- ##
+32TR
+14UH
+15UI
+IDENTIFICADOR45UI
+
+## -1: Símbolo inválido ##
+¿
+
+## -2: Número indeterminado ##
+32
+
+## -3: Sufijo UI incorrecto ##
+B := 30U
+
+## -4: Exponente sin signo ##
+1.3F12
+0.2F 1
+0.3F
+
+## -5: Sin exponente ##
+0.4F+
+0.4F-
+
+## -6: Operador de asignación inválido ##
+A : 55UI
+
+## -7: Salto de línea en cadena de caracteres ##
+"Hola, Fernando 
+¿Qué tal Felipe?"
+
+## -8: Inicialización de comentario erronea ##
+#
+
+## Token desconocido ##
+fi
+then
+od 
+
+}
