@@ -71,6 +71,23 @@ public final class ReversePolish {
         this.elements.add(new Polish(String.valueOf(bifurcationPoint), ++this.polishNumber));
     }
 
+    public void promiseBifurcationPoint() {
+        this.stackedBifurcation.push(++this.polishNumber);
+    }
+
+    public void fulfillLastBifurcationPointPromise() {
+        int bifurcationIndex = this.stackedBifurcation.pop();
+        this.elements.add(bifurcationIndex, new Polish(String.valueOf(polishNumber + 1), bifurcationIndex));
+    }
+
+    public int getLastPromise() {
+        return this.stackedBifurcation.pop();
+    }
+
+    public void fulfillPromise(int bifurcationPoint) {
+        this.elements.add(bifurcationPoint, new Polish(String.valueOf(polishNumber + 1), bifurcationPoint));
+    }
+
     /**
      * No siempre todos los factores deben agregarse a la polaca. Acá se guardarán
      * estos y, luego, de ser necesarios, se añaden.

@@ -1,0 +1,26 @@
+MAIN {
+
+    uint K, X;
+
+    if (K > 3UI) {
+        print("FI");
+    } endif;
+
+    print("Yes");
+
+    if (K < 9UI) {
+        print("TRUE");
+    } else {
+        print("FALSE-START");
+
+        if (X > 3) {
+            print("FALSE-TRUE");
+        } else {
+            print("FALSE-FALSE");
+        } endif;
+
+        print("FALSE-END");
+
+    } endif;
+
+}

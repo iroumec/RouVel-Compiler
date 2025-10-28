@@ -647,7 +647,6 @@ condicion
     : '(' cuerpo_condicion ')'
         { 
             if (!errorState) {
-                //reversePolish.addFalseBifurcation();
                 notifyDetection("Condición."); 
             } else {
                 errorState = false; // TODO: creo que no debería reiniciarse el erro acá.
@@ -712,10 +711,10 @@ comparador
 // ********************************************************************************************************************
 
 if 
-    : IF condicion cuerpo_if
+    : if_start cuerpo_if
         { 
             if (!errorState) {
-                this.reversePolish.completeBifurcation();
+                this.reversePolish.fulfillPromise(this.reversePolish.getLastPromise());
                 notifyDetection("Sentencia IF."); 
             } else {
                 errorState = false;
@@ -727,6 +726,14 @@ if
 
     | IF error
         { notifyError("Sentencia IF inválida."); }
+    ;
+
+if_start
+    : IF condicion
+        {
+            this.reversePolish.promiseBifurcationPoint();
+            this.reversePolish.addPolish("FB");
+        }
     ;
 
 cuerpo_if 
@@ -764,7 +771,18 @@ rama_else
 // Refactorización necesaria para ejecución temprana de acciones semánticas.
 else_start
     : ELSE
-        { this.reversePolish.addInconditionalBifurcation(); }
+        {
+            // Se obtiene la promesa del cuerpo then.
+            int promise = this.reversePolish.getLastPromise();
+
+            // Se promete un nuevo punto de bifurcación.
+            this.reversePolish.promiseBifurcationPoint();
+            this.reversePolish.addPolish("IB");
+
+            // Se cumple la promesa obtenida al comienzo.
+            // Es necesario que se realice así para respetar los índices de la polaca.
+            this.reversePolish.fulfillPromise(promise);
+        }
     ;
 
 // ********************************************************************************************************************
