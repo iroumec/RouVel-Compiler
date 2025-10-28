@@ -51,17 +51,20 @@ public final class ReversePolish {
     }
 
     public void addInconditionalBifurcation() {
-        // int incompletePolish = this.stackedBifurcation.pop() - 1;
-        // this.polishes.add(" ");
-        this.stackedBifurcation.push(++polishNumber);
-        // this.polishes.add("IB");
-        // this.polishes.set(incompletePolish, Integer.toString(this.polishes.size() +
-        // 1));
+        System.out.println("Entré acá, supuestamente");
+        this.stackedBifurcation.push(++this.polishNumber);
+        this.elements.add(new Polish("IB", ++polishNumber));
+        this.completeThenBifurcation();
     }
 
     public void completeSelection() {
-        // this.polishes.set(this.stackedBifurcation.pop() - 1,
-        // Integer.toString(this.polishes.size() + 1));
+        int bifurcationIndex = this.stackedBifurcation.pop();
+        this.elements.add(bifurcationIndex, new Polish(String.valueOf(polishNumber + 1), bifurcationIndex));
+    }
+
+    public void completeThenBifurcation() {
+        int bifurcationIndex = this.stackedBifurcation.pop();
+        this.elements.add(bifurcationIndex - 1, new Polish(String.valueOf(polishNumber + 1), bifurcationIndex));
     }
 
     public void registerDoBody() {

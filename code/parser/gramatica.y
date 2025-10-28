@@ -650,7 +650,7 @@ condicion
                 reversePolish.addFalseBifurcation();
                 notifyDetection("Condición."); 
             } else {
-                errorState = false;
+                errorState = false; // TODO: creo que no debería reiniciarse el erro acá.
             }
         }
 
@@ -744,19 +744,26 @@ cuerpo_if
 
 cuerpo_then 
     : cuerpo_ejecutable
-        { reversePolish.addInconditionalBifurcation(); }
+        //{ reversePolish.addInconditionalBifurcation(); }
     ;
 
 // --------------------------------------------------------------------------------------------------------------------
 
 rama_else
     : // lambda //
-    | ELSE cuerpo_ejecutable
+    | else_start cuerpo_ejecutable
 
     // |========================= REGLAS DE ERROR =========================| //
     
-    | ELSE 
+    | else_start 
         { notifyError("Falta el bloque de sentencias del ELSE."); errorState = true; }
+    ;
+
+// --------------------------------------------------------------------------------------------------------------------
+
+else_start
+    : ELSE
+        { this.reversePolish.addInconditionalBifurcation(); }
     ;
 
 // ********************************************************************************************************************

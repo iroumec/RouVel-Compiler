@@ -5,5 +5,16 @@ MAIN {
     uint X;
     if (X > 3UI) {
         print("Maybe");
-    }
+    } endif;
+
+    print("Forget it");
+
+    if (67UI > X) {
+        print("TRUE");
+    } else {
+        print("FALSE");
+    } endif;
+
+    ## VER QUÉ PASA SI NO HAY NADA LUEGO DEL ELSE ##
+    print("Exiting...");
 }
