@@ -1,0 +1,5 @@
+MAIN {
+
+    uint X;
+    (uint A) { if (A > 3) print(A); endif; } (8UI);
+}

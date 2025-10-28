@@ -320,7 +320,8 @@ asignacion_simple
                 
                 notifyDetection("Asignación simple.");
 
-                this.symbolTable.setValue($1, $3);//yo no pondría esto, cuando $3 es una expresion queda mal
+                // El valor aún no debe calcularse.
+                // this.symbolTable.setValue($1, $3);
 
                 reversePolish.addPolish($1);
 
@@ -1082,10 +1083,14 @@ lambda
         { 
             if (!errorState) {
                 notifyDetection("Expresión lambda.");
-                this.symbolTable.setValue($1, $3);
+
+                // El valor aún no deve calcularse.
+                // this.symbolTable.setValue($1, $3);
 
                 // El argumento no se agrega como polaca.
                 this.reversePolish.emptyTemporalPolishes();
+
+                this.reversePolish.addSeparation("Leaving lambda expression body...");
             } else {
                 errorState = false;
             }
@@ -1122,10 +1127,10 @@ argumento_lambda
 // --------------------------------------------------------------------------------------------------------------------
 
 parametro_lambda
-    : '(' UINT ID ')'
+    : '(' UINT identifier ')'
         {
             $$ = $3;
-            this.symbolTable.setType($3, SymbolType.UINT);
+            this.reversePolish.addSeparation("Entering lambda expression body...");
         }
     ;
 
