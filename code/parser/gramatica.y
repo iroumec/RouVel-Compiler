@@ -647,7 +647,7 @@ condicion
     : '(' cuerpo_condicion ')'
         { 
             if (!errorState) {
-                reversePolish.addFalseBifurcation();
+                //reversePolish.addFalseBifurcation();
                 notifyDetection("Condición."); 
             } else {
                 errorState = false; // TODO: creo que no debería reiniciarse el erro acá.
@@ -715,7 +715,7 @@ if
     : IF condicion cuerpo_if
         { 
             if (!errorState) {
-                reversePolish.completeSelection();
+                this.reversePolish.completeBifurcation();
                 notifyDetection("Sentencia IF."); 
             } else {
                 errorState = false;
@@ -761,6 +761,7 @@ rama_else
 
 // --------------------------------------------------------------------------------------------------------------------
 
+// Refactorización necesaria para ejecución temprana de acciones semánticas.
 else_start
     : ELSE
         { this.reversePolish.addInconditionalBifurcation(); }
@@ -770,29 +771,46 @@ else_start
 // Sentencia WHILE
 // ********************************************************************************************************************
 iteracion 
-    : { reversePolish.registerDoBody(); } do_while 
+    : do_while 
     ;
 
 
 do_while                        
-    : DO cuerpo_iteracion ';'
-        { notifyDetection("Sentencia 'do-while'."); }  
+    : do_while_start cuerpo_iteracion ';'
+        {
+            if (!errorState) {
+                notifyDetection("Sentencia 'do-while'.");
+                this.reversePolish.connectToLastBifurcationPoint();
+                this.reversePolish.addPolish("TB");
+            } else {
+                errorState = false;
+            }
+        }  
     
     // |========================= REGLAS DE ERROR =========================| //
 
-    | DO cuerpo_iteracion_recuperacion ';'
-    | DO cuerpo_iteracion error
-        { notifyError("La sentencia 'do-while' debe terminar con ';'."); }
-    | DO cuerpo_iteracion_recuperacion error
-        { notifyError("La sentencia 'do-while' debe terminar con ';'."); }
-    | DO error
-        { notifyError("Sentencia 'do-while' inválida."); }
+    | do_while_start cuerpo_iteracion error
+        { replaceLastErrorWith("La sentencia 'do-while' debe terminar con ';'."); errorState = true; }
+    | do_while_start error
+        { notifyError("Sentencia 'do-while' inválida."); errorState = true; }
     ;
 
 // --------------------------------------------------------------------------------------------------------------------
 
+do_while_start
+    : DO
+        { this.reversePolish.stackBifurcationPoint(); }
+    ;
+
 cuerpo_iteracion
     : cuerpo_do fin_cuerpo_iteracion
+
+    // |========================= REGLAS DE ERROR =========================| //
+
+    | fin_cuerpo_iteracion
+        { notifyError("Debe especificarse un cuerpo para la sentencia do-while."); errorState = true; }
+    | cuerpo_ejecutable condicion
+        { notifyError("Falta 'while'."); errorState = true; }
     ;
 
 cuerpo_do 
@@ -801,18 +819,8 @@ cuerpo_do
 
 // --------------------------------------------------------------------------------------------------------------------
 
-cuerpo_iteracion_recuperacion
-    : fin_cuerpo_iteracion
-        { notifyError("Debe especificarse un cuerpo para la sentencia do-while."); }
-    | cuerpo_ejecutable condicion
-        { notifyError("Falta 'while'."); }
-    ;
-
-// --------------------------------------------------------------------------------------------------------------------
-
 fin_cuerpo_iteracion
     : WHILE condicion
-        { reversePolish.addTrueBifurcation(); }
     ;
 
 // ********************************************************************************************************************

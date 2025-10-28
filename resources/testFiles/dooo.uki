@@ -1,0 +1,9 @@
+DO {
+
+    uint X;
+    do {
+        print("X");
+    } while(X > 3UI);
+
+    print("Yes");
+}

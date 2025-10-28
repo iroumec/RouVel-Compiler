@@ -53,29 +53,22 @@ public final class ReversePolish {
     public void addInconditionalBifurcation() {
         System.out.println("Entré acá, supuestamente");
         this.stackedBifurcation.push(++this.polishNumber);
+        this.completeBifurcation();
         this.elements.add(new Polish("IB", ++polishNumber));
-        this.completeThenBifurcation();
     }
 
-    public void completeSelection() {
+    public void completeBifurcation() {
         int bifurcationIndex = this.stackedBifurcation.pop();
         this.elements.add(bifurcationIndex, new Polish(String.valueOf(polishNumber + 1), bifurcationIndex));
     }
 
-    public void completeThenBifurcation() {
-        int bifurcationIndex = this.stackedBifurcation.pop();
-        this.elements.add(bifurcationIndex - 1, new Polish(String.valueOf(polishNumber + 1), bifurcationIndex));
+    public void stackBifurcationPoint() {
+        this.stackedBifurcation.push(this.polishNumber + 1);
     }
 
-    public void registerDoBody() {
-        // this.stackedBifurcation.push(this.polishes.size() + 1);
-    }
-
-    public void addTrueBifurcation() {
-        this.stackedBifurcation.pop();
-        // this.polishes.set(this.polishes.size() - 2,
-        // Integer.toString(this.stackedBifurcation.pop()));
-        // this.polishes.set(this.polishes.size() - 1, "TB");
+    public void connectToLastBifurcationPoint() {
+        int bifurcationPoint = this.stackedBifurcation.pop();
+        this.elements.add(new Polish(String.valueOf(bifurcationPoint), ++this.polishNumber));
     }
 
     /**
