@@ -115,4 +115,22 @@ public final class ReversePolish {
 
         return out.toString();
     }
+
+    private abstract class Element {
+
+    }
+
+    private class Polish extends Element {
+
+    }
+
+    private class Separator extends Element {
+
+        private String separationLabel;
+
+        private Separator(String separationLabel) {
+            this.separationLabel = separationLabel;
+        }
+
+    }
 }
