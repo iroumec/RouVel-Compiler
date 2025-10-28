@@ -10,12 +10,17 @@ public final class ReversePolish {
 
     private static final ReversePolish INSTANCE = new ReversePolish();
 
-    private List<String> polishes;
+    private static final String ENTRY_TEXT = "Entering scope";
+    private static final String EXIT_TEXT = "Leaving scope";
+
+    private int polishNumber;
+    private final List<Element> elements;
     private final List<String> temporalPolishes;
     private final Deque<Integer> stackedBifurcation;
 
     private ReversePolish() {
-        this.polishes = new ArrayList<>();
+        this.polishNumber = 0;
+        this.elements = new ArrayList<>();
         this.temporalPolishes = new ArrayList<>();
         this.stackedBifurcation = new ArrayDeque<>();
     }
@@ -25,43 +30,54 @@ public final class ReversePolish {
     }
 
     public void addPolish(String symbol) {
-        // this.polishes.add(new Polish(symbol));
-        this.polishes.add(symbol);
+        this.elements.add(new Polish(symbol, ++this.polishNumber));
+    }
+
+    public void addEntrySeparation(String separationLabel) {
+        this.addSeparation(separationLabel, ENTRY_TEXT);
+    }
+
+    public void addExitSeparation(String separationLabel) {
+        this.addSeparation(separationLabel, EXIT_TEXT);
+    }
+
+    private void addSeparation(String separationLabel, String prefixLabel) {
+        this.elements.add(new Separator(separationLabel, prefixLabel));
     }
 
     public void addFalseBifurcation() {
-        this.polishes.add(" ");
-        this.stackedBifurcation.push(this.polishes.size());
-        this.polishes.add("FB");
+        this.stackedBifurcation.push(++this.polishNumber);
+        this.elements.add(new Polish("FB", ++polishNumber));
     }
 
     public void addInconditionalBifurcation() {
-        int incompletePolish = this.stackedBifurcation.pop() - 1;
-        this.polishes.add(" ");
-        this.stackedBifurcation.push(this.polishes.size());
-        this.polishes.add("IB");
-        this.polishes.set(incompletePolish, Integer.toString(this.polishes.size() + 1));
+        // int incompletePolish = this.stackedBifurcation.pop() - 1;
+        // this.polishes.add(" ");
+        this.stackedBifurcation.push(++polishNumber);
+        // this.polishes.add("IB");
+        // this.polishes.set(incompletePolish, Integer.toString(this.polishes.size() +
+        // 1));
     }
 
     public void completeSelection() {
-        this.polishes.set(this.stackedBifurcation.pop() - 1, Integer.toString(this.polishes.size() + 1));
+        // this.polishes.set(this.stackedBifurcation.pop() - 1,
+        // Integer.toString(this.polishes.size() + 1));
     }
 
     public void registerDoBody() {
-        this.stackedBifurcation.push(this.polishes.size() + 1);
+        // this.stackedBifurcation.push(this.polishes.size() + 1);
     }
 
     public void addTrueBifurcation() {
         this.stackedBifurcation.pop();
-        this.polishes.set(this.polishes.size() - 2, Integer.toString(this.stackedBifurcation.pop()));
-        this.polishes.set(this.polishes.size() - 1, "TB");
+        // this.polishes.set(this.polishes.size() - 2,
+        // Integer.toString(this.stackedBifurcation.pop()));
+        // this.polishes.set(this.polishes.size() - 1, "TB");
     }
 
     /**
      * No siempre todos los factores deben agregarse a la polaca. Acá se guardarán
-     * estos y, luego,
-     * de ser necesarios, se añaden.
-     * 
+     * estos y, luego, de ser necesarios, se añaden.
      */
 
     public void addTemporalPolish(String polish) {
@@ -72,7 +88,7 @@ public final class ReversePolish {
     public void makeTemporalPolishesDefinitive() {
 
         for (String polish : this.temporalPolishes) {
-            polishes.add(polish);
+            this.elements.add(new Polish(polish, ++polishNumber));
         }
 
         this.emptyTemporalPolishes();
@@ -92,45 +108,51 @@ public final class ReversePolish {
         Printer.printCentered("Polaca Inversa");
         Printer.printSeparator();
 
-        int nroPolaca = 0;
-        for (String polish : this.polishes) {
-            Printer.printFramed(++nroPolaca + " " + polish);
+        for (Element element : this.elements) {
+            element.print();
         }
 
         Printer.printSeparator();
     }
 
-    // --------------------------------------------------------------------------------------------
-
-    @Override
-    public String toString() {
-
-        StringBuilder out = new StringBuilder();
-        int nroPolaca = 1;
-        // for (Polish polish : this.polishes) {
-        for (String polish : this.polishes) {
-            out.append(nroPolaca + " ").append(polish).append('\n');
-            nroPolaca++;
-        }
-
-        return out.toString();
-    }
-
     private abstract class Element {
+
+        public abstract void print();
 
     }
 
     private class Polish extends Element {
 
+        private int number;
+        private String polishText;
+
+        private Polish(String polishText, int number) {
+            this.number = number;
+            this.polishText = polishText;
+        }
+
+        @Override
+        public void print() {
+            Printer.printFramed(number + " " + polishText);
+        }
+
     }
 
     private class Separator extends Element {
 
+        private String prefixLabel;
         private String separationLabel;
 
-        private Separator(String separationLabel) {
+        private Separator(String separationLabel, String prefixLabel) {
+            this.prefixLabel = prefixLabel;
             this.separationLabel = separationLabel;
         }
 
+        @Override
+        public void print() {
+            Printer.printSeparator();
+            Printer.printCentered(String.format("%s '%s'", prefixLabel, separationLabel));
+            Printer.printSeparator();
+        }
     }
 }

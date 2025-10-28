@@ -191,13 +191,13 @@ public final static short WHILE=273;
 public final static short RETURN=274;
 public final static short YYERRCODE=256;
 final static short yylhs[] = {                           -1,
-    0,    0,   26,    0,   27,    0,    0,    0,   23,   24,
+    0,    0,   26,    0,   27,    0,    0,    0,   18,   24,
    24,   30,   24,   24,   24,   24,   29,   29,   28,   28,
    25,   25,   25,   31,   31,   33,   33,   36,   36,   37,
    37,   38,   38,   39,   39,   32,   32,   32,   32,   32,
-   32,   32,   32,   41,   41,   34,   34,   34,   34,   19,
-   19,   19,   18,   40,   40,   40,   40,   22,   22,   20,
-   20,   20,   21,   21,   21,    1,    1,    1,    1,    1,
+   32,   32,   32,   41,   41,   34,   34,   34,   34,   20,
+   20,   20,   19,   40,   40,   40,   40,   23,   23,   21,
+   21,   21,   22,   22,   22,    1,    1,    1,    1,    1,
     6,    6,    2,    2,    2,    2,    4,    4,    4,    7,
     7,    3,    3,    3,    5,    5,    5,   10,   10,    9,
     9,   47,   47,   47,   47,   48,   48,   48,   48,   14,
@@ -261,8 +261,8 @@ final static short yydefred[] = {                         0,
 };
 final static short yydgoto[] = {                          4,
    62,   52,   53,  114,  115,  116,   54,   17,   55,   56,
-   57,  105,  106,  135,  161,   20,  175,   68,   69,   21,
-   94,   22,    5,   23,   24,    6,    8,  155,   25,   97,
+   57,  105,  106,  135,  161,   20,  175,    5,   68,   69,
+   21,   94,   22,   23,   24,    6,    8,  155,   25,   97,
    26,   27,   28,   29,   30,   99,  139,  140,   91,   31,
    32,   33,   34,   35,   36,   37,   64,   65,  141,  142,
   143,  101,   38,  188,  189,  190,  191,   79,  162,  163,
@@ -328,8 +328,8 @@ final static short yyrindex[] = {                        19,
 };
 final static short yygindex[] = {                         0,
   522,  678,  385,  406,    0,  415,  442,    0,  601,  398,
-  644,    0,  273,    0,    0,    0,  -68,  331,    0,  356,
-  394,    0,  477,   20,   30,    0,    0,    0,    0,    0,
+  644,    0,  273,    0,    0,    0,  -68,  472,  336,    0,
+  356,  394,    0,   20,   30,    0,    0,    0,    0,    0,
   -14,  411,    0,    0,    0,    0,  -70,  467,  -60,    0,
     0,    0,    0,    0,    0,    0,  -58,  434,    0,    0,
   354,    0,    0,    0,    0,    0,  310,    0,    0, -138,
@@ -387,8 +387,8 @@ yytable = new short[]{                         16,
    67,   67,   67,   61,  132,   49,   46,  117,   47,   10,
    48,   11,  132,  130,  131,  171,  112,   71,  113,   49,
    46,  125,   47,   49,   48,  245,   47,  133,   48,  109,
-   49,   46,  225,   47,  138,   48,  134,   49,   46,  211,
-   47,  112,   48,  113,   40,  180,   90,   49,   46,   93,
+   49,   46,  225,   47,  138,   48,  134,   49,   46,   40,
+   47,  112,   48,  113,  211,  180,   90,   49,   46,   93,
    47,  183,   48,  119,  125,  207,  161,  171,   89,  243,
   110,  179,    0,  200,  119,  121,  168,    0,    0,  234,
   138,   44,    0,    0,  199,   10,   44,    0,    0,  171,
@@ -480,8 +480,8 @@ yycheck = new short[] {                         40,
    60,   61,   62,   40,   40,   42,   43,  272,   45,    0,
    47,    0,   60,   61,   62,  256,   43,   40,   45,   42,
    43,  273,   45,   42,   47,  193,   45,   62,   47,   41,
-   42,   43,   59,   45,   64,   47,   62,   42,   43,  149,
-   45,   43,   47,   45,    8,   92,   20,   42,   43,   92,
+   42,   43,   59,   45,   64,   47,   62,   42,   43,    8,
+   45,   43,   47,   45,  149,   92,   20,   42,   43,   92,
    45,   94,   47,   52,   61,  142,  256,   59,   88,  190,
    50,   91,   -1,  119,   63,  256,  257,   -1,   -1,  256,
   100,  258,   -1,   -1,  256,  257,  258,   -1,   -1,  256,
@@ -720,7 +720,7 @@ final static String yyrule[] = {
 "parametro_lambda : '(' UINT ID ')'",
 };
 
-//#line 1090 "gramatica.y"
+//#line 1101 "gramatica.y"
 
 // ====================================================================================================================
 // INICIO DE CÓDIGO (opcional)
@@ -991,77 +991,82 @@ boolean doaction;
       {
 //########## USER-SUPPLIED ACTIONS ##########
 case 1:
-//#line 77 "gramatica.y"
+//#line 78 "gramatica.y"
 {
             if (!errorState) {
                 notifyDetection("Programa.");
+                this.reversePolish.addExitSeparation(val_peek(1).sval);
             } else {
                 errorState = false;
             }
         }
 break;
 case 2:
-//#line 88 "gramatica.y"
+//#line 90 "gramatica.y"
 { notifyError("Las sentencias del programa deben estar delimitadas por llaves."); }
 break;
 case 3:
-//#line 91 "gramatica.y"
+//#line 93 "gramatica.y"
 { notifyError("El programa requiere de un nombre."); }
 break;
 case 5:
-//#line 93 "gramatica.y"
+//#line 95 "gramatica.y"
 { notifyError("Inicio de programa inválido. Se encontraron sentencias previas al nombre del programa."); }
 break;
 case 7:
-//#line 96 "gramatica.y"
+//#line 98 "gramatica.y"
 { notifyError("Se llegó al fin del programa sin encontrar un programa válido."); }
 break;
 case 8:
-//#line 99 "gramatica.y"
+//#line 101 "gramatica.y"
 { notifyError("El archivo está vacío."); }
 break;
 case 9:
-//#line 106 "gramatica.y"
-{ this.scopeStack.push(val_peek(0).sval); this.symbolTable.setCategory(val_peek(0).sval, SymbolCategory.PROGRAM); }
+//#line 108 "gramatica.y"
+{
+            this.scopeStack.push(val_peek(0).sval);
+            this.symbolTable.setCategory(val_peek(0).sval, SymbolCategory.PROGRAM);
+            this.reversePolish.addEntrySeparation(val_peek(0).sval);
+        }
 break;
 case 11:
-//#line 117 "gramatica.y"
+//#line 123 "gramatica.y"
 { notifyError("Se encontraron múltiples llaves al final del programa."); errorState = true; }
 break;
 case 12:
-//#line 120 "gramatica.y"
+//#line 126 "gramatica.y"
 { notifyError("Se encontraron múltiples llaves al comienzo del programa."); errorState = true; }
 break;
 case 14:
-//#line 123 "gramatica.y"
+//#line 129 "gramatica.y"
 { notifyError("El programa no posee ninguna sentencia."); errorState = true; }
 break;
 case 15:
-//#line 125 "gramatica.y"
+//#line 131 "gramatica.y"
 { notifyError("El programa no posee ningún cuerpo."); errorState = true; }
 break;
 case 16:
-//#line 127 "gramatica.y"
+//#line 133 "gramatica.y"
 { notifyError("Cierre inesperado del programa. Verifique llaves '{...}' y puntos y coma ';' faltantes."); errorState = true; }
 break;
 case 23:
-//#line 153 "gramatica.y"
+//#line 159 "gramatica.y"
 { notifyError("Error capturado a nivel de sentencia."); }
 break;
 case 33:
-//#line 194 "gramatica.y"
+//#line 200 "gramatica.y"
 { notifyError("El cuerpo de la sentencia no puede estar vacío."); }
 break;
 case 36:
-//#line 212 "gramatica.y"
+//#line 218 "gramatica.y"
 { notifyDetection("Invocación de función."); }
 break;
 case 43:
-//#line 223 "gramatica.y"
+//#line 229 "gramatica.y"
 { notifyError("La invocación a función debe terminar con ';'."); }
 break;
 case 46:
-//#line 240 "gramatica.y"
+//#line 246 "gramatica.y"
 {
             if (!errorState) {
                 { notifyDetection("Declaración de variables."); }
@@ -1071,29 +1076,29 @@ case 46:
         }
 break;
 case 47:
-//#line 250 "gramatica.y"
+//#line 256 "gramatica.y"
 {
             notifyError("La declaración de variables debe terminar con ';'.");
         }
 break;
 case 48:
-//#line 254 "gramatica.y"
+//#line 260 "gramatica.y"
 {
             notifyError("La declaración de variables y la asignación de un valor a estas debe realizarse en dos sentencias separadas.");
         }
 break;
 case 49:
-//#line 258 "gramatica.y"
+//#line 264 "gramatica.y"
 {
             notifyError("Declaración de variables inválida.");
         }
 break;
 case 51:
-//#line 268 "gramatica.y"
+//#line 274 "gramatica.y"
 { yyval.sval = val_peek(2).sval + ',' + val_peek(0).sval; }
 break;
 case 52:
-//#line 273 "gramatica.y"
+//#line 279 "gramatica.y"
 {
 
             /* Conversión de la lista de variables a arreglo de strings, eliminando espacios alrededor de cada elemento.*/
@@ -1112,7 +1117,7 @@ case 52:
         }
 break;
 case 53:
-//#line 296 "gramatica.y"
+//#line 302 "gramatica.y"
 {
             this.symbolTable.setType(val_peek(0).sval, SymbolType.UINT);
             this.symbolTable.setCategory(val_peek(0).sval, SymbolCategory.VARIABLE);
@@ -1121,7 +1126,7 @@ case 53:
         }
 break;
 case 54:
-//#line 310 "gramatica.y"
+//#line 316 "gramatica.y"
 { 
 
             if (!errorState) {
@@ -1148,19 +1153,19 @@ case 54:
         }
 break;
 case 55:
-//#line 339 "gramatica.y"
+//#line 345 "gramatica.y"
 { notifyError("Las asignaciones simples deben terminar con ';'."); }
 break;
 case 56:
-//#line 342 "gramatica.y"
+//#line 348 "gramatica.y"
 { notifyError("Error en asignación simple. Se esperaba un ':=' entre la variable y la expresión."); }
 break;
 case 57:
-//#line 345 "gramatica.y"
+//#line 351 "gramatica.y"
 { notifyError("Asignación simple inválida."); }
 break;
 case 58:
-//#line 355 "gramatica.y"
+//#line 361 "gramatica.y"
 {
             if (!errorState) {
                 /* Conversión de la lista de variables a arreglo de strings, eliminando espacios alrededor de cada elemento.*/
@@ -1208,15 +1213,15 @@ case 58:
         }
 break;
 case 59:
-//#line 404 "gramatica.y"
+//#line 410 "gramatica.y"
 { notifyError("La asignación múltiple debe terminar con ';'."); }
 break;
 case 61:
-//#line 413 "gramatica.y"
+//#line 419 "gramatica.y"
 { yyval.sval = val_peek(2).sval + ',' + val_peek(0).sval; }
 break;
 case 62:
-//#line 418 "gramatica.y"
+//#line 424 "gramatica.y"
 {
 
             /* Conversión de la lista de variables a arreglo de strings, eliminando espacios alrededor de cada elemento.*/
@@ -1235,11 +1240,11 @@ case 62:
         }
 break;
 case 64:
-//#line 441 "gramatica.y"
+//#line 447 "gramatica.y"
 { yyval.sval = val_peek(2).sval + ',' + val_peek(0).sval; }
 break;
 case 65:
-//#line 446 "gramatica.y"
+//#line 452 "gramatica.y"
 {
             String[] constants = val_peek(1).sval.split("\\s*,\\s*");
             String lastConstant = constants[constants.length - 1];
@@ -1256,49 +1261,49 @@ case 65:
         }
 break;
 case 67:
-//#line 469 "gramatica.y"
+//#line 475 "gramatica.y"
 { 
             yyval.sval = val_peek(0).sval;
             reversePolish.addTemporalPolish(val_peek(1).sval);
         }
 break;
 case 68:
-//#line 477 "gramatica.y"
+//#line 483 "gramatica.y"
 {  
             notifyError(String.format("Falta de operando en expresión luego de '%s %s'.", val_peek(2).sval, val_peek(1).sval));
         }
 break;
 case 69:
-//#line 481 "gramatica.y"
+//#line 487 "gramatica.y"
 {
             notifyError(String.format("Falta de operador entre operandos %s y %s.", val_peek(1).sval, val_peek(0).sval));
             yyval.sval = val_peek(0).sval;
         }
 break;
 case 70:
-//#line 488 "gramatica.y"
+//#line 494 "gramatica.y"
 {
             notifyError(String.format("Falta de operando en expresión previo a '+ %s'.",val_peek(0).sval));
             yyval.sval = val_peek(0).sval;
         }
 break;
 case 71:
-//#line 498 "gramatica.y"
+//#line 504 "gramatica.y"
 { yyval.sval = "+"; }
 break;
 case 72:
-//#line 500 "gramatica.y"
+//#line 506 "gramatica.y"
 { yyval.sval = "-"; }
 break;
 case 73:
-//#line 507 "gramatica.y"
+//#line 513 "gramatica.y"
 {   
             reversePolish.addTemporalPolish(val_peek(1).sval);
             yyval.sval = val_peek(0).sval; 
         }
 break;
 case 75:
-//#line 516 "gramatica.y"
+//#line 522 "gramatica.y"
 {
             notifyError(String.format(
                 "Falta de operando en expresión luego de '%s %s'.",
@@ -1307,30 +1312,30 @@ case 75:
         }
 break;
 case 76:
-//#line 523 "gramatica.y"
+//#line 529 "gramatica.y"
 { notifyError(String.format("Falta operando previo a '%s %s'",val_peek(1).sval,val_peek(0).sval)); }
 break;
 case 77:
-//#line 530 "gramatica.y"
+//#line 536 "gramatica.y"
 {   
             reversePolish.addTemporalPolish(val_peek(1).sval);
             yyval.sval = val_peek(2).sval;
         }
 break;
 case 79:
-//#line 539 "gramatica.y"
+//#line 545 "gramatica.y"
 { notifyError(String.format("Falta de operando en expresión luego de '%s %s'.",val_peek(2).sval, val_peek(1).sval)); }
 break;
 case 80:
-//#line 546 "gramatica.y"
+//#line 552 "gramatica.y"
 { yyval.sval = "/"; }
 break;
 case 81:
-//#line 548 "gramatica.y"
+//#line 554 "gramatica.y"
 { yyval.sval = "*"; }
 break;
 case 82:
-//#line 557 "gramatica.y"
+//#line 563 "gramatica.y"
 {
             /* TODO: esto es un parche. Debe verse mejor después.*/
             this.errorCollector.removeLast(); /* Debido a que se usa el token error.*/
@@ -1338,25 +1343,25 @@ case 82:
         }
 break;
 case 83:
-//#line 563 "gramatica.y"
+//#line 569 "gramatica.y"
 {
             reversePolish.addTemporalPolish(val_peek(0).sval);
         }
 break;
 case 85:
-//#line 574 "gramatica.y"
+//#line 580 "gramatica.y"
 {
             reversePolish.addTemporalPolish(val_peek(0).sval);
         }
 break;
 case 86:
-//#line 578 "gramatica.y"
+//#line 584 "gramatica.y"
 {
             reversePolish.addTemporalPolish(val_peek(0).sval);
         }
 break;
 case 89:
-//#line 589 "gramatica.y"
+//#line 595 "gramatica.y"
 {
             notifyDetection(String.format("Constante negativa: -%s.",val_peek(0).sval));
 
@@ -1369,7 +1374,7 @@ case 89:
         }
 break;
 case 90:
-//#line 605 "gramatica.y"
+//#line 611 "gramatica.y"
 {
             if (!this.symbolTable.entryExists(this.scopeStack.appendScope(val_peek(0).sval))) { /*Si entra por aca, la variable debe ser local*/
                 errorState = true;
@@ -1384,7 +1389,7 @@ case 90:
         }
 break;
 case 91:
-//#line 618 "gramatica.y"
+//#line 624 "gramatica.y"
 { 
             String scopedVariable = val_peek(0).sval + this.scopeStack.getScopeRoad(val_peek(2).sval);
 
@@ -1403,7 +1408,7 @@ case 91:
         }
 break;
 case 92:
-//#line 642 "gramatica.y"
+//#line 648 "gramatica.y"
 { 
             if (!errorState) {
                 reversePolish.addFalseBifurcation();
@@ -1414,53 +1419,54 @@ case 92:
         }
 break;
 case 93:
-//#line 654 "gramatica.y"
+//#line 660 "gramatica.y"
 { notifyError("La condición no puede estar vacía."); errorState = true; }
 break;
 case 94:
-//#line 658 "gramatica.y"
+//#line 664 "gramatica.y"
 { notifyError("Falta apertura de paréntesis en condición."); errorState = true; }
 break;
 case 95:
-//#line 660 "gramatica.y"
+//#line 666 "gramatica.y"
 { notifyError("Falta cierre de paréntesis en condición."); errorState = true; }
 break;
 case 96:
-//#line 667 "gramatica.y"
+//#line 673 "gramatica.y"
 {
+            this.reversePolish.makeTemporalPolishesDefinitive();
             reversePolish.addPolish(val_peek(1).sval);
         }
 break;
 case 97:
-//#line 674 "gramatica.y"
+//#line 681 "gramatica.y"
 { notifyError("Falta de comparador en comparación."); errorState = true; }
 break;
 case 98:
-//#line 676 "gramatica.y"
+//#line 683 "gramatica.y"
 { notifyError("Falta de comparador en comparación."); errorState = true; }
 break;
 case 99:
-//#line 678 "gramatica.y"
+//#line 685 "gramatica.y"
 { notifyError("Falta de comparador en comparación."); errorState = true; }
 break;
 case 100:
-//#line 685 "gramatica.y"
+//#line 692 "gramatica.y"
 {
             yyval.sval = ">";
         }
 break;
 case 101:
-//#line 689 "gramatica.y"
+//#line 696 "gramatica.y"
 {
             yyval.sval = "<";
         }
 break;
 case 106:
-//#line 700 "gramatica.y"
+//#line 707 "gramatica.y"
 { notifyError("Se esperaba un comparador y se encontró el operador de asignación '='. ¿Quiso colocar '=='?"); }
 break;
 case 107:
-//#line 709 "gramatica.y"
+//#line 716 "gramatica.y"
 { 
             if (!errorState) {
                 reversePolish.completeSelection();
@@ -1471,63 +1477,63 @@ case 107:
         }
 break;
 case 108:
-//#line 722 "gramatica.y"
+//#line 729 "gramatica.y"
 { notifyError("Sentencia IF inválida."); }
 break;
 case 110:
-//#line 731 "gramatica.y"
+//#line 738 "gramatica.y"
 { notifyError("La sentencia IF debe terminar con ';'."); errorState = true; }
 break;
 case 111:
-//#line 733 "gramatica.y"
+//#line 740 "gramatica.y"
 { notifyError("La sentencia IF debe finalizar con 'endif'."); errorState = true; }
 break;
 case 112:
-//#line 735 "gramatica.y"
+//#line 742 "gramatica.y"
 { notifyError("Falta el bloque de sentencias del IF."); errorState = true; }
 break;
 case 113:
-//#line 740 "gramatica.y"
+//#line 747 "gramatica.y"
 { reversePolish.addInconditionalBifurcation(); }
 break;
 case 116:
-//#line 752 "gramatica.y"
+//#line 759 "gramatica.y"
 { notifyError("Falta el bloque de sentencias del ELSE."); errorState = true; }
 break;
 case 117:
-//#line 759 "gramatica.y"
+//#line 766 "gramatica.y"
 { reversePolish.registerDoBody(); }
 break;
 case 119:
-//#line 765 "gramatica.y"
+//#line 772 "gramatica.y"
 { notifyDetection("Sentencia 'do-while'."); }
 break;
 case 121:
-//#line 771 "gramatica.y"
+//#line 778 "gramatica.y"
 { notifyError("La sentencia 'do-while' debe terminar con ';'."); }
 break;
 case 122:
-//#line 773 "gramatica.y"
+//#line 780 "gramatica.y"
 { notifyError("La sentencia 'do-while' debe terminar con ';'."); }
 break;
 case 123:
-//#line 775 "gramatica.y"
+//#line 782 "gramatica.y"
 { notifyError("Sentencia 'do-while' inválida."); }
 break;
 case 126:
-//#line 792 "gramatica.y"
+//#line 799 "gramatica.y"
 { notifyError("Debe especificarse un cuerpo para la sentencia do-while."); }
 break;
 case 127:
-//#line 794 "gramatica.y"
+//#line 801 "gramatica.y"
 { notifyError("Falta 'while'."); }
 break;
 case 128:
-//#line 801 "gramatica.y"
+//#line 808 "gramatica.y"
 { reversePolish.addTrueBifurcation(); }
 break;
 case 129:
-//#line 810 "gramatica.y"
+//#line 817 "gramatica.y"
 {
             if (!errorState) {
                 notifyDetection("Declaración de función.");
@@ -1535,25 +1541,29 @@ case 129:
                 this.symbolTable.setCategory(val_peek(4).sval, SymbolCategory.FUNCTION);
                 this.scopeStack.pop();
                 this.symbolTable.setScope(val_peek(4).sval, this.scopeStack.asText());
-                this.reversePolish.addPolish("> VOLVIENDO AL ÁMBITO ANTERIOR <");
+                this.reversePolish.addExitSeparation(val_peek(4).sval);
             } else {
                 errorState = false;
             }
         }
 break;
 case 130:
-//#line 826 "gramatica.y"
+//#line 833 "gramatica.y"
 {
             this.scopeStack.pop();
             notifyError("El cuerpo de la función no puede estar vacío.");
         }
 break;
 case 131:
-//#line 838 "gramatica.y"
-{ this.scopeStack.push(val_peek(0).sval); yyval.sval = val_peek(0).sval; this.reversePolish.addPolish("> NUEVO ÁMBITO <"); /* TODO: mejorar esto. Por ahora así para debugging */ }
+//#line 845 "gramatica.y"
+{
+            yyval.sval = val_peek(0).sval;
+            this.scopeStack.push(val_peek(0).sval);
+            this.reversePolish.addEntrySeparation(val_peek(0).sval);
+        }
 break;
 case 132:
-//#line 843 "gramatica.y"
+//#line 854 "gramatica.y"
 {
             this.scopeStack.push("error");
             notifyError("La función requiere de un nombre.");
@@ -1561,15 +1571,15 @@ case 132:
         }
 break;
 case 134:
-//#line 858 "gramatica.y"
+//#line 869 "gramatica.y"
 { notifyError("Toda función debe recibir al menos un parámetro."); }
 break;
 case 137:
-//#line 870 "gramatica.y"
+//#line 881 "gramatica.y"
 { notifyError("Se halló un parámetro formal vacío."); }
 break;
 case 140:
-//#line 884 "gramatica.y"
+//#line 895 "gramatica.y"
 {
             if (!errorState) {
                 this.symbolTable.setType(val_peek(0).sval, SymbolType.UINT);
@@ -1579,27 +1589,27 @@ case 140:
         }
 break;
 case 141:
-//#line 895 "gramatica.y"
+//#line 906 "gramatica.y"
 { notifyError("Falta de nombre de parámetro formal en declaración de función."); }
 break;
 case 142:
-//#line 897 "gramatica.y"
+//#line 908 "gramatica.y"
 { notifyError("Falta de tipo de parámetro formal en declaración de función."); }
 break;
 case 143:
-//#line 904 "gramatica.y"
+//#line 915 "gramatica.y"
 { yyval.sval = "CV"; }
 break;
 case 144:
-//#line 906 "gramatica.y"
+//#line 917 "gramatica.y"
 { yyval.sval = "CVR"; }
 break;
 case 145:
-//#line 911 "gramatica.y"
+//#line 922 "gramatica.y"
 { notifyError("Semántica de pasaje de parámetro inválida."); errorState = true; }
 break;
 case 146:
-//#line 920 "gramatica.y"
+//#line 931 "gramatica.y"
 {
             if (!errorState) {
                 this.reversePolish.makeTemporalPolishesDefinitive();
@@ -1611,41 +1621,41 @@ case 146:
         }
 break;
 case 147:
-//#line 933 "gramatica.y"
+//#line 944 "gramatica.y"
 { notifyError("La sentencia RETURN debe terminar con ';'."); }
 break;
 case 148:
-//#line 935 "gramatica.y"
+//#line 946 "gramatica.y"
 { notifyError("El retorno no puede estar vacío."); }
 break;
 case 149:
-//#line 937 "gramatica.y"
+//#line 948 "gramatica.y"
 { notifyError("El resultado a retornar debe ir entre paréntesis."); }
 break;
 case 150:
-//#line 939 "gramatica.y"
+//#line 950 "gramatica.y"
 { notifyError("Sentencia RETURN inválida."); }
 break;
 case 151:
-//#line 948 "gramatica.y"
+//#line 959 "gramatica.y"
 {
             yyval.sval = val_peek(3).sval + '(' + val_peek(1).sval + ')';
         }
 break;
 case 153:
-//#line 958 "gramatica.y"
+//#line 969 "gramatica.y"
 { yyval.sval = val_peek(0).sval; }
 break;
 case 154:
-//#line 965 "gramatica.y"
+//#line 976 "gramatica.y"
 { yyval.sval = val_peek(2).sval + val_peek(1).sval + val_peek(0).sval; }
 break;
 case 155:
-//#line 970 "gramatica.y"
+//#line 981 "gramatica.y"
 { notifyError("Falta de especificación del parámetro formal al que corresponde el parámetro real."); }
 break;
 case 156:
-//#line 979 "gramatica.y"
+//#line 990 "gramatica.y"
 {
             if (!errorState) {
                 /* Se añaden las polacas correspondiente al imprimible.*/
@@ -1658,7 +1668,7 @@ case 156:
         }
 break;
 case 157:
-//#line 993 "gramatica.y"
+//#line 1004 "gramatica.y"
 {
             errorState = false;
             this.reversePolish.emptyTemporalPolishes();
@@ -1666,11 +1676,11 @@ case 157:
         }
 break;
 case 159:
-//#line 1008 "gramatica.y"
+//#line 1019 "gramatica.y"
 { notifyError("La sentencia 'print' requiere de al menos un argumento."); errorState = true; }
 break;
 case 160:
-//#line 1010 "gramatica.y"
+//#line 1021 "gramatica.y"
 {
             errorState = true;
             this.reversePolish.emptyTemporalPolishes();
@@ -1678,17 +1688,17 @@ case 160:
         }
 break;
 case 161:
-//#line 1016 "gramatica.y"
+//#line 1027 "gramatica.y"
 { notifyError("La sentencia 'print' requiere de un argumento entre paréntesis."); errorState = true; }
 break;
 case 162:
-//#line 1023 "gramatica.y"
+//#line 1034 "gramatica.y"
 {
             reversePolish.addTemporalPolish(val_peek(0).sval);
         }
 break;
 case 164:
-//#line 1035 "gramatica.y"
+//#line 1046 "gramatica.y"
 { 
             if (!errorState) {
                 notifyDetection("Expresión lambda.");
@@ -1702,41 +1712,41 @@ case 164:
         }
 break;
 case 165:
-//#line 1050 "gramatica.y"
+//#line 1061 "gramatica.y"
 { notifyError("La expresión 'lambda' debe terminar con ';'."); errorState = false; }
 break;
 case 166:
-//#line 1053 "gramatica.y"
+//#line 1064 "gramatica.y"
 { replaceLastErrorWith("Falta delimitador de cierre en expresión 'lambda'."); errorState = false; }
 break;
 case 167:
-//#line 1055 "gramatica.y"
+//#line 1066 "gramatica.y"
 { replaceLastErrorWith("Faltan delimitadores en el conjunto de sentencias de la expresión 'lambda'."); errorState = false; }
 break;
 case 168:
-//#line 1057 "gramatica.y"
+//#line 1068 "gramatica.y"
 { replaceLastErrorWith("Falta delimitador de apertura en expresión 'lambda'."); errorState = false; }
 break;
 case 169:
-//#line 1064 "gramatica.y"
+//#line 1075 "gramatica.y"
 { yyval.sval = val_peek(1).sval; }
 break;
 case 170:
-//#line 1069 "gramatica.y"
+//#line 1080 "gramatica.y"
 { notifyError("El argumento de la expresión 'lambda' no puede estar vacío."); errorState = true; }
 break;
 case 171:
-//#line 1072 "gramatica.y"
+//#line 1083 "gramatica.y"
 { notifyError("La expresión 'lambda' requiere de un argumento entre paréntesis."); errorState = true; }
 break;
 case 172:
-//#line 1079 "gramatica.y"
+//#line 1090 "gramatica.y"
 {
             yyval.sval = val_peek(1).sval;
             this.symbolTable.setType(val_peek(1).sval, SymbolType.UINT);
         }
 break;
-//#line 1663 "Parser.java"
+//#line 1673 "Parser.java"
 //########## END OF USER-SUPPLIED ACTIONS ##########
     }//switch
     //#### Now let's reduce... ####

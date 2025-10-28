@@ -59,6 +59,7 @@
                 inicio_funcion, variable, constant, invocacion_funcion,
                 lista_argumentos, argumento, comparador, semantica_pasaje, parametro_lambda, argumento_lambda,
 
+%type <sval> program_name
 %type <sval> identifier, list_of_identifiers
 %type <sval> list_of_variables, list_of_constants, multiple_assignment
 
@@ -77,6 +78,7 @@ program
         {
             if (!errorState) {
                 notifyDetection("Programa.");
+                this.reversePolish.addExitSeparation($1);
             } else {
                 errorState = false;
             }
@@ -103,7 +105,11 @@ program
 
 program_name
     : ID
-        { this.scopeStack.push($1); this.symbolTable.setCategory($1, SymbolCategory.PROGRAM); }
+        {
+            this.scopeStack.push($1);
+            this.symbolTable.setCategory($1, SymbolCategory.PROGRAM);
+            this.reversePolish.addEntrySeparation($1);
+        }
     ;
 
 // --------------------------------------------------------------------------------------------------------------------
@@ -665,6 +671,7 @@ condicion
 cuerpo_condicion
     : expression comparador expression
         {
+            this.reversePolish.makeTemporalPolishesDefinitive();
             reversePolish.addPolish($2);
         }
 
@@ -814,7 +821,7 @@ declaracion_funcion
                 this.symbolTable.setCategory($1, SymbolCategory.FUNCTION);
                 this.scopeStack.pop();
                 this.symbolTable.setScope($1, this.scopeStack.asText());
-                this.reversePolish.addPolish("> VOLVIENDO AL ÁMBITO ANTERIOR <");
+                this.reversePolish.addExitSeparation($1);
             } else {
                 errorState = false;
             }
@@ -835,7 +842,11 @@ declaracion_funcion
 // la declaración de una función.
 inicio_funcion
     : UINT ID
-        { this.scopeStack.push($2); $$ = $2; this.reversePolish.addPolish("> NUEVO ÁMBITO <"); /* TODO: mejorar esto. Por ahora así para debugging */ }
+        {
+            $$ = $2;
+            this.scopeStack.push($2);
+            this.reversePolish.addEntrySeparation($2);
+        }
     
     // |========================= REGLAS DE ERROR =========================| //
 

@@ -1,0 +1,9 @@
+MAIN {
+
+    print("Hello");
+
+    uint X;
+    if (X > 3UI) {
+        print("Maybe");
+    }
+}
