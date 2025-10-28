@@ -12,7 +12,14 @@ MAIN {
     if (67UI > X) {
         print("TRUE");
     } else {
-        print("FALSE");
+
+        print("FALSE-START");
+        if (X > 8UI) {
+            print("FALSE-TRUE");
+        } else {
+            print("FALSE-FALSE");
+        }
+        print("FALSE-END");
     } endif;
 
     ## VER QUÉ PASA SI NO HAY NADA LUEGO DEL ELSE ##
