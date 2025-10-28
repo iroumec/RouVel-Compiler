@@ -234,7 +234,7 @@ executable_statement
 
 sentencia_control
     : if                                                                
-    | iteracion                                                
+    | do_while                                                
     ;
 
 // ********************************************************************************************************************
@@ -737,21 +737,16 @@ if_start
     ;
 
 cuerpo_if 
-    : cuerpo_then rama_else ENDIF ';'
+    : cuerpo_ejecutable rama_else ENDIF ';'
 
     // |========================= REGLAS DE ERROR =========================| //
 
-    | cuerpo_then rama_else ENDIF error 
+    | cuerpo_ejecutable rama_else ENDIF error 
         { notifyError("La sentencia IF debe terminar con ';'."); errorState = true; }
-    | cuerpo_then rama_else ';'
+    | cuerpo_ejecutable rama_else ';'
         { notifyError("La sentencia IF debe finalizar con 'endif'."); errorState = true; }
     | rama_else ENDIF ';'
         { notifyError("Falta el bloque de sentencias del IF."); errorState = true; }
-    ;
-
-cuerpo_then 
-    : cuerpo_ejecutable
-        //{ reversePolish.addInconditionalBifurcation(); }
     ;
 
 // --------------------------------------------------------------------------------------------------------------------
@@ -788,10 +783,6 @@ else_start
 // ********************************************************************************************************************
 // Sentencia WHILE
 // ********************************************************************************************************************
-iteracion 
-    : do_while 
-    ;
-
 
 do_while                        
     : do_while_start cuerpo_iteracion ';'
@@ -815,13 +806,16 @@ do_while
 
 // --------------------------------------------------------------------------------------------------------------------
 
+// Refactorización necesaria para la ejecución de acciones semánticas.
 do_while_start
     : DO
         { this.reversePolish.promiseBifurcationPoint(); }
     ;
 
+// --------------------------------------------------------------------------------------------------------------------
+
 cuerpo_iteracion
-    : cuerpo_do fin_cuerpo_iteracion
+    : cuerpo_ejecutable fin_cuerpo_iteracion
 
     // |========================= REGLAS DE ERROR =========================| //
 
@@ -829,10 +823,6 @@ cuerpo_iteracion
         { notifyError("Debe especificarse un cuerpo para la sentencia do-while."); errorState = true; }
     | cuerpo_ejecutable condicion
         { notifyError("Falta 'while'."); errorState = true; }
-    ;
-
-cuerpo_do 
-    : cuerpo_ejecutable
     ;
 
 // --------------------------------------------------------------------------------------------------------------------

@@ -1,8 +1,17 @@
 DO {
 
-    uint X;
+    uint X, Y;
     do {
         print("X");
+
+        if (Y > X) {
+            print("Hello");
+        } else {
+            print("BYE");
+        } endif;
+
+        print(111UI);
+
     } while(X > 3UI);
 
     print("Yes");
