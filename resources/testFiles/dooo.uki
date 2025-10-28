@@ -1,4 +1,4 @@
-DO {
+MAIN {
 
     uint X, Y;
     do {

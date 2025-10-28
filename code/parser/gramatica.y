@@ -10,6 +10,7 @@
     package parser;
 
     import lexer.Lexer;
+    import semantic.Promise;
     import lexer.token.Token;
     import utilities.Printer;
     import common.SymbolType;
@@ -78,7 +79,7 @@ program
         {
             if (!errorState) {
                 notifyDetection("Programa.");
-                this.reversePolish.addExitSeparation($1);
+                this.reversePolish.addSeparation(String.format("Leaving scope '%s'...", $1));
             } else {
                 errorState = false;
             }
@@ -108,7 +109,7 @@ program_name
         {
             this.scopeStack.push($1);
             this.symbolTable.setCategory($1, SymbolCategory.PROGRAM);
-            this.reversePolish.addEntrySeparation($1);
+            this.reversePolish.addSeparation(String.format("Entering scope '%s'...", $1));
         }
     ;
 
@@ -671,7 +672,7 @@ cuerpo_condicion
     : expression comparador expression
         {
             this.reversePolish.makeTemporalPolishesDefinitive();
-            reversePolish.addPolish($2);
+            this.reversePolish.addPolish($2);
         }
 
     // |========================= REGLAS DE ERROR =========================| //
@@ -715,6 +716,7 @@ if
         { 
             if (!errorState) {
                 this.reversePolish.fulfillPromise(this.reversePolish.getLastPromise());
+                this.reversePolish.addSeparation("Leaving 'if-else' body...");
                 notifyDetection("Sentencia IF."); 
             } else {
                 errorState = false;
@@ -728,13 +730,18 @@ if
         { notifyError("Sentencia IF inválida."); }
     ;
 
+// --------------------------------------------------------------------------------------------------------------------
+
 if_start
     : IF condicion
         {
+            this.reversePolish.addSeparation("Entering 'if' body...");
             this.reversePolish.promiseBifurcationPoint();
             this.reversePolish.addPolish("FB");
         }
     ;
+
+// --------------------------------------------------------------------------------------------------------------------
 
 cuerpo_if 
     : cuerpo_ejecutable rama_else ENDIF ';'
@@ -768,7 +775,7 @@ else_start
     : ELSE
         {
             // Se obtiene la promesa del cuerpo then.
-            int promise = this.reversePolish.getLastPromise();
+            Promise promise = this.reversePolish.getLastPromise();
 
             // Se promete un nuevo punto de bifurcación.
             this.reversePolish.promiseBifurcationPoint();
@@ -777,6 +784,8 @@ else_start
             // Se cumple la promesa obtenida al comienzo.
             // Es necesario que se realice así para respetar los índices de la polaca.
             this.reversePolish.fulfillPromise(promise);
+
+            this.reversePolish.addSeparation("Entering 'else' body...");
         }
     ;
 
@@ -791,6 +800,7 @@ do_while
                 notifyDetection("Sentencia 'do-while'.");
                 this.reversePolish.connectToLastBifurcationPoint();
                 this.reversePolish.addPolish("TB");
+                this.reversePolish.addSeparation("Leaving 'do-while' body...");
             } else {
                 errorState = false;
             }
@@ -809,7 +819,10 @@ do_while
 // Refactorización necesaria para la ejecución de acciones semánticas.
 do_while_start
     : DO
-        { this.reversePolish.promiseBifurcationPoint(); }
+        {
+            this.reversePolish.addSeparation("Entering 'do-while' body...");
+            this.reversePolish.stackBifurcationPoint();
+        }
     ;
 
 // --------------------------------------------------------------------------------------------------------------------
@@ -844,7 +857,7 @@ declaracion_funcion
                 this.symbolTable.setCategory($1, SymbolCategory.FUNCTION);
                 this.scopeStack.pop();
                 this.symbolTable.setScope($1, this.scopeStack.asText());
-                this.reversePolish.addExitSeparation($1);
+                this.reversePolish.addSeparation(String.format("Leaving scope '%s'...", $1));
             } else {
                 errorState = false;
             }
@@ -868,7 +881,7 @@ inicio_funcion
         {
             $$ = $2;
             this.scopeStack.push($2);
-            this.reversePolish.addEntrySeparation($2);
+            this.reversePolish.addSeparation(String.format("Entering scope '%s'...", $2));
         }
     
     // |========================= REGLAS DE ERROR =========================| //

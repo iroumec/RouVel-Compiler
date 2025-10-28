@@ -8,25 +8,24 @@ import utilities.Printer;
 
 public final class ReversePolish {
 
-    private static final String EXIT_TEXT = "Leaving scope";
-    private static final String ENTRY_TEXT = "Entering scope";
-
     private static final ReversePolish INSTANCE = new ReversePolish();
 
     // --------------------------------------------------------------------------------------------
 
+    private int separations;
     private int polishNumber;
     private final List<Element> elements;
     private final List<String> temporalPolishes;
-    private final Deque<Integer> stackedBifurcation;
+    private final Deque<Promise> stackedPromises;
 
     // --------------------------------------------------------------------------------------------
 
     private ReversePolish() {
+        this.separations = 0;
         this.polishNumber = 0;
         this.elements = new ArrayList<>();
+        this.stackedPromises = new ArrayDeque<>();
         this.temporalPolishes = new ArrayList<>();
-        this.stackedBifurcation = new ArrayDeque<>();
     }
 
     // --------------------------------------------------------------------------------------------
@@ -47,20 +46,9 @@ public final class ReversePolish {
     // Agregado de Separadores
     // --------------------------------------------------------------------------------------------
 
-    public void addEntrySeparation(String separationLabel) {
-        this.addSeparation(separationLabel, ENTRY_TEXT);
-    }
-
-    // --------------------------------------------------------------------------------------------
-
-    public void addExitSeparation(String separationLabel) {
-        this.addSeparation(separationLabel, EXIT_TEXT);
-    }
-
-    // --------------------------------------------------------------------------------------------
-
-    private void addSeparation(String separationLabel, String prefixLabel) {
-        this.elements.add(new Separator(separationLabel, prefixLabel));
+    public void addSeparation(String separationLabel) {
+        this.separations++;
+        this.elements.add(new Separator(separationLabel));
     }
 
     // --------------------------------------------------------------------------------------------
@@ -68,14 +56,14 @@ public final class ReversePolish {
     // --------------------------------------------------------------------------------------------
 
     public void stackBifurcationPoint() {
-        this.stackedBifurcation.push(this.polishNumber + 1);
+        this.stackedPromises.push(new Promise(polishNumber + 1, this.separations));
     }
 
     // --------------------------------------------------------------------------------------------
 
     public void connectToLastBifurcationPoint() {
-        int bifurcationPoint = this.stackedBifurcation.pop();
-        this.elements.add(new Polish(String.valueOf(bifurcationPoint), ++this.polishNumber));
+        Promise promise = this.stackedPromises.pop();
+        this.elements.add(new Polish(String.valueOf(promise.bifurcationPoint()), ++this.polishNumber));
     }
 
     // --------------------------------------------------------------------------------------------
@@ -83,30 +71,32 @@ public final class ReversePolish {
     // --------------------------------------------------------------------------------------------
 
     public void promiseBifurcationPoint() {
-        this.stackedBifurcation.push(++this.polishNumber);
+        // El agregado del elemento nulo es necesario para que no errores con el manejo
+        // de los índices del arreglo cuando hay varios if-else anidados.
+        // Se está diciendo: "Reservame un lugar que luego te prometo que lo lleno.".
+        this.elements.add(null);
+        this.stackedPromises.push(new Promise(++this.polishNumber + this.separations, this.separations));
     }
 
     // --------------------------------------------------------------------------------------------
 
-    public void fulfillLastBifurcationPointPromise() {
-        int bifurcationIndex = this.stackedBifurcation.pop();
-        this.elements.add(bifurcationIndex, new Polish(String.valueOf(polishNumber + 1), bifurcationIndex));
+    public Promise getLastPromise() {
+        return this.stackedPromises.pop();
     }
 
     // --------------------------------------------------------------------------------------------
 
-    public int getLastPromise() {
-        return this.stackedBifurcation.pop();
+    public void fulfillPromise(Promise promise) {
+        // Se debe remover el nulo que se agregó para realizar la promesa.
+        // Los separadores agregados deben considerarse para ir al índice correcto,
+        // ya que ocupan lugar en la lista.
+        this.elements.remove(promise.bifurcationPoint() - 1);
+        this.elements.add(promise.bifurcationPoint() - 1,
+                new Polish(String.valueOf(polishNumber + 1), promise.bifurcationPoint() - promise.separations()));
     }
 
     // --------------------------------------------------------------------------------------------
-
-    public void fulfillPromise(int bifurcationPoint) {
-        this.elements.add(bifurcationPoint, new Polish(String.valueOf(polishNumber + 1), bifurcationPoint));
-    }
-
-    // --------------------------------------------------------------------------------------------
-    //
+    // Almacen Temporal de Polacas
     // --------------------------------------------------------------------------------------------
 
     /**
@@ -118,6 +108,8 @@ public final class ReversePolish {
 
         this.temporalPolishes.add(polish);
     }
+
+    // --------------------------------------------------------------------------------------------
 
     public void makeTemporalPolishesDefinitive() {
 
@@ -149,11 +141,17 @@ public final class ReversePolish {
         Printer.printSeparator();
     }
 
+    // --------------------------------------------------------------------------------------------
+    // Inner Classes
+    // --------------------------------------------------------------------------------------------
+
     private abstract class Element {
 
         public abstract void print();
 
     }
+
+    // --------------------------------------------------------------------------------------------
 
     private class Polish extends Element {
 
@@ -172,20 +170,20 @@ public final class ReversePolish {
 
     }
 
+    // --------------------------------------------------------------------------------------------
+
     private class Separator extends Element {
 
-        private String prefixLabel;
         private String separationLabel;
 
-        private Separator(String separationLabel, String prefixLabel) {
-            this.prefixLabel = prefixLabel;
+        private Separator(String separationLabel) {
             this.separationLabel = separationLabel;
         }
 
         @Override
         public void print() {
             Printer.printSeparator();
-            Printer.printCentered(String.format("%s '%s'", prefixLabel, separationLabel));
+            Printer.printCentered(separationLabel);
             Printer.printSeparator();
         }
     }
