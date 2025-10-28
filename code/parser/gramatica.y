@@ -151,7 +151,7 @@ close_brace_list
 // --------------------------------------------------------------------------------------------------------------------
                 
 statement_list
-    : statement 
+    : statement
     | statement_list statement 
 
     // |========================= REGLAS DE ERROR =========================| //
@@ -1082,14 +1082,15 @@ lambda
     : parametro_lambda bloque_ejecutable argumento_lambda ';'
         { 
             if (!errorState) {
+
+                this.reversePolish.addPolish($1);
+                this.reversePolish.addPolish($3);
+                this.reversePolish.addPolish(":=");
+
+                // Se agregan todas las polacas del bloque ejecutable.
+                //this.reversePolish.makeTemporalPolishesDefinitive();
+
                 notifyDetection("Expresión lambda.");
-
-                // El valor aún no deve calcularse.
-                // this.symbolTable.setValue($1, $3);
-
-                // El argumento no se agrega como polaca.
-                this.reversePolish.emptyTemporalPolishes();
-
                 this.reversePolish.addSeparation("Leaving lambda expression body...");
             } else {
                 errorState = false;
@@ -1130,6 +1131,7 @@ parametro_lambda
     : '(' UINT identifier ')'
         {
             $$ = $3;
+            this.reversePolish.setAggregatePoint();
             this.reversePolish.addSeparation("Entering lambda expression body...");
         }
     ;

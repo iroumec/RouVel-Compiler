@@ -17,6 +17,7 @@ public final class ReversePolish {
     private final List<Element> elements;
     private final List<String> temporalPolishes;
     private final Deque<Promise> stackedPromises;
+    private final Deque<Integer> aggregatePoints;
 
     // --------------------------------------------------------------------------------------------
 
@@ -24,6 +25,7 @@ public final class ReversePolish {
         this.separations = 0;
         this.polishNumber = 0;
         this.elements = new ArrayList<>();
+        this.aggregatePoints = new ArrayDeque<>();
         this.stackedPromises = new ArrayDeque<>();
         this.temporalPolishes = new ArrayList<>();
     }
@@ -96,6 +98,29 @@ public final class ReversePolish {
     }
 
     // --------------------------------------------------------------------------------------------
+    // Probando para las Lambda
+    // --------------------------------------------------------------------------------------------
+
+    public void setAggregatePoint() {
+        this.aggregatePoints.push(polishNumber);
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    public void fillLastAggregatePoint(String... symbols) {
+        int aggregatePoint = this.aggregatePoints.pop();
+        int startIndex = aggregatePoint;
+
+        for (String symbol : symbols) {
+            this.elements.add(new Polish(symbol, ++aggregatePoint));
+        }
+
+        // Incrementar a todos los elementos *posteriores* a los nuevos.
+        this.elements.subList(startIndex + symbols.length, elements.size())
+                .forEach(e -> e.increaseNumber(symbols.length));
+    }
+
+    // --------------------------------------------------------------------------------------------
     // Almacen Temporal de Polacas
     // --------------------------------------------------------------------------------------------
 
@@ -149,6 +174,7 @@ public final class ReversePolish {
 
         public abstract void print();
 
+        public abstract void increaseNumber(int n);
     }
 
     // --------------------------------------------------------------------------------------------
@@ -164,10 +190,37 @@ public final class ReversePolish {
         }
 
         @Override
+        public void increaseNumber(int n) {
+            this.number += n;
+        }
+
+        @Override
         public void print() {
             Printer.printFramed(number + " " + polishText);
         }
 
+        protected String getPolishText() {
+            return this.polishText;
+        }
+
+        protected void setPolishText(String newText) {
+            this.polishText = newText;
+        }
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    private class BifurcationPoint extends Polish {
+
+        private BifurcationPoint(String polishText, int number) {
+            super(polishText, number);
+        }
+
+        @Override
+        public void increaseNumber(int n) {
+            super.increaseNumber(n);
+            this.setPolishText(String.valueOf(Integer.valueOf(super.getPolishText()) + n));
+        }
     }
 
     // --------------------------------------------------------------------------------------------
@@ -178,6 +231,11 @@ public final class ReversePolish {
 
         private Separator(String separationLabel) {
             this.separationLabel = separationLabel;
+        }
+
+        @Override
+        public void increaseNumber(int n) {
+            // Intentionally empty...
         }
 
         @Override
