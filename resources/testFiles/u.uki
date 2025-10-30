@@ -7,4 +7,6 @@ YES {
     uint FUN1(uint H) {
         return (3UI);
     }
+
+    FUNC1(3UI -> H);
 }

@@ -1149,6 +1149,7 @@ parametro_lambda
 // ====================================================================================================================
 
 private final Lexer lexer;
+private int functionLevel;
 private boolean errorState;
 private final ScopeStack scopeStack;
 private final SymbolTable symbolTable;
@@ -1164,6 +1165,7 @@ public Parser(Lexer lexer, MessageCollector errorCollector, MessageCollector war
     }
 
     this.lexer = lexer;
+    this.functionLevel = 0;
     this.errorCollector = errorCollector;
     this.warningCollector = warningCollector;
     this.symbolTable = SymbolTable.getInstance();
