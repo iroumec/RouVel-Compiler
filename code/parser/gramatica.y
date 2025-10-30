@@ -10,6 +10,7 @@
     package parser;
 
     import lexer.Lexer;
+    import java.util.Arrays;
     import semantic.Promise;
     import lexer.token.Token;
     import utilities.Printer;
@@ -62,6 +63,7 @@
 
 %type <sval> program_name
 %type <sval> identifier, list_of_identifiers
+%type <sval> function_start
 %type <sval> list_of_variables, list_of_constants, multiple_assignment
 
 // ====================================================================================================================
@@ -997,11 +999,42 @@ sentencia_retorno
 // ********************************************************************************************************************
 
 invocacion_funcion
-    : ID '(' lista_argumentos ')' 
+    : function_start '(' lista_argumentos ')' 
         {
-            $$ = $1 + '(' + $3 + ')';
+            if (!errorState) {
+
+                $$ = $1 + '(' + $3 + ')';
+
+                String[] arguments = $1.split("\\s*,\\s*");
+
+                this.reversePolish.addPolish(String.format("%s[%d]", $1, arguments.length));
+            
+            } else {
+                errorState = false;
+            }
+
+            this.functionInvocationIdentifier = null; // TODO: cambiar a StringBuilder.
         }
     ;
+
+// --------------------------------------------------------------------------------------------------------------------
+
+function_start
+    : variable
+        {
+            String[] parts = $1.split("\\s*:\\s*");
+
+            // Se pasa el nombre de la función al final.
+            // Si se tiene A:B:C:D, se obtiene B:C:D.
+
+            if (parts.length > 1) {
+                String result = String.join(":", 
+                    Arrays.copyOfRange(parts, 1, parts.length)) + ":" + parts[0];
+                this.functionInvocationIdentifier = result;
+            } else {
+                this.functionInvocationIdentifier = $1; // Solo hay un elemento.
+            }
+        }
 
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -1015,12 +1048,21 @@ lista_argumentos
 
 argumento
     : expression FLECHA ID
-        { $$ = $1 + $2 + $3; }
+        {
+            $$ = $1 + $2 + $3;
+            
+            this.reversePolish.addPolish($3 + ":" + this.functionInvocationIdentifier);
+
+            // Se agrega la expresión.
+            this.reversePolish.makeTemporalPolishesDefinitive();
+
+            this.reversePolish.addPolish("->");
+        }
 
     // |========================= REGLAS DE ERROR =========================| //
 
     | expression
-        { notifyError("Falta de especificación del parámetro formal al que corresponde el parámetro real."); }
+        { notifyError("Falta de especificación del parámetro formal al que corresponde el parámetro real."); errorState = true; }
     ;
 
 // ********************************************************************************************************************
@@ -1154,6 +1196,7 @@ private boolean errorState;
 private final ScopeStack scopeStack;
 private final SymbolTable symbolTable;
 private final ReversePolish reversePolish;
+private String functionInvocationIdentifier;
 private MessageCollector errorCollector, warningCollector;
 
 // --------------------------------------------------------------------------------------------------------------------
