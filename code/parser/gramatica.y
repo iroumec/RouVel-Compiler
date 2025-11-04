@@ -422,7 +422,7 @@ list_of_variables
 
     // |========================= REGLAS DE ERROR =========================| //
 
-    | variable list_of_variables
+    | variable error list_of_variables
         {
 
             // Conversión de la lista de variables a arreglo de strings, eliminando espacios alrededor de cada elemento.
@@ -431,13 +431,13 @@ list_of_variables
 
             notifyError(String.format(
                 "Se encontraron dos variables juntas sin separación. Inserte una ',' entre '%s' y '%s'.",
-                lastVariable, $2));
+                lastVariable, $3));
             errorState = true;
 
             // Se agrega una coma para respetar el formato en reglas siguientes.
             // Si no se agregara la coma, de entrar nuevamente a esta regla, la separación de las variables no
             // funcionaría adecuadamente.
-            $$ = $1 + ',' + $2;
+            $$ = $1 + ',' + $3;
         }
     ;
 
@@ -560,11 +560,8 @@ operador_multiplicacion
 
 // Factor que contempla la posibilidad de constantes negativas.
 factor
-    : variable error
-        // Si no se coloca el token error, da reduce/reduce con asignación múltiple.
+    : variable
         {
-            // TODO: esto es un parche. Debe verse mejor después.
-            this.errorCollector.removeLast(); // Debido a que se usa el token error.
             reversePolish.addTemporalPolish($1);
         }
     | constant
@@ -762,6 +759,11 @@ cuerpo_if
 
 rama_else
     : // lambda //
+        {
+            // Si no hay `else`, un retorno en un `if` no indica que la función tenga
+            // todos sus puntos de retorno abarcados.
+            this.isThereReturn = false;
+        }
     | else_start cuerpo_ejecutable
 
     // |========================= REGLAS DE ERROR =========================| //

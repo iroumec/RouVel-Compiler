@@ -12,6 +12,10 @@ public final class ReversePolish {
 
     // --------------------------------------------------------------------------------------------
 
+    private boolean debug = false;
+
+    // --------------------------------------------------------------------------------------------
+
     private int separations;
     private int polishNumber;
 
@@ -51,7 +55,10 @@ public final class ReversePolish {
 
     public void addPolish(String symbol) {
         this.elements.add(new Polish(symbol, ++this.polishNumber));
-        System.out.println("Polish added: " + symbol);
+
+        if (this.debug) {
+            System.out.println("Polish added: " + symbol);
+        }
     }
 
     // --------------------------------------------------------------------------------------------
@@ -61,7 +68,10 @@ public final class ReversePolish {
     public void addSeparation(String separationLabel) {
         this.separations++;
         this.elements.add(new Separator(separationLabel));
-        System.out.println("Separation added: " + separationLabel);
+
+        if (this.debug) {
+            System.out.println("Separation added: " + separationLabel);
+        }
     }
 
     // --------------------------------------------------------------------------------------------
@@ -176,7 +186,10 @@ public final class ReversePolish {
 
     public void recordSafeState() {
         this.lastSafeState = this.elements.size();
-        System.out.println("Safe state recorded in: " + this.lastSafeState);
+
+        if (this.debug) {
+            System.out.println("Safe state recorded in: " + this.lastSafeState);
+        }
     }
 
     // --------------------------------------------------------------------------------------------
@@ -184,7 +197,10 @@ public final class ReversePolish {
     public void returnToLastSafeState() {
         // Se eliminan todos los elementos agregados luego del último estado seguro.
         elements.subList(lastSafeState, elements.size()).clear();
-        System.out.println("The reverse polished was restored to last safe state: " + this.lastSafeState);
+
+        if (this.debug) {
+            System.out.println("The reverse polished was restored to last safe state: " + this.lastSafeState);
+        }
     }
 
     // --------------------------------------------------------------------------------------------
