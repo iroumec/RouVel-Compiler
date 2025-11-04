@@ -22,14 +22,14 @@ MAIN {
     uint FUNC3(uint B) {
 
         if (MAIN.A > B) {
-            return(3UI);
+            return(4UI);
         } endif;
     }
 
     uint FUNC4(uint B) {
 
         if (MAIN.A > B) {
-            return(3UI);
+            return(7UI);
         } endif;
 
         return(0UI);

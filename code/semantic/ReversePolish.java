@@ -88,7 +88,7 @@ public final class ReversePolish {
         // de los índices del arreglo cuando hay varios if-else anidados.
         // Se está diciendo: "Reservame un lugar que luego te prometo que lo lleno.".
         this.elements.add(null);
-        this.stackedPromises.push(new Promise(++this.polishNumber + this.separations, this.separations));
+        this.stackedPromises.push(new Promise(this.elements.size(), this.separations));
     }
 
     // --------------------------------------------------------------------------------------------
@@ -176,7 +176,7 @@ public final class ReversePolish {
 
     public void recordSafeState() {
         this.lastSafeState = this.elements.size();
-        System.out.println("Safe:" + this.lastSafeState);
+        System.out.println("Safe state recorded in: " + this.lastSafeState);
     }
 
     // --------------------------------------------------------------------------------------------
