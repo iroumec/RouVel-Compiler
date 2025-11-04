@@ -14,8 +14,17 @@ public final class ReversePolish {
 
     private int separations;
     private int polishNumber;
+
+    // Es un polish number.
+    private int lastSafeState;
+
+    // --------------------------------------------------------------------------------------------
+
     private final List<Element> elements;
     private final List<String> temporalPolishes;
+
+    // --------------------------------------------------------------------------------------------
+
     private final Deque<Promise> stackedPromises;
     private final Deque<AggregatePoint> aggregatePoints;
 
@@ -42,6 +51,7 @@ public final class ReversePolish {
 
     public void addPolish(String symbol) {
         this.elements.add(new Polish(symbol, ++this.polishNumber));
+        System.out.println("Polish added: " + symbol);
     }
 
     // --------------------------------------------------------------------------------------------
@@ -51,6 +61,7 @@ public final class ReversePolish {
     public void addSeparation(String separationLabel) {
         this.separations++;
         this.elements.add(new Separator(separationLabel));
+        System.out.println("Separation added: " + separationLabel);
     }
 
     // --------------------------------------------------------------------------------------------
@@ -144,7 +155,10 @@ public final class ReversePolish {
     public void makeTemporalPolishesDefinitive() {
 
         for (String polish : this.temporalPolishes) {
-            this.elements.add(new Polish(polish, ++polishNumber));
+            // It would be more efficient adding the polishes directly to "elements".
+            // But it was preferred to be done like this so there is only one point of
+            // adding to the list.
+            this.addPolish(polish);
         }
 
         this.emptyTemporalPolishes();
@@ -154,6 +168,23 @@ public final class ReversePolish {
 
     public void emptyTemporalPolishes() {
         this.temporalPolishes.clear();
+    }
+
+    // --------------------------------------------------------------------------------------------
+    // Manejo de Estado Seguro
+    // --------------------------------------------------------------------------------------------
+
+    public void recordSafeState() {
+        this.lastSafeState = this.elements.size();
+        System.out.println("Safe:" + this.lastSafeState);
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    public void returnToLastSafeState() {
+        // Se eliminan todos los elementos agregados luego del último estado seguro.
+        elements.subList(lastSafeState, elements.size()).clear();
+        System.out.println("The reverse polished was restored to last safe state: " + this.lastSafeState);
     }
 
     // --------------------------------------------------------------------------------------------

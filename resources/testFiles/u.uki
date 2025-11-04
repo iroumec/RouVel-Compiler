@@ -5,8 +5,13 @@ YES {
     A := 4UI;
 
     uint FUNC1(uint H) {
-        return (3UI);
+
+        print("Hola");
+
+        ##return (3UI);##
     }
+
+    return(3UI);
 
     FUNC1(3UI -> H);
 }

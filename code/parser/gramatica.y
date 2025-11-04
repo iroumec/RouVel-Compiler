@@ -16,6 +16,7 @@
     import utilities.Printer;
     import common.SymbolType;
     import common.SymbolTable;
+    import semantic.ScopeType;
     import semantic.ScopeStack;
     import common.SymbolCategory;
     import semantic.ReversePolish;
@@ -112,6 +113,7 @@ program_name
             this.scopeStack.push($1);
             this.symbolTable.setCategory($1, SymbolCategory.PROGRAM);
             this.reversePolish.addSeparation(String.format("Entering scope '%s'...", $1));
+            this.reversePolish.recordSafeState();
         }
     ;
 
@@ -154,7 +156,9 @@ close_brace_list
                 
 statement_list
     : statement
-    | statement_list statement 
+        { this.treatErrorState(); }
+    | statement_list statement
+        { this.treatErrorState(); }
 
     // |========================= REGLAS DE ERROR =========================| //
 
@@ -185,7 +189,9 @@ punto_y_coma_opcional
     | ';'
     ;
 
-// --------------------------------------------------------------------------------------------------------------------
+// ********************************************************************************************************************
+// Sentencias ejecutables
+// ********************************************************************************************************************
 
 cuerpo_ejecutable
     : executable_statement
@@ -210,9 +216,7 @@ conjunto_sentencias_ejecutables
     | conjunto_sentencias_ejecutables executable_statement
     ;
 
-// ********************************************************************************************************************
-// Sentencias ejecutables
-// ********************************************************************************************************************
+// --------------------------------------------------------------------------------------------------------------------
 
 executable_statement
     : invocacion_funcion ';'
@@ -230,7 +234,6 @@ executable_statement
     
     | invocacion_funcion error
         { notifyError("La invocación a función debe terminar con ';'."); }
-    //| asignacion_multiple_erronea
     ;
 
 // --------------------------------------------------------------------------------------------------------------------
@@ -254,8 +257,6 @@ declaration_of_variables
                 } else {
                     notifyDetection("Declaración de variables.");
                 }
-            } else {
-                errorState = false;
             }
         }
         // |========================= REGLAS DE ERROR =========================| //
@@ -340,10 +341,6 @@ asignacion_simple
                 // Se decrementan las referencias, puesto a que se está frente a una referencia no válida.
                 this.symbolTable.removeEntry($1);
                 this.symbolTable.removeEntry($3);
-
-                this.reversePolish.emptyTemporalPolishes();
-
-                errorState = false;
             }
         }
 
@@ -406,10 +403,6 @@ multiple_assignment
 
                     notifyDetection("Asignación múltiple.");
                 }
-            } else {
-
-                notifyError("Hola");
-                errorState = false;
             }
         }
 
@@ -746,6 +739,7 @@ if_start
             this.reversePolish.addSeparation("Entering 'if' body...");
             this.reversePolish.promiseBifurcationPoint();
             this.reversePolish.addPolish("FB");
+            this.lastScopeEntered = ScopeType.IF;
         }
     ;
 
@@ -794,6 +788,8 @@ else_start
             this.reversePolish.fulfillPromise(promise);
 
             this.reversePolish.addSeparation("Entering 'else' body...");
+
+            this.lastScopeEntered = ScopeType.ELSE;
         }
     ;
 
@@ -809,8 +805,6 @@ do_while
                 this.reversePolish.connectToLastBifurcationPoint();
                 this.reversePolish.addPolish("TB");
                 this.reversePolish.addSeparation("Leaving 'do-while' body...");
-            } else {
-                errorState = false;
             }
         }  
     
@@ -857,18 +851,26 @@ fin_cuerpo_iteracion
 // ********************************************************************************************************************
 
 declaracion_funcion
-    : inicio_funcion conjunto_parametros '{' statement_list '}'
+    : inicio_funcion conjunto_parametros '{' function_body '}'
         {
             if (!errorState) {
-                notifyDetection("Declaración de función.");
-                this.symbolTable.setType($1, SymbolType.UINT);
-                this.symbolTable.setCategory($1, SymbolCategory.FUNCTION);
-                this.scopeStack.pop();
-                this.symbolTable.setScope($1, this.scopeStack.asText());
-                this.reversePolish.addSeparation(String.format("Leaving scope '%s'...", $1));
-            } else {
-                errorState = false;
+
+                if (this.isThereReturn) {
+
+                    this.isThereReturn = false;
+                    notifyDetection("Declaración de función.");
+                    this.symbolTable.setType($1, SymbolType.UINT);
+                    this.symbolTable.setCategory($1, SymbolCategory.FUNCTION);
+                    this.scopeStack.pop();
+                    this.symbolTable.setScope($1, this.scopeStack.asText());
+                    this.reversePolish.addSeparation(String.format("Leaving scope '%s'...", $1));
+                } else {
+                    notifyError("La función necesita, en todos los casos, retornar un valor.");
+                    this.errorState = true;
+                }
             }
+
+            this.functionLevel--;
         }
 
     // |========================= REGLAS DE ERROR =========================| //
@@ -877,6 +879,7 @@ declaracion_funcion
         {
             this.scopeStack.pop();
             notifyError("El cuerpo de la función no puede estar vacío.");
+            this.errorState = true;
         }
     ;
 
@@ -888,6 +891,7 @@ inicio_funcion
     : UINT ID
         {
             $$ = $2;
+            this.functionLevel++;
             this.scopeStack.push($2);
             this.reversePolish.addSeparation(String.format("Entering scope '%s'...", $2));
         }
@@ -897,9 +901,19 @@ inicio_funcion
     | UINT
         {
             this.scopeStack.push("error");
+            this.functionLevel++;
             notifyError("La función requiere de un nombre.");
             errorState = true;
         } 
+    ;
+
+// --------------------------------------------------------------------------------------------------------------------
+
+// Why isn't used `statement_list`? Because of its semantic actions.
+// We don't want in the scope of a function.
+function_body
+    : statement
+    | function_body statement
     ;
 
 // --------------------------------------------------------------------------------------------------------------------
@@ -973,12 +987,22 @@ semantica_pasaje
 sentencia_retorno
     : RETURN '(' expression ')' ';'
         {
-            if (!errorState) {
+            if (!this.errorState && this.functionLevel > 0) {
                 this.reversePolish.makeTemporalPolishesDefinitive();
                 reversePolish.addPolish("return");
                 notifyDetection("Sentencia 'return'.");
+
+                if (this.lastScopeEntered == ScopeType.IF) {
+                    this.isThereReturn = true;
+                }
+
             } else {
-                errorState = false;
+                
+                this.reversePolish.emptyTemporalPolishes();
+                
+                if (this.functionLevel == 0) {
+                    notifyError("La sentencia 'return' no está permitida fuera de la declaración de una función.");
+                }
             }
         }
     
@@ -1009,8 +1033,6 @@ invocacion_funcion
 
                 this.reversePolish.addPolish(String.format("%s[%d]", $1, arguments.length));
             
-            } else {
-                errorState = false;
             }
 
             this.functionInvocationIdentifier = null; // TODO: cambiar a StringBuilder.
@@ -1077,8 +1099,6 @@ impresion
                 this.reversePolish.makeTemporalPolishesDefinitive();
                 reversePolish.addPolish("print");
                 notifyDetection("Sentencia 'print'.");
-            } else {
-                errorState = false;
             }
         }
 
@@ -1086,7 +1106,7 @@ impresion
 
     | PRINT imprimible error
         {
-            errorState = false;
+            errorState = true;
             this.reversePolish.emptyTemporalPolishes();
             notifyError("La sentencia 'print' debe finalizar con ';'.");
         }
@@ -1115,9 +1135,7 @@ imprimible
 
 elemento_imprimible
     : STR
-        {
-            reversePolish.addTemporalPolish($1);
-        }
+        { reversePolish.addTemporalPolish($1); }
     | expression
     ;
 
@@ -1136,8 +1154,6 @@ lambda
 
                 notifyDetection("Expresión lambda.");
                 this.reversePolish.addSeparation("Leaving lambda expression body...");
-            } else {
-                errorState = false;
             }
         }
 
@@ -1191,13 +1207,18 @@ parametro_lambda
 // ====================================================================================================================
 
 private final Lexer lexer;
-private int functionLevel;
 private boolean errorState;
 private final ScopeStack scopeStack;
 private final SymbolTable symbolTable;
 private final ReversePolish reversePolish;
 private String functionInvocationIdentifier;
 private MessageCollector errorCollector, warningCollector;
+
+// --------------------------------------------------------------------------------------------------------------------
+
+private int functionLevel;
+private boolean isThereReturn;
+private ScopeType lastScopeEntered;
 
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -1208,10 +1229,12 @@ public Parser(Lexer lexer, MessageCollector errorCollector, MessageCollector war
     }
 
     this.lexer = lexer;
-    this.functionLevel = 0;
     this.errorCollector = errorCollector;
     this.warningCollector = warningCollector;
     this.symbolTable = SymbolTable.getInstance();
+
+    this.functionLevel = 0;
+    this.isThereReturn = false;
     
     this.scopeStack = new ScopeStack();
     this.reversePolish = ReversePolish.getInstance();
@@ -1292,6 +1315,26 @@ private void replaceLastErrorWith(String errorMessage) {
         "ERROR SINTÁCTICO: Línea %d: %s",
         lexer.getNroLinea(), errorMessage
     ));
+}
+
+// --------------------------------------------------------------------------------------------------------------------
+
+private void treatErrorState() {
+
+    if (!errorState) {
+        this.reversePolish.recordSafeState();
+    } else {
+        this.recoverFromErrorState();
+    }
+}
+
+// --------------------------------------------------------------------------------------------------------------------
+
+private void recoverFromErrorState() {
+
+    this.reversePolish.emptyTemporalPolishes();
+    this.reversePolish.returnToLastSafeState();
+    this.errorState = false;
 }
 
 // --------------------------------------------------------------------------------------------------------------------

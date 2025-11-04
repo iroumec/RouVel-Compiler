@@ -1,0 +1,37 @@
+MAIN {
+
+    uint A;
+
+    A := 4UI;
+
+    return(3UI);
+
+    uint FUNC1(uint H) {
+
+        print("Hola");
+
+        ##return (3UI);##
+    }
+
+    FUNC1(3UI -> H);
+
+    uint FUNC2(uint B) {
+        return(3UI);
+    }
+
+    uint FUNC3(uint B) {
+
+        if (MAIN.A > B) {
+            return(3UI);
+        } endif;
+    }
+
+    uint FUNC4(uint B) {
+
+        if (MAIN.A > B) {
+            return(3UI);
+        } endif;
+
+        return(0UI);
+    }
+}
