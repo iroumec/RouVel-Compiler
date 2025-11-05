@@ -1221,6 +1221,7 @@ private MessageCollector errorCollector, warningCollector;
 private int functionLevel;
 private boolean isThereReturn;
 private ScopeType lastScopeEntered;
+private boolean skippedStatementsMessageShown;
 
 // --------------------------------------------------------------------------------------------------------------------
 

@@ -757,6 +757,7 @@ private MessageCollector errorCollector, warningCollector;
 private int functionLevel;
 private boolean isThereReturn;
 private ScopeType lastScopeEntered;
+private boolean skippedStatementsMessageShown;
 
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -884,7 +885,7 @@ private boolean isUint(String number) {
 // ====================================================================================================================
 // FIN DE CÓDIGO
 // ====================================================================================================================
-//#line 816 "Parser.java"
+//#line 817 "Parser.java"
 //###############################################################
 // method: yylexdebug : check lexer state
 //###############################################################
@@ -1885,7 +1886,7 @@ case 172:
             this.reversePolish.addSeparation("Entering lambda expression body...");
         }
 break;
-//#line 1812 "Parser.java"
+//#line 1813 "Parser.java"
 //########## END OF USER-SUPPLIED ACTIONS ##########
     }//switch
     //#### Now let's reduce... ####
