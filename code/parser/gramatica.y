@@ -16,7 +16,6 @@
     import utilities.Printer;
     import common.SymbolType;
     import common.SymbolTable;
-    import semantic.ScopeType;
     import semantic.ScopeStack;
     import common.SymbolCategory;
     import semantic.ReversePolish;
@@ -1089,6 +1088,7 @@ function_start
                 this.functionInvocationIdentifier = $1; // Solo hay un elemento.
             }
         }
+    ;
 
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -1251,8 +1251,6 @@ private MessageCollector errorCollector, warningCollector;
 private int functionLevel;
 // Si esto está activa, todas las instrucciones que se encuentran no serán pasadas a código intermedio.
 private boolean isThereReturn;
-private ScopeType lastScopeEntered;
-private boolean skippedStatementsMessageShown;
 
 // --------------------------------------------------------------------------------------------------------------------
 
