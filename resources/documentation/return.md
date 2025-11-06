@@ -88,3 +88,9 @@ Además, se debe pensar: ¿qué pasa si hay declaraciones de función anidadas? 
 Si se halla un `return`, se setea en `true` una bandera. Si, luego, se sale del ámbito de un if, esa bandera se setea en `false`. Si, por otro lado, se sale del ámbito de un `else`, y ese `else` tiene un `return`, la bandera no se modifica (si era `true`, hay un `return` en el `if` y, como también lo hay en el `else`, la función tiene un retorno válido).
 
 Sin embargo, eso requiere saber dentró de qué tipo de ámbito se está metido, para lo cual debe crearse otra variable adicional a la bandera que se menciona antes. A considerar, esto solo sirve porque el if-else tienen dentro suyo sentencias ejecutables. En otro caso, no serviría.
+
+Otra solución: llevar un contador de return que se necesitan. Al detectarse un if-else, en las que ambas ramas tienen un return, se decrementa la cantidad de return necesarios. Se requiere llevar registro de si el anterior if tuvo un return o no.
+
+Problema: if-else anidados. La variable debe pisarse. Por lo tanto, debe encolarse la variable que indique si el if-else necesita un retorno.
+
+Otra solución: incrementar en cada entrada de un if el número de return necesarios.

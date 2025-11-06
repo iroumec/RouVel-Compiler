@@ -719,6 +719,15 @@ if
             } else {
                 errorState = false;
             }
+
+            // Se está saliendo del if más externo.
+            if (this.selectionDepth == 1) {
+                if (this.returnsNeeded == this.returnsFound) {
+                    this.isThereReturn = true;
+                }
+            }
+
+            this.selectionDepth--;
         }
     ; 
 
@@ -736,7 +745,8 @@ if_start
             this.reversePolish.addSeparation("Entering 'if' body...");
             this.reversePolish.promiseBifurcationPoint();
             this.reversePolish.addPolish("FB");
-            this.lastScopeEntered = ScopeType.IF;
+            this.returnsNeeded++;
+            this.selectionDepth++;
         }
     ;
 
@@ -760,9 +770,12 @@ cuerpo_if
 rama_else
     : // lambda //
         {
-            // Si no hay `else`, un retorno en un `if` no indica que la función tenga
-            // todos sus puntos de retorno abarcados.
-            this.isThereReturn = false;
+            // Se decrementa la cantidad de retornos que se requieren si el if está solo.
+            this.returnsNeeded--;
+
+            // Se decrementa la cantidad de returns hallados.
+            // REVISAR QUÉ PASA SI DENTRO DEL IF HAY VARIOS RETURNS.
+            this.returnsFound--;
         }
     | else_start cuerpo_ejecutable
 
@@ -791,7 +804,12 @@ else_start
 
             this.reversePolish.addSeparation("Entering 'else' body...");
 
-            this.lastScopeEntered = ScopeType.ELSE;
+            //this.lastScopeEntered = ScopeType.ELSE;
+
+            // Primer else hallado.
+            /*if (this.selectionDepth == 1) {
+                this.returnsNeeded++;
+            }*/
         }
     ;
 
@@ -873,6 +891,8 @@ declaracion_funcion
             }
 
             this.functionLevel--;
+            this.returnsFound = 0;
+            this.returnsNeeded = 0;
         }
 
     // |========================= REGLAS DE ERROR =========================| //
@@ -882,6 +902,10 @@ declaracion_funcion
             this.scopeStack.pop();
             notifyError("El cuerpo de la función no puede estar vacío.");
             this.errorState = true;
+
+            this.functionLevel--;
+            this.returnsFound = 0;
+            this.returnsNeeded = 0;
         }
     ;
 
@@ -896,16 +920,20 @@ inicio_funcion
             this.functionLevel++;
             this.scopeStack.push($2);
             this.reversePolish.addSeparation(String.format("Entering scope '%s'...", $2));
+
+            this.returnsNeeded = 1;
         }
     
     // |========================= REGLAS DE ERROR =========================| //
 
     | UINT
         {
-            this.scopeStack.push("error");
-            this.functionLevel++;
-            notifyError("La función requiere de un nombre.");
             errorState = true;
+            this.functionLevel++;
+            this.scopeStack.push("error");
+            notifyError("La función requiere de un nombre.");
+
+            this.returnsNeeded = 1;
         } 
     ;
 
@@ -994,7 +1022,9 @@ sentencia_retorno
                 reversePolish.addPolish("return");
                 notifyDetection("Sentencia 'return'.");
 
-                if (this.lastScopeEntered == ScopeType.IF) {
+                this.returnsFound++;
+
+                if (this.selectionDepth == 0) {
                     this.isThereReturn = true;
                 }
 
@@ -1219,9 +1249,16 @@ private MessageCollector errorCollector, warningCollector;
 // --------------------------------------------------------------------------------------------------------------------
 
 private int functionLevel;
+// Si esto está activa, todas las instrucciones que se encuentran no serán pasadas a código intermedio.
 private boolean isThereReturn;
 private ScopeType lastScopeEntered;
 private boolean skippedStatementsMessageShown;
+
+// --------------------------------------------------------------------------------------------------------------------
+
+private int returnsFound;
+private int returnsNeeded;
+private int selectionDepth;
 
 // --------------------------------------------------------------------------------------------------------------------
 

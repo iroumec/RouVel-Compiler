@@ -8,10 +8,10 @@ YES {
 
         print("Hola");
 
-        ##return (3UI);##
+        return (3UI);
     }
 
-    return(3UI);
+    ##return(3UI);##
 
     FUNC1(3UI -> H);
 }
