@@ -802,13 +802,6 @@ else_start
             this.reversePolish.fulfillPromise(promise);
 
             this.reversePolish.addSeparation("Entering 'else' body...");
-
-            //this.lastScopeEntered = ScopeType.ELSE;
-
-            // Primer else hallado.
-            /*if (this.selectionDepth == 1) {
-                this.returnsNeeded++;
-            }*/
         }
     ;
 
@@ -919,6 +912,10 @@ inicio_funcion
             this.functionLevel++;
             this.scopeStack.push($2);
             this.reversePolish.addSeparation(String.format("Entering scope '%s'...", $2));
+
+            // Se crea un operador para la función, mediante el operador 'label'.
+            this.reversePolish.addPolish($2);
+            this.reversePolish.addPolish("label");
 
             this.returnsNeeded = 1;
         }
@@ -1060,10 +1057,8 @@ invocacion_funcion
 
                 $$ = $1 + '(' + $3 + ')';
 
-                String[] arguments = $1.split("\\s*,\\s*");
-
-                this.reversePolish.addPolish(String.format("%s[%d]", $1, arguments.length));
-            
+                this.reversePolish.addPolish($1);
+                this.reversePolish.addPolish("call");
             }
 
             this.functionInvocationIdentifier = null; // TODO: cambiar a StringBuilder.
@@ -1110,7 +1105,7 @@ argumento
             // Se agrega la expresión.
             this.reversePolish.makeTemporalPolishesDefinitive();
 
-            this.reversePolish.addPolish("->");
+            this.reversePolish.addPolish(":=");
         }
 
     // |========================= REGLAS DE ERROR =========================| //
@@ -1178,6 +1173,12 @@ elemento_imprimible
 lambda
     : parametro_lambda bloque_ejecutable argumento_lambda ';'
         { 
+            if (!this.isThereReturn) { // isThereReturnInScope
+                // OK
+            } else {
+                notifyWarning("Está función 'lambda' no es alcanzable debido a que hay un sentencia de retorno arriba.");
+            }
+
             if (!errorState) {
 
                 // Se llena el punto de agregación reservado con la asignación
