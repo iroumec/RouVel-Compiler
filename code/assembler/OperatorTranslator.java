@@ -4,6 +4,7 @@ import assembler.operators.Operator;
 import assembler.operators.implementations.Assignment;
 import assembler.operators.implementations.Call;
 import assembler.operators.implementations.Label;
+import assembler.operators.implementations.Print;
 import assembler.operators.implementations.Return;
 import assembler.operators.implementations.Subtraction;
 import assembler.operators.implementations.Sum;
@@ -18,7 +19,7 @@ class OperatorTranslator {
             case "label" -> Label.getInstance();
             case "call" -> Call.getInstance();
             case "return" -> Return.getInstance();
-            case "print" -> null;
+            case "print" -> Print.getInstance();
             case ":=" -> Assignment.getInstance();
             case ">" -> null;
             case "<=" -> null;
