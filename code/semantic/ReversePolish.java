@@ -219,12 +219,33 @@ public final class ReversePolish {
     }
 
     // --------------------------------------------------------------------------------------------
+
+    public List<String> getPolishes() {
+
+        List<String> out = new ArrayList<>();
+
+        for (Element element : this.elements) {
+
+            // TODO: change this
+            String polish = element.getPolish();
+
+            if (polish != null) {
+                out.add(polish);
+            }
+        }
+
+        return out;
+    }
+
+    // --------------------------------------------------------------------------------------------
     // Inner Classes
     // --------------------------------------------------------------------------------------------
 
     private abstract class Element {
 
         public abstract void print();
+
+        public abstract String getPolish();
 
         public abstract void increaseNumber(int n);
     }
@@ -249,6 +270,11 @@ public final class ReversePolish {
         @Override
         public void print() {
             Printer.printFramed(number + " " + polishText);
+        }
+
+        @Override
+        public String getPolish() {
+            return this.polishText;
         }
 
         protected String getPolishText() {
@@ -295,6 +321,11 @@ public final class ReversePolish {
             Printer.printSeparator();
             Printer.printCentered(separationLabel);
             Printer.printSeparator();
+        }
+
+        @Override
+        public String getPolish() {
+            return null;
         }
     }
 }

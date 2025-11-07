@@ -1292,6 +1292,12 @@ public void execute() {
 
 // --------------------------------------------------------------------------------------------------------------------
 
+public ReversePolish getReversePolish() {
+    return this.reversePolish;
+}
+
+// --------------------------------------------------------------------------------------------------------------------
+
 // Método yylex() invocado durante yyparse().
 private int yylex() {
 

@@ -796,6 +796,12 @@ public void execute() {
 
 // --------------------------------------------------------------------------------------------------------------------
 
+public ReversePolish getReversePolish() {
+    return this.reversePolish;
+}
+
+// --------------------------------------------------------------------------------------------------------------------
+
 // Método yylex() invocado durante yyparse().
 private int yylex() {
 
@@ -889,7 +895,7 @@ private boolean isUint(String number) {
 // ====================================================================================================================
 // FIN DE CÓDIGO
 // ====================================================================================================================
-//#line 821 "Parser.java"
+//#line 827 "Parser.java"
 //###############################################################
 // method: yylexdebug : check lexer state
 //###############################################################
@@ -1921,7 +1927,7 @@ case 172:
             this.reversePolish.addSeparation("Entering lambda expression body...");
         }
 break;
-//#line 1848 "Parser.java"
+//#line 1854 "Parser.java"
 //########## END OF USER-SUPPLIED ACTIONS ##########
     }//switch
     //#### Now let's reduce... ####

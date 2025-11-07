@@ -2,6 +2,7 @@
 import java.io.File;
 import java.io.IOException;
 
+import assembler.Assembler;
 import lexer.Lexer;
 import parser.Parser;
 import semantic.ReversePolish;
@@ -48,7 +49,13 @@ public class Main {
         sintacticalAnalyzer.execute();
         Printer.printSeparator();
 
+        System.out.println("Hiiiiiiiiiii");
+
         printReport(lexicalAnalyzer.getNroLinea(), errorCollector, warningCollector);
+
+        Printer.printSeparator();
+        Printer.print(Assembler.generate(sintacticalAnalyzer.getReversePolish()));
+        Printer.printSeparator();
     }
 
     // --------------------------------------------------------------------------------------------
