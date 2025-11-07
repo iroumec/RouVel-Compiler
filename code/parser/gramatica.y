@@ -1099,13 +1099,17 @@ argumento
     : expression FLECHA ID
         {
             $$ = $1 + $2 + $3;
+
+            String formalParameter = $3 + ":" + this.functionInvocationIdentifier;
             
-            this.reversePolish.addPolish($3 + ":" + this.functionInvocationIdentifier);
+            this.reversePolish.addPolish(formalParameter);
 
             // Se agrega la expresión.
             this.reversePolish.makeTemporalPolishesDefinitive();
 
             this.reversePolish.addPolish(":=");
+
+            this.symbolTable.replaceEntry($3, formalParameter);
         }
 
     // |========================= REGLAS DE ERROR =========================| //

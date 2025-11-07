@@ -49,8 +49,6 @@ public class Main {
         sintacticalAnalyzer.execute();
         Printer.printSeparator();
 
-        System.out.println("Hiiiiiiiiiii");
-
         printReport(lexicalAnalyzer.getNroLinea(), errorCollector, warningCollector);
 
         Printer.printSeparator();

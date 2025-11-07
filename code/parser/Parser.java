@@ -737,7 +737,7 @@ final static String yyrule[] = {
 "parametro_lambda : '(' UINT identifier ')'",
 };
 
-//#line 1237 "gramatica.y"
+//#line 1241 "gramatica.y"
 
 // ====================================================================================================================
 // INICIO DE CÓDIGO (opcional)
@@ -1819,21 +1819,25 @@ case 154:
 //#line 1100 "gramatica.y"
 {
             yyval.sval = val_peek(2).sval + val_peek(1).sval + val_peek(0).sval;
+
+            String formalParameter = val_peek(0).sval + ":" + this.functionInvocationIdentifier;
             
-            this.reversePolish.addPolish(val_peek(0).sval + ":" + this.functionInvocationIdentifier);
+            this.reversePolish.addPolish(formalParameter);
 
             /* Se agrega la expresión.*/
             this.reversePolish.makeTemporalPolishesDefinitive();
 
             this.reversePolish.addPolish(":=");
+
+            this.symbolTable.replaceEntry(val_peek(0).sval, formalParameter);
         }
 break;
 case 155:
-//#line 1114 "gramatica.y"
+//#line 1118 "gramatica.y"
 { notifyError("Falta de especificación del parámetro formal al que corresponde el parámetro real."); errorState = true; }
 break;
 case 156:
-//#line 1123 "gramatica.y"
+//#line 1127 "gramatica.y"
 {
             if (!errorState) {
                 /* Se añaden las polacas correspondiente al imprimible.*/
@@ -1844,7 +1848,7 @@ case 156:
         }
 break;
 case 157:
-//#line 1135 "gramatica.y"
+//#line 1139 "gramatica.y"
 {
             errorState = true;
             this.reversePolish.emptyTemporalPolishes();
@@ -1852,11 +1856,11 @@ case 157:
         }
 break;
 case 159:
-//#line 1150 "gramatica.y"
+//#line 1154 "gramatica.y"
 { notifyError("La sentencia 'print' requiere de al menos un argumento."); errorState = true; }
 break;
 case 160:
-//#line 1152 "gramatica.y"
+//#line 1156 "gramatica.y"
 {
             errorState = true;
             this.reversePolish.emptyTemporalPolishes();
@@ -1864,15 +1868,15 @@ case 160:
         }
 break;
 case 161:
-//#line 1158 "gramatica.y"
+//#line 1162 "gramatica.y"
 { notifyError("La sentencia 'print' requiere de un argumento entre paréntesis."); errorState = true; }
 break;
 case 162:
-//#line 1165 "gramatica.y"
+//#line 1169 "gramatica.y"
 { reversePolish.addTemporalPolish(val_peek(0).sval); }
 break;
 case 164:
-//#line 1175 "gramatica.y"
+//#line 1179 "gramatica.y"
 { 
             if (!this.isThereReturn) { /* isThereReturnInScope*/
                 /* OK*/
@@ -1892,42 +1896,42 @@ case 164:
         }
 break;
 case 165:
-//#line 1196 "gramatica.y"
+//#line 1200 "gramatica.y"
 { notifyError("La expresión 'lambda' debe terminar con ';'."); errorState = false; }
 break;
 case 166:
-//#line 1199 "gramatica.y"
+//#line 1203 "gramatica.y"
 { replaceLastErrorWith("Falta delimitador de cierre en expresión 'lambda'."); errorState = false; }
 break;
 case 167:
-//#line 1201 "gramatica.y"
+//#line 1205 "gramatica.y"
 { replaceLastErrorWith("Faltan delimitadores en el conjunto de sentencias de la expresión 'lambda'."); errorState = false; }
 break;
 case 168:
-//#line 1203 "gramatica.y"
+//#line 1207 "gramatica.y"
 { replaceLastErrorWith("Falta delimitador de apertura en expresión 'lambda'."); errorState = false; }
 break;
 case 169:
-//#line 1210 "gramatica.y"
+//#line 1214 "gramatica.y"
 { yyval.sval = val_peek(1).sval; }
 break;
 case 170:
-//#line 1215 "gramatica.y"
+//#line 1219 "gramatica.y"
 { notifyError("El argumento de la expresión 'lambda' no puede estar vacío."); errorState = true; }
 break;
 case 171:
-//#line 1218 "gramatica.y"
+//#line 1222 "gramatica.y"
 { notifyError("La expresión 'lambda' requiere de un argumento entre paréntesis."); errorState = true; }
 break;
 case 172:
-//#line 1225 "gramatica.y"
+//#line 1229 "gramatica.y"
 {
             yyval.sval = val_peek(1).sval;
             this.reversePolish.setAggregatePoint();
             this.reversePolish.addSeparation("Entering lambda expression body...");
         }
 break;
-//#line 1854 "Parser.java"
+//#line 1858 "Parser.java"
 //########## END OF USER-SUPPLIED ACTIONS ##########
     }//switch
     //#### Now let's reduce... ####
