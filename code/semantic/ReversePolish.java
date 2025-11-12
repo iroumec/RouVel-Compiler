@@ -2,11 +2,12 @@ package semantic;
 
 import java.util.List;
 import java.util.Deque;
+import java.util.Iterator;
 import java.util.ArrayList;
 import java.util.ArrayDeque;
 import utilities.Printer;
 
-public final class ReversePolish {
+public final class ReversePolish implements Iterable<String> {
 
     private static final ReversePolish INSTANCE = new ReversePolish();
 
@@ -220,21 +221,39 @@ public final class ReversePolish {
 
     // --------------------------------------------------------------------------------------------
 
-    public List<String> getPolishes() {
+    /**
+     * De esta forma, se permite recorrer la lista de polacas sin exponerla.
+     */
+    @Override
+    public Iterator<String> iterator() {
 
-        List<String> out = new ArrayList<>();
+        return new Iterator<String>() {
 
-        for (Element element : this.elements) {
+            private final Iterator<Element> it = elements.iterator();
+            private String nextPolish = findNext();
 
-            // TODO: change this
-            String polish = element.getPolish();
-
-            if (polish != null) {
-                out.add(polish);
+            private String findNext() {
+                while (it.hasNext()) {
+                    String polish = it.next().getPolish();
+                    if (polish != null) {
+                        return polish;
+                    }
+                }
+                return null;
             }
-        }
 
-        return out;
+            @Override
+            public boolean hasNext() {
+                return nextPolish != null;
+            }
+
+            @Override
+            public String next() {
+                String current = nextPolish;
+                nextPolish = findNext();
+                return current;
+            }
+        };
     }
 
     // --------------------------------------------------------------------------------------------
@@ -327,5 +346,12 @@ public final class ReversePolish {
         public String getPolish() {
             return null;
         }
+    }
+
+    // --------------------------------------------------------------------------------------------
+    // Inner Records
+    // --------------------------------------------------------------------------------------------
+
+    private record AggregatePoint(int startIndex, int firstPolishNumber) {
     }
 }

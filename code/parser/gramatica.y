@@ -27,14 +27,9 @@
 // ********************************************************************************************************************
 
 /*
-    Declaración de los tipos de valores. Se le informa a Yacc que tendrá que
-    trabajar con valores de tipo String.
-    
-    Esto es para que no dé error el highlighter de la gramática,
-    ya que está pensado para byacc para C.
-    
-    Al generar el Parser, debe comentarse para no romper el código .java,
-    ya que inserta un typedef en el código.
+    Declaración de los tipos de valores. Se le informa a Yacc que tendrá que trabajar con valores de tipo String. Esto
+    se realiza para que no dé error el highlighter de la gramática, ya que está pensado para byacc para C. Al generar
+    la clase Parser.java, debe comentarse para no romper el código, ya que inserta un typedef en este.
 */
 %union {
     String sval;
@@ -57,13 +52,15 @@
 %token PRINT, IF, ELSE, ENDIF, UINT, CVR, DO, WHILE, RETURN
 
 // No terminales cuyo valor semántico asociado es un String.
-%type <sval> expression, term, factor, term_simple, factor_simple, operador_suma, operador_multiplicacion,
-                inicio_funcion, variable, constant, invocacion_funcion,
-                lista_argumentos, argumento, comparador, semantica_pasaje, parametro_lambda, argumento_lambda,
-
 %type <sval> program_name
-%type <sval> identifier, list_of_identifiers
 %type <sval> function_start
+%type <sval> variable, constant
+%type <sval> identifier, list_of_identifiers
+%type <sval> inicio_funcion, invocacion_funcion
+%type <sval> parametro_lambda, argumento_lambda
+%type <sval> lista_argumentos, argumento, semantica_pasaje
+%type <sval> operador_suma, operador_multiplicacion, comparador
+%type <sval> expression, term, factor, term_simple, factor_simple
 %type <sval> list_of_variables, list_of_constants, multiple_assignment
 
 // ====================================================================================================================
@@ -79,11 +76,11 @@
 program
     : program_name program_body
         {
-            if (!errorState) {
+            if (!this.errorState) {
                 notifyDetection("Programa.");
                 this.reversePolish.addSeparation(String.format("Leaving scope '%s'...", $1));
             } else {
-                errorState = false;
+                this.errorState = false;
             }
         }
 
@@ -218,21 +215,13 @@ conjunto_sentencias_ejecutables
 // --------------------------------------------------------------------------------------------------------------------
 
 executable_statement
-    : invocacion_funcion ';'
-        // Contexto en el que es invocada en línea.
-        // No puede colocarse en las reglas propias porque se usa en factor.
-        { notifyDetection("Invocación de función."); }
-    | asignacion_simple
+    : asignacion_simple
+    | inline_function_invocation
     | multiple_assignment
     | sentencia_control
     | sentencia_retorno
     | impresion
     | lambda
-
-    // |========================= REGLAS DE ERROR =========================| //
-    
-    | invocacion_funcion error
-        { notifyError("La invocación a función debe terminar con ';'."); }
     ;
 
 // --------------------------------------------------------------------------------------------------------------------
@@ -297,9 +286,8 @@ list_of_identifiers
                 lastVariable, $2));
             errorState = true;
 
-            // Se agrega una coma para respetar el formato en reglas siguientes.
-            // Si no se agregara la coma, de entrar nuevamente a esta regla, la separación de las variables no
-            // funcionaría adecuadamente.
+            // Se agrega una coma para respetar el formato en reglas siguientes. Si esta no se agregase, de entrar
+            // nuevamente a esta regla, la separación de las variables no funcionaría adecuadamente.
             $$ = $1 + ',' + $2;
         }
     ;
@@ -613,11 +601,11 @@ constant
 variable
     : ID
         {
-            if (!this.symbolTable.entryExists(this.scopeStack.appendScope($1))) { //Si entra por aca, la variable debe ser local
+            if (!this.symbolTable.entryExists(this.scopeStack.appendScope($1))) {
+                // De entrar acá, la variable debe ser local.
                 errorState = true;
                 notifyError(String.format("Variable %s no declarada.", $1));
             } else {
-                
                 // A la entrada sin el scope, se le agrega el scope.
                 // Se combina con otra entrada en caso de coincidir el scope.
                 this.symbolTable.setScope($1, scopeStack.asText());
@@ -873,7 +861,7 @@ fin_cuerpo_iteracion
 declaracion_funcion
     : inicio_funcion conjunto_parametros '{' function_body '}'
         {
-            if (!errorState) {
+            if (!this.errorState) {
 
                 if (this.isThereReturn) {
 
@@ -1066,6 +1054,18 @@ sentencia_retorno
 // ********************************************************************************************************************
 // Invocación de Función
 // ********************************************************************************************************************
+
+inline_function_invocation
+    : invocacion_funcion ';'
+        { notifyDetection("Invocación de función."); }
+
+    // |========================= REGLAS DE ERROR =========================| //
+
+    | invocacion_funcion error
+        { notifyError("La invocación a función debe terminar con ';'."); }
+    ;
+
+// --------------------------------------------------------------------------------------------------------------------
 
 invocacion_funcion
     : function_start '(' lista_argumentos ')' 
@@ -1390,6 +1390,8 @@ private boolean statementAppearsInValidState() {
 
     return !isThereReturn && !errorState;
 }
+
+// --------------------------------------------------------------------------------------------------------------------
 
 private void treatInvalidState(String statementName) {
 

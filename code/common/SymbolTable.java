@@ -2,7 +2,10 @@ package common;
 
 import java.util.Map;
 import utilities.Printer;
+
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public final class SymbolTable {
 
@@ -131,6 +134,35 @@ public final class SymbolTable {
         if (symbol != null) {
             symbol.setCategory(category);
         }
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    /**
+     * If the scope is null, it will return all global variables.
+     * 
+     * @param scope
+     * @param category
+     * @return
+     */
+    public List<Symbol> get(String scope, SymbolCategory category) {
+
+        List<Symbol> out = new ArrayList<>();
+
+        for (Symbol symbol : this.symbolTable.values()) {
+
+            if (symbol.getCategory().equals(category)
+                    && this.scopeMatches(symbol, scope)) {
+                out.add(symbol);
+            }
+        }
+
+        return out;
+    }
+
+    private boolean scopeMatches(Symbol symbol, String scope) {
+        return (scope == null && !symbol.getLexema().contains(":"))
+                || (scope != null && symbol.getLexema().endsWith(scope));
     }
 
     // --------------------------------------------------------------------------------------------

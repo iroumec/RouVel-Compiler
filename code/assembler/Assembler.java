@@ -4,16 +4,22 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 
 import assembler.operators.Operator;
+import common.SymbolTable;
 import semantic.ReversePolish;
 
 public class Assembler {
 
     public static String generate(ReversePolish reversePolish) {
 
+        StringBuilder imports = new StringBuilder();
+        StringBuilder dataSection = new StringBuilder();
+
+        StringBuilder declarations = new StringBuilder();
+
         Deque<String> operands = new ArrayDeque<>();
         StringBuilder assemblerCode = new StringBuilder();
 
-        for (String polish : reversePolish.getPolishes()) {
+        for (String polish : reversePolish) {
 
             Operator operator = OperatorTranslator.getOperator(polish);
 
@@ -25,5 +31,13 @@ public class Assembler {
         }
 
         return assemblerCode.toString();
+    }
+
+    private static String dumpGlobalVariables() {
+
+        SymbolTable symbolTable = SymbolTable.getInstance();
+
+        return "";
+
     }
 }
