@@ -249,13 +249,15 @@ sentencia_control
 declaration_of_variables
     : UINT list_of_identifiers ';'
         {
-            if (!errorState) {
+            if (this.statementAppearsInValidState()) {
 
                 if ($2.split("\\s*,\\s*").length == 1) {
                     notifyDetection("Declaración de variable.");
                 } else {
                     notifyDetection("Declaración de variables.");
                 }
+            } else {
+                this.treatInvalidState("declaración de variables");
             }
         }
         // |========================= REGLAS DE ERROR =========================| //
@@ -323,7 +325,7 @@ asignacion_simple
     : variable DASIG expression ';'                              
         { 
 
-            if (!errorState) {
+            if (this.statementAppearsInValidState()) {
                 
                 notifyDetection("Asignación simple.");
 
@@ -336,6 +338,8 @@ asignacion_simple
 
                 reversePolish.addPolish($2);
             } else {
+
+                this.treatInvalidState("asignación simple");
 
                 // Se decrementan las referencias, puesto a que se está frente a una referencia no válida.
                 this.symbolTable.removeEntry($1);
@@ -364,7 +368,7 @@ asignacion_simple
 multiple_assignment
     : list_of_variables list_of_constants ';'
         {
-            if (!errorState) {
+            if (this.statementAppearsInValidState()) {
                 // Conversión de la lista de variables a arreglo de strings, eliminando espacios alrededor de cada elemento.
                 String[] variables = $1.split("\\s*,\\s*");
                 String[] constants = $2.split("\\s*,\\s*");
@@ -402,6 +406,8 @@ multiple_assignment
 
                     notifyDetection("Asignación múltiple.");
                 }
+            } else {
+                this.treatInvalidState("asignación múltiple");
             }
         }
 
@@ -711,12 +717,12 @@ comparador
 if 
     : if_start cuerpo_if
         { 
-            if (!errorState) {
+            if (this.statementAppearsInValidState()) {
                 this.reversePolish.fulfillPromise(this.reversePolish.getLastPromise());
                 this.reversePolish.addSeparation("Leaving 'if-else' body...");
-                notifyDetection("Sentencia IF."); 
+                notifyDetection("Sentencia 'if'."); 
             } else {
-                errorState = false;
+                this.treatInvalidState("Sentencia 'if'");
             }
 
             // Se está saliendo del if más externo.
@@ -812,11 +818,13 @@ else_start
 do_while                        
     : do_while_start cuerpo_iteracion ';'
         {
-            if (!errorState) {
+            if (this.statementAppearsInValidState()) {
                 notifyDetection("Sentencia 'do-while'.");
                 this.reversePolish.connectToLastBifurcationPoint();
                 this.reversePolish.addPolish("TB");
                 this.reversePolish.addSeparation("Leaving 'do-while' body...");
+            } else {
+                this.treatInvalidState("Sentencia 'do-while'");
             }
         }  
     
@@ -880,6 +888,8 @@ declaracion_funcion
                     notifyError("La función necesita, en todos los casos, retornar un valor.");
                     this.errorState = true;
                 }
+            } else {
+                this.treatInvalidState("Declaración de función");
             }
 
             this.functionLevel--;
@@ -977,10 +987,12 @@ parametro_vacio
 parametro_formal
     : semantica_pasaje UINT ID
         {
-            if (!errorState) {
+            if (this.statementAppearsInValidState()) {
                 this.symbolTable.setType($3, SymbolType.UINT);
                 this.symbolTable.setCategory($3, ($1 == "CVR" ? SymbolCategory.CVR_PARAMETER : SymbolCategory.CV_PARAMETER));
                 this.symbolTable.setScope($3,scopeStack.asText());
+            } else {
+                this.treatInvalidState("Parámetro formal");
             }
         }
 
@@ -1013,24 +1025,29 @@ semantica_pasaje
 sentencia_retorno
     : RETURN '(' expression ')' ';'
         {
-            if (!this.errorState && this.functionLevel > 0) {
-                this.reversePolish.makeTemporalPolishesDefinitive();
-                reversePolish.addPolish("return");
-                notifyDetection("Sentencia 'return'.");
 
-                this.returnsFound++;
+            if (statementAppearsInValidState()) {
 
-                if (this.selectionDepth == 0) {
-                    this.isThereReturn = true;
-                }
-
-            } else {
+                if (this.functionLevel > 0) {
                 
-                this.reversePolish.emptyTemporalPolishes();
-                
-                if (this.functionLevel == 0) {
+                    this.reversePolish.makeTemporalPolishesDefinitive();
+                    reversePolish.addPolish("return");
+                    notifyDetection("Sentencia 'return'.");
+
+                    this.returnsFound++;
+
+                    if (this.selectionDepth == 0) {
+                        this.isThereReturn = true;
+                    }
+
+                } else {
                     notifyError("La sentencia 'return' no está permitida fuera de la declaración de una función.");
                 }
+            } else {
+
+                this.reversePolish.emptyTemporalPolishes();
+
+                this.treatInvalidState("return");
             }
         }
     
@@ -1053,12 +1070,14 @@ sentencia_retorno
 invocacion_funcion
     : function_start '(' lista_argumentos ')' 
         {
-            if (!errorState) {
+            if (this.statementAppearsInValidState()) {
 
                 $$ = $1 + '(' + $3 + ')';
 
                 this.reversePolish.addPolish($1);
                 this.reversePolish.addPolish("call");
+            } else {
+                this.treatInvalidState("Invocación de función");
             }
 
             this.functionInvocationIdentifier = null; // TODO: cambiar a StringBuilder.
@@ -1125,11 +1144,13 @@ argumento
 impresion
     : PRINT imprimible ';'
         {
-            if (!errorState) {
+            if (this.statementAppearsInValidState()) {
                 // Se añaden las polacas correspondiente al imprimible.
                 this.reversePolish.makeTemporalPolishesDefinitive();
                 reversePolish.addPolish("print");
                 notifyDetection("Sentencia 'print'.");
+            } else {
+                this.treatInvalidState("Sentencia 'print'");
             }
         }
 
@@ -1177,13 +1198,7 @@ elemento_imprimible
 lambda
     : parametro_lambda bloque_ejecutable argumento_lambda ';'
         { 
-            if (!this.isThereReturn) { // isThereReturnInScope
-                // OK
-            } else {
-                notifyWarning("Está función 'lambda' no es alcanzable debido a que hay un sentencia de retorno arriba.");
-            }
-
-            if (!errorState) {
+            if (this.statementAppearsInValidState()) {
 
                 // Se llena el punto de agregación reservado con la asignación
                 // del argumento al parámetro.
@@ -1191,6 +1206,9 @@ lambda
 
                 notifyDetection("Expresión lambda.");
                 this.reversePolish.addSeparation("Leaving lambda expression body...");
+
+            } else {
+                this.treatInvalidState("Expresión 'lambda'");
             }
         }
 
@@ -1364,6 +1382,30 @@ private void replaceLastErrorWith(String errorMessage) {
         "ERROR SINTÁCTICO: Línea %d: %s",
         lexer.getNroLinea(), errorMessage
     ));
+}
+
+// --------------------------------------------------------------------------------------------------------------------
+
+private boolean statementAppearsInValidState() {
+
+    return !isThereReturn && !errorState;
+}
+
+private void treatInvalidState(String statementName) {
+
+    if (isThereReturn) {
+        this.showOmittedStatementNotification(statementName);
+    }
+
+    if (errorState) {
+        this.recoverFromErrorState();
+    }
+}
+
+// --------------------------------------------------------------------------------------------------------------------
+
+private void showOmittedStatementNotification(String statementName) {
+    notifyWarning(statementName + " no alcanzable. No se ejecutará.");
 }
 
 // --------------------------------------------------------------------------------------------------------------------

@@ -9,6 +9,8 @@ MAIN {
         print("Hola");
 
         return (3UI);
+
+        print("Hola");
     }
 
     ##return(3UI);##
