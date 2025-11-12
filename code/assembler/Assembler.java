@@ -12,6 +12,8 @@ import semantic.ReversePolish;
 
 public class Assembler {
 
+    private static final boolean debug = false;
+
     public static String generate(ReversePolish reversePolish) {
 
         StringBuilder imports = new StringBuilder();
@@ -22,18 +24,33 @@ public class Assembler {
         Deque<String> operands = new ArrayDeque<>();
         StringBuilder assemblerCode = new StringBuilder();
 
-        assemblerCode.append(dumpGlobalVariables());
-
         for (String polish : reversePolish) {
 
             Operator operator = OperatorTranslator.getOperator(polish);
 
             if (operator != null) {
+                if (debug) {
+                    System.out.println("Operator " + polish + " detected.");
+                }
+
                 assemblerCode.append(operator.getAssembler(operands)).append("\n");
             } else {
-                operands.add(polish);
+                operands.push(polish);
+
+                if (debug) {
+                    System.out.println("Polish " + polish + " added to the operands.");
+                }
             }
         }
+
+        // El volcado de las variables globales se hace a lo último, ya que, durante la
+        // generación del código assembler, se generan variables auxiliares que también
+        // deben ser agregadas.
+        declarations.append(dumpGlobalVariables());
+
+        declarations.append(assemblerCode);
+
+        assemblerCode = declarations;
 
         return assemblerCode.toString();
     }

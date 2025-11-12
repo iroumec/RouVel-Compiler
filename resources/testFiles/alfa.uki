@@ -1,0 +1,8 @@
+MAIN {
+    uint F1(uint X){
+        return (X);
+    }
+
+    uint Y;
+    F1(Y->X);
+}

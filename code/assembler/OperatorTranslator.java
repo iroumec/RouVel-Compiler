@@ -6,8 +6,8 @@ import assembler.operators.implementations.Call;
 import assembler.operators.implementations.Label;
 import assembler.operators.implementations.Print;
 import assembler.operators.implementations.Return;
-import assembler.operators.implementations.Subtraction;
 import assembler.operators.implementations.Sum;
+import assembler.operators.implementations.arithmetic.Subtraction;
 
 class OperatorTranslator {
 

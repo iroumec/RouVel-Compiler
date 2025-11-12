@@ -9,6 +9,8 @@ import java.util.List;
 
 public final class SymbolTable {
 
+    private int auxiliarVariableNumber = 0;
+
     private static final SymbolTable INSTANCE = new SymbolTable();
 
     // --------------------------------------------------------------------------------------------
@@ -48,6 +50,17 @@ public final class SymbolTable {
         } else {
             symbol.incrementarReferencias();
         }
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    public String addAuxiliarVariable(String scope) {
+
+        String variable = "temp" + (this.auxiliarVariableNumber++) + ":" + scope;
+
+        this.addEntry(variable, new Symbol(variable, "", SymbolCategory.VARIABLE, SymbolType.UINT));
+
+        return variable;
     }
 
     // --------------------------------------------------------------------------------------------

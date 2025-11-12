@@ -1,5 +1,7 @@
 package common;
 
+import java.util.Arrays;
+
 public class Symbol {
 
     private int references;
@@ -26,6 +28,16 @@ public class Symbol {
         if (this.type != null) {
             this.category = SymbolCategory.CONSTANT;
         }
+
+        this.references = 0;
+    }
+
+    public Symbol(String lexema, String value, SymbolCategory category, SymbolType type) {
+
+        this.lexema = new StringBuilder(lexema);
+        this.value = new StringBuilder(value);
+        this.type = type;
+        this.category = category;
 
         this.references = 0;
     }
@@ -94,6 +106,16 @@ public class Symbol {
 
     public String getLexemaWithoutScope() {
         return this.lexema.toString().split(":")[0];
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    public String getScope() {
+        String[] parts = this.lexema.toString().split(":");
+        if (parts.length <= 1) {
+            return null;
+        }
+        return String.join(":", Arrays.copyOfRange(parts, 1, parts.length));
     }
 
     // --------------------------------------------------------------------------------------------

@@ -867,6 +867,7 @@ declaracion_funcion
 
                     this.isThereReturn = false;
                     notifyDetection("Declaración de función.");
+                    this.reversePolish.addPolish("end-label");
                     this.symbolTable.setType($1, SymbolType.UINT);
                     this.symbolTable.setCategory($1, SymbolCategory.FUNCTION);
                     this.scopeStack.pop();

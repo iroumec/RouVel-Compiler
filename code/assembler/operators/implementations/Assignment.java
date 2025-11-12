@@ -24,8 +24,8 @@ public class Assignment implements Operator {
     @Override
     public String getAssembler(Deque<String> operands) {
 
-        String firstOperand = operands.pop();
         String secondOperand = operands.pop();
+        String firstOperand = operands.pop();
 
         // El primer operando siempre es una variable (por cómo es nuestro lenguaje).
         // Y las variables siempre son de tipo UINT.

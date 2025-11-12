@@ -1,5 +1,27 @@
 package assembler.operators.implementations;
 
-public class EndLabel {
+import java.util.Deque;
 
+import assembler.operators.Operator;
+import common.Symbol;
+import common.SymbolTable;
+
+public class EndLabel implements Operator {
+    private EndLabel() {
+    }
+
+    private static class Holder {
+        private static final EndLabel INSTANCE = new EndLabel();
+    }
+
+    public static EndLabel getInstance() {
+        return Holder.INSTANCE;
+    }
+
+    @Override
+    public String getAssembler(Deque<String> operands) {
+
+        return ")\n";
+
+    }
 }

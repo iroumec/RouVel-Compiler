@@ -24,53 +24,51 @@ public class Sum implements Operator {
     @Override
     public String getAssembler(Deque<String> operands) {
 
-        String firstOperand = operands.pop();
-        String secondOperand = operands.pop();
+        SymbolTable symbolTable = SymbolTable.getInstance();
 
-        // int firstOperandValue = SymbolTable.getInstance().get
+        // Obtención del símbolo del segundo operando.
+        Symbol secondOperand = symbolTable.getSymbol(operands.pop());
 
-        // Se remueve una referencia de cada operando y
-        // se agrega una referencia a la variable auxiliar.
-        SymbolTable.getInstance().removeEntry(firstOperand);
-        SymbolTable.getInstance().removeEntry(secondOperand);
-        // SymbolTable.getInstance().addEntry(, null);
+        // Obtención del símbolo del primer operando.
+        Symbol firstOperand = symbolTable.getSymbol(operands.pop());
 
-        // TODO: no hay variables auxiliares en webAssembly.
+        String code; // debug
 
-        // De ser un entero y otro (o variable, ya que solo pueden ser enteras), no hay
-        // conversión.
-        Symbol firstSymbol = SymbolTable.getInstance().getSymbol(firstOperand);
-        Symbol secondSymbol = SymbolTable.getInstance().getSymbol(secondOperand);
+        if (areBothOperandsOfType(firstOperand, secondOperand, SymbolType.UINT)) {
 
-        // De estar ante dos constantes, se aplica la optimización por reducción simple.
-        if (firstSymbol.isCategory(SymbolCategory.CONSTANT) && secondSymbol.isCategory(SymbolCategory.CONSTANT)) {
+            code = this.resolveUintSum(firstOperand, secondOperand, operands);
 
-            this.applySimpleReductionOptimization(firstSymbol, secondSymbol, operands);
+        } else if (areBothOperandsOfType(firstOperand, secondOperand, SymbolType.FLOAT)) {
+
+            this.resolveFloatSum(firstOperand, secondOperand);
         } else {
 
+            this.resolveConversionSum(firstOperand, secondOperand);
         }
 
-        SymbolType firstType = firstSymbol.getType();
-        SymbolType secondType = secondSymbol.getType();
-
-        StringBuilder code = new StringBuilder();
-
-        if (!firstType.equals(secondType)) {
-
-            code.append(String.format("local.get $%s", firstOperand));
-
-            if (firstType.equals(SymbolType.FLOAT)) {
-                code.append("i32.trunc_f64_s");
-            }
-        }
+        /*
+         * if (!firstType.equals(secondType)) {
+         * 
+         * code.append(String.format("local.get $%s", firstOperand));
+         * 
+         * if (firstType.equals(SymbolType.FLOAT)) {
+         * code.append("i32.trunc_f64_s");
+         * }
+         * }
+         */
 
         // De ser un entero y un flotante, el flotante debe convertirse a entero.
 
-        // Faltan conversiones y demás.
-        return """
-                local.get $%s
-                local.get $%s
-                """.formatted(firstOperand, secondOperand);
+        // Probando.
+        if (!symbolsBelongToCategory(SymbolCategory.CONSTANT, firstOperand, secondOperand)) {
+            // Faltan conversiones y demás.
+            return """
+                    local.get $%s
+                    local.get $%s
+                    """.formatted(secondOperand, firstOperand);
+        }
+
+        return "";
     }
 
     /**
@@ -78,7 +76,7 @@ public class Sum implements Operator {
      * 
      * @param operands
      */
-    private static void applySimpleReductionOptimization(Symbol firstOperand, Symbol secondOperand,
+    private void applySimpleReductionOptimization(Symbol firstOperand, Symbol secondOperand,
             Deque<String> operands) {
 
         // Si no es UINT, es FLOAT. Un STRING también puede ser constante, pero no
@@ -124,5 +122,72 @@ public class Sum implements Operator {
         // Se agrega la nueva constante optimizada.
         symbolTable.addEntry(value, new Symbol(value, value, resultType));
 
+    }
+
+    /**
+     * 
+     * @param operands
+     * @param firstOperand
+     * @param secondOperand
+     * @return The name of the new operand.
+     */
+    private String resolveUintSum(Symbol firstOperand, Symbol secondOperand, Deque<String> operands) {
+
+        String code = "";
+        String newOperandName;
+
+        SymbolTable symbolTable = SymbolTable.getInstance();
+
+        // De ser ambos operandos constantes, se aplica la optimización por reducción
+        // simple, añadiendo en la tabla simplemente una constante en la que se halla
+        // calculada la suma.
+        if (symbolsBelongToCategory(SymbolCategory.CONSTANT, firstOperand, secondOperand)) {
+
+            String sumValue = String
+                    .valueOf(Integer.valueOf(firstOperand.getValue()) + Integer.valueOf(secondOperand.getValue()));
+
+            symbolTable.addEntry(sumValue, new Symbol(sumValue, sumValue, SymbolType.UINT));
+            newOperandName = sumValue;
+        } else {
+            // Se añade una variable auxiliar.
+            // Podría obtener el scope del segundo operando indistinguidamente.
+            newOperandName = symbolTable.addAuxiliarVariable(firstOperand.getScope());
+
+            // TODO: solucionar esto.
+            code = """
+
+                    """;
+        }
+
+        // Se remueve una referencia de cada operando.
+        symbolTable.removeEntry(firstOperand.getLexema());
+        symbolTable.removeEntry(secondOperand.getLexema());
+
+        // Se añade el nuevo operando.
+        operands.push(newOperandName);
+
+        return code;
+    }
+
+    private void resolveFloatSum(Symbol firstOperand, Symbol secondOperand) {
+    }
+
+    private void resolveConversionSum(Symbol firstOperand, Symbol secondOperand) {
+    }
+
+    private boolean areBothOperandsOfType(Symbol firstOperand, Symbol secondOperand, SymbolType type) {
+
+        return firstOperand.isType(type) && secondOperand.isType(type);
+    }
+
+    private boolean symbolsBelongToCategory(SymbolCategory category, Symbol... symbols) {
+
+        for (Symbol symbol : symbols) {
+            if (!symbol.isCategory(category)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }
