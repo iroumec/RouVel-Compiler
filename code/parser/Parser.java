@@ -880,6 +880,8 @@ private boolean statementAppearsInValidState() {
     return !isThereReturn && !errorState;
 }
 
+// --------------------------------------------------------------------------------------------------------------------
+
 private void treatInvalidState(String statementName) {
 
     if (isThereReturn) {
@@ -926,7 +928,7 @@ private boolean isUint(String number) {
 // ====================================================================================================================
 // FIN DE CÓDIGO
 // ====================================================================================================================
-//#line 858 "Parser.java"
+//#line 860 "Parser.java"
 //###############################################################
 // method: yylexdebug : check lexer state
 //###############################################################
@@ -1083,11 +1085,11 @@ boolean doaction;
 case 1:
 //#line 78 "gramatica.y"
 {
-            if (!errorState) {
+            if (!this.errorState) {
                 notifyDetection("Programa.");
                 this.reversePolish.addSeparation(String.format("Leaving scope '%s'...", val_peek(1).sval));
             } else {
-                errorState = false;
+                this.errorState = false;
             }
         }
 break;
@@ -1672,7 +1674,7 @@ break;
 case 125:
 //#line 863 "gramatica.y"
 {
-            if (!errorState) {
+            if (!this.errorState) {
 
                 if (this.isThereReturn) {
 
@@ -1979,7 +1981,7 @@ case 173:
             this.reversePolish.addSeparation("Entering lambda expression body...");
         }
 break;
-//#line 1906 "Parser.java"
+//#line 1908 "Parser.java"
 //########## END OF USER-SUPPLIED ACTIONS ##########
     }//switch
     //#### Now let's reduce... ####

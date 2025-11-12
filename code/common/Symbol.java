@@ -56,19 +56,19 @@ public class Symbol {
 
     // --------------------------------------------------------------------------------------------
 
-    String getLexema() {
+    public String getLexema() {
         return this.lexema.toString();
     }
 
     // --------------------------------------------------------------------------------------------
 
-    String getValue() {
+    public String getValue() {
         return this.value.toString();
     }
 
     // --------------------------------------------------------------------------------------------
 
-    SymbolType getType() {
+    public SymbolType getType() {
         return this.type == null ? null : this.type;
     }
 
@@ -86,8 +86,24 @@ public class Symbol {
 
     // --------------------------------------------------------------------------------------------
 
+    public boolean isType(SymbolType type) {
+        return this.type.equals(type);
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    public String getLexemaWithoutScope() {
+        return this.lexema.toString().split(":")[0];
+    }
+
+    // --------------------------------------------------------------------------------------------
+
     SymbolCategory getCategory() {
         return this.category;
+    }
+
+    public boolean isCategory(SymbolCategory category) {
+        return this.category.equals(category);
     }
 
     boolean isEmpty() {

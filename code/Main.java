@@ -52,7 +52,7 @@ public class Main {
         printReport(lexicalAnalyzer.getNroLinea(), errorCollector, warningCollector);
 
         Printer.printSeparator();
-        Printer.printCentered(
+        Printer.print(
                 errorCollector.hasMessages()
                         ? "El código contiene errores, por lo que no fue posible generar un código assembler."
                         : Assembler.generate(sintacticalAnalyzer.getReversePolish()));

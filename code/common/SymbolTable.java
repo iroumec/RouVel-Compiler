@@ -149,7 +149,12 @@ public final class SymbolTable {
 
         List<Symbol> out = new ArrayList<>();
 
+        // System.out.println(category);
+
         for (Symbol symbol : this.symbolTable.values()) {
+
+            // System.out.println(symbol.getCategory());
+            // System.out.println(symbol.getLexema());
 
             if (symbol.getCategory().equals(category)
                     && this.scopeMatches(symbol, scope)) {
@@ -161,7 +166,7 @@ public final class SymbolTable {
     }
 
     private boolean scopeMatches(Symbol symbol, String scope) {
-        return (scope == null && !symbol.getLexema().contains(":"))
+        return (scope == null && symbol.getLexema().split(":").length == 2)
                 || (scope != null && symbol.getLexema().endsWith(scope));
     }
 

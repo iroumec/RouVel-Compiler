@@ -2,8 +2,11 @@ package assembler;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.List;
 
 import assembler.operators.Operator;
+import common.Symbol;
+import common.SymbolCategory;
 import common.SymbolTable;
 import semantic.ReversePolish;
 
@@ -18,6 +21,8 @@ public class Assembler {
 
         Deque<String> operands = new ArrayDeque<>();
         StringBuilder assemblerCode = new StringBuilder();
+
+        assemblerCode.append(dumpGlobalVariables());
 
         for (String polish : reversePolish) {
 
@@ -35,9 +40,16 @@ public class Assembler {
 
     private static String dumpGlobalVariables() {
 
-        SymbolTable symbolTable = SymbolTable.getInstance();
+        StringBuilder code = new StringBuilder();
 
-        return "";
+        List<Symbol> globales = SymbolTable.getInstance().get("MAIN", SymbolCategory.VARIABLE);
 
+        for (Symbol symbol : globales) {
+            // Todas las variables que se tienen en el lenguaje son enteros de 32 bits.
+            // Por eso está "hardcodeado" el "i32".
+            code.append(String.format("(local $%s i32)%n", symbol.getLexemaWithoutScope()));
+        }
+
+        return code.append("\n").toString();
     }
 }
