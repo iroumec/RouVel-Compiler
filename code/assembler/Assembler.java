@@ -33,7 +33,7 @@ public class Assembler {
                     System.out.println("Operator " + polish + " detected.");
                 }
 
-                assemblerCode.append(operator.getAssembler(operands)).append("\n");
+                assemblerCode.append(operator.getAssembler(operands)).append("\n\n");
             } else {
                 operands.push(polish);
 
@@ -46,7 +46,7 @@ public class Assembler {
         // El volcado de las variables globales se hace a lo último, ya que, durante la
         // generación del código assembler, se generan variables auxiliares que también
         // deben ser agregadas.
-        declarations.append(dumpGlobalVariables());
+        declarations.append("\n").append(dumpGlobalVariables());
 
         declarations.append(assemblerCode);
 
@@ -67,6 +67,6 @@ public class Assembler {
             code.append(String.format("(local $%s i32)%n", symbol.getLexemaWithoutScope()));
         }
 
-        return code.append("\n").toString();
+        return code.toString();
     }
 }

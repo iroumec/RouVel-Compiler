@@ -13,13 +13,19 @@ public class Sum implements Operator {
     private Sum() {
     }
 
+    // --------------------------------------------------------------------------------------------
+
     private static class Holder {
         private static final Sum INSTANCE = new Sum();
     }
 
+    // --------------------------------------------------------------------------------------------
+
     public static Sum getInstance() {
         return Holder.INSTANCE;
     }
+
+    // --------------------------------------------------------------------------------------------
 
     @Override
     public String getAssembler(Deque<String> operands) {
@@ -32,109 +38,16 @@ public class Sum implements Operator {
         // Obtención del símbolo del primer operando.
         Symbol firstOperand = symbolTable.getSymbol(operands.pop());
 
-        String code; // debug
-
-        if (areBothOperandsOfType(firstOperand, secondOperand, SymbolType.UINT)) {
-
-            code = this.resolveUintSum(firstOperand, secondOperand, operands);
-
-        } else if (areBothOperandsOfType(firstOperand, secondOperand, SymbolType.FLOAT)) {
-
-            this.resolveFloatSum(firstOperand, secondOperand);
-        } else {
-
-            this.resolveConversionSum(firstOperand, secondOperand);
-        }
-
-        /*
-         * if (!firstType.equals(secondType)) {
-         * 
-         * code.append(String.format("local.get $%s", firstOperand));
-         * 
-         * if (firstType.equals(SymbolType.FLOAT)) {
-         * code.append("i32.trunc_f64_s");
-         * }
-         * }
-         */
-
-        // De ser un entero y un flotante, el flotante debe convertirse a entero.
-
-        // Probando.
-        if (!symbolsBelongToCategory(SymbolCategory.CONSTANT, firstOperand, secondOperand)) {
-            // Faltan conversiones y demás.
-            return """
-                    local.get $%s
-                    local.get $%s
-                    """.formatted(secondOperand, firstOperand);
-        }
-
-        return "";
+        return resolveSum(firstOperand, secondOperand, operands);
     }
 
-    /**
-     * Aplica la optimización por reducción simple.
-     * 
-     * @param operands
-     */
-    private void applySimpleReductionOptimization(Symbol firstOperand, Symbol secondOperand,
-            Deque<String> operands) {
+    // --------------------------------------------------------------------------------------------
 
-        // Si no es UINT, es FLOAT. Un STRING también puede ser constante, pero no
-        // debería llegar hasta acá ese caso.
-        boolean isFirstOperandUINT = firstOperand.isType(SymbolType.UINT);
-        boolean isSecondOperandUINT = secondOperand.isType(SymbolType.UINT);
-
-        String value;
-        SymbolType resultType;
-
-        // TODO: optimizar esto.
-        if (isFirstOperandUINT && isSecondOperandUINT) {
-
-            value = String
-                    .valueOf(Integer.valueOf(firstOperand.getValue()) * Integer.valueOf(secondOperand.getValue()));
-
-            resultType = SymbolType.UINT;
-        } else {
-
-            if (!isFirstOperandUINT && !isSecondOperandUINT) {
-
-                value = String
-                        .valueOf(Float.valueOf(firstOperand.getValue()) * Float.valueOf(secondOperand.getValue()));
-            } else if (!isFirstOperandUINT) {
-
-                value = String
-                        .valueOf(Float.valueOf(firstOperand.getValue()) * Float.valueOf(secondOperand.getValue()));
-            } else {
-
-                value = String
-                        .valueOf(Float.valueOf(firstOperand.getValue()) * Float.valueOf(secondOperand.getValue()));
-            }
-
-            resultType = SymbolType.FLOAT;
-        }
-
-        SymbolTable symbolTable = SymbolTable.getInstance();
-
-        // Se remueve una referencia de cada constante.
-        symbolTable.removeEntry(firstOperand.getLexema());
-        symbolTable.removeEntry(secondOperand.getLexema());
-
-        // Se agrega la nueva constante optimizada.
-        symbolTable.addEntry(value, new Symbol(value, value, resultType));
-
-    }
-
-    /**
-     * 
-     * @param operands
-     * @param firstOperand
-     * @param secondOperand
-     * @return The name of the new operand.
-     */
-    private String resolveUintSum(Symbol firstOperand, Symbol secondOperand, Deque<String> operands) {
+    private String resolveSum(Symbol firstOperand, Symbol secondOperand, Deque<String> operands) {
 
         String code = "";
         String newOperandName;
+        PairType pairType = PairType.getType(firstOperand, secondOperand);
 
         SymbolTable symbolTable = SymbolTable.getInstance();
 
@@ -143,20 +56,17 @@ public class Sum implements Operator {
         // calculada la suma.
         if (symbolsBelongToCategory(SymbolCategory.CONSTANT, firstOperand, secondOperand)) {
 
-            String sumValue = String
-                    .valueOf(Integer.valueOf(firstOperand.getValue()) + Integer.valueOf(secondOperand.getValue()));
-
+            String sumValue = applySimpleReduction(pairType, firstOperand, secondOperand);
             symbolTable.addEntry(sumValue, new Symbol(sumValue, sumValue, SymbolType.UINT));
             newOperandName = sumValue;
+
+            // Sin assembler generado.
         } else {
             // Se añade una variable auxiliar.
             // Podría obtener el scope del segundo operando indistinguidamente.
             newOperandName = symbolTable.addAuxiliarVariable(firstOperand.getScope());
 
-            // TODO: solucionar esto.
-            code = """
-
-                    """;
+            code = this.getSumCode(pairType, symbolTable, firstOperand, secondOperand, newOperandName);
         }
 
         // Se remueve una referencia de cada operando.
@@ -169,16 +79,32 @@ public class Sum implements Operator {
         return code;
     }
 
-    private void resolveFloatSum(Symbol firstOperand, Symbol secondOperand) {
+    // --------------------------------------------------------------------------------------------
+
+    private String getCode(Symbol operand, SymbolType conversionType) {
+
+        String out;
+
+        if (operand.isCategory(SymbolCategory.CONSTANT)) {
+            if (operand.isType(SymbolType.UINT)) {
+                out = String.format("i32.const %s", operand.getValue());
+            } else {
+
+                out = String.format("f32.const %s", operand.getValue());
+
+                if (conversionType == SymbolType.UINT) {
+                    out += "\ni32.trunc_f32_u";
+                }
+            }
+        } else {
+
+            out = String.format("local.get $%s", operand.getLexemaWithoutScope());
+        }
+
+        return out;
     }
 
-    private void resolveConversionSum(Symbol firstOperand, Symbol secondOperand) {
-    }
-
-    private boolean areBothOperandsOfType(Symbol firstOperand, Symbol secondOperand, SymbolType type) {
-
-        return firstOperand.isType(type) && secondOperand.isType(type);
-    }
+    // --------------------------------------------------------------------------------------------
 
     private boolean symbolsBelongToCategory(SymbolCategory category, Symbol... symbols) {
 
@@ -189,5 +115,69 @@ public class Sum implements Operator {
         }
 
         return true;
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    private enum PairType {
+        UINT_UINT,
+        UINT_FLOAT,
+        FLOAT_FLOAT;
+
+        private static PairType getType(Symbol firstOperand, Symbol secondOperand) {
+
+            if (areBothOperandsOfType(firstOperand, secondOperand, SymbolType.UINT)) {
+                return UINT_UINT;
+            } else if (areBothOperandsOfType(firstOperand, secondOperand, SymbolType.FLOAT)) {
+                return FLOAT_FLOAT;
+            } else {
+                return UINT_FLOAT;
+            }
+
+        }
+
+        private static boolean areBothOperandsOfType(Symbol firstOperand, Symbol secondOperand, SymbolType type) {
+
+            return firstOperand.isType(type) && secondOperand.isType(type);
+        }
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    private String applySimpleReduction(PairType pairType, Symbol firstOperand, Symbol secondOperand) {
+
+        return switch (pairType) {
+            case UINT_UINT ->
+                String.valueOf(Integer.valueOf(firstOperand.getValue()) + Integer.valueOf(secondOperand.getValue()));
+            case FLOAT_FLOAT -> String
+                    .valueOf(Float.valueOf(firstOperand.getValue()) + Float.valueOf(secondOperand.getValue()));
+            case UINT_FLOAT -> Integer.toUnsignedString(Float.valueOf(firstOperand.getValue()).intValue()
+                    + Float.valueOf(secondOperand.getValue()).intValue());
+            default -> null;
+        };
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    private String getSumCode(PairType pairType, SymbolTable symbolTable, Symbol firstOperand, Symbol secondOperand,
+            String newOperandName) {
+
+        return switch (pairType) {
+            case UINT_UINT, UINT_FLOAT -> """
+                    %s
+                    %s
+                    i32.add
+                    local.set %s \
+                    """.formatted(getCode(firstOperand, SymbolType.UINT), getCode(secondOperand, SymbolType.UINT),
+                    symbolTable.getSymbol(newOperandName).getLexemaWithoutScope());
+            case FLOAT_FLOAT -> """
+                    %s
+                    %s
+                    f32.add
+                    local.set %s
+                    """.formatted(getCode(firstOperand, null), getCode(secondOperand, null),
+                    symbolTable.getSymbol(newOperandName).getLexemaWithoutScope());
+            default -> null;
+        };
     }
 }

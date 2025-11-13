@@ -39,21 +39,26 @@ public class Assignment implements Operator {
 
             if (secondSymbol.isCategory(SymbolCategory.VARIABLE)) {
 
-                code.append(String.format("local.get $%s%n", secondSymbol.getLexemaWithoutScope()));
+                code.append(String.format("local.get $%s %n", secondSymbol.getLexemaWithoutScope()));
 
             } else { // Si no es una variable, es una constante.
-                code.append(String.format("i32.const %s%n", secondSymbol.getValue()));
+                code.append(String.format("i32.const %s %n", secondSymbol.getValue()));
             }
 
         } else {
 
             int convertedValue = Float.valueOf(secondSymbol.getValue()).intValue();
 
-            // TODO: ¿sería esto correcto o la conversión debe realizarse en el WebAssembly?
-            code.append(String.format("i32.const %s%n", convertedValue));
+            // Carga de la constante flotante.
+            code.append(String.format("f32.const %s %n", Float.valueOf(secondSymbol.getValue()).toString()));
+
+            // Conversión a entero.
+            // En una asignación, del lado izquierdo siempre voy a tener variables de tipo
+            // entero, por cómo es el lenguaje.
+            code.append(String.format("i32.trunc_f32_u %n")); // Conversión de flotante a entero sin signo.
         }
 
-        code.append(String.format("local.set $%s%n", firstSymbol.getLexemaWithoutScope()));
+        code.append(String.format("local.set $%s", firstSymbol.getLexemaWithoutScope()));
 
         return code.toString();
     }
