@@ -4,7 +4,7 @@
 CALL_DIR="$PWD"
 
 # Directorio donde está el script.
-SCRIPT_DIR="$(dirname "$0")"
+SCRIPT_DIR="$CALL_DIR/$(dirname "$0")"
 
 # Directorio donde está la gramática.
 OUT_DIR="$CALL_DIR/code/parser"
@@ -13,7 +13,7 @@ OUT_DIR="$CALL_DIR/code/parser"
 cd "$OUT_DIR" || { echo "No se pudo cambiar a $OUT_DIR"; exit 1; }
 
 # Se ejecuta yacc.
-"$CALL_DIR/$SCRIPT_DIR/yacc" -J -Jnoconstruct -Jnorun -Jfinal -v gramatica.y
+"$SCRIPT_DIR/yacc" -J -Jnoconstruct -Jnorun -Jfinal -v gramatica.y
 
 # Se agrega "package parser;" al inicio del archivo ParserVal.java.
 sed -i '1ipackage parser;\n' ParserVal.java
