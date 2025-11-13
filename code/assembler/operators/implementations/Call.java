@@ -18,8 +18,8 @@ public class Call implements AssemblerOperator {
     }
 
     @Override
-    public String getAssembler(Deque<String> operands) {
+    public String getAssembler(Deque<String> operands, String indentation) {
 
-        return "call " + operands.pop();
+        return indentation + "call " + operands.pop();
     }
 }

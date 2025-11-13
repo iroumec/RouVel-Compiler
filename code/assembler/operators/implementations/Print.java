@@ -18,7 +18,7 @@ public class Print implements AssemblerOperator {
     }
 
     @Override
-    public String getAssembler(Deque<String> operands) {
+    public String getAssembler(Deque<String> operands, String indentation) {
 
         return "invoke StdOut, addr " + operands.pop(); // TODO: esto luego debe cambiarse.
     }

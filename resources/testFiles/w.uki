@@ -1,0 +1,22 @@
+MAIN {
+
+    uint F1(uint A) {
+
+        uint J;
+
+        J := 3UI;
+
+        return(4UI);
+    }
+
+    uint F2(uint B, cvr uint C) {
+    
+        uint U;
+
+        U := 9UI + 8UI;
+
+        return(U);
+    }
+
+    print(3UI);
+}

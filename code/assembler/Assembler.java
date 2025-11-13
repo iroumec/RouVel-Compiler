@@ -24,6 +24,8 @@ public class Assembler {
         Deque<String> operands = new ArrayDeque<>();
         StringBuilder assemblerCode = new StringBuilder();
 
+        StringBuilder indentation = new StringBuilder();
+
         for (String polish : reversePolish) {
 
             AssemblerOperator operator = OperatorTranslator.getOperator(polish);
@@ -33,7 +35,16 @@ public class Assembler {
                     System.out.println("Operator " + polish + " detected.");
                 }
 
-                assemblerCode.append(operator.getAssembler(operands)).append("\n\n");
+                if (operator.producesExitChangeInIndentation()) {
+                    indentation.setLength(indentation.length() - operator.getExitIndentationChange());
+                }
+
+                assemblerCode.append(operator.getAssembler(operands, indentation.toString())).append("\n");
+
+                if (operator.producesEntryChangeInIndentation()) {
+                    indentation.append(" ".repeat(operator.getEntryIndentationChange()));
+                }
+
             } else {
                 operands.push(polish);
 

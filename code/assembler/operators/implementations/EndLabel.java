@@ -19,9 +19,17 @@ public class EndLabel implements AssemblerOperator {
     }
 
     @Override
-    public String getAssembler(Deque<String> operands) {
+    public String getAssembler(Deque<String> operands, String indentation) {
 
-        return ")\n";
+        return indentation + ")\n";
 
+    }
+
+    /**
+     * Se decrementa en 1 la indentación al salir del cuerpo de la función.
+     */
+    @Override
+    public int getExitIndentationChange() {
+        return 1;
     }
 }

@@ -3,6 +3,7 @@ package assembler;
 import assembler.operators.AssemblerOperator;
 import assembler.operators.implementations.Assignment;
 import assembler.operators.implementations.Call;
+import assembler.operators.implementations.EndLabel;
 import assembler.operators.implementations.Label;
 import assembler.operators.implementations.Print;
 import assembler.operators.implementations.Return;
@@ -21,6 +22,7 @@ class OperatorTranslator {
             case "*" -> Multiplication.getInstance();
             case "/" -> Division.getInstance();
             case "label" -> Label.getInstance();
+            case "end-label" -> EndLabel.getInstance();
             case "call" -> Call.getInstance();
             case "return" -> Return.getInstance();
             case "print" -> Print.getInstance();

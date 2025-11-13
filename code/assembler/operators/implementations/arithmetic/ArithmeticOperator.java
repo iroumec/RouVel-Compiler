@@ -1,6 +1,8 @@
 package assembler.operators.implementations.arithmetic;
 
+import java.util.Arrays;
 import java.util.Deque;
+import java.util.stream.Collectors;
 
 import assembler.operators.AssemblerOperator;
 import common.Symbol;
@@ -13,7 +15,7 @@ public abstract class ArithmeticOperator implements AssemblerOperator {
     // --------------------------------------------------------------------------------------------
 
     @Override
-    public String getAssembler(Deque<String> operands) {
+    public String getAssembler(Deque<String> operands, String indentation) {
 
         SymbolTable symbolTable = SymbolTable.getInstance();
 
@@ -23,12 +25,13 @@ public abstract class ArithmeticOperator implements AssemblerOperator {
         // Obtención del símbolo del primer operando.
         Symbol firstOperand = symbolTable.getSymbol(operands.pop());
 
-        return resolveOperation(firstOperand, secondOperand, operands);
+        return resolveOperation(firstOperand, secondOperand, operands, indentation);
     }
 
     // --------------------------------------------------------------------------------------------
 
-    private String resolveOperation(Symbol firstOperand, Symbol secondOperand, Deque<String> operands) {
+    private String resolveOperation(Symbol firstOperand, Symbol secondOperand, Deque<String> operands,
+            String indentation) {
 
         String code = "";
         String newOperandName;
@@ -51,7 +54,7 @@ public abstract class ArithmeticOperator implements AssemblerOperator {
             // Podría obtener el scope del segundo operando indistinguidamente.
             newOperandName = symbolTable.addAuxiliarVariable(firstOperand.getScope());
 
-            code = this.getCode(pairType, symbolTable, firstOperand, secondOperand, newOperandName);
+            code = this.getCode(pairType, symbolTable, firstOperand, secondOperand, newOperandName, indentation);
         }
 
         // Se remueve una referencia de cada operando.
@@ -66,24 +69,24 @@ public abstract class ArithmeticOperator implements AssemblerOperator {
 
     // --------------------------------------------------------------------------------------------
 
-    private String getCode(Symbol operand, SymbolType conversionType) {
+    private String getCode(Symbol operand, SymbolType conversionType, String indentation) {
 
         String out;
 
         if (operand.isCategory(SymbolCategory.CONSTANT)) {
             if (operand.isType(SymbolType.UINT)) {
-                out = String.format("i32.const %s", operand.getValue());
+                out = String.format(indentation + "i32.const %s", operand.getValue());
             } else {
 
-                out = String.format("f32.const %s", operand.getValue());
+                out = String.format(indentation + "f32.const %s", operand.getValue());
 
                 if (conversionType == SymbolType.UINT) {
-                    out += "\ni32.trunc_f32_u";
+                    out += indentation + "\ni32.trunc_f32_u";
                 }
             }
         } else {
 
-            out = String.format("local.get $%s", operand.getLexemaWithoutScope());
+            out = String.format(indentation + "local.get $%s", operand.getLexemaWithoutScope());
         }
 
         return out;
@@ -147,24 +150,40 @@ public abstract class ArithmeticOperator implements AssemblerOperator {
 
     // --------------------------------------------------------------------------------------------
 
+    private String indent(String text, String indentation) {
+        return Arrays.stream(text.split("\n"))
+                .map(line -> indentation + line)
+                .collect(Collectors.joining("\n"));
+    }
+
+    // --------------------------------------------------------------------------------------------
+
     private String getCode(PairType pairType, SymbolTable symbolTable, Symbol firstOperand, Symbol secondOperand,
-            String newOperandName) {
+            String newOperandName, String indentation) {
 
         return switch (pairType) {
-            case UINT_UINT, UINT_FLOAT -> """
+            case UINT_UINT, UINT_FLOAT -> indent("""
                     %s
                     %s
                     i32.%s
-                    local.set %s \
-                    """.formatted(getCode(firstOperand, SymbolType.UINT), getCode(secondOperand, SymbolType.UINT),
-                    this.getAssemblerOperator(), symbolTable.getSymbol(newOperandName).getLexemaWithoutScope());
-            case FLOAT_FLOAT -> """
+                    local.set %s
+                    """.formatted(
+                    getCode(firstOperand, SymbolType.UINT, indentation),
+                    getCode(secondOperand, SymbolType.UINT, indentation),
+                    this.getAssemblerOperator(),
+                    symbolTable.getSymbol(newOperandName).getLexemaWithoutScope()), indentation);
+
+            case FLOAT_FLOAT -> indent("""
                     %s
                     %s
                     f32.%s
                     local.set %s
-                    """.formatted(getCode(firstOperand, null), getCode(secondOperand, null),
-                    this.getAssemblerOperator(), symbolTable.getSymbol(newOperandName).getLexemaWithoutScope());
+                    """.formatted(
+                    getCode(firstOperand, null, indentation),
+                    getCode(secondOperand, null, indentation),
+                    this.getAssemblerOperator(),
+                    symbolTable.getSymbol(newOperandName).getLexemaWithoutScope()), indentation);
+
             default -> null;
         };
     }
