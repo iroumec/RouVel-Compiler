@@ -50,6 +50,7 @@ public class Label implements AssemblerOperator {
         StringBuilder code = new StringBuilder();
 
         // TODO: mejorar esto para no hacer dos recorridos en la tabla de símbolos.
+        // TODO: aclarar en el informe el no guardado de variable auxiliar flotante.
         List<Symbol> parameters = SymbolTable.getInstance().get(functionName, SymbolCategory.CV_PARAMETER);
         parameters.addAll(SymbolTable.getInstance().get(functionName, SymbolCategory.CVR_PARAMETER));
 

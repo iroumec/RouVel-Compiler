@@ -99,6 +99,11 @@ public class Symbol {
     // --------------------------------------------------------------------------------------------
 
     public boolean isType(SymbolType type) {
+
+        if (this.type == null) {
+            return false;
+        }
+
         return this.type.equals(type);
     }
 

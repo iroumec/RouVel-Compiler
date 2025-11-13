@@ -127,14 +127,12 @@ public final class SymbolTable {
 
     // --------------------------------------------------------------------------------------------
 
-    // TODO: copyValue from to...
-    public void setValue(String lexema, String valueLexema) {
+    public void setValue(String lexema, String value) {
 
         Symbol symbol = this.symbolTable.get(lexema);
-        Symbol value = this.symbolTable.get(valueLexema);
 
-        if (symbol != null && value != null) {
-            symbol.setValue(value.getValue());
+        if (symbol != null) {
+            symbol.setValue(value);
         }
     }
 
@@ -178,7 +176,34 @@ public final class SymbolTable {
         return out;
     }
 
+    /**
+     * If the scope is null, it will return all global variables.
+     * 
+     * @param scope
+     * @param category
+     * @return
+     */
+    public List<Symbol> get(String scope, SymbolType type) {
+
+        List<Symbol> out = new ArrayList<>();
+
+        for (Symbol symbol : this.symbolTable.values()) {
+
+            if (symbol.isType(type)
+                    && this.scopeMatches(symbol, scope)) {
+                out.add(symbol);
+            }
+        }
+
+        return out;
+    }
+
     private boolean scopeMatches(Symbol symbol, String scope) {
+
+        if (scope == null) {
+            return symbol.getLexema().split(":").length == 1;
+        }
+
         return (scope == null && symbol.getLexema().split(":").length == 2)
                 || (scope != null && symbol.getLexema().endsWith(scope));
     }

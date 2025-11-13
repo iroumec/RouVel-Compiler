@@ -1,6 +1,7 @@
 package assembler;
 
 import assembler.operators.AssemblerOperator;
+import assembler.operators.implementations.Argument;
 import assembler.operators.implementations.Assignment;
 import assembler.operators.implementations.Call;
 import assembler.operators.implementations.EndLabel;
@@ -24,7 +25,7 @@ class OperatorTranslator {
             case "label" -> Label.getInstance();
             case "end-label" -> EndLabel.getInstance();
             case "call" -> Call.getInstance();
-            case "->" -> null;
+            case "->" -> Argument.getInstance();
             case "return" -> Return.getInstance();
             case "print" -> Print.getInstance();
             case ":=" -> Assignment.getInstance();

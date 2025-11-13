@@ -3,6 +3,8 @@ package assembler.operators.implementations;
 import java.util.Deque;
 
 import assembler.operators.AssemblerOperator;
+import common.Symbol;
+import common.SymbolTable;
 
 public class Print implements AssemblerOperator {
 
@@ -20,7 +22,13 @@ public class Print implements AssemblerOperator {
     @Override
     public String getAssembler(Deque<String> operands, String indentation) {
 
-        return "invoke StdOut, addr " + operands.pop(); // TODO: esto luego debe cambiarse.
+        Symbol operand = SymbolTable.getInstance().getSymbol(operands.pop());
+
+        String code = String.format(indentation + "i32.const %s %n", operand.getValue());
+        code += String.format(indentation + "i32.const %d %n", operand.getLexema().length());
+        code += String.format(indentation + "call $print %n");
+
+        return code;
     }
 
 }
