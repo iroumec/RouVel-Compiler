@@ -1,29 +1,14 @@
-package assembler.operators.implementations;
+package assembler.operators.implementations.arithmetic;
 
 import java.util.Deque;
 
-import assembler.operators.Operator;
+import assembler.operators.AssemblerOperator;
 import common.Symbol;
 import common.SymbolCategory;
 import common.SymbolTable;
 import common.SymbolType;
 
-public class Sum implements Operator {
-
-    private Sum() {
-    }
-
-    // --------------------------------------------------------------------------------------------
-
-    private static class Holder {
-        private static final Sum INSTANCE = new Sum();
-    }
-
-    // --------------------------------------------------------------------------------------------
-
-    public static Sum getInstance() {
-        return Holder.INSTANCE;
-    }
+public abstract class ArithmeticOperator implements AssemblerOperator {
 
     // --------------------------------------------------------------------------------------------
 
@@ -38,12 +23,12 @@ public class Sum implements Operator {
         // Obtención del símbolo del primer operando.
         Symbol firstOperand = symbolTable.getSymbol(operands.pop());
 
-        return resolveSum(firstOperand, secondOperand, operands);
+        return resolveOperation(firstOperand, secondOperand, operands);
     }
 
     // --------------------------------------------------------------------------------------------
 
-    private String resolveSum(Symbol firstOperand, Symbol secondOperand, Deque<String> operands) {
+    private String resolveOperation(Symbol firstOperand, Symbol secondOperand, Deque<String> operands) {
 
         String code = "";
         String newOperandName;
@@ -66,7 +51,7 @@ public class Sum implements Operator {
             // Podría obtener el scope del segundo operando indistinguidamente.
             newOperandName = symbolTable.addAuxiliarVariable(firstOperand.getScope());
 
-            code = this.getSumCode(pairType, symbolTable, firstOperand, secondOperand, newOperandName);
+            code = this.getCode(pairType, symbolTable, firstOperand, secondOperand, newOperandName);
         }
 
         // Se remueve una referencia de cada operando.
@@ -148,36 +133,51 @@ public class Sum implements Operator {
 
         return switch (pairType) {
             case UINT_UINT ->
-                String.valueOf(Integer.valueOf(firstOperand.getValue()) + Integer.valueOf(secondOperand.getValue()));
+                String.valueOf(this.applyOperation(
+                        Integer.valueOf(firstOperand.getValue()), Integer.valueOf(secondOperand.getValue())));
             case FLOAT_FLOAT -> String
-                    .valueOf(Float.valueOf(firstOperand.getValue()) + Float.valueOf(secondOperand.getValue()));
-            case UINT_FLOAT -> Integer.toUnsignedString(Float.valueOf(firstOperand.getValue()).intValue()
-                    + Float.valueOf(secondOperand.getValue()).intValue());
+                    .valueOf(this.applyOperation(Float.valueOf(firstOperand.getValue()),
+                            Float.valueOf(secondOperand.getValue())));
+            case UINT_FLOAT ->
+                Integer.toUnsignedString(this.applyOperation(Float.valueOf(firstOperand.getValue()).intValue(),
+                        Float.valueOf(secondOperand.getValue()).intValue()));
             default -> null;
         };
     }
 
     // --------------------------------------------------------------------------------------------
 
-    private String getSumCode(PairType pairType, SymbolTable symbolTable, Symbol firstOperand, Symbol secondOperand,
+    private String getCode(PairType pairType, SymbolTable symbolTable, Symbol firstOperand, Symbol secondOperand,
             String newOperandName) {
 
         return switch (pairType) {
             case UINT_UINT, UINT_FLOAT -> """
                     %s
                     %s
-                    i32.add
+                    i32.%s
                     local.set %s \
                     """.formatted(getCode(firstOperand, SymbolType.UINT), getCode(secondOperand, SymbolType.UINT),
-                    symbolTable.getSymbol(newOperandName).getLexemaWithoutScope());
+                    this.getAssemblerOperator(), symbolTable.getSymbol(newOperandName).getLexemaWithoutScope());
             case FLOAT_FLOAT -> """
                     %s
                     %s
-                    f32.add
+                    f32.%s
                     local.set %s
                     """.formatted(getCode(firstOperand, null), getCode(secondOperand, null),
-                    symbolTable.getSymbol(newOperandName).getLexemaWithoutScope());
+                    this.getAssemblerOperator(), symbolTable.getSymbol(newOperandName).getLexemaWithoutScope());
             default -> null;
         };
     }
+
+    // --------------------------------------------------------------------------------------------
+
+    protected abstract int applyOperation(int firstOperand, int secondOperand);
+
+    // --------------------------------------------------------------------------------------------
+
+    protected abstract float applyOperation(float firstOperand, float secondOperand);
+
+    // --------------------------------------------------------------------------------------------
+
+    protected abstract String getAssemblerOperator();
 }

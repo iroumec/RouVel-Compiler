@@ -4,7 +4,7 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.List;
 
-import assembler.operators.Operator;
+import assembler.operators.AssemblerOperator;
 import common.Symbol;
 import common.SymbolCategory;
 import common.SymbolTable;
@@ -26,7 +26,7 @@ public class Assembler {
 
         for (String polish : reversePolish) {
 
-            Operator operator = OperatorTranslator.getOperator(polish);
+            AssemblerOperator operator = OperatorTranslator.getOperator(polish);
 
             if (operator != null) {
                 if (debug) {

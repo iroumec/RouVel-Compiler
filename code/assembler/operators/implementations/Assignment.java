@@ -2,13 +2,13 @@ package assembler.operators.implementations;
 
 import java.util.Deque;
 
-import assembler.operators.Operator;
+import assembler.operators.AssemblerOperator;
 import common.Symbol;
 import common.SymbolCategory;
 import common.SymbolTable;
 import common.SymbolType;
 
-public class Assignment implements Operator {
+public class Assignment implements AssemblerOperator {
 
     private Assignment() {
     }

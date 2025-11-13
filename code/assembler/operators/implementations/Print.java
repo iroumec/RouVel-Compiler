@@ -2,9 +2,9 @@ package assembler.operators.implementations;
 
 import java.util.Deque;
 
-import assembler.operators.Operator;
+import assembler.operators.AssemblerOperator;
 
-public class Print implements Operator {
+public class Print implements AssemblerOperator {
 
     private Print() {
     }

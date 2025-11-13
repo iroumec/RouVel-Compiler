@@ -2,7 +2,7 @@ package assembler.operators;
 
 import java.util.Deque;
 
-public interface Operator {
+public interface AssemblerOperator {
 
     String getAssembler(Deque<String> operands);
 

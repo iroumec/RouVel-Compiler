@@ -2,11 +2,11 @@ package assembler.operators.implementations;
 
 import java.util.Deque;
 
-import assembler.operators.Operator;
+import assembler.operators.AssemblerOperator;
 import common.Symbol;
 import common.SymbolTable;
 
-public class Label implements Operator {
+public class Label implements AssemblerOperator {
 
     private Label() {
     }

@@ -2,26 +2,25 @@ package assembler.operators.implementations.arithmetic;
 
 import java.util.Deque;
 
-import assembler.operators.AssemblerOperator;
 import common.Symbol;
 import common.SymbolCategory;
 import common.SymbolTable;
 import common.SymbolType;
 
-public class Subtraction extends ArithmeticOperator {
+public class Sum extends ArithmeticOperator {
 
-    private Subtraction() {
+    private Sum() {
     }
 
     // --------------------------------------------------------------------------------------------
 
     private static class Holder {
-        private static final Subtraction INSTANCE = new Subtraction();
+        private static final Sum INSTANCE = new Sum();
     }
 
     // --------------------------------------------------------------------------------------------
 
-    public static Subtraction getInstance() {
+    public static Sum getInstance() {
         return Holder.INSTANCE;
     }
 
@@ -29,20 +28,20 @@ public class Subtraction extends ArithmeticOperator {
 
     @Override
     protected int applyOperation(int firstOperand, int secondOperand) {
-        return firstOperand - secondOperand;
+        return firstOperand + secondOperand;
     }
 
     // --------------------------------------------------------------------------------------------
 
     @Override
     protected float applyOperation(float firstOperand, float secondOperand) {
-        return firstOperand - secondOperand;
+        return firstOperand + secondOperand;
     }
 
     // --------------------------------------------------------------------------------------------
 
     @Override
     protected String getAssemblerOperator() {
-        return "sub";
+        return "add";
     }
 }

@@ -1,27 +1,19 @@
 package assembler.operators.implementations.arithmetic;
 
-import java.util.Deque;
+public class Division extends ArithmeticOperator {
 
-import assembler.operators.AssemblerOperator;
-import common.Symbol;
-import common.SymbolCategory;
-import common.SymbolTable;
-import common.SymbolType;
-
-public class Subtraction extends ArithmeticOperator {
-
-    private Subtraction() {
+    private Division() {
     }
 
     // --------------------------------------------------------------------------------------------
 
     private static class Holder {
-        private static final Subtraction INSTANCE = new Subtraction();
+        private static final Division INSTANCE = new Division();
     }
 
     // --------------------------------------------------------------------------------------------
 
-    public static Subtraction getInstance() {
+    public static Division getInstance() {
         return Holder.INSTANCE;
     }
 
@@ -29,20 +21,20 @@ public class Subtraction extends ArithmeticOperator {
 
     @Override
     protected int applyOperation(int firstOperand, int secondOperand) {
-        return firstOperand - secondOperand;
+        return firstOperand / secondOperand;
     }
 
     // --------------------------------------------------------------------------------------------
 
     @Override
     protected float applyOperation(float firstOperand, float secondOperand) {
-        return firstOperand - secondOperand;
+        return firstOperand / secondOperand;
     }
 
     // --------------------------------------------------------------------------------------------
 
     @Override
     protected String getAssemblerOperator() {
-        return "sub";
+        return "div_u"; // TODO: verificar esto. Puede variar.
     }
 }
