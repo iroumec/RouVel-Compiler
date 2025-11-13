@@ -39,7 +39,10 @@ public class Assembler {
                     indentation.setLength(indentation.length() - operator.getExitIndentationChange());
                 }
 
-                assemblerCode.append(operator.getAssembler(operands, indentation.toString())).append("\n");
+                String iterationCode = operator.getAssembler(operands, indentation.toString());
+                if (!iterationCode.isBlank()) {
+                    assemblerCode.append(iterationCode).append("\n");
+                }
 
                 if (operator.producesEntryChangeInIndentation()) {
                     indentation.append(" ".repeat(operator.getEntryIndentationChange()));
@@ -59,7 +62,7 @@ public class Assembler {
         // deben ser agregadas.
         declarations.append("\n").append(dumpGlobalVariables());
 
-        declarations.append(assemblerCode);
+        declarations.append("\n").append(assemblerCode);
 
         assemblerCode = declarations;
 

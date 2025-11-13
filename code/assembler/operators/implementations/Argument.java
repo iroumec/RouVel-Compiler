@@ -1,4 +1,4 @@
-package assembler.operators.implementations.comparison;
+package assembler.operators.implementations;
 
 import java.util.Deque;
 
@@ -8,24 +8,30 @@ import common.SymbolCategory;
 import common.SymbolTable;
 import common.SymbolType;
 
-public class Equal implements AssemblerOperator {
+public class Argument implements AssemblerOperator {
+
+    private Argument() {
+    }
+
+    private static class Holder {
+        private static final Argument INSTANCE = new Argument();
+    }
+
+    public static Argument getInstance() {
+        return Holder.INSTANCE;
+    }
 
     @Override
     public String getAssembler(Deque<String> operands, String indentation) {
 
         SymbolTable symbolTable = SymbolTable.getInstance();
 
-        Symbol secondOperand = symbolTable.getSymbol(operands.pop());
-        Symbol firstOperand = symbolTable.getSymbol(operands.pop());
+        Symbol argument = SymbolTable.getInstance().getSymbol(operands.pop());
 
-        String code = getCode(firstOperand, SymbolType.UINT, indentation);
-        code += getCode(secondOperand, SymbolType.UINT, indentation);
-        code += indentation + "i32.eq";
-
-        return code;
+        return getCode(argument, SymbolType.UINT, indentation);
     }
 
-    // TODO: este código se repite en ArithmeticOperator. Puede externalizarse.
+    // TODO: este código se repite en varias clases. EXTERNALIZAR.
     private String getCode(Symbol operand, SymbolType conversionType, String indentation) {
 
         String out;

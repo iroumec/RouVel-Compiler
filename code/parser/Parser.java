@@ -1784,7 +1784,7 @@ case 144:
             if (statementAppearsInValidState()) {
 
                 if (this.functionLevel > 0) {
-                 
+
                     this.reversePolish.makeTemporalPolishesDefinitive();
                     reversePolish.addPolish("return");
                     notifyDetection("Sentencia 'return'.");
@@ -1879,7 +1879,7 @@ case 155:
             /* Se agrega la expresión.*/
             this.reversePolish.makeTemporalPolishesDefinitive();
 
-            this.reversePolish.addPolish(":=");
+            this.reversePolish.addPolish("->");
 
             this.symbolTable.replaceEntry(val_peek(0).sval, formalParameter);
         }

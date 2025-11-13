@@ -3,6 +3,8 @@ package assembler.operators.implementations;
 import java.util.Deque;
 
 import assembler.operators.AssemblerOperator;
+import common.Symbol;
+import common.SymbolTable;
 
 public class Call implements AssemblerOperator {
 
@@ -20,6 +22,8 @@ public class Call implements AssemblerOperator {
     @Override
     public String getAssembler(Deque<String> operands, String indentation) {
 
-        return indentation + "call " + operands.pop();
+        Symbol function = SymbolTable.getInstance().getSymbol(operands.pop());
+
+        return indentation + "call $" + function.getLexemaWithoutScope();
     }
 }

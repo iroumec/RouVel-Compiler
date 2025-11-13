@@ -32,9 +32,9 @@ public class Return implements AssemblerOperator {
 
         // TODO: SOLO SE RETORNAN ENTEROS. ¿A ESO LO CHEQUEAMOS EN ALGÚN MOMENTO?
         if (operand.isCategory(SymbolCategory.CONSTANT)) {
-            out = indentation + String.format(indentation + "i32.const %s %n", operand.getValue());
+            out = String.format(indentation + "i32.const %s %n", operand.getValue());
         } else {
-            out = indentation + String.format(indentation + "local.get $%s %n", operand.getLexemaWithoutScope());
+            out = String.format(indentation + "local.get $%s %n", operand.getLexemaWithoutScope());
         }
 
         // No es necesario hacer explícito el 'return', pero se incluyó

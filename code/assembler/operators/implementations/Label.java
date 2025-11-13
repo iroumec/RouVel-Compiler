@@ -42,7 +42,7 @@ public class Label implements AssemblerOperator {
 
         code.append("\n").append(dumpFunctionVariables(functionName, indentation));
 
-        return code.append("\n").toString();
+        return code.toString();
     }
 
     private static String dumpParameters(String functionName, String indentation) {

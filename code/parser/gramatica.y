@@ -1018,7 +1018,7 @@ sentencia_retorno
             if (statementAppearsInValidState()) {
 
                 if (this.functionLevel > 0) {
-                 
+
                     this.reversePolish.makeTemporalPolishesDefinitive();
                     reversePolish.addPolish("return");
                     notifyDetection("Sentencia 'return'.");
@@ -1127,7 +1127,7 @@ argumento
             // Se agrega la expresión.
             this.reversePolish.makeTemporalPolishesDefinitive();
 
-            this.reversePolish.addPolish(":=");
+            this.reversePolish.addPolish("->");
 
             this.symbolTable.replaceEntry($3, formalParameter);
         }

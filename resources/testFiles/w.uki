@@ -1,5 +1,7 @@
 MAIN {
 
+    uint Z;
+
     uint F1(uint A) {
 
         uint J;
@@ -17,6 +19,10 @@ MAIN {
 
         return(U);
     }
+
+    Z := 6UI + 8.0;
+
+    F1(Z -> A);
 
     print(3UI);
 }

@@ -24,6 +24,7 @@ class OperatorTranslator {
             case "label" -> Label.getInstance();
             case "end-label" -> EndLabel.getInstance();
             case "call" -> Call.getInstance();
+            case "->" -> null;
             case "return" -> Return.getInstance();
             case "print" -> Print.getInstance();
             case ":=" -> Assignment.getInstance();
