@@ -17,7 +17,7 @@ all: help
 
 run: ## Ejecuta yacc, compila el programa y lo ejecuta. Ejemplo de uso: `make run FILE="main.uki"`.
 	@chmod +x "$(SCRIPT)"
-	@"$(SCRIPT)" "$(TEST_FILE_DIR)/$(FILE)"
+	@"$(SCRIPT)" "$(TEST_FILE_DIR)$(FILE)"
 
 # =================================================================================================
 
