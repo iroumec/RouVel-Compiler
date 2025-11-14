@@ -1,5 +1,6 @@
 package lexer;
 
+import common.Monitor;
 import common.Symbol;
 import common.SymbolType;
 import common.SymbolTable;
@@ -20,12 +21,13 @@ import utilities.Printer;
 
 public final class Lexer {
 
-    private Token currentToken;
+    private Monitor monitor;
+
     private char lastCharRead;
+    private Token currentToken;
     private final String codigoFuente;
-    private int nroLinea, siguienteCaracterALeer, nroCaracter;
-    private int warningsDetected, errorsDetected;
     private final int estadoInicio, estadoAceptacion;
+    private int nroLinea, siguienteCaracterALeer, nroCaracter;
 
     // --------------------------------------------------------------------------------------------
 
@@ -42,8 +44,6 @@ public final class Lexer {
 
     public Lexer(String sourceCodePath) {
         this.nroLinea = 1;
-        this.errorsDetected = 0;
-        this.warningsDetected = 0;
         this.siguienteCaracterALeer = 0;
         this.nroCaracter = 0;
         this.estadoInicio = DataManager.getEstadoInicio();
@@ -51,6 +51,7 @@ public final class Lexer {
         this.codigoFuente = DataManager.loadSourceCode(sourceCodePath);
         this.matrizTransicionEstados = DataManager.getStateTransitionMatrix();
         this.matrizAccionesSemanticas = DataManager.getSemanticActionsMatrix();
+        this.monitor = Monitor.getInstance();
 
         this.type = null;
         this.value = new StringBuilder();
@@ -241,18 +242,6 @@ public final class Lexer {
 
     // --------------------------------------------------------------------------------------------
 
-    public int getNroLinea() {
-        return this.nroLinea;
-    }
-
-    // --------------------------------------------------------------------------------------------
-
-    public void incrementarNroLinea() {
-        this.nroLinea++;
-    }
-
-    // --------------------------------------------------------------------------------------------
-
     public void decrementarSiguienteCaracterALeer() {
 
         this.siguienteCaracterALeer--;
@@ -306,31 +295,19 @@ public final class Lexer {
     // --------------------------------------------------------------------------------------------
 
     public void notifyWarning(String warningMessage) {
-        Printer.printWrapped(String.format(
+
+        this.monitor.addWarning(String.format(
                 "WARNING LÉXICO: Línea %d: %s",
-                this.getNroLinea(), warningMessage));
-        this.warningsDetected++;
-    }
-
-    // --------------------------------------------------------------------------------------------
-
-    public int getWarningsDetected() {
-        return this.warningsDetected;
+                monitor.getLineNumber(), warningMessage));
     }
 
     // --------------------------------------------------------------------------------------------
 
     public void notifyError(String errorMessage) {
-        Printer.printWrapped(String.format(
+
+        this.monitor.addError(String.format(
                 "ERROR LÉXICO: Línea %d: %s",
-                this.getNroLinea(), errorMessage));
-        this.errorsDetected++;
-    }
-
-    // --------------------------------------------------------------------------------------------
-
-    public int getErrorsDetected() {
-        return this.errorsDetected;
+                monitor.getLineNumber(), errorMessage));
     }
 
     // --------------------------------------------------------------------------------------------

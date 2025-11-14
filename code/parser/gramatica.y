@@ -1350,7 +1350,7 @@ private void yyerror(String s) {
 private void notifyDetection(String message) {
     Printer.printWrapped(String.format(
         "DETECCIÓN SINTÁCTICA: Línea %d: %s",
-        lexer.getNroLinea(), message
+        monitor.getLineNumber(), message
     ));
 }
 
@@ -1360,7 +1360,7 @@ private void notifyWarning(String warningMessage) {
 
     monitor.addWarning(String.format(
         "WARNING SINTÁCTICA: Línea %d: %s",
-        lexer.getNroLinea(), warningMessage
+        monitor.getLineNumber(), warningMessage
     ));
 }
 
@@ -1370,7 +1370,7 @@ private void notifyError(String errorMessage) {
 
     monitor.addError(String.format(
         "ERROR SINTÁCTICO: Línea %d: %s",
-        lexer.getNroLinea(), errorMessage
+        monitor.getLineNumber(), errorMessage
     ));
 }
 
@@ -1380,7 +1380,7 @@ private void replaceLastErrorWith(String errorMessage) {
 
     monitor.replaceLastErrorWith(String.format(
         "ERROR SINTÁCTICO: Línea %d: %s",
-        lexer.getNroLinea(), errorMessage
+        monitor.getLineNumber(), errorMessage
     ));
 }
 

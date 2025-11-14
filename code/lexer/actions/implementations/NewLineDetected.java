@@ -1,5 +1,6 @@
 package lexer.actions.implementations;
 
+import common.Monitor;
 import lexer.Lexer;
 import lexer.actions.SemanticAction;
 
@@ -29,7 +30,7 @@ public class NewLineDetected implements SemanticAction {
 
     @Override
     public void execute(Lexer lexicalAnalyzer) {
-        lexicalAnalyzer.incrementarNroLinea();
+        Monitor.getInstance().increaseLineNumber();
         lexicalAnalyzer.resetearNroCaracter();
     }
 

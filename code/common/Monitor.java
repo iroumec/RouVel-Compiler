@@ -39,4 +39,28 @@ public class Monitor {
     public void addWarning(String warningMessage) {
         this.warningCollector.add(warningMessage);
     }
+
+    public boolean hasErrorMessages() {
+        return this.errorCollector.hasMessages();
+    }
+
+    public boolean hasWarningMessages() {
+        return this.errorCollector.hasMessages();
+    }
+
+    public int getNumberOfErrors() {
+        return this.errorCollector.getNumberOfMessages();
+    }
+
+    public int getNumberOfWarnings() {
+        return this.warningCollector.getNumberOfMessages();
+    }
+
+    public void showErrors() {
+        this.errorCollector.showMessages();
+    }
+
+    public void showWarnings() {
+        this.warningCollector.showMessages();
+    }
 }

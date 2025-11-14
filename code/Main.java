@@ -6,6 +6,7 @@ import assembler.Assembler;
 import lexer.Lexer;
 import parser.Parser;
 import semantic.ReversePolish;
+import common.Monitor;
 import common.SymbolTable;
 import utilities.MessageCollector;
 import utilities.Printer;
@@ -36,8 +37,7 @@ public class Main {
 
     private static void startCompilation(File file) {
 
-        MessageCollector errorCollector = new MessageCollector();
-        MessageCollector warningCollector = new MessageCollector();
+        Monitor monitor = Monitor.getInstance();
 
         Printer.printIntroduction(file.getName());
 
@@ -49,11 +49,11 @@ public class Main {
         sintacticalAnalyzer.execute();
         Printer.printSeparator();
 
-        printReport(lexicalAnalyzer.getNroLinea(), errorCollector, warningCollector);
+        printReport();
 
         Printer.printSeparator();
         Printer.print(
-                errorCollector.hasMessages()
+                monitor.hasErrorMessages()
                         ? "El código contiene errores, por lo que no fue posible generar un código assembler."
                         : Assembler.generate(sintacticalAnalyzer.getReversePolish()));
         Printer.printSeparator();
@@ -67,15 +67,17 @@ public class Main {
 
     // --------------------------------------------------------------------------------------------
 
-    private static void printReport(int lines, MessageCollector errorCollector, MessageCollector warningCollector) {
+    private static void printReport() {
+
+        Monitor monitor = Monitor.getInstance();
 
         String report = """
                 El programa tiene %d líneas. \
                 Se detectaron %d warnings y %d errores. \
                 """.formatted(
-                lines,
-                warningCollector.getNumberOfMessages(),
-                errorCollector.getNumberOfMessages());
+                monitor.getLineNumber(),
+                monitor.getNumberOfWarnings(),
+                monitor.getNumberOfErrors());
 
         Printer.printBlankSpace();
         Printer.printSeparator();
@@ -84,18 +86,18 @@ public class Main {
         Printer.printSeparator();
         Printer.printBlankSpace();
 
-        if (warningCollector.hasMessages()) {
+        if (monitor.hasWarningMessages()) {
             Printer.printSeparator();
             Printer.printCentered("> Warnings <");
-            warningCollector.showMessages();
+            monitor.showWarnings();
             Printer.printSeparator();
             Printer.printBlankSpace();
         }
 
-        if (errorCollector.hasMessages()) {
+        if (monitor.hasErrorMessages()) {
             Printer.printSeparator();
             Printer.printCentered("> Errores <");
-            errorCollector.showMessages();
+            monitor.showErrors();
             Printer.printSeparator();
             Printer.printBlankSpace();
         }
