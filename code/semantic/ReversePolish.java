@@ -71,6 +71,15 @@ public final class ReversePolish implements Iterable<String> {
     }
 
     // --------------------------------------------------------------------------------------------
+
+    private void addPolishes(List<String> polishes) {
+
+        for (String polish : polishes) {
+            this.addPolish(polish);
+        }
+    }
+
+    // --------------------------------------------------------------------------------------------
     // Agregado de Separadores
     // --------------------------------------------------------------------------------------------
 
@@ -202,29 +211,21 @@ public final class ReversePolish implements Iterable<String> {
 
     public void addParameter(String id, String type, String semantic) {
 
-        this.functions.getLast().addParameter(id, type, semantic);
+        this.addPolishes(this.functions.getLast().addParameter(id, type, semantic));
     }
 
     // --------------------------------------------------------------------------------------------
 
     public void closeFunctionDeclaration(String functionName) {
 
-        List<String> polishes = this.functions.getLast().closeDeclaration();
-
-        for (String polish : polishes) {
-            this.addPolish(polish);
-        }
+        this.addPolishes(this.functions.getLast().closeDeclaration());
     }
 
     // --------------------------------------------------------------------------------------------
 
     public void discardFunctionDeclaration(String functionName) {
 
-        List<String> polishes = this.functions.getLast().closeDeclaration();
-
-        for (String polish : polishes) {
-            this.addPolish(polish);
-        }
+        this.functions.removeLast();
     }
 
     // --------------------------------------------------------------------------------------------

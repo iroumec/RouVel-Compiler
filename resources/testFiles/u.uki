@@ -4,7 +4,7 @@ MAIN {
 
     A := 4UI;
 
-    uint FUNC1(uint H, cvr uint J) {
+    uint FUNC1(uint H, cvr uint I, cvr uint J) {
 
         print("Hola");
 
@@ -15,5 +15,5 @@ MAIN {
 
     ##return(3UI);##
 
-    FUNC1(3UI -> H, A -> J);
+    FUNC1(A -> I, 3UI -> H, A -> J);
 }

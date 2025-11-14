@@ -8,16 +8,16 @@ import common.SymbolCategory;
 import common.SymbolTable;
 import common.SymbolType;
 
-public class Result implements AssemblerOperator {
+public class WriteResult implements AssemblerOperator {
 
-    private Result() {
+    private WriteResult() {
     }
 
     private static class Holder {
-        private static final Result INSTANCE = new Result();
+        private static final WriteResult INSTANCE = new WriteResult();
     }
 
-    public static Result getInstance() {
+    public static WriteResult getInstance() {
         return Holder.INSTANCE;
     }
 

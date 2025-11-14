@@ -24,6 +24,6 @@ public class Call implements AssemblerOperator {
 
         Symbol function = SymbolTable.getInstance().getSymbol(operands.pop());
 
-        return indentation + "call $" + function.getLexemaWithoutScope();
+        return String.format(indentation + "call $%s %n", function.getLexemaWithoutScope());
     }
 }

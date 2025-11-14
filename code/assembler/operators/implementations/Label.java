@@ -40,7 +40,11 @@ public class Label implements AssemblerOperator {
 
         code.append(String.format(indentation + " (result i32) %n"));
 
-        code.append("\n").append(dumpFunctionVariables(functionName, indentation));
+        String functionVariables = dumpFunctionVariables(functionName, indentation);
+
+        if (!functionVariables.isBlank()) {
+            code.append("\n").append(dumpFunctionVariables(functionName, indentation));
+        }
 
         return code.toString();
     }

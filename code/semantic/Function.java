@@ -24,9 +24,16 @@ class Function {
         this.parameters = new ArrayList<>();
     }
 
-    public void addParameter(String id, String type, String semantic) {
+    public List<String> addParameter(String id, String type, String semantic) {
 
         this.parameters.add(new Parameter(id, type, semantic));
+
+        List<String> out = new ArrayList<>();
+
+        out.add(id + ":" + this.name);
+        out.add("parameter");
+
+        return out;
     }
 
     public void addArgument(String parameter, List<String> expression) {
@@ -43,8 +50,9 @@ class Function {
 
                 String formalParameter = parameter.getID() + ":" + this.name;
 
-                out.add(formalParameter);
-                out.add("result");
+                // Se añaden de forma inversa para simplificar la asignación a los argumentos.
+                out.addFirst("result");
+                out.addFirst(formalParameter);
             }
         }
 
@@ -110,6 +118,8 @@ class Function {
                     out.add(expressions.getFirst());
                     out.add("<-");
                 }
+            } else {
+                iteratorArguments.next();
             }
         }
 
