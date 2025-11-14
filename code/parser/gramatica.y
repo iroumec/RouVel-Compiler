@@ -868,7 +868,7 @@ declaracion_funcion
                     this.isThereReturn = false;
                     notifyDetection("Declaración de función.");
 
-                    this.reversePolish.closeFunction();
+                    this.reversePolish.closeFunctionDeclaration(this.scopeStack.appendScope($1));
 
                     this.reversePolish.addPolish("end-label");
                     this.symbolTable.setType($1, SymbolType.UINT);
@@ -887,7 +887,6 @@ declaracion_funcion
             this.functionLevel--;
             this.returnsFound = 0;
             this.returnsNeeded = 0;
-            this.CVRParameters = null;
         }
 
     // |========================= REGLAS DE ERROR =========================| //
@@ -901,7 +900,6 @@ declaracion_funcion
             this.functionLevel--;
             this.returnsFound = 0;
             this.returnsNeeded = 0;
-            this.CVRParameters = null;
         }
     ;
 
@@ -923,7 +921,7 @@ inicio_funcion
 
             this.returnsNeeded = 1;
 
-            this.reversePolish.startFunction($2);
+            this.reversePolish.startFunctionDeclaration($2);
         }
     
     // |========================= REGLAS DE ERROR =========================| //
@@ -988,7 +986,7 @@ parametro_formal
                 this.symbolTable.setCategory($3, ($1 == "CVR" ? SymbolCategory.CVR_PARAMETER : SymbolCategory.CV_PARAMETER));
                 this.symbolTable.setScope($3,scopeStack.asText());
 
-                this.reversePolish.addPameterToCurrentFunction($3, "uint", $1);
+                this.reversePolish.addParameter($3, "uint", $1);
             } else {
                 this.treatInvalidState("Parámetro formal");
             }
@@ -1084,7 +1082,7 @@ invocacion_funcion
 
                 $$ = $1 + '(' + $3 + ')';
 
-                this.reversePolish.closeFunctionCall();
+                this.reversePolish.closeFunctionCall($1);
             } else {
                 this.treatInvalidState("Invocación de función");
 
@@ -1112,7 +1110,7 @@ function_start
                 functionInvocationIdentifier = $1; // Solo hay un elemento.
             }
 
-            this.reversePolish.startCallToFunction(functionInvocationIdentifier);
+            this.reversePolish.startFunctionCall(functionInvocationIdentifier);
         }
     ;
 
@@ -1276,7 +1274,6 @@ private final ReversePolish reversePolish;
 private int functionLevel;
 // Si esto está activa, todas las instrucciones que se encuentran no serán pasadas a código intermedio.
 private boolean isThereReturn;
-private List<String> CVRParameters;
 
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -1298,7 +1295,6 @@ public Parser(Lexer lexer) {
 
     this.functionLevel = 0;
     this.isThereReturn = false;
-    this.CVRParameters = new ArrayList();
     
     this.scopeStack = new ScopeStack();
     this.reversePolish = ReversePolish.getInstance();
@@ -1381,7 +1377,7 @@ private void notifyError(String errorMessage) {
 
 private void replaceLastErrorWith(String errorMessage) {
 
-    errorCollector.replaceLastWith(String.format(
+    monitor.replaceLastErrorWith(String.format(
         "ERROR SINTÁCTICO: Línea %d: %s",
         lexer.getNroLinea(), errorMessage
     ));

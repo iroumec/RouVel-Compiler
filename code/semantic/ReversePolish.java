@@ -193,27 +193,43 @@ public final class ReversePolish implements Iterable<String> {
     // Manejo de Estado Seguro
     // --------------------------------------------------------------------------------------------
 
-    public void startNewFunction(String functionName) {
+    public void startFunctionDeclaration(String functionName) {
 
         this.functions.add(new Function(functionName));
     }
 
     // --------------------------------------------------------------------------------------------
 
-    public void addParameterToCurrentFunction(String id, String type, String semantic) {
+    public void addParameter(String id, String type, String semantic) {
 
         this.functions.getLast().addParameter(id, type, semantic);
     }
 
     // --------------------------------------------------------------------------------------------
 
-    public void closeFunction() {
+    public void closeFunctionDeclaration(String functionName) {
 
+        List<String> polishes = this.functions.getLast().closeDeclaration();
+
+        for (String polish : polishes) {
+            this.addPolish(polish);
+        }
     }
 
     // --------------------------------------------------------------------------------------------
 
-    public void startCallToFunction(String functionName) {
+    public void discardFunctionDeclaration(String functionName) {
+
+        List<String> polishes = this.functions.getLast().closeDeclaration();
+
+        for (String polish : polishes) {
+            this.addPolish(polish);
+        }
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    public void startFunctionCall(String functionName) {
 
         Function functionCalled = null;
 

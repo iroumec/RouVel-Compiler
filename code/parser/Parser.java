@@ -742,7 +742,7 @@ final static String yyrule[] = {
 "parametro_lambda : '(' UINT identifier ')'",
 };
 
-//#line 1262 "gramatica.y"
+//#line 1260 "gramatica.y"
 
 // ====================================================================================================================
 // INICIO DE CÓDIGO (opcional)
@@ -760,7 +760,6 @@ private final ReversePolish reversePolish;
 private int functionLevel;
 // Si esto está activa, todas las instrucciones que se encuentran no serán pasadas a código intermedio.
 private boolean isThereReturn;
-private List<String> CVRParameters;
 
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -782,7 +781,6 @@ public Parser(Lexer lexer) {
 
     this.functionLevel = 0;
     this.isThereReturn = false;
-    this.CVRParameters = new ArrayList();
     
     this.scopeStack = new ScopeStack();
     this.reversePolish = ReversePolish.getInstance();
@@ -865,7 +863,7 @@ private void notifyError(String errorMessage) {
 
 private void replaceLastErrorWith(String errorMessage) {
 
-    errorCollector.replaceLastWith(String.format(
+    monitor.replaceLastErrorWith(String.format(
         "ERROR SINTÁCTICO: Línea %d: %s",
         lexer.getNroLinea(), errorMessage
     ));
@@ -926,7 +924,7 @@ private boolean isUint(String number) {
 // ====================================================================================================================
 // FIN DE CÓDIGO
 // ====================================================================================================================
-//#line 858 "Parser.java"
+//#line 856 "Parser.java"
 //###############################################################
 // method: yylexdebug : check lexer state
 //###############################################################
@@ -1679,7 +1677,7 @@ case 125:
                     this.isThereReturn = false;
                     notifyDetection("Declaración de función.");
 
-                    this.reversePolish.closeFunction();
+                    this.reversePolish.closeFunctionDeclaration(this.scopeStack.appendScope(val_peek(4).sval));
 
                     this.reversePolish.addPolish("end-label");
                     this.symbolTable.setType(val_peek(4).sval, SymbolType.UINT);
@@ -1698,11 +1696,10 @@ case 125:
             this.functionLevel--;
             this.returnsFound = 0;
             this.returnsNeeded = 0;
-            this.CVRParameters = null;
         }
 break;
 case 126:
-//#line 896 "gramatica.y"
+//#line 895 "gramatica.y"
 {
             this.scopeStack.pop();
             notifyError("El cuerpo de la función no puede estar vacío.");
@@ -1711,11 +1708,10 @@ case 126:
             this.functionLevel--;
             this.returnsFound = 0;
             this.returnsNeeded = 0;
-            this.CVRParameters = null;
         }
 break;
 case 127:
-//#line 914 "gramatica.y"
+//#line 912 "gramatica.y"
 {
             yyval.sval = val_peek(0).sval;
             this.functionLevel++;
@@ -1728,11 +1724,11 @@ case 127:
 
             this.returnsNeeded = 1;
 
-            this.reversePolish.startFunction(val_peek(0).sval);
+            this.reversePolish.startFunctionDeclaration(val_peek(0).sval);
         }
 break;
 case 128:
-//#line 932 "gramatica.y"
+//#line 930 "gramatica.y"
 {
             errorState = true;
             this.functionLevel++;
@@ -1743,49 +1739,49 @@ case 128:
         }
 break;
 case 132:
-//#line 959 "gramatica.y"
+//#line 957 "gramatica.y"
 { notifyError("Toda función debe recibir al menos un parámetro."); }
 break;
 case 135:
-//#line 971 "gramatica.y"
+//#line 969 "gramatica.y"
 { notifyError("Se halló un parámetro formal vacío."); }
 break;
 case 138:
-//#line 985 "gramatica.y"
+//#line 983 "gramatica.y"
 {
             if (this.statementAppearsInValidState()) {
                 this.symbolTable.setType(val_peek(0).sval, SymbolType.UINT);
                 this.symbolTable.setCategory(val_peek(0).sval, (val_peek(2).sval == "CVR" ? SymbolCategory.CVR_PARAMETER : SymbolCategory.CV_PARAMETER));
                 this.symbolTable.setScope(val_peek(0).sval,scopeStack.asText());
 
-                this.reversePolish.addPameterToCurrentFunction(val_peek(0).sval, "uint", val_peek(2).sval);
+                this.reversePolish.addParameter(val_peek(0).sval, "uint", val_peek(2).sval);
             } else {
                 this.treatInvalidState("Parámetro formal");
             }
         }
 break;
 case 139:
-//#line 1000 "gramatica.y"
+//#line 998 "gramatica.y"
 { notifyError("Falta de nombre de parámetro formal en declaración de función."); }
 break;
 case 140:
-//#line 1002 "gramatica.y"
+//#line 1000 "gramatica.y"
 { notifyError("Falta de tipo de parámetro formal en declaración de función."); }
 break;
 case 141:
-//#line 1009 "gramatica.y"
+//#line 1007 "gramatica.y"
 { yyval.sval = "CV"; }
 break;
 case 142:
-//#line 1011 "gramatica.y"
+//#line 1009 "gramatica.y"
 { yyval.sval = "CVR"; }
 break;
 case 143:
-//#line 1016 "gramatica.y"
+//#line 1014 "gramatica.y"
 { notifyError("Semántica de pasaje de parámetro inválida."); errorState = true; }
 break;
 case 144:
-//#line 1025 "gramatica.y"
+//#line 1023 "gramatica.y"
 {
 
             if (statementAppearsInValidState()) {
@@ -1814,37 +1810,37 @@ case 144:
         }
 break;
 case 145:
-//#line 1055 "gramatica.y"
+//#line 1053 "gramatica.y"
 { notifyError("La sentencia RETURN debe terminar con ';'."); }
 break;
 case 146:
-//#line 1057 "gramatica.y"
+//#line 1055 "gramatica.y"
 { notifyError("El retorno no puede estar vacío."); }
 break;
 case 147:
-//#line 1059 "gramatica.y"
+//#line 1057 "gramatica.y"
 { notifyError("El resultado a retornar debe ir entre paréntesis."); }
 break;
 case 148:
-//#line 1061 "gramatica.y"
+//#line 1059 "gramatica.y"
 { notifyError("Sentencia RETURN inválida."); }
 break;
 case 149:
-//#line 1070 "gramatica.y"
+//#line 1068 "gramatica.y"
 { notifyDetection("Invocación de función."); }
 break;
 case 150:
-//#line 1075 "gramatica.y"
+//#line 1073 "gramatica.y"
 { notifyError("La invocación a función debe terminar con ';'."); }
 break;
 case 151:
-//#line 1082 "gramatica.y"
+//#line 1080 "gramatica.y"
 {
             if (this.statementAppearsInValidState()) {
 
                 yyval.sval = val_peek(3).sval + '(' + val_peek(1).sval + ')';
 
-                this.reversePolish.closeFunctionCall();
+                this.reversePolish.closeFunctionCall(val_peek(3).sval);
             } else {
                 this.treatInvalidState("Invocación de función");
 
@@ -1853,7 +1849,7 @@ case 151:
         }
 break;
 case 152:
-//#line 1100 "gramatica.y"
+//#line 1098 "gramatica.y"
 {
             String[] parts = val_peek(0).sval.split("\\s*:\\s*");
             String functionInvocationIdentifier;
@@ -1869,26 +1865,26 @@ case 152:
                 functionInvocationIdentifier = val_peek(0).sval; /* Solo hay un elemento.*/
             }
 
-            this.reversePolish.startCallToFunction(functionInvocationIdentifier);
+            this.reversePolish.startFunctionCall(functionInvocationIdentifier);
         }
 break;
 case 154:
-//#line 1124 "gramatica.y"
+//#line 1122 "gramatica.y"
 { yyval.sval = val_peek(0).sval; }
 break;
 case 155:
-//#line 1131 "gramatica.y"
+//#line 1129 "gramatica.y"
 {
 
             this.reversePolish.addArgument(val_peek(0).sval);
         }
 break;
 case 156:
-//#line 1139 "gramatica.y"
+//#line 1137 "gramatica.y"
 { notifyError("Falta de especificación del parámetro formal al que corresponde el parámetro real."); errorState = true; }
 break;
 case 157:
-//#line 1148 "gramatica.y"
+//#line 1146 "gramatica.y"
 {
             if (this.statementAppearsInValidState()) {
                 /* Se añaden las polacas correspondiente al imprimible.*/
@@ -1902,7 +1898,7 @@ case 157:
         }
 break;
 case 158:
-//#line 1163 "gramatica.y"
+//#line 1161 "gramatica.y"
 {
             errorState = true;
             this.reversePolish.emptyTemporalPolishes();
@@ -1910,11 +1906,11 @@ case 158:
         }
 break;
 case 160:
-//#line 1178 "gramatica.y"
+//#line 1176 "gramatica.y"
 { notifyError("La sentencia 'print' requiere de al menos un argumento."); errorState = true; }
 break;
 case 161:
-//#line 1180 "gramatica.y"
+//#line 1178 "gramatica.y"
 {
             errorState = true;
             this.reversePolish.emptyTemporalPolishes();
@@ -1922,15 +1918,15 @@ case 161:
         }
 break;
 case 162:
-//#line 1186 "gramatica.y"
+//#line 1184 "gramatica.y"
 { notifyError("La sentencia 'print' requiere de un argumento entre paréntesis."); errorState = true; }
 break;
 case 163:
-//#line 1193 "gramatica.y"
+//#line 1191 "gramatica.y"
 { reversePolish.addTemporalPolish(val_peek(0).sval); }
 break;
 case 165:
-//#line 1203 "gramatica.y"
+//#line 1201 "gramatica.y"
 { 
             if (this.statementAppearsInValidState()) {
 
@@ -1947,42 +1943,42 @@ case 165:
         }
 break;
 case 166:
-//#line 1221 "gramatica.y"
+//#line 1219 "gramatica.y"
 { notifyError("La expresión 'lambda' debe terminar con ';'."); errorState = false; }
 break;
 case 167:
-//#line 1224 "gramatica.y"
+//#line 1222 "gramatica.y"
 { replaceLastErrorWith("Falta delimitador de cierre en expresión 'lambda'."); errorState = false; }
 break;
 case 168:
-//#line 1226 "gramatica.y"
+//#line 1224 "gramatica.y"
 { replaceLastErrorWith("Faltan delimitadores en el conjunto de sentencias de la expresión 'lambda'."); errorState = false; }
 break;
 case 169:
-//#line 1228 "gramatica.y"
+//#line 1226 "gramatica.y"
 { replaceLastErrorWith("Falta delimitador de apertura en expresión 'lambda'."); errorState = false; }
 break;
 case 170:
-//#line 1235 "gramatica.y"
+//#line 1233 "gramatica.y"
 { yyval.sval = val_peek(1).sval; }
 break;
 case 171:
-//#line 1240 "gramatica.y"
+//#line 1238 "gramatica.y"
 { notifyError("El argumento de la expresión 'lambda' no puede estar vacío."); errorState = true; }
 break;
 case 172:
-//#line 1243 "gramatica.y"
+//#line 1241 "gramatica.y"
 { notifyError("La expresión 'lambda' requiere de un argumento entre paréntesis."); errorState = true; }
 break;
 case 173:
-//#line 1250 "gramatica.y"
+//#line 1248 "gramatica.y"
 {
             yyval.sval = val_peek(1).sval;
             this.reversePolish.setAggregatePoint();
             this.reversePolish.addSeparation("Entering lambda expression body...");
         }
 break;
-//#line 1909 "Parser.java"
+//#line 1905 "Parser.java"
 //########## END OF USER-SUPPLIED ACTIONS ##########
     }//switch
     //#### Now let's reduce... ####

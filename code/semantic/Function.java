@@ -37,8 +37,13 @@ class Function {
 
         for (Parameter parameter : this.parameters) {
 
+            if (parameter.getSemantic() == "CVR") {
+                out.add(parameter.getID());
+                out.add("result");
+            }
         }
 
+        return out;
     }
 
     private List<Argument> reorderArgumentsAccordingToParameters() {

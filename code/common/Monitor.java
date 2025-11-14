@@ -32,6 +32,10 @@ public class Monitor {
         this.errorCollector.add(errorMessage);
     }
 
+    public void replaceLastErrorWith(String errorMessage) {
+        this.errorCollector.replaceLastWith(errorMessage);
+    }
+
     public void addWarning(String warningMessage) {
         this.warningCollector.add(warningMessage);
     }
