@@ -10,6 +10,7 @@
     package parser;
 
     import lexer.Lexer;
+    import common.Monitor;
     import java.util.Arrays;
     import semantic.Promise;
     import lexer.token.Token;
@@ -19,7 +20,6 @@
     import semantic.ScopeStack;
     import common.SymbolCategory;
     import semantic.ReversePolish;
-    import utilities.MessageCollector;
 %}
 
 // ********************************************************************************************************************
@@ -409,182 +409,6 @@ multiple_assignment
 
 // Esta regla es recursiva a derecha para evitar shift/reduce.
 list_of_variables
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     : variable '='
     | variable ',' list_of_variables
         { $$ = $1 + ',' + $3; }
@@ -1043,6 +867,9 @@ declaracion_funcion
 
                     this.isThereReturn = false;
                     notifyDetection("Declaración de función.");
+
+                    this.reversePolish.closeFunction();
+
                     this.reversePolish.addPolish("end-label");
                     this.symbolTable.setType($1, SymbolType.UINT);
                     this.symbolTable.setCategory($1, SymbolCategory.FUNCTION);
@@ -1060,6 +887,7 @@ declaracion_funcion
             this.functionLevel--;
             this.returnsFound = 0;
             this.returnsNeeded = 0;
+            this.CVRParameters = null;
         }
 
     // |========================= REGLAS DE ERROR =========================| //
@@ -1073,6 +901,7 @@ declaracion_funcion
             this.functionLevel--;
             this.returnsFound = 0;
             this.returnsNeeded = 0;
+            this.CVRParameters = null;
         }
     ;
 
@@ -1093,6 +922,8 @@ inicio_funcion
             this.reversePolish.addPolish("label");
 
             this.returnsNeeded = 1;
+
+            this.reversePolish.startFunction($2);
         }
     
     // |========================= REGLAS DE ERROR =========================| //
@@ -1156,6 +987,8 @@ parametro_formal
                 this.symbolTable.setType($3, SymbolType.UINT);
                 this.symbolTable.setCategory($3, ($1 == "CVR" ? SymbolCategory.CVR_PARAMETER : SymbolCategory.CV_PARAMETER));
                 this.symbolTable.setScope($3,scopeStack.asText());
+
+                this.reversePolish.addPameterToCurrentFunction($3, "uint", $1);
             } else {
                 this.treatInvalidState("Parámetro formal");
             }
@@ -1251,13 +1084,12 @@ invocacion_funcion
 
                 $$ = $1 + '(' + $3 + ')';
 
-                this.reversePolish.addPolish($1);
-                this.reversePolish.addPolish("call");
+                this.reversePolish.closeFunctionCall();
             } else {
                 this.treatInvalidState("Invocación de función");
-            }
 
-            this.functionInvocationIdentifier = null; // TODO: cambiar a StringBuilder.
+                this.reversePolish.discardFunctionCall();
+            }
         }
     ;
 
@@ -1267,6 +1099,7 @@ function_start
     : variable
         {
             String[] parts = $1.split("\\s*:\\s*");
+            String functionInvocationIdentifier;
 
             // Se pasa el nombre de la función al final.
             // Si se tiene A:B:C:D, se obtiene B:C:D.
@@ -1274,10 +1107,12 @@ function_start
             if (parts.length > 1) {
                 String result = String.join(":", 
                     Arrays.copyOfRange(parts, 1, parts.length)) + ":" + parts[0];
-                this.functionInvocationIdentifier = result;
+                functionInvocationIdentifier = result;
             } else {
-                this.functionInvocationIdentifier = $1; // Solo hay un elemento.
+                functionInvocationIdentifier = $1; // Solo hay un elemento.
             }
+
+            this.reversePolish.startCallToFunction(functionInvocationIdentifier);
         }
     ;
 
@@ -1294,18 +1129,8 @@ lista_argumentos
 argumento
     : expression FLECHA ID
         {
-            $$ = $1 + $2 + $3;
 
-            String formalParameter = $3 + ":" + this.functionInvocationIdentifier;
-            
-            this.reversePolish.addPolish(formalParameter);
-
-            // Se agrega la expresión.
-            this.reversePolish.makeTemporalPolishesDefinitive();
-
-            this.reversePolish.addPolish("->");
-
-            this.symbolTable.replaceEntry($3, formalParameter);
+            this.reversePolish.addArgument($3);
         }
 
     // |========================= REGLAS DE ERROR =========================| //
@@ -1441,17 +1266,17 @@ parametro_lambda
 
 private final Lexer lexer;
 private boolean errorState;
+private final Monitor monitor;
 private final ScopeStack scopeStack;
 private final SymbolTable symbolTable;
 private final ReversePolish reversePolish;
-private String functionInvocationIdentifier;
-private MessageCollector errorCollector, warningCollector;
 
 // --------------------------------------------------------------------------------------------------------------------
 
 private int functionLevel;
 // Si esto está activa, todas las instrucciones que se encuentran no serán pasadas a código intermedio.
 private boolean isThereReturn;
+private List<String> CVRParameters;
 
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -1461,19 +1286,19 @@ private int selectionDepth;
 
 // --------------------------------------------------------------------------------------------------------------------
 
-public Parser(Lexer lexer, MessageCollector errorCollector, MessageCollector warningCollector) {
+public Parser(Lexer lexer) {
     
     if (lexer == null) {
         throw new IllegalStateException("El analizador sintáctico requiere de la designación de un analizador léxico..");
     }
 
     this.lexer = lexer;
-    this.errorCollector = errorCollector;
-    this.warningCollector = warningCollector;
+    this.monitor = Monitor.getInstance();
     this.symbolTable = SymbolTable.getInstance();
 
     this.functionLevel = 0;
     this.isThereReturn = false;
+    this.CVRParameters = new ArrayList();
     
     this.scopeStack = new ScopeStack();
     this.reversePolish = ReversePolish.getInstance();
@@ -1536,7 +1361,7 @@ private void notifyDetection(String message) {
 
 private void notifyWarning(String warningMessage) {
 
-    warningCollector.add(String.format(
+    monitor.addWarning(String.format(
         "WARNING SINTÁCTICA: Línea %d: %s",
         lexer.getNroLinea(), warningMessage
     ));
@@ -1546,7 +1371,7 @@ private void notifyWarning(String warningMessage) {
 
 private void notifyError(String errorMessage) {
 
-    errorCollector.add(String.format(
+    monitor.addError(String.format(
         "ERROR SINTÁCTICO: Línea %d: %s",
         lexer.getNroLinea(), errorMessage
     ));

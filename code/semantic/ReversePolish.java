@@ -1,10 +1,15 @@
 package semantic;
 
 import java.util.List;
+
+import common.Monitor;
+
 import java.util.Deque;
 import java.util.Iterator;
 import java.util.ArrayList;
 import java.util.ArrayDeque;
+
+import utilities.MessageCollector;
 import utilities.Printer;
 
 public final class ReversePolish implements Iterable<String> {
@@ -22,10 +27,12 @@ public final class ReversePolish implements Iterable<String> {
 
     // Es un polish number.
     private int lastSafeState;
+    private Function functionCalled;
 
     // --------------------------------------------------------------------------------------------
 
     private final List<Element> elements;
+    private final List<Function> functions;
     private final List<String> temporalPolishes;
 
     // --------------------------------------------------------------------------------------------
@@ -39,6 +46,7 @@ public final class ReversePolish implements Iterable<String> {
         this.separations = 0;
         this.polishNumber = 0;
         this.elements = new ArrayList<>();
+        this.functions = new ArrayList<>();
         this.aggregatePoints = new ArrayDeque<>();
         this.stackedPromises = new ArrayDeque<>();
         this.temporalPolishes = new ArrayList<>();
@@ -179,6 +187,69 @@ public final class ReversePolish implements Iterable<String> {
 
     public void emptyTemporalPolishes() {
         this.temporalPolishes.clear();
+    }
+
+    // --------------------------------------------------------------------------------------------
+    // Manejo de Estado Seguro
+    // --------------------------------------------------------------------------------------------
+
+    public void startNewFunction(String functionName) {
+
+        this.functions.add(new Function(functionName));
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    public void addParameterToCurrentFunction(String id, String type, String semantic) {
+
+        this.functions.getLast().addParameter(id, type, semantic);
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    public void closeFunction() {
+
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    public void startCallToFunction(String functionName) {
+
+        Function functionCalled = null;
+
+        for (Function function : this.functions) {
+
+            if (function.getName().equals(functionName)) {
+                this.functionCalled = function;
+                break; // TODO: mejorar esto.
+            }
+        }
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    public void addArgument(String parameter) {
+
+        functionCalled.addArgument(parameter, this.temporalPolishes);
+
+        this.temporalPolishes.clear();
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    public void closeFunctionCall(String operator) {
+
+        this.functionCalled.closeCall(this, operator);
+
+        this.addPolish(this.functionCalled.getName());
+        this.addPolish("call");
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    public void discardFunctionCall() {
+
+        this.functionCalled = null;
     }
 
     // --------------------------------------------------------------------------------------------

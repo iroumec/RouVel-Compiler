@@ -43,7 +43,7 @@ public class Main {
 
         Lexer lexicalAnalyzer = new Lexer(file.getPath());
 
-        Parser sintacticalAnalyzer = new Parser(lexicalAnalyzer, errorCollector, warningCollector);
+        Parser sintacticalAnalyzer = new Parser(lexicalAnalyzer);
 
         Printer.printSeparator();
         sintacticalAnalyzer.execute();
