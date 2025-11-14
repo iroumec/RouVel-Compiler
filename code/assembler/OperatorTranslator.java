@@ -19,7 +19,12 @@ import assembler.operators.implementations.arithmetic.Multiplication;
 import assembler.operators.implementations.arithmetic.Subtraction;
 import assembler.operators.implementations.arithmetic.Sum;
 import assembler.operators.implementations.bifurcations.TrueBifurcation;
+import assembler.operators.implementations.comparison.Equal;
+import assembler.operators.implementations.comparison.Greater;
+import assembler.operators.implementations.comparison.GreaterOrEqual;
+import assembler.operators.implementations.comparison.LessOrEqual;
 import assembler.operators.implementations.comparison.LessThan;
+import assembler.operators.implementations.comparison.NotEqual;
 
 class OperatorTranslator {
 
@@ -43,13 +48,15 @@ class OperatorTranslator {
             case "<-" -> ReadResult.getInstance();
             case ":=" -> Assignment.getInstance();
             case "parameter" -> Parameter.getInstance();
-            case ">" -> null;
-            case "<=" -> null;
-            case ">=" -> null;
-            case "==" -> null;
+            case ">" -> Greater.getInstance();
+            case "<=" -> LessOrEqual.getInstance();
+            case ">=" -> GreaterOrEqual.getInstance();
+            case "==" -> Equal.getInstance();
             case "<" -> LessThan.getInstance();
-            case "=!" -> null;
+            case "=!" -> NotEqual.getInstance();
             case "TB" -> TrueBifurcation.getInstance();
+            case "FB" -> null;
+            case "UB" -> null;
             default -> null;
         };
 

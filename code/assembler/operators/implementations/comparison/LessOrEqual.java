@@ -1,27 +1,19 @@
 package assembler.operators.implementations.comparison;
 
-import java.util.Deque;
+public class LessOrEqual implements ComparisonOperator {
 
-import assembler.operators.AssemblerOperator;
-import common.Symbol;
-import common.SymbolCategory;
-import common.SymbolTable;
-import common.SymbolType;
-
-public class Equal implements ComparisonOperator {
-
-    private Equal() {
+    private LessOrEqual() {
     }
 
     // --------------------------------------------------------------------------------------------
 
     private static class Holder {
-        private static final Equal INSTANCE = new Equal();
+        private static final LessOrEqual INSTANCE = new LessOrEqual();
     }
 
     // --------------------------------------------------------------------------------------------
 
-    public static Equal getInstance() {
+    public static LessOrEqual getInstance() {
         return Holder.INSTANCE;
     }
 
@@ -29,6 +21,6 @@ public class Equal implements ComparisonOperator {
 
     @Override
     public String getAssemblerComparator() {
-        return "i32.eq";
+        return "i32.le_u";
     }
 }

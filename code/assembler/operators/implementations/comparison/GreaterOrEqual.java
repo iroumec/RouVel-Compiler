@@ -3,25 +3,21 @@ package assembler.operators.implementations.comparison;
 import java.util.Deque;
 
 import assembler.operators.AssemblerOperator;
-import common.Symbol;
-import common.SymbolCategory;
-import common.SymbolTable;
-import common.SymbolType;
 
-public class Equal implements ComparisonOperator {
+public class GreaterOrEqual implements ComparisonOperator {
 
-    private Equal() {
+    private GreaterOrEqual() {
     }
 
     // --------------------------------------------------------------------------------------------
 
     private static class Holder {
-        private static final Equal INSTANCE = new Equal();
+        private static final GreaterOrEqual INSTANCE = new GreaterOrEqual();
     }
 
     // --------------------------------------------------------------------------------------------
 
-    public static Equal getInstance() {
+    public static GreaterOrEqual getInstance() {
         return Holder.INSTANCE;
     }
 
@@ -29,6 +25,6 @@ public class Equal implements ComparisonOperator {
 
     @Override
     public String getAssemblerComparator() {
-        return "i32.eq";
+        return "i32.ge_u";
     }
 }

@@ -8,7 +8,7 @@ import common.Symbol;
 import common.SymbolTable;
 import common.SymbolType;
 
-public class LessThan implements AssemblerOperator {
+public class LessThan implements ComparisonOperator {
 
     private LessThan() {
     }
@@ -25,18 +25,10 @@ public class LessThan implements AssemblerOperator {
         return Holder.INSTANCE;
     }
 
+    // --------------------------------------------------------------------------------------------
+
     @Override
-    public String getAssembler(Deque<String> operands, String indentation) {
-
-        SymbolTable symbolTable = SymbolTable.getInstance();
-
-        Symbol secondOperand = symbolTable.getSymbol(operands.pop());
-        Symbol firstOperand = symbolTable.getSymbol(operands.pop());
-
-        String code = getCode(firstOperand, SymbolType.UINT);
-        code += getCode(secondOperand, SymbolType.UINT);
-        code += String.format("i32.lt_u %n");
-
-        return indent(code, indentation);
+    public String getAssemblerComparator() {
+        return "i32.lt_u";
     }
 }
