@@ -12,13 +12,19 @@ public class Return implements AssemblerOperator {
     private Return() {
     }
 
+    // --------------------------------------------------------------------------------------------
+
     private static class Holder {
         private static final Return INSTANCE = new Return();
     }
 
+    // --------------------------------------------------------------------------------------------
+
     public static Return getInstance() {
         return Holder.INSTANCE;
     }
+
+    // --------------------------------------------------------------------------------------------
 
     @Override
     public String getAssembler(Deque<String> operands, String indentation) {

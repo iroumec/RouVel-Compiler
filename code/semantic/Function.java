@@ -15,14 +15,20 @@ class Function {
 
     private String name;
 
+    // --------------------------------------------------------------------------------------------
+
     private List<Argument> arguments;
     private List<Parameter> parameters;
+
+    // --------------------------------------------------------------------------------------------
 
     Function(String name) {
         this.name = name;
         this.arguments = new ArrayList<>();
         this.parameters = new ArrayList<>();
     }
+
+    // --------------------------------------------------------------------------------------------
 
     public List<String> addParameter(String id, String type, String semantic) {
 
@@ -36,9 +42,13 @@ class Function {
         return out;
     }
 
+    // --------------------------------------------------------------------------------------------
+
     public void addArgument(String parameter, List<String> expression) {
         this.arguments.add(new Argument(parameter, expression));
     }
+
+    // --------------------------------------------------------------------------------------------
 
     public List<String> closeDeclaration() {
 
@@ -59,6 +69,8 @@ class Function {
         return out;
     }
 
+    // --------------------------------------------------------------------------------------------
+
     private List<Argument> reorderArgumentsAccordingToParameters() {
 
         // Índice por reference para acceso O(1).
@@ -72,6 +84,8 @@ class Function {
 
         return orderedArguments;
     }
+
+    // --------------------------------------------------------------------------------------------
 
     List<String> closeCall(ReversePolish polish, String operator) {
 
@@ -128,9 +142,22 @@ class Function {
         return out;
     }
 
+    // --------------------------------------------------------------------------------------------
+
     String getName() {
         return this.name;
     }
+
+    // --------------------------------------------------------------------------------------------
+
+    private void notifyError(String errorMessage) {
+
+        Monitor.getInstance().addError(String.format(
+                "ERROR SEMÁNTICO: Línea %d: %s",
+                Monitor.getInstance().getLineNumber(), errorMessage));
+    }
+
+    // --------------------------------------------------------------------------------------------
 
     @Override
     public boolean equals(Object o) {
@@ -145,6 +172,8 @@ class Function {
 
         return false;
     }
+
+    // --------------------------------------------------------------------------------------------
 
     private class Parameter {
 
@@ -166,6 +195,8 @@ class Function {
         }
     }
 
+    // --------------------------------------------------------------------------------------------
+
     private class Argument {
 
         private String parameter;
@@ -183,12 +214,5 @@ class Function {
         private List<String> getExpression() {
             return this.expression;
         }
-    }
-
-    private void notifyError(String errorMessage) {
-
-        Monitor.getInstance().addError(String.format(
-                "ERROR SEMÁNTICO: Línea %d: %s",
-                Monitor.getInstance().getLineNumber(), errorMessage));
     }
 }

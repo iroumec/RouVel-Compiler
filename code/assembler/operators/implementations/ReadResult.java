@@ -12,13 +12,19 @@ public class ReadResult implements AssemblerOperator {
     private ReadResult() {
     }
 
+    // --------------------------------------------------------------------------------------------
+
     private static class Holder {
         private static final ReadResult INSTANCE = new ReadResult();
     }
 
+    // --------------------------------------------------------------------------------------------
+
     public static ReadResult getInstance() {
         return Holder.INSTANCE;
     }
+
+    // --------------------------------------------------------------------------------------------
 
     @Override
     public String getAssembler(Deque<String> operands, String indentation) {

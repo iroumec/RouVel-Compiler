@@ -13,13 +13,19 @@ public class WriteResult implements AssemblerOperator {
     private WriteResult() {
     }
 
+    // --------------------------------------------------------------------------------------------
+
     private static class Holder {
         private static final WriteResult INSTANCE = new WriteResult();
     }
 
+    // --------------------------------------------------------------------------------------------
+
     public static WriteResult getInstance() {
         return Holder.INSTANCE;
     }
+
+    // --------------------------------------------------------------------------------------------
 
     @Override
     public String getAssembler(Deque<String> operands, String indentation) {

@@ -45,17 +45,24 @@ public final class Printer {
     }
 
     public static void printFramed(String message) {
-        // Se asegura padding a la izquierda.
-        String paddedContent = " " + message;
-        StringBuilder line = new StringBuilder("|");
-        line.append(paddedContent);
-
-        // Se rellena con espacios hasta el final..
-        while (line.length() < LINE_WIDTH - 1) {
-            line.append(" ");
+        String[] lines = message.split("\n");
+        for (String line : lines) {
+            printFrameLine(line);
         }
-        line.append("|");
-        print(line.toString());
+    }
+
+    private static void printFrameLine(String content) {
+        String padded = " " + content; // Padding izquierdo
+        StringBuilder sb = new StringBuilder("|");
+        sb.append(padded);
+
+        // Relleno con espacios hasta alcanzar el ancho
+        while (sb.length() < LINE_WIDTH - 1) {
+            sb.append(" ");
+        }
+
+        sb.append("|");
+        print(sb.toString());
     }
 
     public static void printCentered(String message) {

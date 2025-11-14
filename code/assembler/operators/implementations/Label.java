@@ -13,13 +13,19 @@ public class Label implements AssemblerOperator {
     private Label() {
     }
 
+    // --------------------------------------------------------------------------------------------
+
     private static class Holder {
         private static final Label INSTANCE = new Label();
     }
 
+    // --------------------------------------------------------------------------------------------
+
     public static Label getInstance() {
         return Holder.INSTANCE;
     }
+
+    // --------------------------------------------------------------------------------------------
 
     @Override
     public String getAssembler(Deque<String> operands, String indentation) {
@@ -33,7 +39,6 @@ public class Label implements AssemblerOperator {
 
         String functionName = operands.pop();
 
-        // TODO: ver como poner los parametros
         code.append(String.format(indentation + "(func $%s %n", functionName));
 
         code.append(dumpParameters(functionName, indentation));
@@ -48,6 +53,8 @@ public class Label implements AssemblerOperator {
 
         return code.toString();
     }
+
+    // --------------------------------------------------------------------------------------------
 
     private static String dumpParameters(String functionName, String indentation) {
 
@@ -67,6 +74,8 @@ public class Label implements AssemblerOperator {
         return code.toString();
     }
 
+    // --------------------------------------------------------------------------------------------
+
     private static String dumpFunctionVariables(String functionName, String indentation) {
 
         StringBuilder code = new StringBuilder();
@@ -81,6 +90,8 @@ public class Label implements AssemblerOperator {
 
         return code.toString();
     }
+
+    // --------------------------------------------------------------------------------------------
 
     /**
      * Se incrementa en 1 la indentación al entrar en el cuerpo de la función.

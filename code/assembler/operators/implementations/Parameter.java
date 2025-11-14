@@ -11,13 +11,19 @@ public class Parameter implements AssemblerOperator {
     private Parameter() {
     }
 
+    // --------------------------------------------------------------------------------------------
+
     private static class Holder {
         private static final Parameter INSTANCE = new Parameter();
     }
 
+    // --------------------------------------------------------------------------------------------
+
     public static Parameter getInstance() {
         return Holder.INSTANCE;
     }
+
+    // --------------------------------------------------------------------------------------------
 
     @Override
     public String getAssembler(Deque<String> operands, String indentation) {

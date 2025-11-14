@@ -52,7 +52,9 @@ public class Main {
         printReport();
 
         Printer.printSeparator();
-        Printer.print(
+        Printer.printCentered("Código WebAssembly");
+        Printer.printSeparator();
+        Printer.printFramed(
                 monitor.hasErrorMessages()
                         ? "El código contiene errores, por lo que no fue posible generar un código assembler."
                         : Assembler.generate(sintacticalAnalyzer.getReversePolish()));

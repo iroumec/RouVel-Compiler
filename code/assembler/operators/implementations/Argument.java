@@ -13,13 +13,19 @@ public class Argument implements AssemblerOperator {
     private Argument() {
     }
 
+    // --------------------------------------------------------------------------------------------
+
     private static class Holder {
         private static final Argument INSTANCE = new Argument();
     }
 
+    // --------------------------------------------------------------------------------------------
+
     public static Argument getInstance() {
         return Holder.INSTANCE;
     }
+
+    // --------------------------------------------------------------------------------------------
 
     @Override
     public String getAssembler(Deque<String> operands, String indentation) {

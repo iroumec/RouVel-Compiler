@@ -64,14 +64,13 @@ public class Assembler {
         // generación del código assembler, se generan variables auxiliares que también
         // deben ser agregadas.
 
-        declarations.append("\n")
-                .append("""
-                        (module
-                            (import "console" "log"
-                                (func $print (param i32 i32)))
-                            (import "js" "mem" (memory 1))
-                        )
-                        """);
+        declarations.append("""
+                (module
+                    (import "console" "log"
+                        (func $print (param i32 i32)))
+                    (import "js" "mem" (memory 1))
+                )
+                """);
 
         declarations.append("\n").append(dumpGlobalVariables());
 

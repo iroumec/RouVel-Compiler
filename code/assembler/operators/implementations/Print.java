@@ -11,13 +11,19 @@ public class Print implements AssemblerOperator {
     private Print() {
     }
 
+    // --------------------------------------------------------------------------------------------
+
     private static class Holder {
         private static final Print INSTANCE = new Print();
     }
 
+    // --------------------------------------------------------------------------------------------
+
     public static Print getInstance() {
         return Holder.INSTANCE;
     }
+
+    // --------------------------------------------------------------------------------------------
 
     @Override
     public String getAssembler(Deque<String> operands, String indentation) {
