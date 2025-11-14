@@ -6,6 +6,8 @@ public final class Printer {
     private final static String SEPARATOR;
     private static String lastMessagePrinted = null;
 
+    // --------------------------------------------------------------------------------------------------------------------
+
     /**
      * Construcción del separador de acuerdo al ancho de línea.
      */
@@ -13,17 +15,25 @@ public final class Printer {
         SEPARATOR = "|" + "=".repeat(LINE_WIDTH - 2) + "|";
     }
 
+    // --------------------------------------------------------------------------------------------------------------------
+
     private Printer() {
     }
+
+    // --------------------------------------------------------------------------------------------------------------------
 
     public static void print(String message) {
         System.out.println(message);
         lastMessagePrinted = message;
     }
 
+    // --------------------------------------------------------------------------------------------------------------------
+
     public static void print(Object object) {
         print(object.toString());
     }
+
+    // --------------------------------------------------------------------------------------------------------------------
 
     public static void printBetweenSeparations(String message) {
 
@@ -31,6 +41,8 @@ public final class Printer {
         print(message);
         printSeparator();
     }
+
+    // --------------------------------------------------------------------------------------------------------------------
 
     public static void printSeparator() {
 
@@ -40,9 +52,13 @@ public final class Printer {
         }
     }
 
+    // --------------------------------------------------------------------------------------------------------------------
+
     public static void printFramed(Object message) {
         printFramed(message.toString());
     }
+
+    // --------------------------------------------------------------------------------------------------------------------
 
     public static void printFramed(String message) {
         String[] lines = message.split("\n");
@@ -50,6 +66,8 @@ public final class Printer {
             printFrameLine(line);
         }
     }
+
+    // --------------------------------------------------------------------------------------------------------------------
 
     private static void printFrameLine(String content) {
         String padded = " " + content; // Padding izquierdo
@@ -64,6 +82,8 @@ public final class Printer {
         sb.append("|");
         print(sb.toString());
     }
+
+    // --------------------------------------------------------------------------------------------------------------------
 
     public static void printCentered(String message) {
         if (message.length() >= LINE_WIDTH - 2) {
@@ -91,6 +111,8 @@ public final class Printer {
 
         print(formattedLine.toString());
     }
+
+    // --------------------------------------------------------------------------------------------------------------------
 
     /**
      * Toma un mensaje largo, lo divide en varias líneas y lo imprime enmarcado.
@@ -128,6 +150,8 @@ public final class Printer {
         printSeparator();
     }
 
+    // --------------------------------------------------------------------------------------------------------------------
+
     public static void printIntroduction(String fileName) {
 
         printBlankSpace();
@@ -138,13 +162,19 @@ public final class Printer {
         printBlankSpace();
     }
 
+    // --------------------------------------------------------------------------------------------------------------------
+
     public static void printBlankSpace() {
         print('\n');
     }
 
+    // --------------------------------------------------------------------------------------------------------------------
+
     private static boolean wasThereNoSeparatorBefore() {
         return lastMessagePrinted == null || lastMessagePrinted != SEPARATOR;
     }
+
+    // --------------------------------------------------------------------------------------------------------------------
 
     public static int getLineWidth() {
         return LINE_WIDTH;
