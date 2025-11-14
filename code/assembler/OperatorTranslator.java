@@ -5,7 +5,10 @@ import assembler.operators.implementations.Argument;
 import assembler.operators.implementations.Assignment;
 import assembler.operators.implementations.Call;
 import assembler.operators.implementations.EndLabel;
+import assembler.operators.implementations.EndLoopLabel;
+import assembler.operators.implementations.FunctionLabel;
 import assembler.operators.implementations.Label;
+import assembler.operators.implementations.LoopLabel;
 import assembler.operators.implementations.Parameter;
 import assembler.operators.implementations.Print;
 import assembler.operators.implementations.ReadResult;
@@ -15,6 +18,8 @@ import assembler.operators.implementations.arithmetic.Division;
 import assembler.operators.implementations.arithmetic.Multiplication;
 import assembler.operators.implementations.arithmetic.Subtraction;
 import assembler.operators.implementations.arithmetic.Sum;
+import assembler.operators.implementations.bifurcations.TrueBifurcation;
+import assembler.operators.implementations.comparison.LessThan;
 
 class OperatorTranslator {
 
@@ -25,6 +30,9 @@ class OperatorTranslator {
             case "-" -> Subtraction.getInstance();
             case "*" -> Multiplication.getInstance();
             case "/" -> Division.getInstance();
+            case "function-label" -> FunctionLabel.getInstance();
+            case "loop-label" -> LoopLabel.getInstance();
+            case "end-loop-label" -> EndLoopLabel.getInstance();
             case "label" -> Label.getInstance();
             case "end-label" -> EndLabel.getInstance();
             case "call" -> Call.getInstance();
@@ -39,8 +47,9 @@ class OperatorTranslator {
             case "<=" -> null;
             case ">=" -> null;
             case "==" -> null;
-            case "<" -> null;
+            case "<" -> LessThan.getInstance();
             case "=!" -> null;
+            case "TB" -> TrueBifurcation.getInstance();
             default -> null;
         };
 

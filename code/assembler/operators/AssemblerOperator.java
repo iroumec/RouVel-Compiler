@@ -1,6 +1,8 @@
 package assembler.operators;
 
+import java.util.Arrays;
 import java.util.Deque;
+import java.util.stream.Collectors;
 
 import common.Symbol;
 import common.SymbolCategory;
@@ -36,26 +38,35 @@ public interface AssemblerOperator {
 
     // --------------------------------------------------------------------------------------------
 
-    default String getCode(Symbol operand, SymbolType conversionType, String indentation) {
+    default String getCode(Symbol operand, SymbolType conversionType) {
 
         String out;
 
         if (operand.isCategory(SymbolCategory.CONSTANT)) {
             if (operand.isType(SymbolType.UINT)) {
-                out = String.format(indentation + "i32.const %s %n", operand.getValue());
+                out = String.format("i32.const %s %n", operand.getValue());
             } else {
 
-                out = String.format(indentation + "f32.const %s %n", operand.getValue());
+                out = String.format("f32.const %s %n", operand.getValue());
 
                 if (conversionType == SymbolType.UINT) {
-                    out += String.format(indentation + "i32.trunc_f32_u %n");
+                    out += String.format("i32.trunc_f32_u %n");
                 }
             }
         } else {
 
-            out = String.format(indentation + "local.get $%s %n", operand.getLexemaWithoutScope());
+            out = String.format("local.get $%s %n", operand.getLexemaWithoutScope());
         }
 
         return out;
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    default String indent(String text, String indentation) {
+        return Arrays.stream(text.split("\n"))
+                .map(line -> indentation + line)
+                .collect(Collectors.joining("\n"))
+                + "\n";
     }
 }

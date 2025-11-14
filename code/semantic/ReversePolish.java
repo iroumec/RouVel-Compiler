@@ -80,6 +80,14 @@ public final class ReversePolish implements Iterable<String> {
     }
 
     // --------------------------------------------------------------------------------------------
+
+    public void addLabel(String labelOperator) {
+
+        this.addPolish(String.valueOf(this.polishNumber + 1));
+        this.addPolish(labelOperator);
+    }
+
+    // --------------------------------------------------------------------------------------------
     // Agregado de Separadores
     // --------------------------------------------------------------------------------------------
 

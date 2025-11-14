@@ -3,12 +3,27 @@ package assembler.operators.implementations.comparison;
 import java.util.Deque;
 
 import assembler.operators.AssemblerOperator;
+import assembler.operators.implementations.EndLoopLabel;
 import common.Symbol;
-import common.SymbolCategory;
 import common.SymbolTable;
 import common.SymbolType;
 
-public class Equal implements AssemblerOperator {
+public class LessThan implements AssemblerOperator {
+
+    private LessThan() {
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    private static class Holder {
+        private static final LessThan INSTANCE = new LessThan();
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    public static LessThan getInstance() {
+        return Holder.INSTANCE;
+    }
 
     @Override
     public String getAssembler(Deque<String> operands, String indentation) {
@@ -20,7 +35,7 @@ public class Equal implements AssemblerOperator {
 
         String code = getCode(firstOperand, SymbolType.UINT);
         code += getCode(secondOperand, SymbolType.UINT);
-        code += indentation + "i32.eq";
+        code += String.format("i32.lt_u %n");
 
         return indent(code, indentation);
     }

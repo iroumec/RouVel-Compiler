@@ -41,29 +41,29 @@ public class Assignment implements AssemblerOperator {
         // No se requiere conversión.
         if (secondOperand.isType(SymbolType.UINT)) {
 
-            code.append(this.getNonConversionAssignment(secondOperand, indentation));
+            code.append(this.getNonConversionAssignment(secondOperand));
         } else {
 
-            code.append(this.getConversionAssignment(secondOperand, indentation));
+            code.append(this.getConversionAssignment(secondOperand));
         }
 
-        code.append(String.format(indentation + "local.set $%s %n", firstOperand.getLexemaWithoutScope()));
+        code.append(String.format("local.set $%s %n", firstOperand.getLexemaWithoutScope()));
 
-        return code.toString();
+        return indent(code.toString(), indentation);
     }
 
     // --------------------------------------------------------------------------------------------
 
-    private String getNonConversionAssignment(Symbol operand, String indentation) {
+    private String getNonConversionAssignment(Symbol operand) {
 
         String code;
 
         if (operand.isCategory(SymbolCategory.VARIABLE)) {
 
-            code = String.format(indentation + "local.get $%s %n", operand.getLexemaWithoutScope());
+            code = String.format("local.get $%s %n", operand.getLexemaWithoutScope());
 
         } else { // Si no es una variable, es una constante.
-            code = String.format(indentation + "i32.const %s %n", operand.getValue());
+            code = String.format("i32.const %s %n", operand.getValue());
         }
 
         return code;
@@ -71,18 +71,18 @@ public class Assignment implements AssemblerOperator {
 
     // --------------------------------------------------------------------------------------------
 
-    private String getConversionAssignment(Symbol operand, String indentation) {
+    private String getConversionAssignment(Symbol operand) {
 
         String code;
         int convertedValue = Float.valueOf(operand.getValue()).intValue();
 
         // Carga de la constante flotante.
-        code = String.format(indentation + "f32.const %s %n", Float.valueOf(operand.getValue()).toString());
+        code = String.format("f32.const %s %n", Float.valueOf(operand.getValue()).toString());
 
         // Conversión a entero.
         // En una asignación, del lado izquierdo siempre voy a tener variables de tipo
         // entero, por cómo es el lenguaje.
-        code += String.format(indentation + "i32.trunc_f32_u %n"); // Conversión de flotante a entero sin signo.
+        code += String.format("i32.trunc_f32_u %n"); // Conversión de flotante a entero sin signo.
 
         return code;
     }

@@ -54,7 +54,8 @@ public abstract class ArithmeticOperator implements AssemblerOperator {
             // Podría obtener el scope del segundo operando indistinguidamente.
             newOperandName = symbolTable.addAuxiliarVariable(firstOperand.getScope());
 
-            code = this.getCode(pairType, symbolTable, firstOperand, secondOperand, newOperandName, indentation);
+            code = indent(this.getCode(pairType, symbolTable, firstOperand, secondOperand, newOperandName),
+                    indentation);
         }
 
         // Se remueve una referencia de cada operando.
@@ -125,39 +126,31 @@ public abstract class ArithmeticOperator implements AssemblerOperator {
 
     // --------------------------------------------------------------------------------------------
 
-    private String indent(String text, String indentation) {
-        return Arrays.stream(text.split("\n"))
-                .map(line -> indentation + line)
-                .collect(Collectors.joining("\n"));
-    }
-
-    // --------------------------------------------------------------------------------------------
-
     private String getCode(PairType pairType, SymbolTable symbolTable, Symbol firstOperand, Symbol secondOperand,
-            String newOperandName, String indentation) {
+            String newOperandName) {
 
         return switch (pairType) {
-            case UINT_UINT, UINT_FLOAT -> indent("""
-                    %s
-                    %s
+            case UINT_UINT, UINT_FLOAT -> """
+                    %s\
+                    %s\
                     i32.%s
                     local.set %s
                     """.formatted(
-                    getCode(firstOperand, SymbolType.UINT, indentation),
-                    getCode(secondOperand, SymbolType.UINT, indentation),
+                    getCode(firstOperand, SymbolType.UINT),
+                    getCode(secondOperand, SymbolType.UINT),
                     this.getAssemblerOperator(),
-                    symbolTable.getSymbol(newOperandName).getLexemaWithoutScope()), indentation);
+                    symbolTable.getSymbol(newOperandName).getLexemaWithoutScope());
 
-            case FLOAT_FLOAT -> indent("""
-                    %s
-                    %s
+            case FLOAT_FLOAT -> """
+                    %s\
+                    %s\
                     f32.%s
                     local.set %s
                     """.formatted(
-                    getCode(firstOperand, null, indentation),
-                    getCode(secondOperand, null, indentation),
+                    getCode(firstOperand, null),
+                    getCode(secondOperand, null),
                     this.getAssemblerOperator(),
-                    symbolTable.getSymbol(newOperandName).getLexemaWithoutScope()), indentation);
+                    symbolTable.getSymbol(newOperandName).getLexemaWithoutScope());
 
             default -> null;
         };

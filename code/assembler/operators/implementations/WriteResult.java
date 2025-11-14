@@ -32,6 +32,6 @@ public class WriteResult implements AssemblerOperator {
 
         Symbol symbol = SymbolTable.getInstance().getSymbol(operands.pop());
 
-        return getCode(symbol, SymbolType.UINT, indentation);
+        return indent(getCode(symbol, SymbolType.UINT), indentation);
     }
 }

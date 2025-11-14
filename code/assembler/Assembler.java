@@ -26,6 +26,7 @@ public class Assembler {
 
         Deque<String> operands = new ArrayDeque<>();
         StringBuilder assemblerCode = new StringBuilder();
+        StringBuilder executableCode = new StringBuilder();
 
         StringBuilder indentation = new StringBuilder();
 
@@ -44,7 +45,7 @@ public class Assembler {
 
                 String iterationCode = operator.getAssembler(operands, indentation.toString());
                 if (!iterationCode.isBlank()) {
-                    assemblerCode.append(iterationCode).append("\n");
+                    executableCode.append(iterationCode).append("\n");
                 }
 
                 if (operator.producesEntryChangeInIndentation()) {
@@ -64,21 +65,26 @@ public class Assembler {
         // generación del código assembler, se generan variables auxiliares que también
         // deben ser agregadas.
 
-        declarations.append("""
-                (module
-                    (import "console" "log"
-                        (func $print (param i32 i32)))
-                    (import "js" "mem" (memory 1))
-                )
-                """);
+        // Si hay al menos una impresión, se debe importar el módulo de impresiones.
+        if (executableCode.toString().contains("$print")) {
+            assemblerCode.append("""
+                    (module
+                        (import "console" "log"
+                            (func $print (param i32 i32)))
+                        (import "js" "mem" (memory 1))
+                    )
+                    """).append("\n");
+        }
 
-        declarations.append("\n").append(dumpGlobalVariables());
+        assemblerCode.append(dumpGlobalVariables());
 
-        declarations.append("\n").append(stringsSection);
+        if (!stringsSection.isBlank()) {
+            assemblerCode.append("\n").append(stringsSection);
+        }
 
-        declarations.append("\n").append(assemblerCode);
-
-        assemblerCode = declarations;
+        if (!executableCode.isEmpty()) {
+            assemblerCode.append("\n").append(executableCode);
+        }
 
         return assemblerCode.toString();
     }

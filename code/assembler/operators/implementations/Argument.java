@@ -39,7 +39,7 @@ public class Argument implements AssemblerOperator {
 
         Symbol argument = SymbolTable.getInstance().getSymbol(operands.pop());
 
-        code += getCode(argument, SymbolType.UINT, indentation);
+        code += indent(getCode(argument, SymbolType.UINT), indentation);
 
         return code;
     }

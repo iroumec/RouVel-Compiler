@@ -810,6 +810,7 @@ do_while
                 notifyDetection("Sentencia 'do-while'.");
                 this.reversePolish.connectToLastBifurcationPoint();
                 this.reversePolish.addPolish("TB");
+                this.reversePolish.addPolish("end-loop-label");
                 this.reversePolish.addSeparation("Leaving 'do-while' body...");
             } else {
                 this.treatInvalidState("Sentencia 'do-while'");
@@ -832,6 +833,8 @@ do_while_start
         {
             this.reversePolish.addSeparation("Entering 'do-while' body...");
             this.reversePolish.stackBifurcationPoint();
+
+            this.reversePolish.addLabel("loop-label");
         }
     ;
 
@@ -920,7 +923,7 @@ inicio_funcion
 
             // Se crea un operador para la función, mediante el operador 'label'.
             this.reversePolish.addPolish($2);
-            this.reversePolish.addPolish("label");
+            this.reversePolish.addPolish("function-label");
 
             this.returnsNeeded = 1;
         }

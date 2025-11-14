@@ -1,13 +1,12 @@
 MAIN {
 
-    uint B;
+    uint A;
 
-    uint FUN1 (cvr uint A, uint B, uint C, cvr uint J) {
+    A := 1UI;
 
-        uint B;
+    do {
 
-        B := 7UI;
+        A := A + 1UI;
 
-        return(3UI);
-    }
+    } while (A < 3UI);
 }
