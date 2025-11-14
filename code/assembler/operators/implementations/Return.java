@@ -39,7 +39,7 @@ public class Return implements AssemblerOperator {
 
         // No es necesario hacer explícito el 'return', pero se incluyó
         // ya que se creé que aporta más legibilidad.
-        out += indentation + "return";
+        out += String.format(indentation + "return %n");
 
         return out;
     }

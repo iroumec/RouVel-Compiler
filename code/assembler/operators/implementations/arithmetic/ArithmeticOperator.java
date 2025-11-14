@@ -69,31 +69,6 @@ public abstract class ArithmeticOperator implements AssemblerOperator {
 
     // --------------------------------------------------------------------------------------------
 
-    private String getCode(Symbol operand, SymbolType conversionType, String indentation) {
-
-        String out;
-
-        if (operand.isCategory(SymbolCategory.CONSTANT)) {
-            if (operand.isType(SymbolType.UINT)) {
-                out = String.format(indentation + "i32.const %s", operand.getValue());
-            } else {
-
-                out = String.format(indentation + "f32.const %s", operand.getValue());
-
-                if (conversionType == SymbolType.UINT) {
-                    out += indentation + "\ni32.trunc_f32_u";
-                }
-            }
-        } else {
-
-            out = String.format(indentation + "local.get $%s", operand.getLexemaWithoutScope());
-        }
-
-        return out;
-    }
-
-    // --------------------------------------------------------------------------------------------
-
     private boolean symbolsBelongToCategory(SymbolCategory category, Symbol... symbols) {
 
         for (Symbol symbol : symbols) {

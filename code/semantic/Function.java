@@ -20,6 +20,8 @@ class Function {
 
     Function(String name) {
         this.name = name;
+        this.arguments = new ArrayList<>();
+        this.parameters = new ArrayList<>();
     }
 
     public void addParameter(String id, String type, String semantic) {
@@ -38,7 +40,10 @@ class Function {
         for (Parameter parameter : this.parameters) {
 
             if (parameter.getSemantic() == "CVR") {
-                out.add(parameter.getID());
+
+                String formalParameter = parameter.getID() + ":" + this.name;
+
+                out.add(formalParameter);
                 out.add("result");
             }
         }
@@ -72,8 +77,8 @@ class Function {
 
             String formalParameter = argument.getParameter() + ":" + this.name;
 
-            out.add(formalParameter);
             out.addAll(argument.getExpression());
+            out.add(formalParameter);
             out.add(operator);
 
             symbolTable.replaceEntry(argument.getParameter(), formalParameter);

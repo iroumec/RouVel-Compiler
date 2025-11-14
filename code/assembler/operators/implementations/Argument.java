@@ -26,32 +26,15 @@ public class Argument implements AssemblerOperator {
 
         SymbolTable symbolTable = SymbolTable.getInstance();
 
+        // Se descarta el parámetro formal al que corresponde, debido a que eso ya está
+        // resuelto. Únicamente se agrega como comentario para más claridad.
+        String code = String.format(";; Pasaje a parámetro %s %n",
+                symbolTable.getSymbol(operands.pop()).getLexemaWithoutScope());
+
         Symbol argument = SymbolTable.getInstance().getSymbol(operands.pop());
 
-        return getCode(argument, SymbolType.UINT, indentation);
-    }
+        code += getCode(argument, SymbolType.UINT, indentation);
 
-    // TODO: este código se repite en varias clases. EXTERNALIZAR.
-    private String getCode(Symbol operand, SymbolType conversionType, String indentation) {
-
-        String out;
-
-        if (operand.isCategory(SymbolCategory.CONSTANT)) {
-            if (operand.isType(SymbolType.UINT)) {
-                out = String.format(indentation + "i32.const %s", operand.getValue());
-            } else {
-
-                out = String.format(indentation + "f32.const %s", operand.getValue());
-
-                if (conversionType == SymbolType.UINT) {
-                    out += indentation + "\ni32.trunc_f32_u";
-                }
-            }
-        } else {
-
-            out = String.format(indentation + "local.get $%s", operand.getLexemaWithoutScope());
-        }
-
-        return out;
+        return code;
     }
 }

@@ -910,6 +910,9 @@ declaracion_funcion
 inicio_funcion
     : UINT ID
         {
+
+            this.reversePolish.startFunctionDeclaration($2 + ":" + this.scopeStack.asText());
+
             $$ = $2;
             this.functionLevel++;
             this.scopeStack.push($2);
@@ -920,8 +923,6 @@ inicio_funcion
             this.reversePolish.addPolish("label");
 
             this.returnsNeeded = 1;
-
-            this.reversePolish.startFunctionDeclaration($2);
         }
     
     // |========================= REGLAS DE ERROR =========================| //
@@ -1082,7 +1083,7 @@ invocacion_funcion
 
                 $$ = $1 + '(' + $3 + ')';
 
-                this.reversePolish.closeFunctionCall($1);
+                this.reversePolish.closeFunctionCall();
             } else {
                 this.treatInvalidState("Invocación de función");
 
@@ -1110,7 +1111,7 @@ function_start
                 functionInvocationIdentifier = $1; // Solo hay un elemento.
             }
 
-            this.reversePolish.startFunctionCall(functionInvocationIdentifier);
+            this.reversePolish.startFunctionCall($1);
         }
     ;
 

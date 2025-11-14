@@ -167,7 +167,7 @@ public final class SymbolTable {
             // System.out.println(symbol.getCategory());
             // System.out.println(symbol.getLexema());
 
-            if (symbol.getCategory().equals(category)
+            if (symbol.isCategory(category)
                     && this.scopeMatches(symbol, scope)) {
                 out.add(symbol);
             }

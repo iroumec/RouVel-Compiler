@@ -253,12 +253,13 @@ public final class ReversePolish implements Iterable<String> {
 
     // --------------------------------------------------------------------------------------------
 
-    public void closeFunctionCall(String operator) {
+    public void closeFunctionCall() {
 
-        this.functionCalled.closeCall(this, operator);
+        List<String> polishesGenerated = this.functionCalled.closeCall(this, "->");
 
-        this.addPolish(this.functionCalled.getName());
-        this.addPolish("call");
+        for (String polish : polishesGenerated) {
+            this.addPolish(polish);
+        }
     }
 
     // --------------------------------------------------------------------------------------------

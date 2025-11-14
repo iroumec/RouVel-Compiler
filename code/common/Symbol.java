@@ -130,6 +130,11 @@ public class Symbol {
     }
 
     public boolean isCategory(SymbolCategory category) {
+
+        if (this.category == null) {
+            return false;
+        }
+
         return this.category.equals(category);
     }
 
