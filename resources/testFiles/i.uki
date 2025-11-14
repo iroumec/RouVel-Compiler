@@ -6,8 +6,6 @@ TEST {
 
     uint H;
 
-    print();
-
     A := 7UI + 89UI;
 
     print(8UI);

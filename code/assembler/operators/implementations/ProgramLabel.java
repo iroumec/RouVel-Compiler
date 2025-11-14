@@ -8,20 +8,20 @@ import common.Symbol;
 import common.SymbolCategory;
 import common.SymbolTable;
 
-public class FunctionLabel implements AssemblerOperator {
+public class ProgramLabel implements AssemblerOperator {
 
-    private FunctionLabel() {
+    private ProgramLabel() {
     }
 
     // --------------------------------------------------------------------------------------------
 
     private static class Holder {
-        private static final FunctionLabel INSTANCE = new FunctionLabel();
+        private static final ProgramLabel INSTANCE = new ProgramLabel();
     }
 
     // --------------------------------------------------------------------------------------------
 
-    public static FunctionLabel getInstance() {
+    public static ProgramLabel getInstance() {
         return Holder.INSTANCE;
     }
 
@@ -39,39 +39,17 @@ public class FunctionLabel implements AssemblerOperator {
 
         String functionName = operands.pop();
 
-        code.append(String.format("(func $%s %n", functionName));
-
-        code.append(dumpParameters(functionName));
-
-        code.append(String.format("    (result i32) %n"));
+        code.append(";; Punto de entrada del programa. \n");
+        code.append(String.format("(func (export \"main\") %n"));
 
         String functionVariables = dumpFunctionVariables(functionName);
 
         if (!functionVariables.isBlank()) {
+            code.append("\n").append("    ;; Variable globales.");
             code.append("\n").append(functionVariables);
         }
 
         return indent(code.toString(), indentation);
-    }
-
-    // --------------------------------------------------------------------------------------------
-
-    private static String dumpParameters(String functionName) {
-
-        StringBuilder code = new StringBuilder();
-
-        // TODO: mejorar esto para no hacer dos recorridos en la tabla de símbolos.
-        // TODO: aclarar en el informe el no guardado de variable auxiliar flotante.
-        List<Symbol> parameters = SymbolTable.getInstance().get(functionName, SymbolCategory.CV_PARAMETER);
-        parameters.addAll(SymbolTable.getInstance().get(functionName, SymbolCategory.CVR_PARAMETER));
-
-        for (Symbol symbol : parameters) {
-            // El lenguaje solo tiene como parámetros válidos enteros de 32 bits.
-            // Por eso está "hardcodeado" el "i32".
-            code.append(String.format("    (param $%s i32) %n", symbol.getLexemaWithoutScope()));
-        }
-
-        return code.toString();
     }
 
     // --------------------------------------------------------------------------------------------

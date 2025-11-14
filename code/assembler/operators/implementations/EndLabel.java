@@ -28,7 +28,7 @@ public class EndLabel implements AssemblerOperator {
     @Override
     public String getAssembler(Deque<String> operands, String indentation) {
 
-        return String.format(indentation + ") %n");
+        return indent(String.format(") %n"), indentation);
     }
 
     // --------------------------------------------------------------------------------------------

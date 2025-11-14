@@ -1,0 +1,16 @@
+MAIN {
+
+    uint A;
+
+    print("Hola");
+
+    print(4UI);
+
+    print(A);
+
+    print(78UI);
+
+    print(38.0);
+
+    print(2.3F+4);
+}

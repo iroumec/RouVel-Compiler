@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+
+<body>
+    <script>
+        // Memoria compartida con el módulo
+        var memory = new WebAssembly.Memory({ initial: 1 });
+
+        // --- Impresión de cadenas ---
+        function log(offset, length) {
+            var bytes = new Uint8Array(memory.buffer, offset, length);
+            var text = new TextDecoder('utf8').decode(bytes);
+            console.log(text);
+        }
+
+        // --- Impresión de enteros ---
+        function logInt(value) {
+            console.log(value);
+        }
+
+        // --- Impresión de flotantes ---
+        function logFloat(value) {
+            console.log(value);
+        }
+
+        const imports = {
+            console: {
+                log: log,
+                logInt: logInt,
+                logFloat: logFloat
+            },
+            js: {
+                mem: memory
+            }
+        };
+
+        // Carga dinámica del .wasm
+        fetch("__WASM_FILE__")
+            .then(r => WebAssembly.instantiateStreaming(r, imports))
+            .then(obj => {
+                if (obj.instance.exports.main)
+                    obj.instance.exports.main();
+            })
+            .catch(err => console.error(err));
+    </script>
+</body>
+
+</html>

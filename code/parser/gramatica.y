@@ -78,6 +78,7 @@ program
         {
             if (!this.errorState) {
                 notifyDetection("Programa.");
+                this.reversePolish.addPolish("end-label");
                 this.reversePolish.addSeparation(String.format("Leaving scope '%s'...", $1));
             } else {
                 this.errorState = false;
@@ -109,6 +110,8 @@ program_name
             this.scopeStack.push($1);
             this.symbolTable.setCategory($1, SymbolCategory.PROGRAM);
             this.reversePolish.addSeparation(String.format("Entering scope '%s'...", $1));
+            this.reversePolish.addPolish($1);
+            this.reversePolish.addPolish("program-label");
             this.reversePolish.recordSafeState();
         }
     ;
@@ -385,7 +388,9 @@ multiple_assignment
                         String variable = variables[i];
                         String constant = constants[i];   
 
-                        this.symbolTable.setValue(variable, constant);
+                        // La asignación del valor no se realiza acá. Eso se hace en el assembler.
+                        // this.symbolTable.setValue(variable, constant);
+
                         reversePolish.addPolish(variable);
                         reversePolish.addPolish(constant);
                         // Se agrega un DASIG ya que son varias asignaciones simples.

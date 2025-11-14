@@ -29,6 +29,7 @@ public class Assembler {
         StringBuilder executableCode = new StringBuilder();
 
         StringBuilder indentation = new StringBuilder();
+        indentation.append("    ");
 
         for (String polish : reversePolish) {
 
@@ -40,7 +41,7 @@ public class Assembler {
                 }
 
                 if (operator.producesExitChangeInIndentation()) {
-                    indentation.setLength(indentation.length() - operator.getExitIndentationChange());
+                    indentation.setLength(indentation.length() - operator.getExitIndentationChange() * 4);
                 }
 
                 String iterationCode = operator.getAssembler(operands, indentation.toString());
@@ -49,7 +50,7 @@ public class Assembler {
                 }
 
                 if (operator.producesEntryChangeInIndentation()) {
-                    indentation.append(" ".repeat(operator.getEntryIndentationChange()));
+                    indentation.append("    ".repeat(operator.getEntryIndentationChange()));
                 }
 
             } else {
@@ -69,14 +70,17 @@ public class Assembler {
         if (executableCode.toString().contains("$print")) {
             assemblerCode.append("""
                     (module
-                        (import "console" "log"
-                            (func $print (param i32 i32)))
+
+                        ;; Importación de funciones de impresión.
+                        (import "console" "log" (func $printString (param i32 i32)))
+                        (import "console" "logInt" (func $printInt (param i32)))
+                        (import "console" "logFloat" (func $logFloat (param f32)))
+
                         (import "js" "mem" (memory 1))
-                    )
-                    """).append("\n");
+                    """);
         }
 
-        assemblerCode.append(dumpGlobalVariables());
+        // assemblerCode.append(dumpGlobalVariables());
 
         if (!stringsSection.isBlank()) {
             assemblerCode.append("\n").append(stringsSection);
@@ -86,22 +90,7 @@ public class Assembler {
             assemblerCode.append("\n").append(executableCode);
         }
 
-        return assemblerCode.toString();
-    }
-
-    private static String dumpGlobalVariables() {
-
-        StringBuilder code = new StringBuilder();
-
-        List<Symbol> globales = SymbolTable.getInstance().get("MAIN", SymbolCategory.VARIABLE);
-
-        for (Symbol symbol : globales) {
-            // Todas las variables que se tienen en el lenguaje son enteros de 32 bits.
-            // Por eso está "hardcodeado" el "i32".
-            code.append(String.format("(local $%s i32)%n", symbol.getLexemaWithoutScope()));
-        }
-
-        return code.toString();
+        return assemblerCode.append(")").toString();
     }
 
     private static String dumpStrings() {
@@ -120,7 +109,8 @@ public class Assembler {
 
             // Todas las variables que se tienen en el lenguaje son enteros de 32 bits.
             // Por eso está "hardcodeado" el "i32".
-            code.append(String.format("(data (i32.const %d) %s)%n", stringNumber++, symbol.getLexemaWithoutScope()));
+            code.append(
+                    String.format("    (data (i32.const %d) %s)%n", stringNumber++, symbol.getLexemaWithoutScope()));
         }
 
         return code.toString();

@@ -451,3 +451,6 @@ FodyWeavers.xsd
 
 # Usado en la generación automática de matrices en Python.
 venv
+
+# Conforma la salida, la página que se abre.
+index.html

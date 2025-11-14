@@ -11,6 +11,7 @@ import assembler.operators.implementations.Label;
 import assembler.operators.implementations.LoopLabel;
 import assembler.operators.implementations.Parameter;
 import assembler.operators.implementations.Print;
+import assembler.operators.implementations.ProgramLabel;
 import assembler.operators.implementations.ReadResult;
 import assembler.operators.implementations.Return;
 import assembler.operators.implementations.WriteResult;
@@ -36,6 +37,7 @@ class OperatorTranslator {
             case "*" -> Multiplication.getInstance();
             case "/" -> Division.getInstance();
             case "function-label" -> FunctionLabel.getInstance();
+            case "program-label" -> ProgramLabel.getInstance();
             case "loop-label" -> LoopLabel.getInstance();
             case "end-loop-label" -> EndLoopLabel.getInstance();
             case "label" -> Label.getInstance();
