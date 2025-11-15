@@ -30,13 +30,7 @@ public class LoopLabel implements AssemblerOperator {
     @Override
     public String getAssembler(Deque<String> operands, String indentation) {
 
-        StringBuilder code = new StringBuilder();
-
-        code.append(String.format(indentation + "(block $exit %n"));
-
-        code.append(String.format(indentation + " (loop $L%s %n", operands.pop()));
-
-        return code.toString();
+        return indent(String.format("(block $exit (loop $L%s %n", operands.pop()), indentation);
     }
 
     // --------------------------------------------------------------------------------------------
@@ -46,6 +40,6 @@ public class LoopLabel implements AssemblerOperator {
      */
     @Override
     public int getEntryIndentationChange() {
-        return 2;
+        return 1;
     }
 }

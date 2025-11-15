@@ -25,11 +25,7 @@ public class EndLoopLabel implements AssemblerOperator {
 
     @Override
     public String getAssembler(Deque<String> operands, String indentation) {
-
-        String code = String.format(indentation + " ) %n");
-        code += String.format(indentation + ") %n");
-
-        return code;
+        return indent("))\n", indentation);
     }
 
     // --------------------------------------------------------------------------------------------
@@ -39,6 +35,6 @@ public class EndLoopLabel implements AssemblerOperator {
      */
     @Override
     public int getExitIndentationChange() {
-        return 2;
+        return 1;
     }
 }

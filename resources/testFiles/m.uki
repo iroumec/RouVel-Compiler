@@ -8,9 +8,11 @@ MAIN {
 
     print(A);
 
-    print(78UI);
+    A := 3UI;
 
-    print(38.0);
+    do {
+        A := A+ 1UI;
+    } while (A =! 3UI);
 
     print(2.3F+4);
 }
