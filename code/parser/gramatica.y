@@ -872,14 +872,11 @@ declaracion_funcion
 
                     this.isThereReturn = false;
                     notifyDetection("Declaración de función.");
-
-                    this.reversePolish.closeFunctionDeclaration(this.scopeStack.appendScope($1));
-
-                    this.reversePolish.addPolish("end-label");
                     this.symbolTable.setType($1, SymbolType.UINT);
                     this.symbolTable.setCategory($1, SymbolCategory.FUNCTION);
                     this.scopeStack.pop();
                     this.symbolTable.setScope($1, this.scopeStack.asText());
+                    this.reversePolish.closeFunctionDeclaration(this.scopeStack.appendScope($1));
                     this.reversePolish.addSeparation(String.format("Leaving scope '%s'...", $1));
                 } else {
                     notifyError("La función necesita, en todos los casos, retornar un valor.");
@@ -916,16 +913,12 @@ inicio_funcion
     : UINT ID
         {
 
+            this.reversePolish.addSeparation(String.format("Entering scope '%s'...", $2));
             this.reversePolish.startFunctionDeclaration($2 + ":" + this.scopeStack.asText());
 
             $$ = $2;
             this.functionLevel++;
             this.scopeStack.push($2);
-            this.reversePolish.addSeparation(String.format("Entering scope '%s'...", $2));
-
-            // Se crea un operador para la función, mediante el operador 'label'.
-            this.reversePolish.addPolish($2);
-            this.reversePolish.addPolish("function");
 
             this.returnsNeeded = 1;
         }
@@ -1101,23 +1094,7 @@ invocacion_funcion
 
 function_start
     : variable
-        {
-            String[] parts = $1.split("\\s*:\\s*");
-            String functionInvocationIdentifier;
-
-            // Se pasa el nombre de la función al final.
-            // Si se tiene A:B:C:D, se obtiene B:C:D.
-
-            if (parts.length > 1) {
-                String result = String.join(":", 
-                    Arrays.copyOfRange(parts, 1, parts.length)) + ":" + parts[0];
-                functionInvocationIdentifier = result;
-            } else {
-                functionInvocationIdentifier = $1; // Solo hay un elemento.
-            }
-
-            this.reversePolish.startFunctionCall($1);
-        }
+        { this.reversePolish.startFunctionCall($1); }
     ;
 
 // --------------------------------------------------------------------------------------------------------------------

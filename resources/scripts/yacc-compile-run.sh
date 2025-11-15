@@ -18,7 +18,7 @@ chmod +x "$YACC_SCRIPT"
 JAR_SCRIPT="$SCRIPT_DIR/jar/build-jar.sh"
 chmod +x "$JAR_SCRIPT"
 # Redirección de la salida para que no se muestre en consola.
-"$JAR_SCRIPT" > /dev/null 2>&1
+"$JAR_SCRIPT" #> /dev/null 2>&1
 
 # Se ejecuta el programa con el archivo pasado.
 java -jar rouvel-compiler.jar "$1"

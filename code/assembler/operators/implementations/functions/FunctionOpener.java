@@ -1,4 +1,4 @@
-package assembler.operators.implementations;
+package assembler.operators.implementations.functions;
 
 import java.util.ArrayList;
 import java.util.Deque;
@@ -10,20 +10,20 @@ import common.Symbol;
 import common.SymbolCategory;
 import common.SymbolTable;
 
-public class Function implements AssemblerOperator {
+public class FunctionOpener implements AssemblerOperator {
 
-    private Function() {
+    private FunctionOpener() {
     }
 
     // --------------------------------------------------------------------------------------------
 
     private static class Holder {
-        private static final Function INSTANCE = new Function();
+        private static final FunctionOpener INSTANCE = new FunctionOpener();
     }
 
     // --------------------------------------------------------------------------------------------
 
-    public static Function getInstance() {
+    public static FunctionOpener getInstance() {
         return Holder.INSTANCE;
     }
 
@@ -32,14 +32,14 @@ public class Function implements AssemblerOperator {
     @Override
     public String getAssembler(Deque<String> operands) {
 
-        // Symbol symbol = SymbolTable.getInstance().getSymbol(operands.pop());
+        Symbol symbol = SymbolTable.getInstance().getSymbol(operands.pop());
 
         // TODO: revisar qué pasa si hay dos funciones con un mismo nombre pero en
         // distintos ámbitos.
 
         StringBuilder code = new StringBuilder();
 
-        String functionName = operands.pop();
+        String functionName = symbol.getLexemaWithoutScope();
 
         code.append(String.format("(func $%s %n", functionName));
 

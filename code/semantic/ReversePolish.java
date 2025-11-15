@@ -213,6 +213,9 @@ public final class ReversePolish implements Iterable<String> {
     public void startFunctionDeclaration(String functionName) {
 
         this.functions.add(new Function(functionName));
+
+        this.addPolish(functionName);
+        this.addPolish("open-function");
     }
 
     // --------------------------------------------------------------------------------------------
@@ -226,7 +229,10 @@ public final class ReversePolish implements Iterable<String> {
 
     public void closeFunctionDeclaration(String functionName) {
 
-        this.addPolishes(this.functions.getLast().closeDeclaration());
+        // this.functions.getLast().closeDeclaration();
+
+        this.addPolish(functionName);
+        this.addPolish("close-function");
     }
 
     // --------------------------------------------------------------------------------------------
