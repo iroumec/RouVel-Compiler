@@ -5,6 +5,7 @@ import utilities.Printer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 public final class SymbolTable {
@@ -15,7 +16,7 @@ public final class SymbolTable {
 
     // --------------------------------------------------------------------------------------------
 
-    private final Map<String, Symbol> symbolTable = new HashMap<>();
+    private final Map<String, Symbol> symbolTable = new LinkedHashMap<>();
 
     // --------------------------------------------------------------------------------------------
 

@@ -3,6 +3,7 @@ package semantic;
 import java.beans.Expression;
 import java.lang.foreign.SymbolLookup;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +15,7 @@ import common.SymbolTable;
 class Function {
 
     private String name;
+    private String scope;
 
     // --------------------------------------------------------------------------------------------
 
@@ -26,31 +28,36 @@ class Function {
         this.name = name;
         this.arguments = new ArrayList<>();
         this.parameters = new ArrayList<>();
+
+        String[] parts = name.split("\\s*:\\s*");
+        String scope = this.name;
+
+        // Se pasa el nombre de la función al final.
+        // Si se tiene A:B:C:D, se obtiene B:C:D.
+
+        if (parts.length > 1) {
+            String result = String.join(":",
+                    Arrays.copyOfRange(parts, 1, parts.length)) + ":" + parts[0];
+            this.scope = result;
+        }
     }
 
     // --------------------------------------------------------------------------------------------
 
-    public List<String> addParameter(String id, String type, String semantic) {
+    void addParameter(String id, String type, String semantic) {
 
         this.parameters.add(new Parameter(id, type, semantic));
-
-        List<String> out = new ArrayList<>();
-
-        out.add(id + ":" + this.name);
-        out.add("parameter");
-
-        return out;
     }
 
     // --------------------------------------------------------------------------------------------
 
-    public void addArgument(String parameter, List<String> expression) {
+    void addArgument(String parameter, List<String> expression) {
         this.arguments.add(new Argument(parameter, expression));
     }
 
     // --------------------------------------------------------------------------------------------
 
-    public List<String> closeDeclaration() {
+    List<String> closeDeclaration() {
 
         List<String> out = new ArrayList<>();
 
@@ -58,7 +65,7 @@ class Function {
 
             if (parameter.getSemantic() == "CVR") {
 
-                String formalParameter = parameter.getID() + ":" + this.name;
+                String formalParameter = parameter.getID() + ":" + this.scope;
 
                 // Se añaden de forma inversa para simplificar la asignación a los argumentos.
                 out.addFirst("result");

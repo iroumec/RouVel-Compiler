@@ -1,0 +1,7 @@
+HOLA {
+
+    uint FUN1(uint A, cvr uint B) {
+    
+        return (3UI);
+    }
+}

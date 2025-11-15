@@ -45,7 +45,7 @@ public class Return implements AssemblerOperator {
 
         // No es necesario hacer explícito el 'return', pero se incluyó
         // ya que se creé que aporta más legibilidad.
-        out += "return \\n";
+        out += "return \n";
 
         return out;
     }

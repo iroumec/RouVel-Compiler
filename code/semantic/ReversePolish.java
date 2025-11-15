@@ -219,7 +219,7 @@ public final class ReversePolish implements Iterable<String> {
 
     public void addParameter(String id, String type, String semantic) {
 
-        this.addPolishes(this.functions.getLast().addParameter(id, type, semantic));
+        this.functions.getLast().addParameter(id, type, semantic);
     }
 
     // --------------------------------------------------------------------------------------------

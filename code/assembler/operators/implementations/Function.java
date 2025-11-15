@@ -1,5 +1,6 @@
 package assembler.operators.implementations;
 
+import java.util.ArrayList;
 import java.util.Deque;
 import java.util.List;
 
@@ -44,8 +45,6 @@ public class Function implements AssemblerOperator {
 
         code.append(dumpParameters(functionName));
 
-        code.append(String.format("    (result i32) %n"));
-
         String functionVariables = Dumper.dumpBlockVariables(functionName);
 
         if (!functionVariables.isBlank()) {
@@ -66,13 +65,19 @@ public class Function implements AssemblerOperator {
         List<Symbol> parameters = SymbolTable.getInstance().get(functionName, SymbolCategory.CV_PARAMETER);
         parameters.addAll(SymbolTable.getInstance().get(functionName, SymbolCategory.CVR_PARAMETER));
 
+        StringBuilder copiesOfValues = new StringBuilder();
+
         for (Symbol symbol : parameters) {
             // El lenguaje solo tiene como parámetros válidos enteros de 32 bits.
             // Por eso está "hardcodeado" el "i32".
             code.append(String.format("    (param $%s i32) %n", symbol.getLexemaWithoutScope()));
+
+            copiesOfValues.append(String.format("%n    ;; Copia del valor del argumento en el parámetro %s. %n",
+                    symbol.getLexemaWithoutScope()));
+            copiesOfValues.append(String.format("    local.set $%s %n", symbol.getLexemaWithoutScope()));
         }
 
-        return code.toString();
+        return code.append("    (result i32) \n").append(copiesOfValues).toString();
     }
 
     // --------------------------------------------------------------------------------------------

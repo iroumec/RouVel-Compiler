@@ -8,7 +8,6 @@ import assembler.operators.implementations.EndLabel;
 import assembler.operators.implementations.EndLoopLabel;
 import assembler.operators.implementations.Function;
 import assembler.operators.implementations.LoopLabel;
-import assembler.operators.implementations.Parameter;
 import assembler.operators.implementations.Print;
 import assembler.operators.implementations.ReadResult;
 import assembler.operators.implementations.Return;
@@ -45,7 +44,6 @@ class OperatorTranslator {
             case "result" -> WriteResult.getInstance();
             case "<-" -> ReadResult.getInstance();
             case ":=" -> Assignment.getInstance();
-            case "parameter" -> Parameter.getInstance();
             case ">" -> Greater.getInstance();
             case "<=" -> LessOrEqual.getInstance();
             case ">=" -> GreaterOrEqual.getInstance();
