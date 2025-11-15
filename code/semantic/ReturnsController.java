@@ -1,8 +1,5 @@
 package semantic;
 
-import assembler.operators.implementations.EndLabel;
-import assembler.operators.implementations.Return;
-
 /**
  * Clase encargada de controlar que exista una cantidad de retornos apropiada en
  * el código.

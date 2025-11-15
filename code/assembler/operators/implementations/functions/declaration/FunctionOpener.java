@@ -1,4 +1,4 @@
-package assembler.operators.implementations.functions;
+package assembler.operators.implementations.functions.declaration;
 
 import java.util.ArrayList;
 import java.util.Deque;

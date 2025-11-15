@@ -1,4 +1,4 @@
-package assembler.operators.implementations;
+package assembler.operators.implementations.functions.call;
 
 import java.util.Deque;
 
@@ -6,20 +6,20 @@ import assembler.operators.AssemblerOperator;
 import common.Symbol;
 import common.SymbolTable;
 
-public class Call implements AssemblerOperator {
+public class FunctionCall implements AssemblerOperator {
 
-    private Call() {
+    private FunctionCall() {
     }
 
     // --------------------------------------------------------------------------------------------
 
     private static class Holder {
-        private static final Call INSTANCE = new Call();
+        private static final FunctionCall INSTANCE = new FunctionCall();
     }
 
     // --------------------------------------------------------------------------------------------
 
-    public static Call getInstance() {
+    public static FunctionCall getInstance() {
         return Holder.INSTANCE;
     }
 

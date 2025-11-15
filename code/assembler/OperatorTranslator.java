@@ -1,28 +1,28 @@
 package assembler;
 
 import assembler.operators.AssemblerOperator;
-import assembler.operators.implementations.Argument;
-import assembler.operators.implementations.Assignment;
-import assembler.operators.implementations.Call;
-import assembler.operators.implementations.EndLabel;
 import assembler.operators.implementations.Print;
-import assembler.operators.implementations.ReadResult;
-import assembler.operators.implementations.Return;
-import assembler.operators.implementations.arithmetic.Division;
-import assembler.operators.implementations.arithmetic.Multiplication;
-import assembler.operators.implementations.arithmetic.Subtraction;
+import assembler.operators.implementations.EndLabel;
+import assembler.operators.implementations.Assignment;
 import assembler.operators.implementations.arithmetic.Sum;
-import assembler.operators.implementations.bifurcations.TrueBifurcation;
 import assembler.operators.implementations.comparison.Equal;
-import assembler.operators.implementations.comparison.Greater;
-import assembler.operators.implementations.comparison.GreaterOrEqual;
-import assembler.operators.implementations.comparison.LessOrEqual;
-import assembler.operators.implementations.comparison.LessThan;
-import assembler.operators.implementations.comparison.NotEqual;
-import assembler.operators.implementations.functions.FunctionCloser;
-import assembler.operators.implementations.functions.FunctionOpener;
-import assembler.operators.implementations.loops.LoopCloser;
 import assembler.operators.implementations.loops.LoopOpener;
+import assembler.operators.implementations.loops.LoopCloser;
+import assembler.operators.implementations.comparison.Greater;
+import assembler.operators.implementations.comparison.NotEqual;
+import assembler.operators.implementations.comparison.LessThan;
+import assembler.operators.implementations.arithmetic.Division;
+import assembler.operators.implementations.comparison.LessOrEqual;
+import assembler.operators.implementations.arithmetic.Subtraction;
+import assembler.operators.implementations.functions.call.Argument;
+import assembler.operators.implementations.comparison.GreaterOrEqual;
+import assembler.operators.implementations.functions.call.ReadResult;
+import assembler.operators.implementations.arithmetic.Multiplication;
+import assembler.operators.implementations.functions.call.FunctionCall;
+import assembler.operators.implementations.bifurcations.TrueBifurcation;
+import assembler.operators.implementations.functions.declaration.Return;
+import assembler.operators.implementations.functions.declaration.FunctionCloser;
+import assembler.operators.implementations.functions.declaration.FunctionOpener;
 
 class OperatorTranslator {
 
@@ -39,7 +39,7 @@ class OperatorTranslator {
             case "open-loop" -> LoopOpener.getInstance();
             case "close-loop" -> LoopCloser.getInstance();
             case "end-label" -> EndLabel.getInstance();
-            case "call" -> Call.getInstance();
+            case "call" -> FunctionCall.getInstance();
             case "->" -> Argument.getInstance();
             case "return" -> Return.getInstance();
             case "print" -> Print.getInstance();

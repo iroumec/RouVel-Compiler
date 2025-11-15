@@ -1,4 +1,4 @@
-package assembler.operators.implementations;
+package assembler.operators.implementations.functions.declaration;
 
 import java.util.Deque;
 
