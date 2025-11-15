@@ -1,12 +1,5 @@
 package assembler.operators.implementations.comparison;
 
-import java.util.Deque;
-
-import assembler.operators.AssemblerOperator;
-import common.Symbol;
-import common.SymbolTable;
-import common.SymbolType;
-
 public class LessThan implements ComparisonOperator {
 
     private LessThan() {

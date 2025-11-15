@@ -2,10 +2,9 @@ package assembler.operators.implementations.functions.call;
 
 import java.util.Deque;
 
-import assembler.operators.AssemblerOperator;
 import common.Symbol;
 import common.SymbolTable;
-import common.SymbolType;
+import assembler.operators.AssemblerOperator;
 
 public class ReadResult implements AssemblerOperator {
 

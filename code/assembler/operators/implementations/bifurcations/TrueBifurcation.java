@@ -3,9 +3,6 @@ package assembler.operators.implementations.bifurcations;
 import java.util.Deque;
 
 import assembler.operators.AssemblerOperator;
-import assembler.operators.implementations.arithmetic.Multiplication;
-import common.Symbol;
-import common.SymbolTable;
 
 public class TrueBifurcation implements AssemblerOperator {
 

@@ -22,12 +22,11 @@ import utilities.Printer;
 public final class Lexer {
 
     private Monitor monitor;
-
     private char lastCharRead;
     private Token currentToken;
     private final String codigoFuente;
+    private int siguienteCaracterALeer, nroCaracter;
     private final int estadoInicio, estadoAceptacion;
-    private int nroLinea, siguienteCaracterALeer, nroCaracter;
 
     // --------------------------------------------------------------------------------------------
 
@@ -43,9 +42,9 @@ public final class Lexer {
     // --------------------------------------------------------------------------------------------
 
     public Lexer(String sourceCodePath) {
-        this.nroLinea = 1;
-        this.siguienteCaracterALeer = 0;
+
         this.nroCaracter = 0;
+        this.siguienteCaracterALeer = 0;
         this.estadoInicio = DataManager.getEstadoInicio();
         this.estadoAceptacion = DataManager.getEstadoAceptacion();
         this.codigoFuente = DataManager.loadSourceCode(sourceCodePath);

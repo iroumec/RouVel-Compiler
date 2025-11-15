@@ -2,15 +2,11 @@ package semantic;
 
 import java.util.List;
 
-import common.Monitor;
-
 import java.util.Deque;
+import utilities.Printer;
 import java.util.Iterator;
 import java.util.ArrayList;
 import java.util.ArrayDeque;
-
-import utilities.MessageCollector;
-import utilities.Printer;
 
 public final class ReversePolish implements Iterable<String> {
 
@@ -67,15 +63,6 @@ public final class ReversePolish implements Iterable<String> {
 
         if (this.debug) {
             System.out.println("Polish added: " + symbol);
-        }
-    }
-
-    // --------------------------------------------------------------------------------------------
-
-    private void addPolishes(List<String> polishes) {
-
-        for (String polish : polishes) {
-            this.addPolish(polish);
         }
     }
 
@@ -237,8 +224,6 @@ public final class ReversePolish implements Iterable<String> {
     // --------------------------------------------------------------------------------------------
 
     public void startFunctionCall(String functionName) {
-
-        Function functionCalled = null;
 
         for (Function function : this.functions) {
 

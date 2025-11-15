@@ -74,7 +74,6 @@ public class Assignment implements AssemblerOperator {
     private String getConversionAssignment(Symbol operand) {
 
         String code;
-        int convertedValue = Float.valueOf(operand.getValue()).intValue();
 
         // Carga de la constante flotante.
         code = String.format("f32.const %s %n", Float.valueOf(operand.getValue()).toString());

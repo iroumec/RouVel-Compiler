@@ -3,10 +3,9 @@ package common;
 import java.util.Map;
 import utilities.Printer;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 
 public final class SymbolTable {
 

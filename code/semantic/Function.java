@@ -1,12 +1,10 @@
 package semantic;
 
-import java.beans.Expression;
-import java.lang.foreign.SymbolLookup;
-import java.util.ArrayList;
+import java.util.Map;
+import java.util.List;
 import java.util.Arrays;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 import common.Monitor;
@@ -30,7 +28,7 @@ class Function {
         this.parameters = new ArrayList<>();
 
         String[] parts = name.split("\\s*:\\s*");
-        String scope = this.name;
+        this.scope = this.name;
 
         // Se pasa el nombre de la función al final.
         // Si se tiene A:B:C:D, se obtiene B:C:D.
@@ -184,6 +182,7 @@ class Function {
 
     private class Parameter {
 
+        @SuppressWarnings("unused")
         private String id, type, semantic;
 
         private Parameter(String id, String type, String semantic) {

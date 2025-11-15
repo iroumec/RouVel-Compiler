@@ -1,13 +1,5 @@
 package assembler.operators.implementations.arithmetic;
 
-import java.util.Deque;
-
-import assembler.operators.AssemblerOperator;
-import common.Symbol;
-import common.SymbolCategory;
-import common.SymbolTable;
-import common.SymbolType;
-
 public class Subtraction extends ArithmeticOperator {
 
     private Subtraction() {

@@ -11,7 +11,6 @@
 
     import lexer.Lexer;
     import common.Monitor;
-    import java.util.Arrays;
     import lexer.token.Token;
     import utilities.Printer;
     import common.SymbolType;

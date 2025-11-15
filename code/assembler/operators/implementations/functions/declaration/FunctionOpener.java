@@ -1,14 +1,13 @@
 package assembler.operators.implementations.functions.declaration;
 
-import java.util.ArrayList;
-import java.util.Deque;
 import java.util.List;
+import java.util.Deque;
 
-import assembler.Dumper;
-import assembler.operators.AssemblerOperator;
 import common.Symbol;
-import common.SymbolCategory;
+import assembler.Dumper;
 import common.SymbolTable;
+import common.SymbolCategory;
+import assembler.operators.AssemblerOperator;
 
 public class FunctionOpener implements AssemblerOperator {
 

@@ -2,14 +2,13 @@
 import java.io.File;
 import java.io.IOException;
 
-import assembler.Assembler;
 import lexer.Lexer;
 import parser.Parser;
-import semantic.ReversePolish;
 import common.Monitor;
-import common.SymbolTable;
-import utilities.MessageCollector;
 import utilities.Printer;
+import common.SymbolTable;
+import assembler.Assembler;
+import semantic.ReversePolish;
 
 public class Main {
 

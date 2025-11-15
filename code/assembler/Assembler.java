@@ -1,26 +1,16 @@
 package assembler;
 
-import java.util.ArrayDeque;
 import java.util.Deque;
-import java.util.List;
+import java.util.ArrayDeque;
 
-import assembler.operators.AssemblerOperator;
-import common.Symbol;
-import common.SymbolCategory;
-import common.SymbolTable;
-import common.SymbolType;
 import semantic.ReversePolish;
+import assembler.operators.AssemblerOperator;
 
 public class Assembler {
 
     private static final boolean debug = false;
 
     public static String generate(ReversePolish reversePolish) {
-
-        StringBuilder imports = new StringBuilder();
-        StringBuilder dataSection = new StringBuilder();
-
-        StringBuilder declarations = new StringBuilder();
 
         Deque<String> operands = new ArrayDeque<>();
         StringBuilder assemblerCode = new StringBuilder();

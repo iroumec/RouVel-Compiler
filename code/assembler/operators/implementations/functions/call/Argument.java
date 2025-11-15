@@ -2,11 +2,10 @@ package assembler.operators.implementations.functions.call;
 
 import java.util.Deque;
 
-import assembler.operators.AssemblerOperator;
 import common.Symbol;
-import common.SymbolCategory;
-import common.SymbolTable;
 import common.SymbolType;
+import common.SymbolTable;
+import assembler.operators.AssemblerOperator;
 
 public class Argument implements AssemblerOperator {
 

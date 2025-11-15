@@ -1,12 +1,5 @@
 package assembler.operators.implementations.arithmetic;
 
-import java.util.Deque;
-
-import common.Symbol;
-import common.SymbolCategory;
-import common.SymbolTable;
-import common.SymbolType;
-
 public class Sum extends ArithmeticOperator {
 
     private Sum() {

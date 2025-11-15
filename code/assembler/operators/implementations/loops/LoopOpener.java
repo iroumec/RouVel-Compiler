@@ -1,12 +1,8 @@
 package assembler.operators.implementations.loops;
 
 import java.util.Deque;
-import java.util.List;
 
 import assembler.operators.AssemblerOperator;
-import common.Symbol;
-import common.SymbolCategory;
-import common.SymbolTable;
 
 public class LoopOpener implements AssemblerOperator {
 

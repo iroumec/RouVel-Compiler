@@ -1,9 +1,5 @@
 package assembler.operators.implementations.comparison;
 
-import java.util.Deque;
-
-import assembler.operators.AssemblerOperator;
-
 public class GreaterOrEqual implements ComparisonOperator {
 
     private GreaterOrEqual() {

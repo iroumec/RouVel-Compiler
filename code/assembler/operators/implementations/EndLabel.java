@@ -3,8 +3,6 @@ package assembler.operators.implementations;
 import java.util.Deque;
 
 import assembler.operators.AssemblerOperator;
-import common.Symbol;
-import common.SymbolTable;
 
 public class EndLabel implements AssemblerOperator {
 
