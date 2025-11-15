@@ -3,25 +3,26 @@ package assembler.operators.implementations;
 import java.util.Deque;
 import java.util.List;
 
+import assembler.Dumper;
 import assembler.operators.AssemblerOperator;
 import common.Symbol;
 import common.SymbolCategory;
 import common.SymbolTable;
 
-public class FunctionLabel implements AssemblerOperator {
+public class Function implements AssemblerOperator {
 
-    private FunctionLabel() {
+    private Function() {
     }
 
     // --------------------------------------------------------------------------------------------
 
     private static class Holder {
-        private static final FunctionLabel INSTANCE = new FunctionLabel();
+        private static final Function INSTANCE = new Function();
     }
 
     // --------------------------------------------------------------------------------------------
 
-    public static FunctionLabel getInstance() {
+    public static Function getInstance() {
         return Holder.INSTANCE;
     }
 
@@ -45,7 +46,7 @@ public class FunctionLabel implements AssemblerOperator {
 
         code.append(String.format("    (result i32) %n"));
 
-        String functionVariables = dumpFunctionVariables(functionName);
+        String functionVariables = Dumper.dumpBlockVariables(functionName);
 
         if (!functionVariables.isBlank()) {
             code.append("\n").append(functionVariables);
@@ -56,7 +57,7 @@ public class FunctionLabel implements AssemblerOperator {
 
     // --------------------------------------------------------------------------------------------
 
-    private static String dumpParameters(String functionName) {
+    private String dumpParameters(String functionName) {
 
         StringBuilder code = new StringBuilder();
 
@@ -69,23 +70,6 @@ public class FunctionLabel implements AssemblerOperator {
             // El lenguaje solo tiene como parámetros válidos enteros de 32 bits.
             // Por eso está "hardcodeado" el "i32".
             code.append(String.format("    (param $%s i32) %n", symbol.getLexemaWithoutScope()));
-        }
-
-        return code.toString();
-    }
-
-    // --------------------------------------------------------------------------------------------
-
-    private static String dumpFunctionVariables(String functionName) {
-
-        StringBuilder code = new StringBuilder();
-
-        List<Symbol> localVariable = SymbolTable.getInstance().get(functionName, SymbolCategory.VARIABLE);
-
-        for (Symbol symbol : localVariable) {
-            // Todas las variables que se tienen en el lenguaje son enteros de 32 bits.
-            // Por eso está "hardcodeado" el "i32".
-            code.append(String.format("    (local $%s i32)%n", symbol.getLexemaWithoutScope()));
         }
 
         return code.toString();

@@ -1,0 +1,11 @@
+E {
+    uint A;
+
+    A := 4UI;
+
+    if (A > 3UI) {
+        print("Hi");
+    } else {
+        print("Bye");
+    } endif;
+}

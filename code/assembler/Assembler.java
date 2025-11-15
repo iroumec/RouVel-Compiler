@@ -67,9 +67,9 @@ public class Assembler {
         // deben ser agregadas.
 
         // Si hay al menos una impresión, se debe importar el módulo de impresiones.
+        assemblerCode.append("(module \n");
         if (executableCode.toString().contains("$print")) {
             assemblerCode.append("""
-                    (module
 
                         ;; Importación de funciones de impresión.
                         (import "console" "log" (func $printString (param i32 i32)))
@@ -86,8 +86,11 @@ public class Assembler {
             assemblerCode.append("\n").append(stringsSection);
         }
 
+        assemblerCode.append("\n").append(Indenter.indent(Dumper.dumpEntryPoint(), indentation.toString()));
+
         if (!executableCode.isEmpty()) {
-            assemblerCode.append("\n").append(executableCode);
+            assemblerCode.append("\n").append(Indenter.indent(executableCode, indentation));
+            assemblerCode.append("\n");
         }
 
         return assemblerCode.append(")").toString();
