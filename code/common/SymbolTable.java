@@ -16,6 +16,11 @@ public final class SymbolTable {
 
     // --------------------------------------------------------------------------------------------
 
+    /**
+     * Se utiliza el "LinkedHashMap" para que el agregado de los símbolos siga un
+     * orden.
+     * Esto facilita la detección de parámetros y de una función y demás cosas.
+     */
     private final Map<String, Symbol> symbolTable = new LinkedHashMap<>();
 
     // --------------------------------------------------------------------------------------------
