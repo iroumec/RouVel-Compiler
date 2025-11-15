@@ -1,27 +1,23 @@
-package assembler.operators.implementations;
+package assembler.operators.implementations.loops;
 
 import java.util.Deque;
-import java.util.List;
 
 import assembler.operators.AssemblerOperator;
-import common.Symbol;
-import common.SymbolCategory;
-import common.SymbolTable;
 
-public class LoopLabel implements AssemblerOperator {
+public class LoopCloser implements AssemblerOperator {
 
-    private LoopLabel() {
+    private LoopCloser() {
     }
 
     // --------------------------------------------------------------------------------------------
 
     private static class Holder {
-        private static final LoopLabel INSTANCE = new LoopLabel();
+        private static final LoopCloser INSTANCE = new LoopCloser();
     }
 
     // --------------------------------------------------------------------------------------------
 
-    public static LoopLabel getInstance() {
+    public static LoopCloser getInstance() {
         return Holder.INSTANCE;
     }
 
@@ -29,17 +25,16 @@ public class LoopLabel implements AssemblerOperator {
 
     @Override
     public String getAssembler(Deque<String> operands) {
-
-        return String.format("(block $exit (loop $L%s %n", operands.pop());
+        return "))\n";
     }
 
     // --------------------------------------------------------------------------------------------
 
     /**
-     * Se incrementa en 1 la indentación al entrar en el cuerpo de la función.
+     * Se decrementa en 2 la indentación al salir del cuerpo de la función.
      */
     @Override
-    public int getEntryIndentationChange() {
+    public int getExitIndentationChange() {
         return 1;
     }
 }

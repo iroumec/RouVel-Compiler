@@ -12,7 +12,6 @@
     import lexer.Lexer;
     import common.Monitor;
     import java.util.Arrays;
-    import semantic.Promise;
     import lexer.token.Token;
     import utilities.Printer;
     import common.SymbolType;
@@ -20,6 +19,7 @@
     import semantic.ScopeStack;
     import common.SymbolCategory;
     import semantic.ReversePolish;
+    import semantic.ReturnsController;
 %}
 
 // ********************************************************************************************************************
@@ -708,21 +708,14 @@ if
     : if_start cuerpo_if
         { 
             if (this.statementAppearsInValidState()) {
-                this.reversePolish.fulfillPromise(this.reversePolish.getLastPromise());
+                this.reversePolish.closeSelection();
                 this.reversePolish.addSeparation("Leaving 'if-else' body...");
                 notifyDetection("Sentencia 'if'."); 
             } else {
                 this.treatInvalidState("Sentencia 'if'");
             }
 
-            // Se está saliendo del if más externo.
-            if (this.selectionDepth == 1) {
-                if (this.returnsNeeded == this.returnsFound) {
-                    this.isThereReturn = true;
-                }
-            }
-
-            this.selectionDepth--;
+            this.returnsController.notifySelectionEnd();
         }
     ; 
 
@@ -738,10 +731,8 @@ if_start
     : IF condicion
         {
             this.reversePolish.addSeparation("Entering 'if' body...");
-            this.reversePolish.promiseBifurcationPoint();
-            this.reversePolish.addPolish("FB");
-            this.returnsNeeded++;
-            this.selectionDepth++;
+            this.reversePolish.openSelection();
+            this.returnsController.notifySelectionStart();
         }
     ;
 
@@ -764,14 +755,7 @@ cuerpo_if
 
 rama_else
     : // lambda //
-        {
-            // Se decrementa la cantidad de retornos que se requieren si el if está solo.
-            this.returnsNeeded--;
-
-            // Se decrementa la cantidad de returns hallados.
-            // REVISAR QUÉ PASA SI DENTRO DEL IF HAY VARIOS RETURNS.
-            this.returnsFound--;
-        }
+        { this.returnsController.notifyEmptyElse(); }
     | else_start cuerpo_ejecutable
 
     // |========================= REGLAS DE ERROR =========================| //
@@ -786,17 +770,7 @@ rama_else
 else_start
     : ELSE
         {
-            // Se obtiene la promesa del cuerpo then.
-            Promise promise = this.reversePolish.getLastPromise();
-
-            // Se promete un nuevo punto de bifurcación.
-            this.reversePolish.promiseBifurcationPoint();
-            this.reversePolish.addPolish("IB");
-
-            // Se cumple la promesa obtenida al comienzo.
-            // Es necesario que se realice así para respetar los índices de la polaca.
-            this.reversePolish.fulfillPromise(promise);
-
+            this.reversePolish.openAlternative();
             this.reversePolish.addSeparation("Entering 'else' body...");
         }
     ;
@@ -810,9 +784,7 @@ do_while
         {
             if (this.statementAppearsInValidState()) {
                 notifyDetection("Sentencia 'do-while'.");
-                this.reversePolish.connectToLastBifurcationPoint();
-                this.reversePolish.addPolish("TB");
-                this.reversePolish.addPolish("end-loop-label");
+                this.reversePolish.closeLoop();
                 this.reversePolish.addSeparation("Leaving 'do-while' body...");
             } else {
                 this.treatInvalidState("Sentencia 'do-while'");
@@ -834,9 +806,7 @@ do_while_start
     : DO
         {
             this.reversePolish.addSeparation("Entering 'do-while' body...");
-            this.reversePolish.stackBifurcationPoint();
-
-            this.reversePolish.addLabel("loop-label");
+            this.reversePolish.openLoop();
         }
     ;
 
@@ -868,9 +838,8 @@ declaracion_funcion
         {
             if (!this.errorState) {
 
-                if (this.isThereReturn) {
+                if (this.returnsController.isThereReturn()) {
 
-                    this.isThereReturn = false;
                     notifyDetection("Declaración de función.");
                     this.symbolTable.setType($1, SymbolType.UINT);
                     this.symbolTable.setCategory($1, SymbolCategory.FUNCTION);
@@ -886,9 +855,7 @@ declaracion_funcion
                 this.treatInvalidState("Declaración de función");
             }
 
-            this.functionLevel--;
-            this.returnsFound = 0;
-            this.returnsNeeded = 0;
+            this.returnsController.notifyEndOfFunctionDeclaration();
         }
 
     // |========================= REGLAS DE ERROR =========================| //
@@ -899,9 +866,7 @@ declaracion_funcion
             notifyError("El cuerpo de la función no puede estar vacío.");
             this.errorState = true;
 
-            this.functionLevel--;
-            this.returnsFound = 0;
-            this.returnsNeeded = 0;
+            this.returnsController.notifyEndOfFunctionDeclaration();
         }
     ;
 
@@ -917,10 +882,9 @@ inicio_funcion
             this.reversePolish.startFunctionDeclaration($2 + ":" + this.scopeStack.asText());
 
             $$ = $2;
-            this.functionLevel++;
             this.scopeStack.push($2);
 
-            this.returnsNeeded = 1;
+            this.returnsController.notifyStartOfFunctionDeclaration();
         }
     
     // |========================= REGLAS DE ERROR =========================| //
@@ -928,11 +892,10 @@ inicio_funcion
     | UINT
         {
             errorState = true;
-            this.functionLevel++;
             this.scopeStack.push("error");
             notifyError("La función requiere de un nombre.");
 
-            this.returnsNeeded = 1;
+            this.returnsController.notifyStartOfFunctionDeclaration();
         } 
     ;
 
@@ -1023,18 +986,13 @@ sentencia_retorno
 
             if (statementAppearsInValidState()) {
 
-                if (this.functionLevel > 0) {
+                if (this.returnsController.insideFunction()) {
 
                     this.reversePolish.makeTemporalPolishesDefinitive();
                     reversePolish.addPolish("return");
                     notifyDetection("Sentencia 'return'.");
 
-                    this.returnsFound++;
-
-                    if (this.selectionDepth == 0) {
-                        this.isThereReturn = true;
-                    }
-
+                    this.returnsController.notifyReturn();
                 } else {
                     notifyError("La sentencia 'return' no está permitida fuera de la declaración de una función.");
                 }
@@ -1251,18 +1209,7 @@ private final Monitor monitor;
 private final ScopeStack scopeStack;
 private final SymbolTable symbolTable;
 private final ReversePolish reversePolish;
-
-// --------------------------------------------------------------------------------------------------------------------
-
-private int functionLevel;
-// Si esto está activa, todas las instrucciones que se encuentran no serán pasadas a código intermedio.
-private boolean isThereReturn;
-
-// --------------------------------------------------------------------------------------------------------------------
-
-private int returnsFound;
-private int returnsNeeded;
-private int selectionDepth;
+private final ReturnsController returnsController;
 
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -1273,13 +1220,10 @@ public Parser(Lexer lexer) {
     }
 
     this.lexer = lexer;
+    this.scopeStack = new ScopeStack();
     this.monitor = Monitor.getInstance();
     this.symbolTable = SymbolTable.getInstance();
-
-    this.functionLevel = 0;
-    this.isThereReturn = false;
-    
-    this.scopeStack = new ScopeStack();
+    this.returnsController = new ReturnsController();
     this.reversePolish = ReversePolish.getInstance();
 
     // Descomentar la siguiente línea para activar el debugging.
@@ -1370,14 +1314,14 @@ private void replaceLastErrorWith(String errorMessage) {
 
 private boolean statementAppearsInValidState() {
 
-    return !isThereReturn && !errorState;
+    return !this.returnsController.isThereReturn() && !errorState;
 }
 
 // --------------------------------------------------------------------------------------------------------------------
 
 private void treatInvalidState(String statementName) {
 
-    if (isThereReturn) {
+    if (this.returnsController.isThereReturn()) {
         this.showOmittedStatementNotification(statementName);
     }
 

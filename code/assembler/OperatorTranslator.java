@@ -5,8 +5,6 @@ import assembler.operators.implementations.Argument;
 import assembler.operators.implementations.Assignment;
 import assembler.operators.implementations.Call;
 import assembler.operators.implementations.EndLabel;
-import assembler.operators.implementations.EndLoopLabel;
-import assembler.operators.implementations.LoopLabel;
 import assembler.operators.implementations.Print;
 import assembler.operators.implementations.ReadResult;
 import assembler.operators.implementations.Return;
@@ -23,6 +21,8 @@ import assembler.operators.implementations.comparison.LessThan;
 import assembler.operators.implementations.comparison.NotEqual;
 import assembler.operators.implementations.functions.FunctionCloser;
 import assembler.operators.implementations.functions.FunctionOpener;
+import assembler.operators.implementations.loops.LoopCloser;
+import assembler.operators.implementations.loops.LoopOpener;
 
 class OperatorTranslator {
 
@@ -36,8 +36,8 @@ class OperatorTranslator {
             case "open-function" -> FunctionOpener.getInstance();
             case "close-function" -> FunctionCloser.getInstance(); // TODO: quizás podría no usarse este apilando una
                                                                    // etiqueta (operando) en la pila de operandos.
-            case "loop-label" -> LoopLabel.getInstance();
-            case "end-loop-label" -> EndLoopLabel.getInstance();
+            case "open-loop" -> LoopOpener.getInstance();
+            case "close-loop" -> LoopCloser.getInstance();
             case "end-label" -> EndLabel.getInstance();
             case "call" -> Call.getInstance();
             case "->" -> Argument.getInstance();

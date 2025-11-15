@@ -3,7 +3,6 @@ package assembler.operators.implementations.comparison;
 import java.util.Deque;
 
 import assembler.operators.AssemblerOperator;
-import assembler.operators.implementations.EndLoopLabel;
 import common.Symbol;
 import common.SymbolTable;
 import common.SymbolType;

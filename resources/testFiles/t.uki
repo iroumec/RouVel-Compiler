@@ -1,6 +1,11 @@
 T {
 
-    uint A, B, C, D;
+    uint A;
 
-    A, B, C, D = 32UI, 15UI, 9UI, 7UI;
+    A := 0UI;
+
+    do {
+
+        A := A + 1UI;
+    } while (A < 67UI);
 }
