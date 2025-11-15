@@ -27,7 +27,7 @@ public class Return implements AssemblerOperator {
     // --------------------------------------------------------------------------------------------
 
     @Override
-    public String getAssembler(Deque<String> operands, String indentation) {
+    public String getAssembler(Deque<String> operands) {
 
         Symbol operand = SymbolTable.getInstance().getSymbol(operands.pop());
 
@@ -38,14 +38,14 @@ public class Return implements AssemblerOperator {
 
         // TODO: SOLO SE RETORNAN ENTEROS. ¿A ESO LO CHEQUEAMOS EN ALGÚN MOMENTO?
         if (operand.isCategory(SymbolCategory.CONSTANT)) {
-            out = String.format(indentation + "i32.const %s %n", operand.getValue());
+            out = String.format("i32.const %s %n", operand.getValue());
         } else {
-            out = String.format(indentation + "local.get $%s %n", operand.getLexemaWithoutScope());
+            out = String.format("local.get $%s %n", operand.getLexemaWithoutScope());
         }
 
         // No es necesario hacer explícito el 'return', pero se incluyó
         // ya que se creé que aporta más legibilidad.
-        out += String.format(indentation + "return %n");
+        out += "return \\n";
 
         return out;
     }

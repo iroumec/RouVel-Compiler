@@ -5,6 +5,7 @@ import java.util.List;
 import common.Symbol;
 import common.SymbolCategory;
 import common.SymbolTable;
+import common.SymbolType;
 
 public final class Dumper {
 
@@ -37,6 +38,29 @@ public final class Dumper {
             // Todas las variables que se tienen en el lenguaje son enteros de 32 bits.
             // Por eso está "hardcodeado" el "i32".
             code.append(String.format("    (local $%s i32)%n", symbol.getLexemaWithoutScope()));
+        }
+
+        return code.toString();
+    }
+
+    static String dumpStrings() {
+
+        StringBuilder code = new StringBuilder();
+
+        int stringNumber = 0;
+
+        List<Symbol> strings = SymbolTable.getInstance().get(null, SymbolType.STRING);
+
+        for (Symbol symbol : strings) {
+
+            // Se le asigna el valor al string para luego utilizarlo en la generación de
+            // código.
+            SymbolTable.getInstance().setValue(symbol.getLexema(), String.valueOf(stringNumber));
+
+            // Todas las variables que se tienen en el lenguaje son enteros de 32 bits.
+            // Por eso está "hardcodeado" el "i32".
+            code.append(
+                    String.format("    (data (i32.const %d) %s)%n", stringNumber++, symbol.getLexemaWithoutScope()));
         }
 
         return code.toString();

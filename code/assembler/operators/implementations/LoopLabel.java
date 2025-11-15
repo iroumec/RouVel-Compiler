@@ -28,9 +28,9 @@ public class LoopLabel implements AssemblerOperator {
     // --------------------------------------------------------------------------------------------
 
     @Override
-    public String getAssembler(Deque<String> operands, String indentation) {
+    public String getAssembler(Deque<String> operands) {
 
-        return indent(String.format("(block $exit (loop $L%s %n", operands.pop()), indentation);
+        return String.format("(block $exit (loop $L%s %n", operands.pop());
     }
 
     // --------------------------------------------------------------------------------------------

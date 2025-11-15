@@ -28,7 +28,7 @@ public class Assignment implements AssemblerOperator {
     // --------------------------------------------------------------------------------------------
 
     @Override
-    public String getAssembler(Deque<String> operands, String indentation) {
+    public String getAssembler(Deque<String> operands) {
 
         Symbol firstOperand, secondOperand;
         StringBuilder code = new StringBuilder();
@@ -49,7 +49,7 @@ public class Assignment implements AssemblerOperator {
 
         code.append(String.format("local.set $%s %n", firstOperand.getLexemaWithoutScope()));
 
-        return indent(code.toString(), indentation);
+        return code.toString();
     }
 
     // --------------------------------------------------------------------------------------------

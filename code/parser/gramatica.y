@@ -925,7 +925,7 @@ inicio_funcion
 
             // Se crea un operador para la función, mediante el operador 'label'.
             this.reversePolish.addPolish($2);
-            this.reversePolish.addPolish("function-label");
+            this.reversePolish.addPolish("function");
 
             this.returnsNeeded = 1;
         }

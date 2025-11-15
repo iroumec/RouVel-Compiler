@@ -15,7 +15,7 @@ public abstract class ArithmeticOperator implements AssemblerOperator {
     // --------------------------------------------------------------------------------------------
 
     @Override
-    public String getAssembler(Deque<String> operands, String indentation) {
+    public String getAssembler(Deque<String> operands) {
 
         SymbolTable symbolTable = SymbolTable.getInstance();
 
@@ -25,13 +25,12 @@ public abstract class ArithmeticOperator implements AssemblerOperator {
         // Obtención del símbolo del primer operando.
         Symbol firstOperand = symbolTable.getSymbol(operands.pop());
 
-        return resolveOperation(firstOperand, secondOperand, operands, indentation);
+        return resolveOperation(firstOperand, secondOperand, operands);
     }
 
     // --------------------------------------------------------------------------------------------
 
-    private String resolveOperation(Symbol firstOperand, Symbol secondOperand, Deque<String> operands,
-            String indentation) {
+    private String resolveOperation(Symbol firstOperand, Symbol secondOperand, Deque<String> operands) {
 
         String code = "";
         String newOperandName;
@@ -54,8 +53,7 @@ public abstract class ArithmeticOperator implements AssemblerOperator {
             // Podría obtener el scope del segundo operando indistinguidamente.
             newOperandName = symbolTable.addAuxiliarVariable(firstOperand.getScope());
 
-            code = indent(this.getCode(pairType, symbolTable, firstOperand, secondOperand, newOperandName),
-                    indentation);
+            code = this.getCode(pairType, symbolTable, firstOperand, secondOperand, newOperandName);
         }
 
         // Se remueve una referencia de cada operando.

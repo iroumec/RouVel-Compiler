@@ -28,10 +28,10 @@ public class WriteResult implements AssemblerOperator {
     // --------------------------------------------------------------------------------------------
 
     @Override
-    public String getAssembler(Deque<String> operands, String indentation) {
+    public String getAssembler(Deque<String> operands) {
 
         Symbol symbol = SymbolTable.getInstance().getSymbol(operands.pop());
 
-        return indent(getCode(symbol, SymbolType.UINT), indentation);
+        return getCode(symbol, SymbolType.UINT);
     }
 }

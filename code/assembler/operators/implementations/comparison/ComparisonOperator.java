@@ -10,7 +10,7 @@ import common.SymbolType;
 public interface ComparisonOperator extends AssemblerOperator {
 
     @Override
-    default String getAssembler(Deque<String> operands, String indentation) {
+    default String getAssembler(Deque<String> operands) {
 
         SymbolTable symbolTable = SymbolTable.getInstance();
 
@@ -21,7 +21,7 @@ public interface ComparisonOperator extends AssemblerOperator {
         code += getCode(secondOperand, SymbolType.UINT);
         code += this.getAssemblerComparator();
 
-        return indent(code, indentation);
+        return code;
     }
 
     String getAssemblerComparator();

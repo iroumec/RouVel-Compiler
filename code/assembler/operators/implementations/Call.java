@@ -26,10 +26,10 @@ public class Call implements AssemblerOperator {
     // --------------------------------------------------------------------------------------------
 
     @Override
-    public String getAssembler(Deque<String> operands, String indentation) {
+    public String getAssembler(Deque<String> operands) {
 
         Symbol function = SymbolTable.getInstance().getSymbol(operands.pop());
 
-        return String.format(indentation + "call $%s %n", function.getLexemaWithoutScope());
+        return String.format("call $%s %n", function.getLexemaWithoutScope());
     }
 }

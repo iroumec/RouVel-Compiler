@@ -28,7 +28,7 @@ public class Argument implements AssemblerOperator {
     // --------------------------------------------------------------------------------------------
 
     @Override
-    public String getAssembler(Deque<String> operands, String indentation) {
+    public String getAssembler(Deque<String> operands) {
 
         SymbolTable symbolTable = SymbolTable.getInstance();
 
@@ -39,7 +39,7 @@ public class Argument implements AssemblerOperator {
 
         Symbol argument = SymbolTable.getInstance().getSymbol(operands.pop());
 
-        code += indent(getCode(argument, SymbolType.UINT), indentation);
+        code += getCode(argument, SymbolType.UINT);
 
         return code;
     }

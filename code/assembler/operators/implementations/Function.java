@@ -29,7 +29,7 @@ public class Function implements AssemblerOperator {
     // --------------------------------------------------------------------------------------------
 
     @Override
-    public String getAssembler(Deque<String> operands, String indentation) {
+    public String getAssembler(Deque<String> operands) {
 
         // Symbol symbol = SymbolTable.getInstance().getSymbol(operands.pop());
 
@@ -52,7 +52,7 @@ public class Function implements AssemblerOperator {
             code.append("\n").append(functionVariables);
         }
 
-        return indent(code.toString(), indentation);
+        return code.toString();
     }
 
     // --------------------------------------------------------------------------------------------

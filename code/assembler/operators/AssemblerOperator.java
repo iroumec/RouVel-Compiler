@@ -10,7 +10,7 @@ import common.SymbolType;
 
 public interface AssemblerOperator {
 
-    String getAssembler(Deque<String> operands, String indentation);
+    String getAssembler(Deque<String> operands);
 
     // --------------------------------------------------------------------------------------------
 
@@ -59,14 +59,5 @@ public interface AssemblerOperator {
         }
 
         return out;
-    }
-
-    // --------------------------------------------------------------------------------------------
-
-    default String indent(String text, String indentation) {
-        return Arrays.stream(text.split("\n"))
-                .map(line -> indentation + line)
-                .collect(Collectors.joining("\n"))
-                + "\n";
     }
 }

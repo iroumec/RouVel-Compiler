@@ -20,8 +20,6 @@ public class Assembler {
         StringBuilder imports = new StringBuilder();
         StringBuilder dataSection = new StringBuilder();
 
-        String stringsSection = dumpStrings();
-
         StringBuilder declarations = new StringBuilder();
 
         Deque<String> operands = new ArrayDeque<>();
@@ -44,9 +42,9 @@ public class Assembler {
                     indentation.setLength(indentation.length() - operator.getExitIndentationChange() * 4);
                 }
 
-                String iterationCode = operator.getAssembler(operands, indentation.toString());
+                String iterationCode = operator.getAssembler(operands);
                 if (!iterationCode.isBlank()) {
-                    executableCode.append(iterationCode).append("\n");
+                    executableCode.append(Indenter.indent(iterationCode, indentation)).append("\n");
                 }
 
                 if (operator.producesEntryChangeInIndentation()) {
@@ -82,6 +80,7 @@ public class Assembler {
 
         // assemblerCode.append(dumpGlobalVariables());
 
+        String stringsSection = Dumper.dumpStrings();
         if (!stringsSection.isBlank()) {
             assemblerCode.append("\n").append(stringsSection);
         }
@@ -94,28 +93,5 @@ public class Assembler {
         }
 
         return assemblerCode.append(")").toString();
-    }
-
-    private static String dumpStrings() {
-
-        StringBuilder code = new StringBuilder();
-
-        int stringNumber = 0;
-
-        List<Symbol> strings = SymbolTable.getInstance().get(null, SymbolType.STRING);
-
-        for (Symbol symbol : strings) {
-
-            // Se le asigna el valor al string para luego utilizarlo en la generación de
-            // código.
-            SymbolTable.getInstance().setValue(symbol.getLexema(), String.valueOf(stringNumber));
-
-            // Todas las variables que se tienen en el lenguaje son enteros de 32 bits.
-            // Por eso está "hardcodeado" el "i32".
-            code.append(
-                    String.format("    (data (i32.const %d) %s)%n", stringNumber++, symbol.getLexemaWithoutScope()));
-        }
-
-        return code.toString();
     }
 }

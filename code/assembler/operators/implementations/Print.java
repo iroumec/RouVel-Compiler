@@ -28,7 +28,7 @@ public class Print implements AssemblerOperator {
     // --------------------------------------------------------------------------------------------
 
     @Override
-    public String getAssembler(Deque<String> operands, String indentation) {
+    public String getAssembler(Deque<String> operands) {
 
         Symbol operand = SymbolTable.getInstance().getSymbol(operands.pop());
 
@@ -55,7 +55,7 @@ public class Print implements AssemblerOperator {
             code += String.format("call $printInt %n");
         }
 
-        return indent(code, indentation);
+        return code;
     }
 
 }

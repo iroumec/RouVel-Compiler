@@ -1728,7 +1728,7 @@ case 127:
 
             /* Se crea un operador para la función, mediante el operador 'label'.*/
             this.reversePolish.addPolish(val_peek(0).sval);
-            this.reversePolish.addPolish("function-label");
+            this.reversePolish.addPolish("function");
 
             this.returnsNeeded = 1;
         }

@@ -27,10 +27,10 @@ public class TrueBifurcation implements AssemblerOperator {
     // --------------------------------------------------------------------------------------------
 
     @Override
-    public String getAssembler(Deque<String> operands, String indentation) {
+    public String getAssembler(Deque<String> operands) {
 
-        String code = String.format(indentation + "br_if $L%s %n", operands.pop());
-        code += String.format(indentation + "br $exit");
+        String code = String.format("br_if $L%s %n", operands.pop());
+        code += "br $exit";
 
         return code;
     }

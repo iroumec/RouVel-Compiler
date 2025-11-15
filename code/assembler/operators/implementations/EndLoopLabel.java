@@ -24,8 +24,8 @@ public class EndLoopLabel implements AssemblerOperator {
     // --------------------------------------------------------------------------------------------
 
     @Override
-    public String getAssembler(Deque<String> operands, String indentation) {
-        return indent("))\n", indentation);
+    public String getAssembler(Deque<String> operands) {
+        return "))\n";
     }
 
     // --------------------------------------------------------------------------------------------

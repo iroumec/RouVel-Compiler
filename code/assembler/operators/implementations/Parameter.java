@@ -26,14 +26,14 @@ public class Parameter implements AssemblerOperator {
     // --------------------------------------------------------------------------------------------
 
     @Override
-    public String getAssembler(Deque<String> operands, String indentation) {
+    public String getAssembler(Deque<String> operands) {
 
         // Se debe leer el tope de la pila y almacenarse en el parámetro.
         Symbol symbol = SymbolTable.getInstance().getSymbol(operands.pop());
 
-        String code = String.format(indentation + ";; Copia del valor del argumento en el parámetro %s. %n",
+        String code = String.format(";; Copia del valor del argumento en el parámetro %s. %n",
                 symbol.getLexemaWithoutScope());
-        code += String.format(indentation + "local.set $%s %n", symbol.getLexemaWithoutScope());
+        code += String.format("local.set $%s %n", symbol.getLexemaWithoutScope());
 
         return code;
     }

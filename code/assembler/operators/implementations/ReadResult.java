@@ -27,15 +27,15 @@ public class ReadResult implements AssemblerOperator {
     // --------------------------------------------------------------------------------------------
 
     @Override
-    public String getAssembler(Deque<String> operands, String indentation) {
+    public String getAssembler(Deque<String> operands) {
 
         // Se debe leer el tope de la pila y almacenarse en el parámetro.
         Symbol argument = SymbolTable.getInstance().getSymbol(operands.pop());
         Symbol parameter = SymbolTable.getInstance().getSymbol(operands.pop());
 
-        String code = String.format(indentation + ";; Copia del valor del parámetro %s en el argumento %s. %n",
+        String code = String.format(";; Copia del valor del parámetro %s en el argumento %s. %n",
                 parameter.getLexemaWithoutScope(), argument.getLexemaWithoutScope());
-        code += String.format(indentation + "local.set $%s %n", argument.getLexemaWithoutScope());
+        code += String.format("local.set $%s %n", argument.getLexemaWithoutScope());
 
         return code;
     }
