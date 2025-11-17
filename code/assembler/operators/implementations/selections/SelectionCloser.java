@@ -1,7 +1,6 @@
 package assembler.operators.implementations.selections;
 
-import java.util.Deque;
-
+import assembler.CodeRepository;
 import assembler.operators.AssemblerOperator;
 
 public class SelectionCloser implements AssemblerOperator {
@@ -23,17 +22,8 @@ public class SelectionCloser implements AssemblerOperator {
     // --------------------------------------------------------------------------------------------
 
     @Override
-    public String getAssembler(Deque<String> operands) {
-        return "))\n";
-    }
-
-    // --------------------------------------------------------------------------------------------
-
-    /**
-     * Se decrementa en 1 la indentación al salir del cuerpo del then o else.
-     */
-    @Override
-    public int getExitIndentationChange() {
-        return 1;
+    public void generateAssembler(CodeRepository repository) {
+        repository.decreaseIndentation();
+        repository.addCode("))\n");
     }
 }

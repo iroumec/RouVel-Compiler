@@ -1,7 +1,6 @@
 package assembler.operators.implementations.arithmetic;
 
-import java.util.Deque;
-
+import assembler.CodeRepository;
 import assembler.operators.AssemblerOperator;
 import common.Symbol;
 import common.SymbolCategory;
@@ -13,22 +12,22 @@ public abstract class ArithmeticOperator implements AssemblerOperator {
     // --------------------------------------------------------------------------------------------
 
     @Override
-    public String getAssembler(Deque<String> operands) {
+    public void generateAssembler(CodeRepository repository) {
 
         SymbolTable symbolTable = SymbolTable.getInstance();
 
         // Obtención del símbolo del segundo operando.
-        Symbol secondOperand = symbolTable.getSymbol(operands.pop());
+        Symbol secondOperand = symbolTable.getSymbol(repository.popOperand());
 
         // Obtención del símbolo del primer operando.
-        Symbol firstOperand = symbolTable.getSymbol(operands.pop());
+        Symbol firstOperand = symbolTable.getSymbol(repository.popOperand());
 
-        return resolveOperation(firstOperand, secondOperand, operands);
+        repository.addCode(resolveOperation(firstOperand, secondOperand, repository));
     }
 
     // --------------------------------------------------------------------------------------------
 
-    private String resolveOperation(Symbol firstOperand, Symbol secondOperand, Deque<String> operands) {
+    private String resolveOperation(Symbol firstOperand, Symbol secondOperand, CodeRepository repository) {
 
         String code = "";
         String newOperandName;
@@ -70,7 +69,7 @@ public abstract class ArithmeticOperator implements AssemblerOperator {
         symbolTable.removeEntry(secondOperand.getLexema());
 
         // Se añade el nuevo operando.
-        operands.push(newOperandName);
+        repository.pushOperand(newOperandName);
 
         return code;
     }

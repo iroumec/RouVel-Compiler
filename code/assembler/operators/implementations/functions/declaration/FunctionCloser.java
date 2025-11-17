@@ -1,8 +1,8 @@
 package assembler.operators.implementations.functions.declaration;
 
-import java.util.Deque;
 import java.util.List;
 
+import assembler.CodeRepository;
 import assembler.Dumper;
 import assembler.operators.AssemblerOperator;
 import common.Symbol;
@@ -30,9 +30,9 @@ public class FunctionCloser implements AssemblerOperator {
     // --------------------------------------------------------------------------------------------
 
     @Override
-    public String getAssembler(Deque<String> operands) {
+    public void generateAssembler(CodeRepository repository) {
 
-        Symbol symbol = SymbolTable.getInstance().getSymbol(operands.pop());
+        Symbol symbol = SymbolTable.getInstance().getSymbol(repository.popOperand());
 
         StringBuilder code = new StringBuilder();
         String functionName = symbol.getLexemaWithoutScope();
@@ -45,7 +45,10 @@ public class FunctionCloser implements AssemblerOperator {
             code.append("\n").append(results);
         }
 
-        return code.append(")\n").toString();
+        repository.decreaseIndentation();
+        repository.removeLastLine(); // Para que la llave no quede separada.
+        repository.addCode(code.append(")\n"));
+        repository.endBlock();
     }
 
     // --------------------------------------------------------------------------------------------
@@ -64,16 +67,6 @@ public class FunctionCloser implements AssemblerOperator {
         }
 
         return code.toString();
-    }
-
-    // --------------------------------------------------------------------------------------------
-
-    /**
-     * Se decrementa en 1 la indentación al salir del cuerpo de la función.
-     */
-    @Override
-    public int getExitIndentationChange() {
-        return 1;
     }
 
 }

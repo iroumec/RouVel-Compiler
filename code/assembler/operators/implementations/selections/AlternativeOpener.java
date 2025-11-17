@@ -1,7 +1,6 @@
 package assembler.operators.implementations.selections;
 
-import java.util.Deque;
-
+import assembler.CodeRepository;
 import assembler.operators.AssemblerOperator;
 
 /**
@@ -26,25 +25,9 @@ public class AlternativeOpener implements AssemblerOperator {
     // --------------------------------------------------------------------------------------------
 
     @Override
-    public String getAssembler(Deque<String> operands) {
-        return ")(else";
-    }
-
-    // --------------------------------------------------------------------------------------------
-
-    /**
-     * Se decrementa en 1 la indentación al salir del cuerpo del then.
-     */
-    @Override
-    public int getExitIndentationChange() {
-        return 1;
-    }
-
-    /**
-     * Se incrementa en 1 la indentación al entrar al cuerpo del else.
-     */
-    @Override
-    public int getEntryIndentationChange() {
-        return 1;
+    public void generateAssembler(CodeRepository repository) {
+        repository.decreaseIndentation();
+        repository.addCode(")(else");
+        repository.increaseIndentation();
     }
 }

@@ -1,7 +1,6 @@
 package assembler.operators.implementations.bifurcations;
 
-import java.util.Deque;
-
+import assembler.CodeRepository;
 import assembler.operators.AssemblerOperator;
 
 public class TrueBifurcation implements AssemblerOperator {
@@ -24,11 +23,11 @@ public class TrueBifurcation implements AssemblerOperator {
     // --------------------------------------------------------------------------------------------
 
     @Override
-    public String getAssembler(Deque<String> operands) {
+    public void generateAssembler(CodeRepository repository) {
 
-        String code = String.format("br_if $L%s %n", operands.pop());
+        String code = String.format("br_if $L%s %n", repository.popOperand());
         code += "br $exit";
 
-        return code;
+        repository.addCode(code);
     }
 }

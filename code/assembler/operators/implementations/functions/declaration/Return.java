@@ -1,7 +1,6 @@
 package assembler.operators.implementations.functions.declaration;
 
-import java.util.Deque;
-
+import assembler.CodeRepository;
 import assembler.operators.AssemblerOperator;
 import common.Symbol;
 import common.SymbolCategory;
@@ -28,9 +27,9 @@ public class Return implements AssemblerOperator {
     // --------------------------------------------------------------------------------------------
 
     @Override
-    public String getAssembler(Deque<String> operands) {
+    public void generateAssembler(CodeRepository repository) {
 
-        Symbol operand = SymbolTable.getInstance().getSymbol(operands.pop());
+        Symbol operand = SymbolTable.getInstance().getSymbol(repository.popOperand());
 
         // En WebAssembly, el retorno de una función es el valor en el tope de
         // la pila.
@@ -52,6 +51,6 @@ public class Return implements AssemblerOperator {
         // ya que se creé que aporta más legibilidad.
         out += "return \n";
 
-        return out;
+        repository.addCode(out);
     }
 }

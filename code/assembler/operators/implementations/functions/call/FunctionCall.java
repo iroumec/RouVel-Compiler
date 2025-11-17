@@ -1,7 +1,6 @@
 package assembler.operators.implementations.functions.call;
 
-import java.util.Deque;
-
+import assembler.CodeRepository;
 import assembler.operators.AssemblerOperator;
 import common.Symbol;
 import common.SymbolTable;
@@ -26,10 +25,10 @@ public class FunctionCall implements AssemblerOperator {
     // --------------------------------------------------------------------------------------------
 
     @Override
-    public String getAssembler(Deque<String> operands) {
+    public void generateAssembler(CodeRepository repository) {
 
         SymbolTable symbolTable = SymbolTable.getInstance();
-        Symbol function = symbolTable.getSymbol(operands.pop());
+        Symbol function = symbolTable.getSymbol(repository.popOperand());
 
         // Invocación a la función.
         String code = String.format("call $%s %n", function.getLexemaWithoutScope());
@@ -43,8 +42,8 @@ public class FunctionCall implements AssemblerOperator {
 
         // Se agrega el operando a la pila, para que el retorno
         // pueda ser usado dentro de operaciones.
-        operands.push(newOperandName);
+        repository.pushOperand(newOperandName);
 
-        return code;
+        repository.addCode(code);
     }
 }

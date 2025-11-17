@@ -1,7 +1,6 @@
 package assembler.operators.implementations;
 
-import java.util.Deque;
-
+import assembler.CodeRepository;
 import assembler.operators.AssemblerOperator;
 import common.Symbol;
 import common.SymbolCategory;
@@ -28,15 +27,15 @@ public class Assignment implements AssemblerOperator {
     // --------------------------------------------------------------------------------------------
 
     @Override
-    public String getAssembler(Deque<String> operands) {
+    public void generateAssembler(CodeRepository repository) {
 
         Symbol firstOperand, secondOperand;
         StringBuilder code = new StringBuilder();
 
         // El primer operando siempre es una variable (por cómo es nuestro lenguaje).
         // Y las variables siempre son de tipo UINT.
-        secondOperand = SymbolTable.getInstance().getSymbol(operands.pop());
-        firstOperand = SymbolTable.getInstance().getSymbol(operands.pop());
+        secondOperand = SymbolTable.getInstance().getSymbol(repository.popOperand());
+        firstOperand = SymbolTable.getInstance().getSymbol(repository.popOperand());
 
         // No se requiere conversión.
         if (secondOperand.isType(SymbolType.UINT)) {
@@ -47,7 +46,7 @@ public class Assignment implements AssemblerOperator {
 
         code.append(String.format("local.set $%s %n", firstOperand.getLexemaWithoutScope()));
 
-        return code.toString();
+        repository.addCode(code);
     }
 
     // --------------------------------------------------------------------------------------------

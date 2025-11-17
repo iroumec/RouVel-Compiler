@@ -1,9 +1,9 @@
 package assembler.operators.implementations.functions.declaration;
 
 import java.util.List;
-import java.util.Deque;
 
 import common.Symbol;
+import assembler.CodeRepository;
 import assembler.Dumper;
 import common.SymbolTable;
 import common.SymbolCategory;
@@ -29,13 +29,14 @@ public class FunctionOpener implements AssemblerOperator {
     // --------------------------------------------------------------------------------------------
 
     @Override
-    public String getAssembler(Deque<String> operands) {
+    public void generateAssembler(CodeRepository repository) {
 
-        Symbol symbol = SymbolTable.getInstance().getSymbol(operands.pop());
+        Symbol symbol = SymbolTable.getInstance().getSymbol(repository.popOperand());
 
         // TODO: revisar qué pasa si hay dos funciones con un mismo nombre pero en
         // distintos ámbitos.
 
+        repository.startBlock();
         StringBuilder code = new StringBuilder();
 
         String functionName = symbol.getLexemaWithoutScope();
@@ -50,7 +51,8 @@ public class FunctionOpener implements AssemblerOperator {
             code.append("\n").append(functionVariables);
         }
 
-        return code.toString();
+        repository.addCode(code);
+        repository.increaseIndentation();
     }
 
     // --------------------------------------------------------------------------------------------
@@ -64,28 +66,18 @@ public class FunctionOpener implements AssemblerOperator {
         List<Symbol> parameters = SymbolTable.getInstance().get(functionName, SymbolCategory.CV_PARAMETER);
         parameters.addAll(SymbolTable.getInstance().get(functionName, SymbolCategory.CVR_PARAMETER));
 
-        StringBuilder copiesOfValues = new StringBuilder();
-
         for (Symbol symbol : parameters) {
             // El lenguaje solo tiene como parámetros válidos enteros de 32 bits.
             // Por eso está "hardcodeado" el "i32".
             code.append(String.format("    (param $%s i32) %n", symbol.getLexemaWithoutScope()));
-
-            copiesOfValues.append(String.format("%n    ;; Copia del valor del argumento en el parámetro %s. %n",
-                    symbol.getLexemaWithoutScope()));
-            copiesOfValues.append(String.format("    local.set $%s %n", symbol.getLexemaWithoutScope()));
         }
 
-        return code.append("    (result i32) \n").append(copiesOfValues).toString();
-    }
+        /**
+         * Al invocar a una función, ya se realiza automáticamente la asignación en
+         * orden de los operandos en la pila de operandos a los parámetros. Por
+         * consiguiente, no debe hacerse explícito.
+         */
 
-    // --------------------------------------------------------------------------------------------
-
-    /**
-     * Se incrementa en 1 la indentación al entrar en el cuerpo de la función.
-     */
-    @Override
-    public int getEntryIndentationChange() {
-        return 1;
+        return code.append("    (result i32) \n").toString();
     }
 }

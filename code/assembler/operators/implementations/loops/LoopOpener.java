@@ -1,7 +1,6 @@
 package assembler.operators.implementations.loops;
 
-import java.util.Deque;
-
+import assembler.CodeRepository;
 import assembler.operators.AssemblerOperator;
 
 public class LoopOpener implements AssemblerOperator {
@@ -24,18 +23,9 @@ public class LoopOpener implements AssemblerOperator {
     // --------------------------------------------------------------------------------------------
 
     @Override
-    public String getAssembler(Deque<String> operands) {
+    public void generateAssembler(CodeRepository repository) {
 
-        return String.format("(block $exit (loop $L%s %n", operands.pop());
-    }
-
-    // --------------------------------------------------------------------------------------------
-
-    /**
-     * Se incrementa en 1 la indentación al entrar en el cuerpo de la función.
-     */
-    @Override
-    public int getEntryIndentationChange() {
-        return 1;
+        repository.addCode(String.format("(block $exit (loop $L%s %n", repository.popOperand()));
+        repository.increaseIndentation();
     }
 }

@@ -1,50 +1,13 @@
 package assembler.operators;
 
-import java.util.Deque;
-
+import assembler.CodeRepository;
 import common.Symbol;
 import common.SymbolCategory;
 import common.SymbolType;
 
 public interface AssemblerOperator {
 
-    String getAssembler(Deque<String> operands);
-
-    // --------------------------------------------------------------------------------------------
-
-    default int getEntryIndentationChange() {
-        return 0;
-    }
-
-    // --------------------------------------------------------------------------------------------
-
-    default int getExitIndentationChange() {
-        return 0;
-    }
-
-    // --------------------------------------------------------------------------------------------
-
-    default boolean functionStart() {
-        return false;
-    }
-
-    // --------------------------------------------------------------------------------------------
-
-    default boolean functionEnd() {
-        return false;
-    }
-
-    // --------------------------------------------------------------------------------------------
-
-    default boolean producesEntryChangeInIndentation() {
-        return this.getEntryIndentationChange() != 0;
-    }
-
-    // --------------------------------------------------------------------------------------------
-
-    default boolean producesExitChangeInIndentation() {
-        return this.getExitIndentationChange() != 0;
-    }
+    void generateAssembler(CodeRepository repository);
 
     // --------------------------------------------------------------------------------------------
 

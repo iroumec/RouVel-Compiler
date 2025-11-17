@@ -1,7 +1,6 @@
 package assembler.operators.implementations;
 
-import java.util.Deque;
-
+import assembler.CodeRepository;
 import assembler.operators.AssemblerOperator;
 
 public class EndLabel implements AssemblerOperator {
@@ -24,18 +23,9 @@ public class EndLabel implements AssemblerOperator {
     // --------------------------------------------------------------------------------------------
 
     @Override
-    public String getAssembler(Deque<String> operands) {
+    public void generateAssembler(CodeRepository repository) {
 
-        return ")\n";
-    }
-
-    // --------------------------------------------------------------------------------------------
-
-    /**
-     * Se decrementa en 1 la indentación al salir del cuerpo de la función.
-     */
-    @Override
-    public int getExitIndentationChange() {
-        return 1;
+        repository.decreaseIndentation();
+        repository.addCode(")\n");
     }
 }

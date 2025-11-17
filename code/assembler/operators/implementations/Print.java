@@ -1,7 +1,6 @@
 package assembler.operators.implementations;
 
-import java.util.Deque;
-
+import assembler.CodeRepository;
 import assembler.operators.AssemblerOperator;
 import common.Symbol;
 import common.SymbolCategory;
@@ -28,9 +27,9 @@ public class Print implements AssemblerOperator {
     // --------------------------------------------------------------------------------------------
 
     @Override
-    public String getAssembler(Deque<String> operands) {
+    public void generateAssembler(CodeRepository repository) {
 
-        Symbol operand = SymbolTable.getInstance().getSymbol(operands.pop());
+        Symbol operand = SymbolTable.getInstance().getSymbol(repository.popOperand());
 
         String code;
 
@@ -55,7 +54,7 @@ public class Print implements AssemblerOperator {
             code += String.format("call $console_log_i32 %n");
         }
 
-        return code;
+        repository.addCode(code);
     }
 
 }

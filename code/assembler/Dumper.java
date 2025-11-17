@@ -56,10 +56,6 @@ public final class Dumper {
 
         List<Symbol> strings = SymbolTable.getInstance().get(null, SymbolType.STRING);
 
-        System.out.println(strings);
-
-        SymbolTable.getInstance().print();
-
         for (Symbol symbol : strings) {
 
             // int stringIdentifier = stringNumber++ * memorySeparation;
