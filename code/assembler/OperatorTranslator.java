@@ -7,6 +7,9 @@ import assembler.operators.implementations.Assignment;
 import assembler.operators.implementations.arithmetic.Sum;
 import assembler.operators.implementations.comparison.Equal;
 import assembler.operators.implementations.loops.LoopOpener;
+import assembler.operators.implementations.selections.SelectionOpener;
+import assembler.operators.implementations.selections.AlternativeOpener;
+import assembler.operators.implementations.selections.SelectionCloser;
 import assembler.operators.implementations.loops.LoopCloser;
 import assembler.operators.implementations.comparison.Greater;
 import assembler.operators.implementations.comparison.NotEqual;
@@ -52,8 +55,9 @@ class OperatorTranslator {
             case "<" -> LessThan.getInstance();
             case "=!" -> NotEqual.getInstance();
             case "TB" -> TrueBifurcation.getInstance();
-            case "FB" -> null;
-            case "UB" -> null;
+            case "FB" -> SelectionOpener.getInstance();
+            case "UB" -> AlternativeOpener.getInstance();
+            case "close-selection" -> SelectionCloser.getInstance();
             default -> null;
         };
 

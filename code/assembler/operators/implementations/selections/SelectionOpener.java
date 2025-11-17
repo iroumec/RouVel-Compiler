@@ -3,7 +3,7 @@ package assembler.operators.implementations.selections;
 import java.util.Deque;
 import assembler.operators.AssemblerOperator;
 
-public class SelectionOpener {
+public class SelectionOpener implements AssemblerOperator {
     private SelectionOpener() {
     }
 
@@ -24,7 +24,9 @@ public class SelectionOpener {
     @Override
     public String getAssembler(Deque<String> operands) {
 
-        return String.format("(block $exit (loop $L%s %n", operands.pop());
+        return "(if \n(then \n";
+
+        //return String.format("(block $exit (loop $L%s %n", operands.pop());
     }
 
     // --------------------------------------------------------------------------------------------
@@ -34,6 +36,6 @@ public class SelectionOpener {
      */
     @Override
     public int getEntryIndentationChange() {
-        return 1;
+        return 0;
     }
 }

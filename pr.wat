@@ -14,8 +14,14 @@
             i32.const 10 
             i32.lt_u
     
-            local.get $X 
-            return 
+            (if 
+            (then 
+    
+                local.get $X 
+                return 
+    
+            )
+            )
     
             i32.const 15 
             return 
@@ -28,4 +34,5 @@
     
         call $F1 
 
+    )
 )

@@ -144,6 +144,7 @@ public final class ReversePolish implements Iterable<String> {
      */
     public void closeSelection() {
         this.fulfillPromise(this.getLastPromise());
+        this.addPolish("close-selection");
     }
 
     public void discardSelection() {

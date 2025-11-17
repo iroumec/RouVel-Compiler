@@ -31,9 +31,15 @@
         i32.const 3 
         i32.gt_u
     
+        (if 
+        (then 
+    
         i32.const 0 
         i32.const 5 
         call $console_log_string 
+    
+        )
+        )
     
         i32.const 0 
         i32.const 9 
@@ -43,9 +49,15 @@
         local.get $X 
         i32.gt_u
     
+        (if 
+        (then 
+    
         i32.const 0 
         i32.const 4 
         call $console_log_string 
+    
+        )
+        (else
     
         i32.const 0 
         i32.const 11 
@@ -55,17 +67,29 @@
         i32.const 8 
         i32.gt_u
     
+        (if 
+        (then 
+    
         i32.const 0 
         i32.const 10 
         call $console_log_string 
+    
+        )
+        (else
     
         i32.const 0 
         i32.const 11 
         call $console_log_string 
     
+        )
+        )
+    
         i32.const 0 
         i32.const 9 
         call $console_log_string 
+    
+        )
+        )
     
         i32.const 0 
         i32.const 10 

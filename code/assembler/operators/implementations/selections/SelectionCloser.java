@@ -1,5 +1,39 @@
 package assembler.operators.implementations.selections;
 
-public class SelectionCloser {
+import java.util.Deque;
 
+import assembler.operators.AssemblerOperator;
+
+public class SelectionCloser implements AssemblerOperator {
+    private SelectionCloser() {
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    private static class Holder {
+        private static final SelectionCloser INSTANCE = new SelectionCloser();
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    public static SelectionCloser getInstance() {
+        return Holder.INSTANCE;
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    @Override
+    public String getAssembler(Deque<String> operands) {
+        return ")\n)\n";
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    /**
+     * Se decrementa en 2 la indentación al salir del cuerpo de la función.
+     */
+    @Override
+    public int getExitIndentationChange() {
+        return 0;
+    }
 }
