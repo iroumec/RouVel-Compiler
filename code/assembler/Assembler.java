@@ -68,8 +68,6 @@ public class Assembler {
                     """);
         }
 
-        // assemblerCode.append(dumpGlobalVariables());
-
         String stringsSection = Dumper.dumpStrings();
         if (!stringsSection.isBlank()) {
             assemblerCode.append("\n").append(stringsSection);
@@ -82,6 +80,6 @@ public class Assembler {
             assemblerCode.append("\n");
         }
 
-        return assemblerCode.append(")").toString();
+        return assemblerCode.append("    )\n)").toString();
     }
 }

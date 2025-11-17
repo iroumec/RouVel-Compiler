@@ -35,7 +35,7 @@ public class Print implements AssemblerOperator {
         String code;
 
         if (operand.isType(SymbolType.STRING)) {
-            code = String.format("i32.const %s %n", operand.getValue());
+            code = String.format("i32.const 0%s %n", operand.getValue());
             code += String.format("i32.const %d %n", operand.getLexema().length() - 2); // -2 ya que se restan las
                                                                                         // comillas.
             code += String.format("call $console_log_string %n");

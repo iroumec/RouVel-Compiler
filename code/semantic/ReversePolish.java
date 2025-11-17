@@ -118,8 +118,6 @@ public final class ReversePolish implements Iterable<String> {
 
     public void fulfillPromise(Promise promise) {
 
-        System.out.println(promise);
-        System.out.println(this.stackedPromises);
         // Se debe remover el nulo que se agregó para realizar la promesa.
         // Los separadores agregados deben considerarse para ir al índice correcto,
         // ya que ocupan lugar en la lista.
@@ -145,7 +143,6 @@ public final class ReversePolish implements Iterable<String> {
      * Close If / If-Else.
      */
     public void closeSelection() {
-        System.out.println("Here's the problem.");
         this.fulfillPromise(this.getLastPromise());
     }
 

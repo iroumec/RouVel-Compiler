@@ -706,7 +706,6 @@ comparador
 if 
     : if_start cuerpo_if
         { 
-            System.out.println(errorState);
             if (this.statementAppearsInValidState()) {
                 this.reversePolish.closeSelection();
                 this.reversePolish.addSeparation("Leaving 'if-else' body...");

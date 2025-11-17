@@ -23,6 +23,41 @@ public class WebAssemblyExporter {
         }
     }
 
+    public static void exportToWasm(File file, String code) {
+
+        exportToWat(file, code);
+
+        Path inputPath = Paths.get(extractBaseName(file) + ".wat");
+        Path outputPath = Paths.get(extractBaseName(file) + ".wasm");
+
+        // sudo apt-get wabt in Debian.
+        ProcessBuilder processBuilder = new ProcessBuilder("wat2wasm", inputPath.toString(), "-o",
+                outputPath.toString());
+
+        try {
+            Process process = processBuilder.start();
+
+            // Leer stderr
+            String error = new String(process.getErrorStream().readAllBytes());
+            String output = new String(process.getInputStream().readAllBytes());
+
+            int exitCode = process.waitFor();
+
+            Printer.printSeparator();
+
+            if (exitCode != 0) {
+                Printer.printCentered("wat2wasm falló.");
+                Printer.printCentered("Salida de error:");
+                Printer.printCentered(error.strip());
+                return;
+            }
+
+            Printer.printCentered("Archivo `.wasm` generado: " + outputPath.toString());
+        } catch (IOException | InterruptedException _) {
+            Printer.printCentered("ERROR: Ocurrió un problema al exportar el código a .wasm.");
+        }
+    }
+
     private static String extractBaseName(File file) {
 
         String fileName = file.getName();

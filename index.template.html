@@ -3,11 +3,11 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Ejemplo WASM simple con logs</title>
+    <title>RouVel Compiler</title>
 </head>
 
 <body>
-    <h3>Ejemplo WebAssembly con logs numéricos</h3>
+    <h3>Salida del Programa</h3>
     <script>
         // Memoria compartida con el módulo WASM.
         var memory = new WebAssembly.Memory({ initial: 1 });
@@ -35,7 +35,7 @@
         };
 
         // Carga dinámica del .wasm
-        fetch("__WASM_FILE__")
+        fetch("wat.wasm")
             .then(r => WebAssembly.instantiateStreaming(r, imports))
             .then(obj => {
                 if (obj.instance.exports.main)

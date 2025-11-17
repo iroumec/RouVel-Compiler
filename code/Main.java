@@ -63,7 +63,7 @@ public class Main {
 
             Printer.printBlankSpace();
             Printer.printSeparator();
-            WebAssemblyExporter.exportToWat(file, assemblerCode);
+            WebAssemblyExporter.exportToWasm(file, assemblerCode);
         } else {
             Printer.printFramed("El código contiene errores, por lo que no fue posible generar un código assembler.");
         }

@@ -61,6 +61,16 @@ everything:
 	trap "kill $$SERVER_PID; rm -f index.html; exit 0" INT; \
 	while true; do sleep 1; done
 
+PORT=8000
+
+open-page:
+	@python3 -m http.server $(PORT) >/dev/null 2>&1 &
+	@SERVER_PID=$$!; \
+		sleep 1; \
+		( xdg-open "http://localhost:$(PORT)" >/dev/null 2>&1 || true ); \
+		sleep 5; \
+		kill $$SERVER_PID >/dev/null 2>&1 || true
+
 # =================================================================================================
 
 help: ## Muestra los comandos disponibles.
