@@ -1,5 +1,7 @@
 package assembler.operators.implementations.arithmetic;
 
+import common.Symbol;
+
 public class Subtraction extends ArithmeticOperator {
 
     private Subtraction() {
@@ -36,5 +38,12 @@ public class Subtraction extends ArithmeticOperator {
     @Override
     protected String getAssemblerOperator() {
         return "sub";
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    @Override
+    protected String getRuntimeControls(Symbol firstOperand, Symbol secondOperand) {
+        return "";
     }
 }

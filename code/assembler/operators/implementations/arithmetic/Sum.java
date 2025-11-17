@@ -1,5 +1,7 @@
 package assembler.operators.implementations.arithmetic;
 
+import common.Symbol;
+
 public class Sum extends ArithmeticOperator {
 
     private Sum() {
@@ -36,5 +38,13 @@ public class Sum extends ArithmeticOperator {
     @Override
     protected String getAssemblerOperator() {
         return "add";
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    @Override
+    protected String getRuntimeControls(Symbol firstOperand, Symbol secondOperand) {
+
+        return "";
     }
 }

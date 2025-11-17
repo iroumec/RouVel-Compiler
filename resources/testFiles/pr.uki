@@ -2,8 +2,12 @@ MAIN {
     uint A, B;
 
     if(A > B) {
-
+        if(A > B+1UI) {
+            B := 0.;
+        } else {
+            A := 0.;
+        } endif;
     } else {
-
+        A := A + B;
     } endif;
 }

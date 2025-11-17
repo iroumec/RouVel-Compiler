@@ -4,11 +4,35 @@ import java.util.Arrays;
 
 public class Symbol {
 
+    private static int stringCounter = 0;
+
     private int references;
     private SymbolType type;
     private StringBuilder value; // Valor real
     private StringBuilder lexema; // Lexema.
     private SymbolCategory category;
+
+    public static Symbol createNewString(String lexema) {
+
+        Symbol symbol = new SymbolBuilder(lexema).value(String.valueOf(stringCounter))
+                .category(SymbolCategory.CONSTANT)
+                .type(SymbolType.STRING).build();
+
+        // Se incrementa el string counter de acuerdo al número de caracteres
+        // en el string que se creo. Esto es útil para el assembler, para saber dónde
+        // comenzar a gaurdar cada String y que estos no se pisen.
+        stringCounter += lexema.length() - 2;
+
+        return symbol;
+    }
+
+    Symbol(StringBuilder lexema, StringBuilder value, SymbolCategory category, SymbolType type, int references) {
+        this.type = type;
+        this.value = value;
+        this.lexema = lexema;
+        this.category = category;
+        this.references = references;
+    }
 
     private Symbol(String lexema, String value, int references) {
         this.lexema = new StringBuilder(lexema);
@@ -36,6 +60,18 @@ public class Symbol {
 
         this.lexema = new StringBuilder(lexema);
         this.value = new StringBuilder(value);
+        this.type = type;
+        this.category = category;
+
+        this.references = 0;
+    }
+
+    public Symbol(String lexema, SymbolCategory category, SymbolType type) {
+
+        if (type == SymbolType.STRING) {
+            this.setValue(String.valueOf(stringCounter++));
+        }
+
         this.type = type;
         this.category = category;
 
@@ -148,8 +184,13 @@ public class Symbol {
     }
 
     void setValue(String value) {
-        this.value.setLength(0);
-        this.value.append(value);
+
+        if (this.value == null) {
+            this.value = new StringBuilder(value);
+        } else {
+            this.value.setLength(0);
+            this.value.append(value);
+        }
     }
 
     Symbol getNegative() {

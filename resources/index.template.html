@@ -45,8 +45,6 @@
         // Logs redefinidos para escribir en HTML
         function log_i32(x) { appendOutput("[i32] " + x); }
         function log_f32(x) { appendOutput("[f32] " + x); }
-        function log_f64(x) { appendOutput("[f64] " + x); }
-        function log_i64(x) { appendOutput("[i64] " + (typeof x === "bigint" ? x + "n" : x)); }
         function log_string(ptr, len) {
             const bytes = new Uint8Array(memory.buffer, ptr, len);
             const str = new TextDecoder("utf8").decode(bytes);
@@ -57,14 +55,12 @@
             console: {
                 log_i32,
                 log_f32,
-                log_f64,
-                log_i64,
                 log_string
             },
             js: { mem: memory }
         };
 
-        // Cargar WASM correctamente
+        // Carga dinámica del WASM.
         fetch("{{WASM_FILE}}")
             .then(r => WebAssembly.instantiateStreaming(r, importObject))
             .then(result => {

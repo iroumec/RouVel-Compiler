@@ -1,5 +1,7 @@
 package assembler.operators.implementations.arithmetic;
 
+import common.Symbol;
+
 public class Multiplication extends ArithmeticOperator {
 
     private Multiplication() {
@@ -36,6 +38,13 @@ public class Multiplication extends ArithmeticOperator {
     @Override
     protected String getAssemblerOperator() {
         return "mul";
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    @Override
+    protected String getRuntimeControls(Symbol firstOperand, Symbol secondOperand) {
+        return "";
     }
 
 }

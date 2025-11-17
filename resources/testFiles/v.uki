@@ -1,7 +1,18 @@
-HOLA {
+MAIN {
 
-    uint FUN1(uint A, cvr uint B) {
-    
-        return (3UI);
-    }
+    uint A, B;
+
+    print("Hola");
+
+    B := 0UI;
+
+    print(3UI);
+
+    A := 3UI / B;
+
+    print(A);
+
+    print(3UI);
+
+    print("Jaimitoooo");
 }

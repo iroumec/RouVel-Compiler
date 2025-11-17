@@ -40,10 +40,8 @@ public class Assignment implements AssemblerOperator {
 
         // No se requiere conversión.
         if (secondOperand.isType(SymbolType.UINT)) {
-
             code.append(this.getNonConversionAssignment(secondOperand));
         } else {
-
             code.append(this.getConversionAssignment(secondOperand));
         }
 

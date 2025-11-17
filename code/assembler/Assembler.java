@@ -73,7 +73,9 @@ public class Assembler {
             assemblerCode.append("\n").append(stringsSection);
         }
 
-        assemblerCode.append("\n").append(Indenter.indent(Dumper.dumpEntryPoint(), indentation.toString()));
+        assemblerCode.append("\n").append(Indenter.indent(Dumper.dumpEntryPoint(), indentation));
+
+        assemblerCode.append("\n").append(Indenter.indent(Dumper.dumpGlobalVariables(), indentation));
 
         if (!executableCode.isEmpty()) {
             assemblerCode.append("\n").append(Indenter.indent(executableCode, indentation));

@@ -1,0 +1,8 @@
+MAIN {
+    uint F1(uint A) {
+        return (5UI);
+    }
+
+    uint X;
+    X := F1(1UI->A);
+}

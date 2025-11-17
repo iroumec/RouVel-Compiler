@@ -16,6 +16,7 @@
     import common.SymbolType;
     import common.SymbolTable;
     import semantic.ScopeStack;
+    import semantic.TypeChecker;
     import common.SymbolCategory;
     import semantic.ReversePolish;
     import semantic.ReturnsController;
@@ -509,6 +510,8 @@ term
         {   
             reversePolish.addTemporalPolish($2);
             $$ = $3; 
+
+            TypeChecker.checkDivisionByZero($2, $3);
         }
     | factor
 
@@ -532,6 +535,8 @@ term_simple
         {   
             reversePolish.addTemporalPolish($2);
             $$ = $1;
+
+            TypeChecker.checkDivisionByZero($2, $3);
         }
     | factor_simple
 

@@ -350,6 +350,13 @@ public final class Lexer {
     // --------------------------------------------------------------------------------------------
 
     private Symbol generateSymbol() {
+
+        String lexema = this.lexema.toString();
+
+        if (lexema.startsWith("\"") && lexema.endsWith("\"")) {
+            return Symbol.createNewString(lexema);
+        }
+
         return new Symbol(this.lexema.toString(), this.value.toString(), this.type);
     }
 

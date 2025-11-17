@@ -24,7 +24,7 @@ public class SelectionCloser implements AssemblerOperator {
 
     @Override
     public String getAssembler(Deque<String> operands) {
-        return ")\n)\n";
+        return "))\n";
     }
 
     // --------------------------------------------------------------------------------------------

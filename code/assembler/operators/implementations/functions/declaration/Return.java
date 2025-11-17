@@ -6,6 +6,7 @@ import assembler.operators.AssemblerOperator;
 import common.Symbol;
 import common.SymbolCategory;
 import common.SymbolTable;
+import common.SymbolType;
 
 public class Return implements AssemblerOperator {
 
@@ -36,9 +37,13 @@ public class Return implements AssemblerOperator {
 
         String out;
 
-        // TODO: SOLO SE RETORNAN ENTEROS. ¿A ESO LO CHEQUEAMOS EN ALGÚN MOMENTO?
         if (operand.isCategory(SymbolCategory.CONSTANT)) {
-            out = String.format("i32.const %s %n", operand.getValue());
+            if (operand.isType(SymbolType.UINT)) {
+                out = String.format("i32.const %s %n", operand.getValue());
+            } else {
+                out = String.format("f32.const %s %n", Float.valueOf(operand.getValue()).toString());
+                out += String.format("i32.trunc_f32_u %n");
+            }
         } else {
             out = String.format("local.get $%s %n", operand.getLexemaWithoutScope());
         }

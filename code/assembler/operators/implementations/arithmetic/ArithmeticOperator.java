@@ -49,9 +49,20 @@ public abstract class ArithmeticOperator implements AssemblerOperator {
         } else {
             // Se añade una variable auxiliar.
             // Podría obtener el scope del segundo operando indistinguidamente.
-            newOperandName = symbolTable.addAuxiliarVariable(firstOperand.getScope());
+            String scope = firstOperand.getScope();
 
-            code = this.getCode(pairType, symbolTable, firstOperand, secondOperand, newOperandName);
+            // De ser el primer operando una constante,
+            // se obtiene el scope del segundo operando.
+            // Alguno de los operandos debe tener un scope asociado.
+            if (scope == null) {
+                scope = secondOperand.getScope();
+            }
+
+            newOperandName = symbolTable.addAuxiliarVariable(scope);
+
+            code = this.getRuntimeControls(firstOperand, secondOperand) + "\n";
+
+            code += this.getCode(pairType, symbolTable, firstOperand, secondOperand, newOperandName);
         }
 
         // Se remueve una referencia de cada operando.
@@ -163,4 +174,8 @@ public abstract class ArithmeticOperator implements AssemblerOperator {
     // --------------------------------------------------------------------------------------------
 
     protected abstract String getAssemblerOperator();
+
+    // --------------------------------------------------------------------------------------------
+
+    protected abstract String getRuntimeControls(Symbol firstOperand, Symbol secondOperand);
 }

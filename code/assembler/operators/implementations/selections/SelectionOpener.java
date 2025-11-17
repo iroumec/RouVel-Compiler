@@ -35,6 +35,6 @@ public class SelectionOpener implements AssemblerOperator {
      */
     @Override
     public int getEntryIndentationChange() {
-        return 0;
+        return 1;
     }
 }

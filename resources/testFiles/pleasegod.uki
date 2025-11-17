@@ -1,0 +1,15 @@
+MAIN {
+    uint FUNCION(uint USELESS) {
+        if(0UI < 1.) {
+            return (50UI);
+        } else {
+            return (100.);
+        } endif;
+    }
+
+    uint X;
+
+    X := FUNCION(0.->USELESS);
+
+    print(X);
+}

@@ -153,6 +153,14 @@ class Function {
         return this.name;
     }
 
+    String getScope() {
+        return this.scope;
+    }
+
+    String getJustName() {
+        return name.split("\\s*:\\s*")[0];
+    }
+
     // --------------------------------------------------------------------------------------------
 
     private void notifyError(String errorMessage) {

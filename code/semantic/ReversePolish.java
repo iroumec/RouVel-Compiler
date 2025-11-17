@@ -14,7 +14,7 @@ public final class ReversePolish implements Iterable<String> {
 
     // --------------------------------------------------------------------------------------------
 
-    private boolean debug = false;
+    private boolean debug = true;
 
     // --------------------------------------------------------------------------------------------
 
