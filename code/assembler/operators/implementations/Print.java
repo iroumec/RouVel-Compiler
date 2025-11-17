@@ -51,7 +51,7 @@ public class Print implements AssemblerOperator {
                 code += String.format("call $console_log_f32 %n");
             }
         } else { // Es variable.
-            code = String.format("local.get %s %n", operand.getLexemaWithoutScope());
+            code = String.format("local.get $%s %n", operand.getLexemaWithoutScope());
             code += String.format("call $console_log_i32 %n");
         }
 

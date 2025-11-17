@@ -24,15 +24,14 @@ public class SelectionOpener implements AssemblerOperator {
     @Override
     public String getAssembler(Deque<String> operands) {
 
-        return "(if \n(then \n";
+        return "(if (then\n";
 
-        //return String.format("(block $exit (loop $L%s %n", operands.pop());
     }
 
     // --------------------------------------------------------------------------------------------
 
     /**
-     * Se incrementa en 1 la indentación al entrar en el cuerpo de la función.
+     * Se incrementa en 1 la indentación al entrar en el cuerpo del then.
      */
     @Override
     public int getEntryIndentationChange() {

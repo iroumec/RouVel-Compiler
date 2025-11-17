@@ -454,3 +454,10 @@ venv
 
 # Conforma la salida, la página que se abre.
 index.html
+
+# Archivos utilizados dentro del MakeFile.
+.compile_filed
+.server.pid
+
+# Carpeta con las salidas.
+outputs/

@@ -130,7 +130,7 @@ public abstract class ArithmeticOperator implements AssemblerOperator {
                     %s\
                     %s\
                     i32.%s
-                    local.set %s
+                    local.set $%s
                     """.formatted(
                     getCode(firstOperand, SymbolType.UINT),
                     getCode(secondOperand, SymbolType.UINT),
@@ -141,7 +141,7 @@ public abstract class ArithmeticOperator implements AssemblerOperator {
                     %s\
                     %s\
                     f32.%s
-                    local.set %s
+                    local.set $%s
                     """.formatted(
                     getCode(firstOperand, null),
                     getCode(secondOperand, null),

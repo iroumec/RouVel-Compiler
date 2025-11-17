@@ -1,0 +1,82 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>RouVel Compiler</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            font-size: 18px;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+
+        h3 {
+            font-size: 28px;
+            color: #333;
+        }
+
+        #output {
+            font-size: 16px;
+            line-height: 1.6;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 15px;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <h3>Salida del Programa</h3>
+    <pre id="output"></pre>
+    <script>
+        function appendOutput(text) {
+            const out = document.getElementById("output");
+            out.textContent += text + "\n";
+        }
+
+        // Memoria
+        const memory = new WebAssembly.Memory({ initial: 1 });
+
+        // Logs redefinidos para escribir en HTML
+        function log_i32(x) { appendOutput("[i32] " + x); }
+        function log_f32(x) { appendOutput("[f32] " + x); }
+        function log_f64(x) { appendOutput("[f64] " + x); }
+        function log_i64(x) { appendOutput("[i64] " + (typeof x === "bigint" ? x + "n" : x)); }
+        function log_string(ptr, len) {
+            const bytes = new Uint8Array(memory.buffer, ptr, len);
+            const str = new TextDecoder("utf8").decode(bytes);
+            appendOutput("[str] " + str);
+        }
+
+        const importObject = {
+            console: {
+                log_i32,
+                log_f32,
+                log_f64,
+                log_i64,
+                log_string
+            },
+            js: { mem: memory }
+        };
+
+        // Cargar WASM correctamente
+        fetch("{{WASM_FILE}}")
+            .then(r => WebAssembly.instantiateStreaming(r, importObject))
+            .then(result => {
+                const main = result.instance.exports.main;
+                if (typeof main === "function") {
+                    main();
+                } else {
+                    appendOutput("ERROR: El módulo no exporta main()");
+                }
+            })
+            .catch(err => appendOutput("Error cargando WASM: " + err));
+    </script>
+</body>
+
+</html>

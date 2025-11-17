@@ -27,16 +27,24 @@ public class AlternativeOpener implements AssemblerOperator {
 
     @Override
     public String getAssembler(Deque<String> operands) {
-        return ")\n(else";
+        return ")(else";
     }
 
     // --------------------------------------------------------------------------------------------
 
     /**
-     * Se decrementa en 2 la indentación al salir del cuerpo de la función.
+     * Se decrementa en 1 la indentación al salir del cuerpo del then.
+     */
+    @Override
+    public int getExitIndentationChange() {
+        return 1;
+    }
+
+    /**
+     * Se incrementa en 1 la indentación al entrar al cuerpo del else.
      */
     @Override
     public int getEntryIndentationChange() {
-        return 0;
+        return 1;
     }
 }

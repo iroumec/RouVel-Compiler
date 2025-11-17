@@ -30,10 +30,10 @@ public class SelectionCloser implements AssemblerOperator {
     // --------------------------------------------------------------------------------------------
 
     /**
-     * Se decrementa en 2 la indentación al salir del cuerpo de la función.
+     * Se decrementa en 1 la indentación al salir del cuerpo del then o else.
      */
     @Override
     public int getExitIndentationChange() {
-        return 0;
+        return 1;
     }
 }

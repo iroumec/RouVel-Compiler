@@ -64,12 +64,14 @@ public class Main {
             Printer.printBlankSpace();
             Printer.printSeparator();
             WebAssemblyExporter.exportToWasm(file, assemblerCode);
+            Printer.printSeparator();
+            Printer.printBlankSpace();
         } else {
             Printer.printFramed("El código contiene errores, por lo que no fue posible generar un código assembler.");
+            Printer.printSeparator();
+            Printer.printBlankSpace();
+            System.exit(1); // Se retorna código de error.
         }
-
-        Printer.printSeparator();
-        Printer.printBlankSpace();
     }
 
     // --------------------------------------------------------------------------------------------

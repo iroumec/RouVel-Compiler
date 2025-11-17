@@ -5,19 +5,16 @@
 # Cada línea de Make "@" se ejecuta en una subshell independiente.
 
 # --- Variables de Configuración ---
-SCRIPT ?= "resources/scripts/yacc-compile-run.sh"
+FILE ?= program.uki
 TEST_FILE_DIR ?= resources/testFiles/
+WASM := outputs/wasm/$(basename $(FILE)).wasm
+SCRIPT ?= "resources/scripts/yacc-compile-run.sh"
+DOCKER_SCRIPT ?= "resources/scripts/docker/generate.sh"
 
 # =================================================================================================
 
 # Target por defecto que se ejecuta al correr `make`.
 all: help
-
-# =================================================================================================
-
-run: ## Ejecuta yacc, compila el programa y lo ejecuta. Ejemplo de uso: `make run FILE="main.uki"`.
-	@chmod +x "$(SCRIPT)"
-	@"$(SCRIPT)" "$(TEST_FILE_DIR)$(FILE)"
 
 # =================================================================================================
 
@@ -29,47 +26,51 @@ clean: ## Limpia todos los archivos no solicitados para la entrega.
 
 # =================================================================================================
 
-DOCKER_SCRIPT ?= "resources/scripts/docker/generate.sh"
-
 # TODO: hacer que funcione correctamente.
 generate-docker: ## Genera ejecutables que permiten correr el compilador utilizando Docker.
 	@chmod +x "$(SCRIPT)"
 	@"$(SCRIPT)"
 
-HTTPD ?= busybox
+# =================================================================================================
 
-everything:
-	@if [ ! -f "$(FILE)" ]; then echo "No existe $(FILE)"; exit 1; fi
+uki-compile compile: ## Ejecuta yacc, compila el programa y lo ejecuta. Ejemplo de uso: `make run FILE="main.uki"`.
+	@chmod +x "$(SCRIPT)"
+	@OUTPUT=$$("$(SCRIPT)" "$(TEST_FILE_DIR)$(FILE)" 2>&1); \
+	echo "$$OUTPUT"; \
+	echo; \
+	if echo "$$OUTPUT" | grep -q "El código contiene errores"; then \
+		touch .compile_failed; \
+		exit 0; \
+	else \
+		rm -f .compile_failed; \
+	fi
 
-	@echo "Generando index.html temporal..."
-	@sed "s|__WASM_FILE__|$(FILE)|" index.template.html > index.html
+# =================================================================================================
 
-	@echo "Iniciando servidor..."
-	@$(HTTPD) httpd -f -p 8080 &
-	@SERVER_PID=$$!; \
-	echo "Servidor PID: $$SERVER_PID"; \
-	\
-	echo "Abriendo navegador..."; \
-	( \
-		if command -v xdg-open >/dev/null; then xdg-open http://localhost:8080/index.html; \
-		elif command -v open >/dev/null; then open http://localhost:8080/index.html; \
-		else echo "Abra manualmente: http://localhost:8080/index.html"; \
-		fi \
-	); \
-	\
-	echo "Presione Ctrl+C para detener"; \
-	trap "kill $$SERVER_PID; rm -f index.html; exit 0" INT; \
-	while true; do sleep 1; done
+uki-run run: uki-compile
+	@if [ -f .compile_failed ]; then \
+		rm -f .compile_failed; \
+		exit 0; \
+	fi; \
+	$(MAKE) generate-html; \
+	echo "Levantando servidor..."; \
+	python3 -m http.server 8000 >/dev/null 2>&1 & \
+	echo $$! > .server.pid; \
+	sleep 1; \
+	xdg-open "http://localhost:8000/" 2>/dev/null || true; \
+	echo "\nServidor levantado en 'http://localhost:8000'"; \
+	echo "Presione ENTER para cerrar el servidor..."; \
+	read _; \
+	if [ -f .server.pid ]; then \
+		kill `cat .server.pid` 2>/dev/null || true; \
+		rm -f .server.pid; \
+	fi
 
-PORT=8000
+# =================================================================================================
 
-open-page:
-	@python3 -m http.server $(PORT) >/dev/null 2>&1 &
-	@SERVER_PID=$$!; \
-		sleep 1; \
-		( xdg-open "http://localhost:$(PORT)" >/dev/null 2>&1 || true ); \
-		sleep 5; \
-		kill $$SERVER_PID >/dev/null 2>&1 || true
+generate-html:
+	@echo "Generando index.html usando $(WASM)..."
+	@sed "s|{{WASM_FILE}}|$(WASM)|g" resources/index.template.html > index.html
 
 # =================================================================================================
 
@@ -78,6 +79,3 @@ help: ## Muestra los comandos disponibles.
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2}'
 
 # =================================================================================================
-
-
-

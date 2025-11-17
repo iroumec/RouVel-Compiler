@@ -1,11 +1,9 @@
 MAIN {
-    uint F1 (uint X) {
-        if (X<10UI)
-            return (X);
-        endif;
+    uint A, B;
 
-        return (15UI);
-    };
+    if(A > B) {
 
-    F1(2.->X);
+    } else {
+
+    } endif;
 }

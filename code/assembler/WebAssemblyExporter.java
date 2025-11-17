@@ -11,9 +11,14 @@ import utilities.Printer;
 
 public class WebAssemblyExporter {
 
+    private static final String watPath = "outputs/wat/";
+    private static final String wasmPath = "outputs/wasm/";
+
     public static void exportToWat(File file, String code) {
 
-        Path path = Paths.get(extractBaseName(file) + ".wat");
+        createDirectoryIfNotExists(watPath);
+
+        Path path = Paths.get(watPath + extractBaseName(file) + ".wat");
 
         try {
             Files.writeString(path, code, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
@@ -27,8 +32,10 @@ public class WebAssemblyExporter {
 
         exportToWat(file, code);
 
-        Path inputPath = Paths.get(extractBaseName(file) + ".wat");
-        Path outputPath = Paths.get(extractBaseName(file) + ".wasm");
+        createDirectoryIfNotExists(wasmPath);
+
+        Path inputPath = Paths.get(watPath + extractBaseName(file) + ".wat");
+        Path outputPath = Paths.get(wasmPath + extractBaseName(file) + ".wasm");
 
         // sudo apt-get wabt in Debian.
         ProcessBuilder processBuilder = new ProcessBuilder("wat2wasm", inputPath.toString(), "-o",
@@ -39,7 +46,7 @@ public class WebAssemblyExporter {
 
             // Leer stderr
             String error = new String(process.getErrorStream().readAllBytes());
-            String output = new String(process.getInputStream().readAllBytes());
+            // String output = new String(process.getInputStream().readAllBytes());
 
             int exitCode = process.waitFor();
 
@@ -55,6 +62,17 @@ public class WebAssemblyExporter {
             Printer.printCentered("Archivo `.wasm` generado: " + outputPath.toString());
         } catch (IOException | InterruptedException _) {
             Printer.printCentered("ERROR: Ocurrió un problema al exportar el código a .wasm.");
+        }
+    }
+
+    private static void createDirectoryIfNotExists(String directoryPath) {
+        try {
+            Path path = Paths.get(directoryPath);
+            if (!Files.exists(path)) {
+                Files.createDirectories(path);
+            }
+        } catch (IOException e) {
+            Printer.printCentered("ERROR: No se pudo crear el directorio: " + directoryPath);
         }
     }
 
