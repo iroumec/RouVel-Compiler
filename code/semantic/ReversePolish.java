@@ -293,7 +293,7 @@ public final class ReversePolish implements Iterable<String> {
         List<String> polishesGenerated = this.functionCalled.closeCall(this, "->");
 
         for (String polish : polishesGenerated) {
-            this.addPolish(polish);
+            this.addTemporalPolish(polish);
         }
     }
 

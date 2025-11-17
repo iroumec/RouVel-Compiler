@@ -15,6 +15,9 @@ public class Assembler {
         Deque<String> operands = new ArrayDeque<>();
         StringBuilder assemblerCode = new StringBuilder();
         StringBuilder executableCode = new StringBuilder();
+        StringBuilder functionDeclarations = new StringBuilder();
+
+        boolean functionDeclaration()
 
         StringBuilder indentation = new StringBuilder();
         indentation.append("    ");
@@ -34,6 +37,9 @@ public class Assembler {
 
                 String iterationCode = operator.getAssembler(operands);
                 if (!iterationCode.isBlank()) {
+
+                    if ()
+
                     executableCode.append(Indenter.indent(iterationCode, indentation)).append("\n");
                 }
 

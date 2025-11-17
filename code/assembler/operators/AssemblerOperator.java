@@ -24,6 +24,18 @@ public interface AssemblerOperator {
 
     // --------------------------------------------------------------------------------------------
 
+    default boolean functionStart() {
+        return false;
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    default boolean functionEnd() {
+        return false;
+    }
+
+    // --------------------------------------------------------------------------------------------
+
     default boolean producesEntryChangeInIndentation() {
         return this.getEntryIndentationChange() != 0;
     }

@@ -1029,7 +1029,7 @@ sentencia_retorno
 
 inline_function_invocation
     : invocacion_funcion ';'
-        { notifyDetection("Invocación de función."); }
+        { notifyDetection("Invocación de función."); this.reversePolish.makeTemporalPolishesDefinitive(); }
 
     // |========================= REGLAS DE ERROR =========================| //
 

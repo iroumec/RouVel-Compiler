@@ -1782,7 +1782,7 @@ case 149:
 break;
 case 150:
 //#line 1032 "gramatica.y"
-{ notifyDetection("Invocación de función."); }
+{ notifyDetection("Invocación de función."); this.reversePolish.makeTemporalPolishesDefinitive(); }
 break;
 case 151:
 //#line 1037 "gramatica.y"
