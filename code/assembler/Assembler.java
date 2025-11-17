@@ -56,13 +56,13 @@ public class Assembler {
 
         // Si hay al menos una impresión, se debe importar el módulo de impresiones.
         assemblerCode.append("(module \n");
-        if (executableCode.toString().contains("$print")) {
+        if (executableCode.toString().contains("$console_log")) {
             assemblerCode.append("""
 
                         ;; Importación de funciones de impresión.
-                        (import "console" "log" (func $printString (param i32 i32)))
-                        (import "console" "logInt" (func $printInt (param i32)))
-                        (import "console" "logFloat" (func $logFloat (param f32)))
+                        (import "console" "log_i32" (func $console_log_i32 (param i32)))
+                        (import "console" "log_f32" (func $console_log_f32 (param f32)))
+                        (import "console" "log_string" (func $console_log_string (param i32 i32)))
 
                         (import "js" "mem" (memory 1))
                     """);

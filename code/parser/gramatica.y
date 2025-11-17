@@ -706,12 +706,14 @@ comparador
 if 
     : if_start cuerpo_if
         { 
+            System.out.println(errorState);
             if (this.statementAppearsInValidState()) {
                 this.reversePolish.closeSelection();
                 this.reversePolish.addSeparation("Leaving 'if-else' body...");
                 notifyDetection("Sentencia 'if'."); 
             } else {
                 this.treatInvalidState("Sentencia 'if'");
+                this.reversePolish.discardSelection();
             }
 
             this.returnsController.notifySelectionEnd();
@@ -742,8 +744,10 @@ cuerpo_if
 
     // |========================= REGLAS DE ERROR =========================| //
 
-    | cuerpo_ejecutable rama_else ENDIF error 
+    | cuerpo_ejecutable rama_else ENDIF error
         { notifyError("La sentencia IF debe terminar con ';'."); errorState = true; }
+    | cuerpo_ejecutable rama_else error
+        { replaceLastErrorWith("La sentencia IF debe finalizar con 'endif'."); errorState = true; }
     | cuerpo_ejecutable rama_else ';'
         { notifyError("La sentencia IF debe finalizar con 'endif'."); errorState = true; }
     | rama_else ENDIF ';'
@@ -1324,9 +1328,11 @@ private void treatInvalidState(String statementName) {
         this.showOmittedStatementNotification(statementName);
     }
 
-    if (errorState) {
-        this.recoverFromErrorState();
-    }
+    // De haber un error, no se trata acá, sino que se levanta
+    // hasta el nivel de sentencia. Esto se realiza de esta forma
+    // porque, de haber un error dentro de un if, se quiere invalidar
+    // toda la estructura de control completa y no, solamente la 
+    // sentencia.
 }
 
 // --------------------------------------------------------------------------------------------------------------------

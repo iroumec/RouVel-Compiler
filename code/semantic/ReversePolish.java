@@ -23,6 +23,7 @@ public final class ReversePolish implements Iterable<String> {
 
     // Es un polish number.
     private int lastSafeState;
+    private int lastPolishNumber;
     private Function functionCalled;
 
     // --------------------------------------------------------------------------------------------
@@ -103,6 +104,7 @@ public final class ReversePolish implements Iterable<String> {
         // de los índices del arreglo cuando hay varios if-else anidados.
         // Se está diciendo: "Reservame un lugar que luego te prometo que lo lleno.".
         this.elements.add(null);
+        this.polishNumber++;
         this.stackedPromises.push(new Promise(this.elements.size(), this.separations));
     }
 
@@ -115,6 +117,9 @@ public final class ReversePolish implements Iterable<String> {
     // --------------------------------------------------------------------------------------------
 
     public void fulfillPromise(Promise promise) {
+
+        System.out.println(promise);
+        System.out.println(this.stackedPromises);
         // Se debe remover el nulo que se agregó para realizar la promesa.
         // Los separadores agregados deben considerarse para ir al índice correcto,
         // ya que ocupan lugar en la lista.
@@ -122,6 +127,46 @@ public final class ReversePolish implements Iterable<String> {
         this.elements.add(promise.bifurcationPoint() - 1,
                 new BifurcationPoint(String.valueOf(polishNumber + 1),
                         promise.bifurcationPoint() - promise.separations()));
+    }
+
+    // --------------------------------------------------------------------------------------------
+    // Selecciones
+    // --------------------------------------------------------------------------------------------
+
+    /**
+     * Open If / IF-Else.
+     */
+    public void openSelection() {
+        this.promiseBifurcationPoint();
+        this.addPolish("FB");
+    }
+
+    /**
+     * Close If / If-Else.
+     */
+    public void closeSelection() {
+        System.out.println("Here's the problem.");
+        this.fulfillPromise(this.getLastPromise());
+    }
+
+    public void discardSelection() {
+        this.getLastPromise();
+    }
+
+    /**
+     * Open Else.
+     */
+    public void openAlternative() {
+        // Se obtiene la promesa del cuerpo then.
+        Promise promise = this.getLastPromise();
+
+        // Se promete un nuevo punto de bifurcación.
+        this.promiseBifurcationPoint();
+        this.addPolish("UB");
+
+        // Se cumple la promesa obtenida al comienzo.
+        // Es necesario que se realice así para respetar los índices de la polaca.
+        this.fulfillPromise(promise);
     }
 
     // --------------------------------------------------------------------------------------------
@@ -280,46 +325,12 @@ public final class ReversePolish implements Iterable<String> {
     }
 
     // --------------------------------------------------------------------------------------------
-    // Selecciones
-    // --------------------------------------------------------------------------------------------
-
-    /**
-     * Open If / IF-Else.
-     */
-    public void openSelection() {
-        this.promiseBifurcationPoint();
-        this.addPolish("FB");
-    }
-
-    /**
-     * Close If / If-Else.
-     */
-    public void closeSelection() {
-        this.fulfillPromise(this.getLastPromise());
-    }
-
-    /**
-     * Open Else.
-     */
-    public void openAlternative() {
-        // Se obtiene la promesa del cuerpo then.
-        Promise promise = this.getLastPromise();
-
-        // Se promete un nuevo punto de bifurcación.
-        this.promiseBifurcationPoint();
-        this.addPolish("IB");
-
-        // Se cumple la promesa obtenida al comienzo.
-        // Es necesario que se realice así para respetar los índices de la polaca.
-        this.fulfillPromise(promise);
-    }
-
-    // --------------------------------------------------------------------------------------------
     // Manejo de Estado Seguro
     // --------------------------------------------------------------------------------------------
 
     public void recordSafeState() {
         this.lastSafeState = this.elements.size();
+        this.lastPolishNumber = this.polishNumber;
 
         if (this.debug) {
             System.out.println("Safe state recorded in: " + this.lastSafeState);
@@ -331,6 +342,7 @@ public final class ReversePolish implements Iterable<String> {
     public void returnToLastSafeState() {
         // Se eliminan todos los elementos agregados luego del último estado seguro.
         elements.subList(lastSafeState, elements.size()).clear();
+        this.polishNumber = this.lastPolishNumber;
 
         if (this.debug) {
             System.out.println("The reverse polished was restored to last safe state: " + this.lastSafeState);
@@ -346,7 +358,11 @@ public final class ReversePolish implements Iterable<String> {
         Printer.printSeparator();
 
         for (Element element : this.elements) {
-            element.print();
+            if (element != null) {
+                element.print();
+            } else {
+                Printer.printWrapped("null");
+            }
         }
 
         Printer.printSeparator();

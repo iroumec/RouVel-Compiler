@@ -1,0 +1,11 @@
+MAIN {
+    uint F1 (uint X) {
+        if (X<10UI)
+            return (X);
+        endif;
+
+        return (15UI);
+    };
+
+    F1(2.->X);
+}

@@ -9,6 +9,7 @@ import utilities.Printer;
 import common.SymbolTable;
 import assembler.Assembler;
 import semantic.ReversePolish;
+import assembler.WebAssemblyExporter;
 
 public class Main {
 
@@ -53,11 +54,22 @@ public class Main {
         Printer.printSeparator();
         Printer.printCentered("Código WebAssembly");
         Printer.printSeparator();
-        Printer.printFramed(
-                monitor.hasErrorMessages()
-                        ? "El código contiene errores, por lo que no fue posible generar un código assembler."
-                        : Assembler.generate(sintacticalAnalyzer.getReversePolish()));
+
+        if (!monitor.hasErrorMessages()) {
+
+            String assemblerCode = Assembler.generate(sintacticalAnalyzer.getReversePolish());
+            Printer.printFramed(assemblerCode);
+            Printer.printSeparator();
+
+            Printer.printBlankSpace();
+            Printer.printSeparator();
+            WebAssemblyExporter.exportToWat(file, assemblerCode);
+        } else {
+            Printer.printFramed("El código contiene errores, por lo que no fue posible generar un código assembler.");
+        }
+
         Printer.printSeparator();
+        Printer.printBlankSpace();
     }
 
     // --------------------------------------------------------------------------------------------

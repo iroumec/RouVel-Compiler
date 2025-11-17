@@ -38,21 +38,21 @@ public class Print implements AssemblerOperator {
             code = String.format("i32.const %s %n", operand.getValue());
             code += String.format("i32.const %d %n", operand.getLexema().length() - 2); // -2 ya que se restan las
                                                                                         // comillas.
-            code += String.format("call $printString %n");
+            code += String.format("call $console_log_string %n");
         } else if (operand.isCategory(SymbolCategory.CONSTANT)) {
 
             if (operand.isType(SymbolType.UINT)) {
                 code = String.format("i32.const %s %n", operand.getValue());
-                code += String.format("call $printInt %n");
+                code += String.format("call $console_log_i32 %n");
 
             } else { // Flotante.
 
                 code = String.format("f32.const %s %n", operand.getValue());
-                code += String.format("call $printFloat %n");
+                code += String.format("call $console_log_f32 %n");
             }
         } else { // Es variable.
             code = String.format("local.get %s %n", operand.getLexemaWithoutScope());
-            code += String.format("call $printInt %n");
+            code += String.format("call $console_log_i32 %n");
         }
 
         return code;
