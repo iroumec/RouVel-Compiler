@@ -161,6 +161,11 @@ public final class SymbolTable {
         }
     }
 
+    public String getProgramName() {
+
+        return SymbolTable.getInstance().get(null, SymbolCategory.PROGRAM).getFirst().getLexema();
+    }
+
     // --------------------------------------------------------------------------------------------
 
     /**

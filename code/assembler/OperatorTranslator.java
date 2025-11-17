@@ -20,6 +20,7 @@ import assembler.operators.implementations.arithmetic.Subtraction;
 import assembler.operators.implementations.functions.call.Argument;
 import assembler.operators.implementations.comparison.GreaterOrEqual;
 import assembler.operators.implementations.functions.call.ReadResult;
+import assembler.operators.implementations.functions.call.ReadReturn;
 import assembler.operators.implementations.arithmetic.Multiplication;
 import assembler.operators.implementations.functions.call.FunctionCall;
 import assembler.operators.implementations.bifurcations.TrueBifurcation;
@@ -43,6 +44,7 @@ class OperatorTranslator {
             case "close-loop" -> LoopCloser.getInstance();
             case "end-label" -> EndLabel.getInstance();
             case "call" -> FunctionCall.getInstance();
+            case "read-return" -> ReadReturn.getInstance();
             case "->" -> Argument.getInstance();
             case "return" -> Return.getInstance();
             case "print" -> Print.getInstance();

@@ -1,7 +1,7 @@
 package assembler;
 
-import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.ArrayDeque;
 
 public final class CodeRepository {
 
@@ -11,7 +11,7 @@ public final class CodeRepository {
     Deque<String> operands;
     StringBuilder executableCode;
 
-    Deque<Pair> blockStack;
+    Deque<Block> blockStack;
 
     public CodeRepository() {
         this.operands = new ArrayDeque<>();
@@ -28,12 +28,12 @@ public final class CodeRepository {
     }
 
     public void startProgram() {
-        this.startBlock();
+        this.startBlock(Dumper.getProgramName());
         this.increaseIndentation();
     }
 
-    public void startBlock() {
-        this.blockStack.push(new Pair(new StringBuilder(), new StringBuilder(INDENTATION)));
+    public void startBlock(String scope) {
+        this.blockStack.push(new Block(scope, new StringBuilder(), new StringBuilder(INDENTATION)));
     }
 
     public void endBlock() {
@@ -68,6 +68,10 @@ public final class CodeRepository {
     public void decreaseIndentation() {
         this.blockStack.peek().indentation()
                 .setLength(this.blockStack.peek().indentation().length() - INDENTATION.length());
+    }
+
+    public String getCurrentScope() {
+        return this.blockStack.peek().scope();
     }
 
     // Este método solo tiene fines estéticos.
@@ -118,7 +122,7 @@ public final class CodeRepository {
 
     }
 
-    private record Pair(StringBuilder code, StringBuilder indentation) {
+    private record Block(String scope, StringBuilder code, StringBuilder indentation) {
 
     }
 }

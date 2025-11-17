@@ -127,9 +127,6 @@ class Function {
 
                 List<String> expressions = argument.getExpression();
 
-                System.out.println(argument);
-                System.out.println(parameter);
-
                 if (expressions.size() > 1
                         || !symbolTable.isSymbol(argument.getExpression().getFirst(), SymbolCategory.VARIABLE)) {
                     notifyError(
@@ -148,6 +145,8 @@ class Function {
         }
 
         this.arguments.clear();
+
+        out.add("read-return");
 
         return out;
     }

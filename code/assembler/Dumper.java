@@ -69,4 +69,8 @@ public final class Dumper {
 
         return code.toString();
     }
+
+    static String getProgramName() {
+        return SymbolTable.getInstance().getProgramName();
+    }
 }

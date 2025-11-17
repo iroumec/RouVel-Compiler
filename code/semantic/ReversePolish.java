@@ -257,8 +257,6 @@ public final class ReversePolish implements Iterable<String> {
 
     public void closeFunctionDeclaration(String functionName) {
 
-        // this.functions.getLast().closeDeclaration();
-
         this.addPolish(functionName);
         this.addPolish("close-function");
     }

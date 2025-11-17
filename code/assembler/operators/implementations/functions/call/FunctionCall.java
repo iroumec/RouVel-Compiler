@@ -33,17 +33,6 @@ public class FunctionCall implements AssemblerOperator {
         // Invocación a la función.
         String code = String.format("call $%s %n", function.getLexemaWithoutScope());
 
-        // Variale auxiliar en la que se guardará el retorno de la función.
-        String newOperandName = symbolTable.addAuxiliarVariable(function.getScope());
-
-        code += String.format("%n;; Lectura del retorno de la invocación de la función%n");
-        code += String.format(";; y guardado en una variable auxiliar%n");
-        code += String.format("local.set $%s", symbolTable.getSymbol(newOperandName).getLexemaWithoutScope());
-
-        // Se agrega el operando a la pila, para que el retorno
-        // pueda ser usado dentro de operaciones.
-        repository.pushOperand(newOperandName);
-
         repository.addCode(code);
     }
 }

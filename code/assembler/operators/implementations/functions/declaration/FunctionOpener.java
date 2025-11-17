@@ -36,9 +36,9 @@ public class FunctionOpener implements AssemblerOperator {
         // TODO: revisar qué pasa si hay dos funciones con un mismo nombre pero en
         // distintos ámbitos.
 
-        repository.startBlock();
-        StringBuilder code = new StringBuilder();
+        repository.startBlock(symbol.getScope());
 
+        StringBuilder code = new StringBuilder();
         String functionName = symbol.getLexemaWithoutScope();
 
         code.append(String.format("(func $%s %n", functionName));
