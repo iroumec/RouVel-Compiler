@@ -102,7 +102,6 @@ public final class CodeRepository {
                         (import "console" "log_string" (func $console_log_string (param i32 i32)))
 
                         (import "js" "mem" (memory 1))
-
                     """);
         }
 

@@ -1075,7 +1075,6 @@ lista_argumentos
 argumento
     : expression FLECHA ID
         {
-
             this.reversePolish.addArgument($3);
         }
 

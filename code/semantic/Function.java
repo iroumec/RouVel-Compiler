@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 import common.Monitor;
+import common.SymbolCategory;
 import common.SymbolTable;
 
 class Function {
@@ -126,7 +127,11 @@ class Function {
 
                 List<String> expressions = argument.getExpression();
 
-                if (expressions.size() > 1) {
+                System.out.println(argument);
+                System.out.println(parameter);
+
+                if (expressions.size() > 1
+                        || !symbolTable.isSymbol(argument.getExpression().getFirst(), SymbolCategory.VARIABLE)) {
                     notifyError(
                             "El argumento no es un objeto referenciable y, por lo tanto, no es válido para pasaje por CVR.");
                 } else {
@@ -165,9 +170,11 @@ class Function {
 
     private void notifyError(String errorMessage) {
 
-        Monitor.getInstance().addError(String.format(
+        Monitor monitor = Monitor.getInstance();
+
+        monitor.addError(String.format(
                 "ERROR SEMÁNTICO: Línea %d: %s",
-                Monitor.getInstance().getLineNumber(), errorMessage));
+                monitor.getLineNumber(), errorMessage));
     }
 
     // --------------------------------------------------------------------------------------------

@@ -53,9 +53,12 @@ public class WebAssemblyExporter {
             Printer.printSeparator();
 
             if (exitCode != 0) {
+                Printer.printBlankSpace();
+                Printer.printSeparator();
                 Printer.printCentered("wat2wasm falló.");
+                Printer.printSeparator();
                 Printer.printCentered("Salida de error:");
-                Printer.printCentered(error.strip());
+                Printer.printFramed(error.strip());
                 return;
             }
 

@@ -59,6 +59,15 @@ public final class SymbolTable {
 
     // --------------------------------------------------------------------------------------------
 
+    public boolean isSymbol(String lexema, SymbolCategory category) {
+
+        Symbol symbol = this.symbolTable.get(lexema);
+
+        return symbol != null && symbol.isCategory(category);
+    }
+
+    // --------------------------------------------------------------------------------------------
+
     public String addAuxiliarVariable(String scope) {
 
         String variable = "temp" + (this.auxiliarVariableNumber++) + ":" + scope;

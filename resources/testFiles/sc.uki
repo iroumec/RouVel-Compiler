@@ -1,0 +1,10 @@
+MAIN {
+    uint F1(uint A, cvr uint B) {
+        return (A);
+    }
+
+    uint X;
+    X := F1(X -> B, 1UI->A);
+
+    print(X);
+}

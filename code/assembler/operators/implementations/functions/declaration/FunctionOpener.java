@@ -64,7 +64,8 @@ public class FunctionOpener implements AssemblerOperator {
         // TODO: mejorar esto para no hacer dos recorridos en la tabla de símbolos.
         // TODO: aclarar en el informe el no guardado de variable auxiliar flotante.
         List<Symbol> parameters = SymbolTable.getInstance().get(functionName, SymbolCategory.CV_PARAMETER);
-        parameters.addAll(SymbolTable.getInstance().get(functionName, SymbolCategory.CVR_PARAMETER));
+        List<Symbol> copyRestoreParameter = SymbolTable.getInstance().get(functionName, SymbolCategory.CVR_PARAMETER);
+        parameters.addAll(copyRestoreParameter);
 
         for (Symbol symbol : parameters) {
             // El lenguaje solo tiene como parámetros válidos enteros de 32 bits.
@@ -78,6 +79,15 @@ public class FunctionOpener implements AssemblerOperator {
          * consiguiente, no debe hacerse explícito.
          */
 
-        return code.append("    (result i32) \n").toString();
+        /**
+         * El número de retornos está compuesto por el retorno de la función,
+         * más todos los parámetros que sean por cvr. Si no se aclara en el retorno
+         * la cantidad de operandos que van a quedar en la pila al salir de la función,
+         * se pierden.
+         */
+
+        String retornos = " i32".repeat(1 + copyRestoreParameter.size());
+
+        return code.append("    (result" + retornos + ") \n").toString();
     }
 }

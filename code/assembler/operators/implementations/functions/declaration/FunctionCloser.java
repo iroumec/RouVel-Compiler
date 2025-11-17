@@ -2,13 +2,12 @@ package assembler.operators.implementations.functions.declaration;
 
 import java.util.List;
 
-import assembler.CodeRepository;
-import assembler.Dumper;
-import assembler.operators.AssemblerOperator;
 import common.Symbol;
-import common.SymbolCategory;
-import common.SymbolTable;
 import common.SymbolType;
+import common.SymbolTable;
+import common.SymbolCategory;
+import assembler.CodeRepository;
+import assembler.operators.AssemblerOperator;
 
 public class FunctionCloser implements AssemblerOperator {
 
@@ -39,15 +38,11 @@ public class FunctionCloser implements AssemblerOperator {
 
         code.append(dumpResultsParameters(functionName));
 
-        String results = Dumper.dumpBlockVariables(functionName);
-
-        if (!results.isBlank()) {
-            code.append("\n").append(results);
-        }
-
         repository.decreaseIndentation();
+        repository.addCode(code);
         repository.removeLastLine(); // Para que la llave no quede separada.
-        repository.addCode(code.append(")\n"));
+        repository.removeLastLine();
+        repository.addCode(")");
         repository.endBlock();
     }
 

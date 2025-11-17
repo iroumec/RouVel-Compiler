@@ -14,7 +14,7 @@ public final class ReversePolish implements Iterable<String> {
 
     // --------------------------------------------------------------------------------------------
 
-    private boolean debug = true;
+    private boolean debug = false;
 
     // --------------------------------------------------------------------------------------------
 
@@ -139,6 +139,8 @@ public final class ReversePolish implements Iterable<String> {
         this.addPolish("FB");
     }
 
+    // --------------------------------------------------------------------------------------------
+
     /**
      * Close If / If-Else.
      */
@@ -147,9 +149,13 @@ public final class ReversePolish implements Iterable<String> {
         this.addPolish("close-selection");
     }
 
+    // --------------------------------------------------------------------------------------------
+
     public void discardSelection() {
         this.getLastPromise();
     }
+
+    // --------------------------------------------------------------------------------------------
 
     /**
      * Open Else.
