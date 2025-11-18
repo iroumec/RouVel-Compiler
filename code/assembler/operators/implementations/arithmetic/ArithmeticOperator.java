@@ -1,5 +1,7 @@
 package assembler.operators.implementations.arithmetic;
 
+import java.math.BigDecimal;
+
 import assembler.CodeRepository;
 import assembler.operators.AssemblerOperator;
 import common.Symbol;
@@ -8,6 +10,12 @@ import common.SymbolTable;
 import common.SymbolType;
 
 public abstract class ArithmeticOperator implements AssemblerOperator {
+
+    // --------------------------------------------------------------------------------------------
+
+    protected static final int MAX_UINT = 65535;
+    protected static final BigDecimal ABSOLUTE_MAXIMUM = new BigDecimal("3.40282347E38");
+    protected static final BigDecimal ABSOLUTE_MINIMUN = new BigDecimal("1.17549435E-38");
 
     // --------------------------------------------------------------------------------------------
 
@@ -22,7 +30,11 @@ public abstract class ArithmeticOperator implements AssemblerOperator {
         // Obtención del símbolo del primer operando.
         Symbol firstOperand = symbolTable.getSymbol(repository.popOperand());
 
-        repository.addCode(resolveOperation(firstOperand, secondOperand, repository));
+        String code = resolveOperation(firstOperand, secondOperand, repository);
+
+        if (!code.isBlank()) {
+            repository.addCode(code);
+        }
     }
 
     // --------------------------------------------------------------------------------------------
@@ -30,7 +42,6 @@ public abstract class ArithmeticOperator implements AssemblerOperator {
     private String resolveOperation(Symbol firstOperand, Symbol secondOperand, CodeRepository repository) {
 
         String code = "";
-        String newOperandName;
         PairType pairType = PairType.getType(firstOperand, secondOperand);
 
         SymbolTable symbolTable = SymbolTable.getInstance();
@@ -40,11 +51,9 @@ public abstract class ArithmeticOperator implements AssemblerOperator {
         // calculada la suma.
         if (symbolsBelongToCategory(SymbolCategory.CONSTANT, firstOperand, secondOperand)) {
 
-            String sumValue = applySimpleReduction(pairType, firstOperand, secondOperand);
-            symbolTable.addEntry(sumValue, new Symbol(sumValue, sumValue, SymbolType.UINT));
-            newOperandName = sumValue;
+            // Simple Reduction.
+            this.applyDirectOperation(firstOperand, secondOperand, pairType, repository);
 
-            // Sin assembler generado.
         } else {
             // Se añade una variable auxiliar.
             // Podría obtener el scope del segundo operando indistinguidamente.
@@ -57,19 +66,19 @@ public abstract class ArithmeticOperator implements AssemblerOperator {
                 scope = secondOperand.getScope();
             }
 
-            newOperandName = symbolTable.addAuxiliarVariable(scope);
+            String newOperand = symbolTable.addAuxiliarVariable(scope);
 
-            code = this.getRuntimeControls(firstOperand, secondOperand) + "\n";
+            // Se añade la variable auxiliar como nuevo operando.
+            repository.pushOperand(newOperand);
 
-            code += this.getCode(pairType, symbolTable, firstOperand, secondOperand, newOperandName);
+            applyRuntimeControls(firstOperand, secondOperand, repository);
+
+            code += this.getCode(pairType, symbolTable, firstOperand, secondOperand, newOperand);
         }
 
         // Se remueve una referencia de cada operando.
         symbolTable.removeEntry(firstOperand.getLexema());
         symbolTable.removeEntry(secondOperand.getLexema());
-
-        // Se añade el nuevo operando.
-        repository.pushOperand(newOperandName);
 
         return code;
     }
@@ -89,7 +98,7 @@ public abstract class ArithmeticOperator implements AssemblerOperator {
 
     // --------------------------------------------------------------------------------------------
 
-    private enum PairType {
+    protected enum PairType {
         UINT_UINT,
         UINT_FLOAT,
         FLOAT_FLOAT;
@@ -110,24 +119,6 @@ public abstract class ArithmeticOperator implements AssemblerOperator {
 
             return firstOperand.isType(type) && secondOperand.isType(type);
         }
-    }
-
-    // --------------------------------------------------------------------------------------------
-
-    private String applySimpleReduction(PairType pairType, Symbol firstOperand, Symbol secondOperand) {
-
-        return switch (pairType) {
-            case UINT_UINT ->
-                String.valueOf(this.applyOperation(
-                        Integer.valueOf(firstOperand.getValue()), Integer.valueOf(secondOperand.getValue())));
-            case FLOAT_FLOAT -> String
-                    .valueOf(this.applyOperation(Float.valueOf(firstOperand.getValue()),
-                            Float.valueOf(secondOperand.getValue())));
-            case UINT_FLOAT ->
-                Integer.toUnsignedString(this.applyOperation(Float.valueOf(firstOperand.getValue()).intValue(),
-                        Float.valueOf(secondOperand.getValue()).intValue()));
-            default -> null;
-        };
     }
 
     // --------------------------------------------------------------------------------------------
@@ -164,11 +155,8 @@ public abstract class ArithmeticOperator implements AssemblerOperator {
 
     // --------------------------------------------------------------------------------------------
 
-    protected abstract int applyOperation(int firstOperand, int secondOperand);
-
-    // --------------------------------------------------------------------------------------------
-
-    protected abstract float applyOperation(float firstOperand, float secondOperand);
+    protected abstract void applyDirectOperation(Symbol firstOperand, Symbol secondOperand, PairType pairType,
+            CodeRepository repository);
 
     // --------------------------------------------------------------------------------------------
 
@@ -176,5 +164,5 @@ public abstract class ArithmeticOperator implements AssemblerOperator {
 
     // --------------------------------------------------------------------------------------------
 
-    protected abstract String getRuntimeControls(Symbol firstOperand, Symbol secondOperand);
+    protected abstract void applyRuntimeControls(Symbol firstOperand, Symbol secondOperand, CodeRepository repository);
 }

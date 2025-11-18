@@ -21,6 +21,12 @@ import utilities.Printer;
 
 public final class Lexer {
 
+    // --------------------------------------------------------------------------------------------
+
+    private static final boolean printTokens = false;
+
+    // --------------------------------------------------------------------------------------------
+
     private Monitor monitor;
     private char lastCharRead;
     private Token currentToken;
@@ -80,8 +86,10 @@ public final class Lexer {
             this.currentToken = new Token(TokenType.EOF, null);
         }
 
-        // Se imprime el token en la salida.
-        Printer.printFramed(this.currentToken);
+        if (printTokens) {
+            // Se imprime el token en la salida.
+            Printer.printFramed(this.currentToken);
+        }
 
         // Se devuelve el token.
         return this.currentToken;

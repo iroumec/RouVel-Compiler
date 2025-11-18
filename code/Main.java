@@ -14,6 +14,7 @@ import assembler.WebAssemblyExporter;
 public class Main {
 
     private static final String fileSuffix = ".uki";
+    private static final boolean printAssemblerCode = true;
 
     // --------------------------------------------------------------------------------------------
 
@@ -51,17 +52,22 @@ public class Main {
 
         printReport();
 
-        Printer.printSeparator();
-        Printer.printCentered("Código WebAssembly");
-        Printer.printSeparator();
+        if (printAssemblerCode) {
+            Printer.printSeparator();
+            Printer.printCentered("Código WebAssembly");
+            Printer.printSeparator();
+        }
 
         if (!monitor.hasErrorMessages()) {
 
             String assemblerCode = Assembler.generate(sintacticalAnalyzer.getReversePolish());
-            Printer.printFramed(assemblerCode);
-            Printer.printSeparator();
 
-            Printer.printBlankSpace();
+            if (printAssemblerCode) {
+                Printer.printFramed(assemblerCode);
+                Printer.printSeparator();
+                Printer.printBlankSpace();
+            }
+
             Printer.printSeparator();
             WebAssemblyExporter.exportToWasm(file, assemblerCode);
             Printer.printSeparator();

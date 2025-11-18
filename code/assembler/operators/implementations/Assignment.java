@@ -1,5 +1,7 @@
 package assembler.operators.implementations;
 
+import java.math.BigDecimal;
+
 import assembler.CodeRepository;
 import assembler.operators.AssemblerOperator;
 import common.Symbol;
@@ -72,8 +74,15 @@ public class Assignment implements AssemblerOperator {
 
         String code;
 
+        BigDecimal operandValue = operand.getValueAsBigDecimal();
+
         // Carga de la constante flotante.
-        code = String.format("f32.const %s %n", Float.valueOf(operand.getValue()).toString());
+        code = String.format("f32.const %s %n", operandValue);
+
+        // Si es negativo, se agrega la conversión a absoluto.
+        if (operandValue.signum() < 0) {
+            code += String.format("f32.abs %n");
+        }
 
         // Conversión a entero.
         // En una asignación, del lado izquierdo siempre voy a tener variables de tipo

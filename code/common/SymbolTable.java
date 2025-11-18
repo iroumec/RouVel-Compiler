@@ -88,6 +88,26 @@ public final class SymbolTable {
 
     // --------------------------------------------------------------------------------------------
 
+    public Symbol addUint(int value) {
+
+        Symbol symbol = Symbol.createNewUint(String.valueOf(value));
+        this.addEntry(symbol.getLexema(), symbol);
+
+        return symbol;
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    public Symbol addFloat(float value) {
+
+        Symbol symbol = Symbol.createNewFloat(String.valueOf(value));
+        this.addEntry(symbol.getLexema(), symbol);
+
+        return symbol;
+    }
+
+    // --------------------------------------------------------------------------------------------
+
     /**
      * Remplaza una entrada en la tabla por otra.
      * 

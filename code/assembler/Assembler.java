@@ -42,4 +42,7 @@ public class Assembler {
         // Se retorna el código completo.
         return codeRepository.getProgram();
     }
+
+    // --------------------------------------------------------------------------------------------
+
 }

@@ -746,8 +746,14 @@ final static String yyrule[] = {
 //#line 1207 "gramatica.y"
 
 // ====================================================================================================================
-// INICIO DE CÓDIGO (opcional)
+// INICIO DE CÓDIGO (Segmento Ocional)
 // ====================================================================================================================
+
+// --------------------------------------------------------------------------------------------------------------------
+
+private static final boolean printDetections = false;
+
+// --------------------------------------------------------------------------------------------------------------------
 
 private final Lexer lexer;
 private boolean errorState;
@@ -820,10 +826,14 @@ private void yyerror(String s) {
 // --------------------------------------------------------------------------------------------------------------------
 
 private void notifyDetection(String message) {
-    Printer.printWrapped(String.format(
-        "DETECCIÓN SINTÁCTICA: Línea %d: %s",
-        monitor.getLineNumber(), message
-    ));
+
+    if (printDetections) {
+
+        Printer.printWrapped(String.format(
+            "DETECCIÓN SINTÁCTICA: Línea %d: %s",
+            monitor.getLineNumber(), message
+        ));
+    }
 }
 
 // --------------------------------------------------------------------------------------------------------------------
@@ -913,7 +923,7 @@ private boolean isUint(String number) {
 // ====================================================================================================================
 // FIN DE CÓDIGO
 // ====================================================================================================================
-//#line 845 "Parser.java"
+//#line 855 "Parser.java"
 //###############################################################
 // method: yylexdebug : check lexer state
 //###############################################################
@@ -1916,7 +1926,7 @@ case 174:
             this.reversePolish.addSeparation("Entering lambda expression body...");
         }
 break;
-//#line 1843 "Parser.java"
+//#line 1853 "Parser.java"
 //########## END OF USER-SUPPLIED ACTIONS ##########
     }//switch
     //#### Now let's reduce... ####

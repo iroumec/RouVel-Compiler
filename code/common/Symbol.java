@@ -1,5 +1,6 @@
 package common;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 
 public class Symbol {
@@ -38,6 +39,26 @@ public class Symbol {
         // en el string que se creo. Esto es útil para el assembler, para saber dónde
         // comenzar a gaurdar cada String y que estos no se pisen.
         stringCounter += finalLexema.length() - 2;
+
+        return symbol;
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    public static Symbol createNewUint(String value) {
+
+        Symbol symbol = new SymbolBuilder(value + "UI").value(value).category(SymbolCategory.CONSTANT)
+                .type(SymbolType.UINT).build();
+
+        return symbol;
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    public static Symbol createNewFloat(String value) {
+
+        Symbol symbol = new SymbolBuilder(value).value(value).category(SymbolCategory.CONSTANT)
+                .type(SymbolType.FLOAT).build();
 
         return symbol;
     }
@@ -126,6 +147,12 @@ public class Symbol {
 
     boolean hasNoReferences() {
         return references == 0;
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    public BigDecimal getValueAsBigDecimal() {
+        return new BigDecimal(this.value.toString());
     }
 
     // --------------------------------------------------------------------------------------------

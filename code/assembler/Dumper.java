@@ -29,7 +29,7 @@ public final class Dumper {
         String functionVariables = dumpBlockVariables(functionName);
 
         if (!functionVariables.isBlank()) {
-            code.append("    ;; Variable globales.");
+            code.append("    ;; Variables globales.");
             code.append("\n").append(functionVariables);
         }
 

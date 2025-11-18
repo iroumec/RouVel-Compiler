@@ -8,7 +8,7 @@ public class Monitor {
 
     // --------------------------------------------------------------------------------------------
 
-    private MessageCollector errorCollector, warningCollector;
+    private final MessageCollector errorCollector, warningCollector;
 
     // --------------------------------------------------------------------------------------------
 

@@ -1206,8 +1206,14 @@ parametro_lambda
 %%
 
 // ====================================================================================================================
-// INICIO DE CÓDIGO (opcional)
+// INICIO DE CÓDIGO (Segmento Ocional)
 // ====================================================================================================================
+
+// --------------------------------------------------------------------------------------------------------------------
+
+private static final boolean printDetections = false;
+
+// --------------------------------------------------------------------------------------------------------------------
 
 private final Lexer lexer;
 private boolean errorState;
@@ -1280,10 +1286,14 @@ private void yyerror(String s) {
 // --------------------------------------------------------------------------------------------------------------------
 
 private void notifyDetection(String message) {
-    Printer.printWrapped(String.format(
-        "DETECCIÓN SINTÁCTICA: Línea %d: %s",
-        monitor.getLineNumber(), message
-    ));
+
+    if (printDetections) {
+
+        Printer.printWrapped(String.format(
+            "DETECCIÓN SINTÁCTICA: Línea %d: %s",
+            monitor.getLineNumber(), message
+        ));
+    }
 }
 
 // --------------------------------------------------------------------------------------------------------------------
