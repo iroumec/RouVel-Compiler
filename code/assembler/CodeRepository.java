@@ -9,7 +9,7 @@ public final class CodeRepository {
 
     // --------------------------------------------------------------------------------------------
 
-    // StringBuilder imports;
+    StringBuilder imports;
     Deque<String> operands;
     StringBuilder executableCode;
 
@@ -20,6 +20,7 @@ public final class CodeRepository {
     // --------------------------------------------------------------------------------------------
 
     public CodeRepository() {
+        this.imports = new StringBuilder();
         this.operands = new ArrayDeque<>();
         this.blockStack = new ArrayDeque<>();
         this.executableCode = new StringBuilder();
@@ -92,6 +93,14 @@ public final class CodeRepository {
     }
 
     // ============================================================================================
+    // Manejo de Importaciones
+    // ============================================================================================
+
+    public void addImport(String importCode) {
+        this.imports.append(importCode).append("\n");
+    }
+
+    // ============================================================================================
     // Manejo de la Indentación
     // ============================================================================================
 
@@ -143,16 +152,11 @@ public final class CodeRepository {
 
         // Si hay al menos una impresión, se debe importar el módulo de impresiones.
         code.append("(module \n");
-        if (executableCode.toString().contains("$console_log")) {
-            code.append("""
 
-                        ;; Importación de funciones de impresión.
-                        (import "console" "log_i32" (func $console_log_i32 (param i32)))
-                        (import "console" "log_f32" (func $console_log_f32 (param f32)))
-                        (import "console" "log_string" (func $console_log_string (param i32 i32)))
-
-                        (import "js" "mem" (memory 1))
-                    """);
+        if (!imports.isEmpty()) {
+            code.append("\n").append(INDENTATION + ";; Importación de funciones.").append("\n");
+            code.append(Indenter.indent(imports, INDENTATION));
+            code.append("\n").append(INDENTATION + "(import \"js\" \"mem\" (memory 1))").append("\n");
         }
 
         String stringsSection = Dumper.dumpStrings();

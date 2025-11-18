@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 
 /**
- * Clase auxiliar encargada de indentar un texto que revise.
+ * Clase auxiliar encargada de indentar un texto.
  */
 public final class Indenter {
 

@@ -7,9 +7,5 @@ MAIN {
         } endif;
     }
 
-    uint X;
-
-    X := FUNCION(0.->USELESS);
-
-    print(X);
+    print(FUNCION(0.->USELESS));
 }
