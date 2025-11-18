@@ -164,7 +164,7 @@ public final class CodeRepository {
 
         String stringsSection = Dumper.dumpStrings();
         if (!stringsSection.isBlank()) {
-            code.append(stringsSection).append("\n");
+            code.append("\n").append(stringsSection);
         }
 
         if (!executableCode.isEmpty()) {

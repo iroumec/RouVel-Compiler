@@ -3,9 +3,8 @@ package assembler;
 import java.util.List;
 
 import common.Symbol;
-import common.SymbolCategory;
 import common.SymbolTable;
-import common.SymbolType;
+import common.SymbolCategory;
 
 public final class Dumper {
 
@@ -60,17 +59,15 @@ public final class Dumper {
 
         StringBuilder code = new StringBuilder();
 
-        List<Symbol> strings = SymbolTable.getInstance().get(null, SymbolType.STRING);
+        List<Symbol> strings = SymbolTable.getInstance().getStrings();
 
         for (Symbol symbol : strings) {
-
-            // int stringIdentifier = stringNumber++ * memorySeparation;
 
             // Todas las variables que se tienen en el lenguaje son enteros de 32 bits.
             // Por eso está "hardcodeado" el "i32".
             code.append(
                     String.format("    (data (i32.const %s) %s)%n", symbol.getValue(),
-                            symbol.getLexemaWithoutScope()));
+                            symbol.getLexema()));
         }
 
         return code.toString();

@@ -53,7 +53,7 @@ public class Division extends ArithmeticOperator {
     protected String getRuntimeControls(Symbol firstOperand, Symbol secondOperand) {
 
         // Si se colocan los dos puntos, por alguna razón, no lo agrega al assembler.
-        String message = "\"RUNTIME ERROR -> División por cero.\"";
+        String message = "RUNTIME ERROR: División por cero.";
 
         Symbol messageSymbol = Symbol.createNewString(message);
 

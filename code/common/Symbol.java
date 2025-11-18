@@ -20,14 +20,24 @@ public class Symbol {
 
     public static Symbol createNewString(String lexema) {
 
-        Symbol symbol = new SymbolBuilder(lexema).value(String.valueOf(stringCounter))
+        String finalLexema = lexema;
+
+        if (!lexema.startsWith("\"")) {
+            finalLexema = "\"" + finalLexema;
+        }
+
+        if (!lexema.endsWith("\"")) {
+            finalLexema = finalLexema + "\"";
+        }
+
+        Symbol symbol = new SymbolBuilder(finalLexema).value(String.valueOf(stringCounter))
                 .category(SymbolCategory.CONSTANT)
                 .type(SymbolType.STRING).build();
 
         // Se incrementa el string counter de acuerdo al número de caracteres
         // en el string que se creo. Esto es útil para el assembler, para saber dónde
         // comenzar a gaurdar cada String y que estos no se pisen.
-        stringCounter += lexema.length() - 2;
+        stringCounter += finalLexema.length() - 2;
 
         return symbol;
     }

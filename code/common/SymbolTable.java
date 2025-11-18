@@ -225,6 +225,22 @@ public final class SymbolTable {
 
     // --------------------------------------------------------------------------------------------
 
+    public List<Symbol> getStrings() {
+
+        List<Symbol> out = new ArrayList<>();
+
+        for (Symbol symbol : this.symbolTable.values()) {
+
+            if (symbol.isType(SymbolType.STRING)) {
+                out.add(symbol);
+            }
+        }
+
+        return out;
+    }
+
+    // --------------------------------------------------------------------------------------------
+
     private boolean scopeMatches(Symbol symbol, String scope) {
 
         if (scope == null) {
