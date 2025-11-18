@@ -1,0 +1,20 @@
+MAIN {
+    uint F1(uint X, uint Y){
+        uint A,B,C;
+        if(X>2UI) {
+            A := 2UI;
+        } else {
+            A := 1UI;
+        } endif;
+        if(Y>50UI) {
+            B := 19UI;
+        } else if (Y==41UI) {
+            B := 41UI;
+        } else {
+            B := 1UI;
+        } endif; endif;
+
+        if(A>B) C := A; endif;
+        return (C);
+    }
+}

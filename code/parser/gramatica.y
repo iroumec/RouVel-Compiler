@@ -733,7 +733,7 @@ if
 // --------------------------------------------------------------------------------------------------------------------
 
 if_start
-    : IF condicion
+    : IF { reversePolish.addPolish("open-selection"); } condicion
         {
             this.reversePolish.addSeparation("Entering 'if' body...");
             this.reversePolish.openSelection();

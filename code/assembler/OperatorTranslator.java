@@ -8,8 +8,9 @@ import assembler.operators.implementations.arithmetic.Sum;
 import assembler.operators.implementations.comparison.Equal;
 import assembler.operators.implementations.loops.LoopOpener;
 import assembler.operators.implementations.selections.SelectionOpener;
-import assembler.operators.implementations.selections.AlternativeOpener;
+import assembler.operators.implementations.selections.ConditionCloser;
 import assembler.operators.implementations.selections.SelectionCloser;
+import assembler.operators.implementations.selections.ThenBlockCloser;
 import assembler.operators.implementations.loops.LoopCloser;
 import assembler.operators.implementations.comparison.Greater;
 import assembler.operators.implementations.comparison.NotEqual;
@@ -52,13 +53,14 @@ class OperatorTranslator {
             case ">=" -> GreaterOrEqual.getInstance();
             case "TB" -> TrueBifurcation.getInstance();
             case "end-label" -> EndLabel.getInstance();
-            case "FB" -> SelectionOpener.getInstance();
+            case "FB" -> ConditionCloser.getInstance();
             case "open-loop" -> LoopOpener.getInstance();
-            case "UB" -> AlternativeOpener.getInstance();
+            case "UB" -> ThenBlockCloser.getInstance();
             case "close-loop" -> LoopCloser.getInstance();
             case "read-return" -> ReadReturn.getInstance();
             case "open-function" -> FunctionOpener.getInstance();
             case "close-function" -> FunctionCloser.getInstance();
+            case "open-selection" -> SelectionOpener.getInstance();
             case "close-selection" -> SelectionCloser.getInstance();
         };
 

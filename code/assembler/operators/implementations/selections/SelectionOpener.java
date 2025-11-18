@@ -2,6 +2,7 @@ package assembler.operators.implementations.selections;
 
 import assembler.CodeRepository;
 import assembler.operators.AssemblerOperator;
+import assembler.SelectionManager;
 
 public class SelectionOpener implements AssemblerOperator {
     private SelectionOpener() {
@@ -24,7 +25,21 @@ public class SelectionOpener implements AssemblerOperator {
     @Override
     public void generateAssembler(CodeRepository repository) {
 
-        repository.addCode("(if (then\n");
+        SelectionManager selectionManager = SelectionManager.getInstance();
+
+        selectionManager.increaseSelectionLevel();
+
+        if (selectionManager.getSelectionLevel() == 1) {
+
+            repository.addCode(String.format("(block $out%s%n",selectionManager.obtainOutValue()));
+            repository.increaseIndentation();
+            
+        }
+
+        repository.addCode(String.format("(block $else%s%n",selectionManager.obtainElseValue()));
         repository.increaseIndentation();
+        repository.addCode(String.format("(block $then%s%n",selectionManager.obtainThenValue()));
+        repository.increaseIndentation();
+
     }
 }

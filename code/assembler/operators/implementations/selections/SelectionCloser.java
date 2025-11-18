@@ -1,6 +1,7 @@
 package assembler.operators.implementations.selections;
 
 import assembler.CodeRepository;
+import assembler.SelectionManager;
 import assembler.operators.AssemblerOperator;
 
 public class SelectionCloser implements AssemblerOperator {
@@ -23,7 +24,21 @@ public class SelectionCloser implements AssemblerOperator {
 
     @Override
     public void generateAssembler(CodeRepository repository) {
-        repository.decreaseIndentation();
-        repository.addCode("))\n");
+        
+        SelectionManager selectionManager = SelectionManager.getInstance();
+
+        selectionManager.decreaseSelectionLevel();
+
+        if (selectionManager.getSelectionLevel() == 0) {
+
+            repository.addCode(String.format("br $out%s%n",selectionManager.getOutValue()));
+
+            while (selectionManager.getClosers() > 0 ) {
+                repository.decreaseIndentation();
+                repository.addCode(")");
+                selectionManager.decreaseClosers();
+            }
+            
+        }
     }
 }
