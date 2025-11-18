@@ -98,7 +98,7 @@ public final class SymbolTable {
 
     // --------------------------------------------------------------------------------------------
 
-    public Symbol addFloat(float value) {
+    public Symbol addFloatEntry(String value) {
 
         Symbol symbol = Symbol.createNewFloat(String.valueOf(value));
         this.addEntry(symbol.getLexema(), symbol);

@@ -57,7 +57,7 @@ public class Symbol {
 
     public static Symbol createNewFloat(String value) {
 
-        Symbol symbol = new SymbolBuilder(value).value(value).category(SymbolCategory.CONSTANT)
+        Symbol symbol = new SymbolBuilder(value).value(value.replace("F", "e")).category(SymbolCategory.CONSTANT)
                 .type(SymbolType.FLOAT).build();
 
         return symbol;

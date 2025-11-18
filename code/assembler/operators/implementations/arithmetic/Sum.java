@@ -32,6 +32,7 @@ public class Sum extends ArithmeticOperator {
 
         SymbolTable symbolTable = SymbolTable.getInstance();
         BigDecimal result = firstOperand.getValueAsBigDecimal().add(secondOperand.getValueAsBigDecimal());
+
         switch (pairType) {
             case UINT_UINT, UINT_FLOAT -> {
 
@@ -58,28 +59,28 @@ public class Sum extends ArithmeticOperator {
             }
             case FLOAT_FLOAT -> {
 
-                BigDecimal absoluteResult = result.abs();
-
                 // Verificar si supera el máximo
-                if (absoluteResult.compareTo(ABSOLUTE_MAXIMUM) > 0) {
+                if (result.compareTo(ABSOLUTE_MAXIMUM) > 0) {
                     Printer.printWrapped(
                             String.format(
-                                    "ERROR DE COMPILACIÓN: El resultado de la suma supera el rango: '%s + %s'.",
-                                    firstOperand, secondOperand));
+                                    "ERROR DE COMPILACIÓN: El resultado de la suma supera el rango admitido: %s + %s > %s.",
+                                    firstOperand.getValueAsBigDecimal(), secondOperand.getValueAsBigDecimal(),
+                                    ABSOLUTE_MAXIMUM));
                     System.exit(1);
                 }
 
                 // Verificar si es menor que el mínimo (pero no cero)
-                if (absoluteResult.compareTo(BigDecimal.ZERO) != 0 &&
-                        absoluteResult.compareTo(ABSOLUTE_MINIMUN) < 0) {
+                if (result.compareTo(BigDecimal.ZERO) != 0 &&
+                        result.compareTo(ABSOLUTE_MINIMUN.negate()) < 0) {
                     Printer.printWrapped(
                             String.format(
-                                    "ERROR DE COMPILACIÓN: El resultado de la suma es menor que el mínimo representable: '%s + %s'.",
-                                    firstOperand, secondOperand));
+                                    "ERROR DE COMPILACIÓN: El resultado de la suma es menor que el mínimo representable: %s + %s < -%s.",
+                                    firstOperand.getValueAsBigDecimal(), secondOperand.getValueAsBigDecimal(),
+                                    ABSOLUTE_MINIMUN));
                     System.exit(1);
                 }
 
-                repository.pushOperand(symbolTable.addFloat(result.floatValue()).getLexema());
+                repository.pushOperand(symbolTable.addFloatEntry(String.valueOf(result.floatValue())).getLexema());
             }
         }
     }

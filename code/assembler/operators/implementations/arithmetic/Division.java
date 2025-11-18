@@ -58,26 +58,24 @@ public class Division extends ArithmeticOperator {
             }
             case FLOAT_FLOAT -> {
 
-                BigDecimal absoluteResult = result.abs();
-
-                if (absoluteResult.compareTo(ABSOLUTE_MAXIMUM) > 0) {
+                if (result.compareTo(ABSOLUTE_MAXIMUM) > 0) {
                     Printer.printWrapped(
                             String.format(
                                     "ERROR DE COMPILACIÓN: El resultado de la división supera el rango: '%s + %s'.",
-                                    firstOperand, secondOperand));
+                                    firstOperand.getValueAsBigDecimal(), secondOperand.getValueAsBigDecimal()));
                     System.exit(1);
                 }
 
-                if (absoluteResult.compareTo(BigDecimal.ZERO) != 0 &&
-                        absoluteResult.compareTo(ABSOLUTE_MINIMUN) < 0) {
+                if (result.compareTo(BigDecimal.ZERO) != 0 &&
+                        result.compareTo(ABSOLUTE_MINIMUN.negate()) < 0) {
                     Printer.printWrapped(
                             String.format(
                                     "ERROR DE COMPILACIÓN: El resultado de la división es menor que el mínimo representable: '%s + %s'.",
-                                    firstOperand, secondOperand));
+                                    firstOperand.getValueAsBigDecimal(), secondOperand.getValueAsBigDecimal()));
                     System.exit(1);
                 }
 
-                repository.pushOperand(symbolTable.addFloat(result.floatValue()).getLexema());
+                repository.pushOperand(symbolTable.addFloatEntry(String.valueOf(result.floatValue())).getLexema());
             }
         }
     }

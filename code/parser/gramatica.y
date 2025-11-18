@@ -596,9 +596,12 @@ constant
             if(isUint($2)) {
                 notifyError("El número está fuera del rango de uint, se descartará.");
                 $$ = null;
-            } 
+            }
 
-            this.symbolTable.replaceEntry($$,$2); 
+            $$ = '-' + $2;
+
+            this.symbolTable.removeEntry($2);
+            this.symbolTable.addFloatEntry($$);
         }
     ;
 
