@@ -2,6 +2,7 @@ package lexer;
 
 import common.Monitor;
 import common.Symbol;
+import common.SymbolDirector;
 import common.SymbolType;
 import common.SymbolTable;
 import lexer.actions.SemanticAction;
@@ -346,26 +347,14 @@ public final class Lexer {
 
     public void finalizeVariableToken() {
 
-        Symbol symbol = this.generateSymbol();
+        Symbol symbol = SymbolDirector.createNewAppropiateSymbol(this.lexema.toString(), this.value.toString(),
+                this.type);
         TokenType tokenType = TokenType.fromSymbol(lexema.toString());
 
         // Se agrega el lexema a la tabla de símbolos.
-        SymbolTable.getInstance().addEntry(lexema.toString(), symbol);
+        SymbolTable.getInstance().addEntry(symbol);
 
         this.currentToken = new Token(tokenType, this.lexema.toString());
-    }
-
-    // --------------------------------------------------------------------------------------------
-
-    private Symbol generateSymbol() {
-
-        String lexema = this.lexema.toString();
-
-        if (lexema.startsWith("\"") && lexema.endsWith("\"")) {
-            return Symbol.createNewString(lexema);
-        }
-
-        return new Symbol(this.lexema.toString(), this.value.toString(), this.type);
     }
 
     // --------------------------------------------------------------------------------------------

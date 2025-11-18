@@ -74,7 +74,7 @@ public class Assignment implements AssemblerOperator {
 
         String code;
 
-        BigDecimal operandValue = operand.getValueAsBigDecimal();
+        BigDecimal operandValue = operand.getValue();
 
         // Carga de la constante flotante.
         code = String.format("f32.const %s %n", operandValue);

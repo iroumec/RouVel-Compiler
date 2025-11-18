@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 
 import assembler.CodeRepository;
 import common.Symbol;
+import common.SymbolDirector;
 import common.SymbolTable;
 import utilities.Printer;
 
@@ -31,7 +32,7 @@ public class Sum extends ArithmeticOperator {
             CodeRepository repository) {
 
         SymbolTable symbolTable = SymbolTable.getInstance();
-        BigDecimal result = firstOperand.getValueAsBigDecimal().add(secondOperand.getValueAsBigDecimal());
+        BigDecimal result = firstOperand.getValue().add(secondOperand.getValue());
 
         switch (pairType) {
             case UINT_UINT, UINT_FLOAT -> {
@@ -55,7 +56,9 @@ public class Sum extends ArithmeticOperator {
                     }
                 }
 
-                repository.pushOperand(symbolTable.addUint(result.intValue()).getLexema());
+                Symbol symbol = SymbolDirector.createNewUint(result.intValue());
+                symbolTable.addEntry(symbol);
+                repository.pushOperand(symbol.getLexema());
             }
             case FLOAT_FLOAT -> {
 
@@ -64,7 +67,7 @@ public class Sum extends ArithmeticOperator {
                     Printer.printWrapped(
                             String.format(
                                     "ERROR DE COMPILACIÓN: El resultado de la suma supera el rango admitido: %s + %s > %s.",
-                                    firstOperand.getValueAsBigDecimal(), secondOperand.getValueAsBigDecimal(),
+                                    firstOperand.getValue(), secondOperand.getValue(),
                                     ABSOLUTE_MAXIMUM));
                     System.exit(1);
                 }
@@ -75,12 +78,14 @@ public class Sum extends ArithmeticOperator {
                     Printer.printWrapped(
                             String.format(
                                     "ERROR DE COMPILACIÓN: El resultado de la suma es menor que el mínimo representable: %s + %s < -%s.",
-                                    firstOperand.getValueAsBigDecimal(), secondOperand.getValueAsBigDecimal(),
+                                    firstOperand.getValue(), secondOperand.getValue(),
                                     ABSOLUTE_MINIMUN));
                     System.exit(1);
                 }
 
-                repository.pushOperand(symbolTable.addFloatEntry(String.valueOf(result.floatValue())).getLexema());
+                Symbol symbol = SymbolDirector.createNewFloat(result.floatValue());
+                symbolTable.addEntry(symbol);
+                repository.pushOperand(symbol.getLexema());
             }
         }
     }

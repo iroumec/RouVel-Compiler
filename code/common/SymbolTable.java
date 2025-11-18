@@ -9,10 +9,6 @@ import java.util.LinkedHashMap;
 
 public final class SymbolTable {
 
-    private int auxiliarVariableNumber = 0;
-
-    // --------------------------------------------------------------------------------------------
-
     private static final SymbolTable INSTANCE = new SymbolTable();
 
     // --------------------------------------------------------------------------------------------
@@ -47,12 +43,12 @@ public final class SymbolTable {
     /**
      * Agrega un lexema a la tabla si no existe. Incrementa su referencia.
      */
-    public void addEntry(String lexema, Symbol newSymbol) {
+    public void addEntry(Symbol newSymbol) {
 
-        Symbol symbol = this.symbolTable.get(lexema);
+        Symbol symbol = this.symbolTable.get(newSymbol.getLexema());
 
         if (symbol == null) {
-            symbolTable.put(lexema, newSymbol);
+            symbolTable.put(newSymbol.getLexema(), newSymbol);
             newSymbol.incrementarReferencias();
         } else {
             symbol.incrementarReferencias();
@@ -70,40 +66,9 @@ public final class SymbolTable {
 
     // --------------------------------------------------------------------------------------------
 
-    public String addAuxiliarVariable(String scope) {
-
-        String variable = "temp" + (this.auxiliarVariableNumber++) + ":" + scope;
-
-        this.addEntry(variable, new Symbol(variable, "", SymbolCategory.VARIABLE, SymbolType.UINT));
-
-        return variable;
-    }
-
-    // --------------------------------------------------------------------------------------------
-
     public void removeEntry(String lexema) {
         Symbol symbol = this.symbolTable.get(lexema);
         this.decreaseReferences(lexema, symbol);
-    }
-
-    // --------------------------------------------------------------------------------------------
-
-    public Symbol addUint(int value) {
-
-        Symbol symbol = Symbol.createNewUint(String.valueOf(value));
-        this.addEntry(symbol.getLexema(), symbol);
-
-        return symbol;
-    }
-
-    // --------------------------------------------------------------------------------------------
-
-    public Symbol addFloatEntry(String value) {
-
-        Symbol symbol = Symbol.createNewFloat(String.valueOf(value));
-        this.addEntry(symbol.getLexema(), symbol);
-
-        return symbol;
     }
 
     // --------------------------------------------------------------------------------------------
@@ -122,7 +87,10 @@ public final class SymbolTable {
             Symbol symbol = this.symbolTable.get(oldLexema);
             this.decreaseReferences(oldLexema, symbol);
 
-            this.addEntry(newLexema, symbol);
+            Symbol newSymbol = symbol.getCopy();
+            newSymbol.setLexema(newLexema);
+
+            this.addEntry(newSymbol);
         }
     }
 
@@ -141,7 +109,7 @@ public final class SymbolTable {
         this.decreaseReferences(lexema, entry);
 
         // Alta de la tabla de símbolos.
-        this.addEntry("-" + lexema, entry.getNegative());
+        this.addEntry(entry.getNegative());
     }
 
     // --------------------------------------------------------------------------------------------
@@ -282,7 +250,7 @@ public final class SymbolTable {
         this.decreaseReferences(lexema, symbol);
 
         symbol.setLexema(newLexema);
-        addEntry(newLexema, symbol);
+        addEntry(symbol);
 
     }
 

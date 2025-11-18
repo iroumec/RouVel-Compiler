@@ -18,6 +18,7 @@
     import semantic.ScopeStack;
     import semantic.TypeChecker;
     import common.SymbolCategory;
+    import common.SymbolDirector;
     import semantic.ReversePolish;
     import semantic.ReturnsController;
 %}
@@ -601,7 +602,7 @@ constant
             $$ = '-' + $2;
 
             this.symbolTable.removeEntry($2);
-            this.symbolTable.addFloatEntry($$);
+            this.symbolTable.addEntry(SymbolDirector.createNewString($$));
         }
     ;
 

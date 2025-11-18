@@ -6,6 +6,7 @@ import assembler.CodeRepository;
 import assembler.operators.AssemblerOperator;
 import common.Symbol;
 import common.SymbolCategory;
+import common.SymbolDirector;
 import common.SymbolTable;
 import common.SymbolType;
 
@@ -66,14 +67,15 @@ public abstract class ArithmeticOperator implements AssemblerOperator {
                 scope = secondOperand.getScope();
             }
 
-            String newOperand = symbolTable.addAuxiliarVariable(scope);
+            Symbol auxiliarVariable = SymbolDirector.createNewAuxiliarVariable(repository.getCurrentScope());
+            symbolTable.addEntry(auxiliarVariable);
 
             // Se añade la variable auxiliar como nuevo operando.
-            repository.pushOperand(newOperand);
+            repository.pushOperand(auxiliarVariable.getLexema());
 
             applyRuntimeControls(firstOperand, secondOperand, repository);
 
-            code += this.getCode(pairType, symbolTable, firstOperand, secondOperand, newOperand);
+            code += this.getCode(pairType, symbolTable, firstOperand, secondOperand, auxiliarVariable.getLexema());
         }
 
         // Se remueve una referencia de cada operando.

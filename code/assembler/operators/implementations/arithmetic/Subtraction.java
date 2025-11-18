@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 
 import assembler.CodeRepository;
 import common.Symbol;
+import common.SymbolDirector;
 import common.SymbolTable;
 import common.SymbolType;
 import utilities.Printer;
@@ -32,7 +33,7 @@ public class Subtraction extends ArithmeticOperator {
             CodeRepository repository) {
 
         SymbolTable symbolTable = SymbolTable.getInstance();
-        BigDecimal result = firstOperand.getValueAsBigDecimal().subtract(secondOperand.getValueAsBigDecimal());
+        BigDecimal result = firstOperand.getValue().subtract(secondOperand.getValue());
         switch (pairType) {
             case UINT_UINT, UINT_FLOAT -> {
 
@@ -44,7 +45,9 @@ public class Subtraction extends ArithmeticOperator {
                     System.exit(1);
                 }
 
-                repository.pushOperand(symbolTable.addUint(result.intValue()).getLexema());
+                Symbol symbol = SymbolDirector.createNewUint(result.intValue());
+                symbolTable.addEntry(symbol);
+                repository.pushOperand(symbol.getLexema());
             }
             case FLOAT_FLOAT -> {
 
@@ -53,7 +56,7 @@ public class Subtraction extends ArithmeticOperator {
                     Printer.printWrapped(
                             String.format(
                                     "ERROR DE COMPILACIÓN: El resultado de la resta supera el rango: '%s - %s'.",
-                                    firstOperand.getValueAsBigDecimal(), secondOperand.getValueAsBigDecimal()));
+                                    firstOperand.getValue(), secondOperand.getValue()));
                     System.exit(1);
                 }
 
@@ -63,11 +66,13 @@ public class Subtraction extends ArithmeticOperator {
                     Printer.printWrapped(
                             String.format(
                                     "ERROR DE COMPILACIÓN: El resultado de la resta es menor que el mínimo representable: '%s - %s'.",
-                                    firstOperand.getValueAsBigDecimal(), secondOperand.getValueAsBigDecimal()));
+                                    firstOperand.getValue(), secondOperand.getValue()));
                     System.exit(1);
                 }
 
-                repository.pushOperand(symbolTable.addFloatEntry(String.valueOf(result.floatValue())).getLexema());
+                Symbol symbol = SymbolDirector.createNewFloat(result.floatValue());
+                symbolTable.addEntry(symbol);
+                repository.pushOperand(symbol.getLexema());
             }
         }
 
@@ -93,8 +98,8 @@ public class Subtraction extends ArithmeticOperator {
 
         String message = "RUNTIME ERROR: Resultado negativo.";
 
-        Symbol messageSymbol = Symbol.createNewString(message);
-        SymbolTable.getInstance().addEntry(message, messageSymbol);
+        Symbol messageSymbol = SymbolDirector.createNewString(message);
+        SymbolTable.getInstance().addEntry(messageSymbol);
 
         repository.addCode("""
                 ;; Chequeo de resta negativa.

@@ -1,6 +1,7 @@
 package assembler.operators.implementations.arithmetic;
 
 import common.Symbol;
+import common.SymbolDirector;
 import common.SymbolTable;
 import utilities.Printer;
 
@@ -31,7 +32,7 @@ public class Division extends ArithmeticOperator {
     protected void applyDirectOperation(Symbol firstOperand, Symbol secondOperand, PairType pairType,
             CodeRepository repository) {
 
-        if (secondOperand.getValueAsBigDecimal().compareTo(BigDecimal.ZERO) == 0) {
+        if (secondOperand.getValue().compareTo(BigDecimal.ZERO) == 0) {
             Printer.printWrapped(
                     String.format(
                             "ERROR DE COMPILACIÓN: El dividendo no puede ser cero: '%s / %s'.",
@@ -40,7 +41,7 @@ public class Division extends ArithmeticOperator {
         }
 
         SymbolTable symbolTable = SymbolTable.getInstance();
-        BigDecimal result = firstOperand.getValueAsBigDecimal().add(secondOperand.getValueAsBigDecimal());
+        BigDecimal result = firstOperand.getValue().add(secondOperand.getValue());
 
         switch (pairType) {
             case UINT_UINT, UINT_FLOAT -> {
@@ -54,7 +55,9 @@ public class Division extends ArithmeticOperator {
                     System.exit(1);
                 }
 
-                repository.pushOperand(symbolTable.addUint(result.intValue()).getLexema());
+                Symbol symbol = SymbolDirector.createNewUint(result.intValue());
+                symbolTable.addEntry(symbol);
+                repository.pushOperand(symbol.getLexema());
             }
             case FLOAT_FLOAT -> {
 
@@ -62,7 +65,7 @@ public class Division extends ArithmeticOperator {
                     Printer.printWrapped(
                             String.format(
                                     "ERROR DE COMPILACIÓN: El resultado de la división supera el rango: '%s + %s'.",
-                                    firstOperand.getValueAsBigDecimal(), secondOperand.getValueAsBigDecimal()));
+                                    firstOperand.getValue(), secondOperand.getValue()));
                     System.exit(1);
                 }
 
@@ -71,11 +74,13 @@ public class Division extends ArithmeticOperator {
                     Printer.printWrapped(
                             String.format(
                                     "ERROR DE COMPILACIÓN: El resultado de la división es menor que el mínimo representable: '%s + %s'.",
-                                    firstOperand.getValueAsBigDecimal(), secondOperand.getValueAsBigDecimal()));
+                                    firstOperand.getValue(), secondOperand.getValue()));
                     System.exit(1);
                 }
 
-                repository.pushOperand(symbolTable.addFloatEntry(String.valueOf(result.floatValue())).getLexema());
+                Symbol symbol = SymbolDirector.createNewFloat(result.floatValue());
+                symbolTable.addEntry(symbol);
+                repository.pushOperand(symbol.getLexema());
             }
         }
     }
@@ -95,10 +100,10 @@ public class Division extends ArithmeticOperator {
         // Si se colocan los dos puntos, por alguna razón, no lo agrega al assembler.
         String message = "RUNTIME ERROR: División por cero.";
 
-        Symbol messageSymbol = Symbol.createNewString(message);
+        Symbol messageSymbol = SymbolDirector.createNewString(message);
 
         // Se agrega el string con el mensaje a la tabla de símbolos.
-        SymbolTable.getInstance().addEntry(message, messageSymbol);
+        SymbolTable.getInstance().addEntry(messageSymbol);
 
         repository.addCode("""
                 ;; Chequeo de división por cero.
