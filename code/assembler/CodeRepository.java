@@ -7,11 +7,17 @@ public final class CodeRepository {
 
     private final static String INDENTATION = "    ";
 
+    // --------------------------------------------------------------------------------------------
+
     // StringBuilder imports;
     Deque<String> operands;
     StringBuilder executableCode;
 
+    // --------------------------------------------------------------------------------------------
+
     Deque<Block> blockStack;
+
+    // --------------------------------------------------------------------------------------------
 
     public CodeRepository() {
         this.operands = new ArrayDeque<>();
@@ -19,26 +25,30 @@ public final class CodeRepository {
         this.executableCode = new StringBuilder();
     }
 
+    // ============================================================================================
+    // Manejo de Operandos
+    // ============================================================================================
+
     public String popOperand() {
         return operands.pop();
     }
 
+    // --------------------------------------------------------------------------------------------
+
     public void pushOperand(String operand) {
         operands.push(operand);
     }
+
+    // ============================================================================================
+    // Manejo del Programa
+    // ============================================================================================
 
     public void startProgram() {
         this.startBlock(Dumper.getProgramName());
         this.increaseIndentation();
     }
 
-    public void startBlock(String scope) {
-        this.blockStack.push(new Block(scope, new StringBuilder(), new StringBuilder(INDENTATION)));
-    }
-
-    public void endBlock() {
-        this.executableCode.append(this.blockStack.pop().code());
-    }
+    // --------------------------------------------------------------------------------------------
 
     public void endProgram() {
 
@@ -52,27 +62,59 @@ public final class CodeRepository {
         this.endBlock();
     }
 
+    // ============================================================================================
+    // Manejo de los Bloques
+    // ============================================================================================
+
+    public void startBlock(String scope) {
+        this.blockStack.push(new Block(scope, new StringBuilder(), new StringBuilder(INDENTATION)));
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    public void endBlock() {
+        this.executableCode.append(this.blockStack.pop().code());
+    }
+
+    // ============================================================================================
+    // Manejo del Código
+    // ============================================================================================
+
     public void addCode(String code) {
         this.blockStack.peek().code().append("\n")
                 .append(Indenter.indent(code, this.blockStack.peek().indentation().toString()));
     }
 
+    // --------------------------------------------------------------------------------------------
+
     public void addCode(StringBuilder code) {
         this.addCode(code.toString());
     }
 
+    // ============================================================================================
+    // Manejo de la Indentación
+    // ============================================================================================
+
     public void increaseIndentation() {
         this.blockStack.peek().indentation().append(INDENTATION);
     }
+
+    // --------------------------------------------------------------------------------------------
 
     public void decreaseIndentation() {
         this.blockStack.peek().indentation()
                 .setLength(this.blockStack.peek().indentation().length() - INDENTATION.length());
     }
 
+    // ============================================================================================
+    // Métodos Auxiliares
+    // ============================================================================================
+
     public String getCurrentScope() {
         return this.blockStack.peek().scope();
     }
+
+    // --------------------------------------------------------------------------------------------
 
     // Este método solo tiene fines estéticos.
     public void removeLastLine() {
@@ -86,6 +128,10 @@ public final class CodeRepository {
             code.setLength(lastNewline); // Cortar desde el salto.
         }
     }
+
+    // ============================================================================================
+    // Generación del Programa Final
+    // ============================================================================================
 
     public String getProgram() {
 
@@ -121,6 +167,10 @@ public final class CodeRepository {
         return code.append(")").toString();
 
     }
+
+    // ============================================================================================
+    // Estructuras Internas
+    // ============================================================================================
 
     private record Block(String scope, StringBuilder code, StringBuilder indentation) {
 

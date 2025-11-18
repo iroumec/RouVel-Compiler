@@ -10,24 +10,23 @@ import utilities.Printer;
 
 /**
  * Clase responsable de la impresión formateada de la tabla de símbolos.
- * 
- * Implementa el patrón Singleton utilizando el idiom "Initialization-on-demand
- * holder",
- * el cual es thread-safe y garantiza la inicialización diferida sin necesidad
- * de sincronización explícita.
  */
 public final class SymbolTablePrinter {
 
     // ============================================================================================
-    // Singleton thread-safe y lazy-loaded
+    // Singleton
     // ============================================================================================
 
     private SymbolTablePrinter() {
     }
 
+    // --------------------------------------------------------------------------------------------
+
     private static class Holder {
         private static final SymbolTablePrinter INSTANCE = new SymbolTablePrinter();
     }
+
+    // --------------------------------------------------------------------------------------------
 
     public static SymbolTablePrinter getInstance() {
         return Holder.INSTANCE;

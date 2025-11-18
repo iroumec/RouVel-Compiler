@@ -11,14 +11,16 @@ public final class SymbolTable {
 
     private int auxiliarVariableNumber = 0;
 
+    // --------------------------------------------------------------------------------------------
+
     private static final SymbolTable INSTANCE = new SymbolTable();
 
     // --------------------------------------------------------------------------------------------
 
     /**
      * Se utiliza el "LinkedHashMap" para que el agregado de los símbolos siga un
-     * orden.
-     * Esto facilita la detección de parámetros y de una función y demás cosas.
+     * orden. Esto facilita la detección de parámetros y de una función y demás
+     * cosas.
      */
     private final Map<String, Symbol> symbolTable = new LinkedHashMap<>();
 
@@ -161,6 +163,8 @@ public final class SymbolTable {
         }
     }
 
+    // --------------------------------------------------------------------------------------------
+
     public String getProgramName() {
 
         return SymbolTable.getInstance().get(null, SymbolCategory.PROGRAM).getFirst().getLexema();
@@ -195,6 +199,8 @@ public final class SymbolTable {
         return out;
     }
 
+    // --------------------------------------------------------------------------------------------
+
     /**
      * If the scope is null, it will return all global variables.
      * 
@@ -216,6 +222,8 @@ public final class SymbolTable {
 
         return out;
     }
+
+    // --------------------------------------------------------------------------------------------
 
     private boolean scopeMatches(Symbol symbol, String scope) {
 

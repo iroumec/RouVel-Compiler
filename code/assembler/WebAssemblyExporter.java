@@ -14,6 +14,8 @@ public class WebAssemblyExporter {
     private static final String watPath = "outputs/wat/";
     private static final String wasmPath = "outputs/wasm/";
 
+    // --------------------------------------------------------------------------------------------
+
     public static void exportToWat(File file, String code) {
 
         createDirectoryIfNotExists(watPath);
@@ -27,6 +29,8 @@ public class WebAssemblyExporter {
             Printer.printCentered("ERROR: Ocurrió un problema al exportar el código a .wat.");
         }
     }
+
+    // --------------------------------------------------------------------------------------------
 
     public static void exportToWasm(File file, String code) {
 
@@ -68,6 +72,8 @@ public class WebAssemblyExporter {
         }
     }
 
+    // --------------------------------------------------------------------------------------------
+
     private static void createDirectoryIfNotExists(String directoryPath) {
         try {
             Path path = Paths.get(directoryPath);
@@ -78,6 +84,8 @@ public class WebAssemblyExporter {
             Printer.printCentered("ERROR: No se pudo crear el directorio: " + directoryPath);
         }
     }
+
+    // --------------------------------------------------------------------------------------------
 
     private static String extractBaseName(File file) {
 

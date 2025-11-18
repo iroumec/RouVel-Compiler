@@ -19,6 +19,8 @@ public final class Dumper {
         return code.toString();
     }
 
+    // --------------------------------------------------------------------------------------------
+
     public static String dumpGlobalVariables() {
 
         StringBuilder code = new StringBuilder();
@@ -35,6 +37,8 @@ public final class Dumper {
         return code.toString();
     }
 
+    // --------------------------------------------------------------------------------------------
+
     public static String dumpBlockVariables(String blockName) {
 
         StringBuilder code = new StringBuilder();
@@ -49,6 +53,8 @@ public final class Dumper {
 
         return code.toString();
     }
+
+    // --------------------------------------------------------------------------------------------
 
     static String dumpStrings() {
 
@@ -69,6 +75,8 @@ public final class Dumper {
 
         return code.toString();
     }
+
+    // --------------------------------------------------------------------------------------------
 
     static String getProgramName() {
         return SymbolTable.getInstance().getProgramName();

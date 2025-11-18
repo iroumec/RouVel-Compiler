@@ -4,13 +4,19 @@ import java.util.Arrays;
 
 public class Symbol {
 
+    // --------------------------------------------------------------------------------------------
+
     private static int stringCounter = 0;
+
+    // --------------------------------------------------------------------------------------------
 
     private int references;
     private SymbolType type;
     private StringBuilder value; // Valor real
     private StringBuilder lexema; // Lexema.
     private SymbolCategory category;
+
+    // --------------------------------------------------------------------------------------------
 
     public static Symbol createNewString(String lexema) {
 
@@ -26,6 +32,8 @@ public class Symbol {
         return symbol;
     }
 
+    // --------------------------------------------------------------------------------------------
+
     Symbol(StringBuilder lexema, StringBuilder value, SymbolCategory category, SymbolType type, int references) {
         this.type = type;
         this.value = value;
@@ -34,11 +42,15 @@ public class Symbol {
         this.references = references;
     }
 
+    // --------------------------------------------------------------------------------------------
+
     private Symbol(String lexema, String value, int references) {
         this.lexema = new StringBuilder(lexema);
         this.value = new StringBuilder(value);
         this.references = references;
     }
+
+    // --------------------------------------------------------------------------------------------
 
     public Symbol(String lexema, String value, SymbolType type) {
         this.lexema = new StringBuilder(lexema);
@@ -56,6 +68,8 @@ public class Symbol {
         this.references = 0;
     }
 
+    // --------------------------------------------------------------------------------------------
+
     public Symbol(String lexema, String value, SymbolCategory category, SymbolType type) {
 
         this.lexema = new StringBuilder(lexema);
@@ -65,6 +79,8 @@ public class Symbol {
 
         this.references = 0;
     }
+
+    // --------------------------------------------------------------------------------------------
 
     public Symbol(String lexema, SymbolCategory category, SymbolType type) {
 
@@ -165,6 +181,8 @@ public class Symbol {
         return this.category;
     }
 
+    // --------------------------------------------------------------------------------------------
+
     public boolean isCategory(SymbolCategory category) {
 
         if (this.category == null) {
@@ -174,14 +192,20 @@ public class Symbol {
         return this.category.equals(category);
     }
 
+    // --------------------------------------------------------------------------------------------
+
     boolean isEmpty() {
         return lexema.length() == 0 && value.length() == 0 && type.length() == 0;
     }
+
+    // --------------------------------------------------------------------------------------------
 
     void setLexema(String lexema) {
         this.lexema.setLength(0);
         this.lexema.append(lexema);
     }
+
+    // --------------------------------------------------------------------------------------------
 
     void setValue(String value) {
 
@@ -193,9 +217,14 @@ public class Symbol {
         }
     }
 
+    // --------------------------------------------------------------------------------------------
+
     Symbol getNegative() {
+        // TODO: únicamente debe poderse obtener el negativo de constantes numéricas.
         return new Symbol("-" + lexema, "-" + value, references);
     }
+
+    // --------------------------------------------------------------------------------------------
 
     @Override
     public String toString() {

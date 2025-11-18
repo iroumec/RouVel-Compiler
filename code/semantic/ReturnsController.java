@@ -14,6 +14,8 @@ public class ReturnsController {
     private int selectionDepth;
     private boolean isThereReturn;
 
+    // --------------------------------------------------------------------------------------------
+
     public ReturnsController() {
         this.returnsFound = 0;
         this.functionLevel = 0;
@@ -22,10 +24,14 @@ public class ReturnsController {
         this.isThereReturn = false;
     }
 
+    // --------------------------------------------------------------------------------------------
+
     public void notifyStartOfFunctionDeclaration() {
         this.functionLevel++;
         this.returnsNeeded++;
     }
+
+    // --------------------------------------------------------------------------------------------
 
     public void notifyEndOfFunctionDeclaration() {
         this.functionLevel--;
@@ -33,6 +39,8 @@ public class ReturnsController {
         this.returnsNeeded--;
         this.isThereReturn = false;
     }
+
+    // --------------------------------------------------------------------------------------------
 
     public void notifyEmptyElse() {
         // Se decrementa la cantidad de retornos que se requieren si el if está solo.
@@ -43,10 +51,14 @@ public class ReturnsController {
         this.returnsFound--;
     }
 
+    // --------------------------------------------------------------------------------------------
+
     public void notifySelectionStart() {
         this.returnsNeeded++;
         this.selectionDepth++;
     }
+
+    // --------------------------------------------------------------------------------------------
 
     public void notifySelectionEnd() {
 
@@ -60,6 +72,8 @@ public class ReturnsController {
         this.selectionDepth--;
     }
 
+    // --------------------------------------------------------------------------------------------
+
     public void notifyReturn() {
 
         this.returnsFound++;
@@ -69,9 +83,13 @@ public class ReturnsController {
         }
     }
 
+    // --------------------------------------------------------------------------------------------
+
     public boolean insideFunction() {
         return this.functionLevel > 0;
     }
+
+    // --------------------------------------------------------------------------------------------
 
     public boolean isThereReturn() {
         return this.isThereReturn;

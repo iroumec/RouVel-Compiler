@@ -7,6 +7,8 @@ public class Assembler {
 
     private static final boolean debug = false;
 
+    // --------------------------------------------------------------------------------------------
+
     public static String generate(ReversePolish reversePolish) {
 
         CodeRepository codeRepository = new CodeRepository();

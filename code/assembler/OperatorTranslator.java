@@ -33,34 +33,33 @@ class OperatorTranslator {
     static AssemblerOperator getOperator(String operator) {
 
         return switch (operator) {
+            default -> null;
             case "+" -> Sum.getInstance();
-            case "-" -> Subtraction.getInstance();
-            case "*" -> Multiplication.getInstance();
+            case "==" -> Equal.getInstance();
+            case ">" -> Greater.getInstance();
+            case "<" -> LessThan.getInstance();
             case "/" -> Division.getInstance();
-            case "open-function" -> FunctionOpener.getInstance();
-            case "close-function" -> FunctionCloser.getInstance(); // TODO: quizás podría no usarse este apilando una
-                                                                   // etiqueta (operando) en la pila de operandos.
-            case "open-loop" -> LoopOpener.getInstance();
-            case "close-loop" -> LoopCloser.getInstance();
-            case "end-label" -> EndLabel.getInstance();
-            case "call" -> FunctionCall.getInstance();
-            case "read-return" -> ReadReturn.getInstance();
+            case "=!" -> NotEqual.getInstance();
             case "->" -> Argument.getInstance();
-            case "return" -> Return.getInstance();
             case "print" -> Print.getInstance();
+            case "-" -> Subtraction.getInstance();
+            case "return" -> Return.getInstance();
             case "<-" -> ReadResult.getInstance();
             case ":=" -> Assignment.getInstance();
-            case ">" -> Greater.getInstance();
             case "<=" -> LessOrEqual.getInstance();
+            case "*" -> Multiplication.getInstance();
+            case "call" -> FunctionCall.getInstance();
             case ">=" -> GreaterOrEqual.getInstance();
-            case "==" -> Equal.getInstance();
-            case "<" -> LessThan.getInstance();
-            case "=!" -> NotEqual.getInstance();
             case "TB" -> TrueBifurcation.getInstance();
+            case "end-label" -> EndLabel.getInstance();
             case "FB" -> SelectionOpener.getInstance();
+            case "open-loop" -> LoopOpener.getInstance();
             case "UB" -> AlternativeOpener.getInstance();
+            case "close-loop" -> LoopCloser.getInstance();
+            case "read-return" -> ReadReturn.getInstance();
+            case "open-function" -> FunctionOpener.getInstance();
+            case "close-function" -> FunctionCloser.getInstance();
             case "close-selection" -> SelectionCloser.getInstance();
-            default -> null;
         };
 
     }
