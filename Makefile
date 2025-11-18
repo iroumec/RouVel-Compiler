@@ -35,12 +35,11 @@ generate-docker: ## Genera ejecutables que permiten correr el compilador utiliza
 
 uki-compile compile: ## Ejecuta yacc, compila el programa y lo ejecuta. Ejemplo de uso: `make run FILE="main.uki"`.
 	@chmod +x "$(SCRIPT)"
-	@OUTPUT=$$("$(SCRIPT)" "$(TEST_FILE_DIR)$(FILE)" 2>&1); \
-	echo "$$OUTPUT"; \
+	@"$(SCRIPT)" "$(TEST_FILE_DIR)$(FILE)"; \
+	EXIT_CODE=$$?; \
 	echo; \
-	if echo "$$OUTPUT" | grep -q "El código contiene errores"; then \
+	if [ $$EXIT_CODE -ne 0 ]; then \
 		touch .compile_failed; \
-		exit 0; \
 	else \
 		rm -f .compile_failed; \
 	fi

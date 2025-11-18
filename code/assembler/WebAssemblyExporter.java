@@ -63,6 +63,7 @@ public class WebAssemblyExporter {
                 Printer.printSeparator();
                 Printer.printCentered("Salida de error:");
                 Printer.printFramed(error.strip());
+                Printer.printSeparator();
                 System.exit(1);
                 return;
             }
