@@ -1,50 +1,25 @@
 package common;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 
 public class Symbol {
 
-    // --------------------------------------------------------------------------------------------
-
-    private static int stringCounter = 0;
-
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
+    // Attributes
+    // ============================================================================================
 
     private int references;
     private SymbolType type;
-    private StringBuilder value; // Valor real
+    private BigDecimal value; // Valor real
     private StringBuilder lexema; // Lexema.
     private SymbolCategory category;
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
+    // Constructors
+    // ============================================================================================
 
-    public static Symbol createNewString(String lexema) {
-
-        String finalLexema = lexema;
-
-        if (!lexema.startsWith("\"")) {
-            finalLexema = "\"" + finalLexema;
-        }
-
-        if (!lexema.endsWith("\"")) {
-            finalLexema = finalLexema + "\"";
-        }
-
-        Symbol symbol = new SymbolBuilder(finalLexema).value(String.valueOf(stringCounter))
-                .category(SymbolCategory.CONSTANT)
-                .type(SymbolType.STRING).build();
-
-        // Se incrementa el string counter de acuerdo al número de caracteres
-        // en el string que se creo. Esto es útil para el assembler, para saber dónde
-        // comenzar a gaurdar cada String y que estos no se pisen.
-        stringCounter += finalLexema.length() - 2;
-
-        return symbol;
-    }
-
-    // --------------------------------------------------------------------------------------------
-
-    Symbol(StringBuilder lexema, StringBuilder value, SymbolCategory category, SymbolType type, int references) {
+    Symbol(StringBuilder lexema, BigDecimal value, SymbolCategory category, SymbolType type, int references) {
         this.type = type;
         this.value = value;
         this.lexema = lexema;
@@ -52,65 +27,9 @@ public class Symbol {
         this.references = references;
     }
 
-    // --------------------------------------------------------------------------------------------
-
-    private Symbol(String lexema, String value, int references) {
-        this.lexema = new StringBuilder(lexema);
-        this.value = new StringBuilder(value);
-        this.references = references;
-    }
-
-    // --------------------------------------------------------------------------------------------
-
-    public Symbol(String lexema, String value, SymbolType type) {
-        this.lexema = new StringBuilder(lexema);
-        this.value = new StringBuilder(value);
-        this.type = type;
-
-        if (lexema.startsWith("\"") && lexema.endsWith("\"")) {
-            this.type = SymbolType.STRING;
-        }
-
-        if (this.type != null) {
-            this.category = SymbolCategory.CONSTANT;
-        }
-
-        this.references = 0;
-    }
-
-    // --------------------------------------------------------------------------------------------
-
-    public Symbol(String lexema, String value, SymbolCategory category, SymbolType type) {
-
-        this.lexema = new StringBuilder(lexema);
-        this.value = new StringBuilder(value);
-        this.type = type;
-        this.category = category;
-
-        this.references = 0;
-    }
-
-    // --------------------------------------------------------------------------------------------
-
-    public Symbol(String lexema, SymbolCategory category, SymbolType type) {
-
-        if (type == SymbolType.STRING) {
-            this.setValue(String.valueOf(stringCounter++));
-        }
-
-        this.type = type;
-        this.category = category;
-
-        this.references = 0;
-    }
-
-    // --------------------------------------------------------------------------------------------
-
-    int getReferences() {
-        return this.references;
-    }
-
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
+    // References Managements
+    // ============================================================================================
 
     void incrementarReferencias() {
         this.references++;
@@ -128,28 +47,40 @@ public class Symbol {
         return references == 0;
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
+    // Getters
+    // ============================================================================================
 
-    public String getLexema() {
-        return this.lexema.toString();
+    SymbolCategory getCategory() {
+        return this.category;
     }
 
     // --------------------------------------------------------------------------------------------
 
-    public String getValue() {
-        return this.value.toString();
-    }
-
-    // --------------------------------------------------------------------------------------------
-
-    public SymbolType getType() {
+    SymbolType getType() {
         return this.type == null ? null : this.type;
     }
 
     // --------------------------------------------------------------------------------------------
 
-    void setType(SymbolType newType) {
-        this.type = newType;
+    int getReferences() {
+        return this.references;
+    }
+
+    // ============================================================================================
+    // Setters
+    // ============================================================================================
+
+    void setLexema(String lexema) {
+        this.lexema.setLength(0);
+        this.lexema.append(lexema);
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    void setValue(String value) {
+
+        this.value = new BigDecimal(value);
     }
 
     // --------------------------------------------------------------------------------------------
@@ -160,13 +91,36 @@ public class Symbol {
 
     // --------------------------------------------------------------------------------------------
 
-    public boolean isType(SymbolType type) {
+    void setType(SymbolType newType) {
+        this.type = newType;
+    }
 
-        if (this.type == null) {
-            return false;
-        }
+    // ============================================================================================
+    // Versionado
+    // ============================================================================================
 
-        return this.type.equals(type);
+    Symbol getCopy() {
+
+        return new SymbolBuilder(this.lexema.toString()).value(this.value).category(this.category)
+                .type(this.type).build();
+
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    Symbol getNegative() {
+
+        return new SymbolBuilder("-" + this.lexema).value(this.value.negate()).category(this.category)
+                .type(this.type)
+                .references(this.references).build();
+    }
+
+    // ============================================================================================
+    // Public Methods
+    // ============================================================================================
+
+    public String getLexema() {
+        return this.lexema.toString();
     }
 
     // --------------------------------------------------------------------------------------------
@@ -177,18 +131,9 @@ public class Symbol {
 
     // --------------------------------------------------------------------------------------------
 
-    public String getScope() {
-        String[] parts = this.lexema.toString().split(":");
-        if (parts.length <= 1) {
-            return null;
-        }
-        return String.join(":", Arrays.copyOfRange(parts, 1, parts.length));
-    }
+    public BigDecimal getValue() {
 
-    // --------------------------------------------------------------------------------------------
-
-    SymbolCategory getCategory() {
-        return this.category;
+        return this.value;
     }
 
     // --------------------------------------------------------------------------------------------
@@ -204,37 +149,28 @@ public class Symbol {
 
     // --------------------------------------------------------------------------------------------
 
-    boolean isEmpty() {
-        return lexema.length() == 0 && value.length() == 0 && type.length() == 0;
-    }
+    public boolean isType(SymbolType type) {
 
-    // --------------------------------------------------------------------------------------------
-
-    void setLexema(String lexema) {
-        this.lexema.setLength(0);
-        this.lexema.append(lexema);
-    }
-
-    // --------------------------------------------------------------------------------------------
-
-    void setValue(String value) {
-
-        if (this.value == null) {
-            this.value = new StringBuilder(value);
-        } else {
-            this.value.setLength(0);
-            this.value.append(value);
+        if (this.type == null) {
+            return false;
         }
+
+        return this.type.equals(type);
     }
 
     // --------------------------------------------------------------------------------------------
 
-    Symbol getNegative() {
-        // TODO: únicamente debe poderse obtener el negativo de constantes numéricas.
-        return new Symbol("-" + lexema, "-" + value, references);
+    public String getScope() {
+        String[] parts = this.lexema.toString().split(":");
+        if (parts.length <= 1) {
+            return null;
+        }
+        return String.join(":", Arrays.copyOfRange(parts, 1, parts.length));
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
+    // Override
+    // ============================================================================================
 
     @Override
     public String toString() {

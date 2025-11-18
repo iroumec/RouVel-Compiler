@@ -18,6 +18,7 @@
     import semantic.ScopeStack;
     import semantic.TypeChecker;
     import common.SymbolCategory;
+    import common.SymbolDirector;
     import semantic.ReversePolish;
     import semantic.ReturnsController;
 %}
@@ -596,9 +597,12 @@ constant
             if(isUint($2)) {
                 notifyError("El número está fuera del rango de uint, se descartará.");
                 $$ = null;
-            } 
+            }
 
-            this.symbolTable.replaceEntry($$,$2); 
+            $$ = '-' + $2;
+
+            this.symbolTable.removeEntry($2);
+            this.symbolTable.addEntry(SymbolDirector.createNewString($$));
         }
     ;
 
@@ -1206,8 +1210,14 @@ parametro_lambda
 %%
 
 // ====================================================================================================================
-// INICIO DE CÓDIGO (opcional)
+// INICIO DE CÓDIGO (Segmento Ocional)
 // ====================================================================================================================
+
+// --------------------------------------------------------------------------------------------------------------------
+
+private static final boolean printDetections = false;
+
+// --------------------------------------------------------------------------------------------------------------------
 
 private final Lexer lexer;
 private boolean errorState;
@@ -1280,10 +1290,14 @@ private void yyerror(String s) {
 // --------------------------------------------------------------------------------------------------------------------
 
 private void notifyDetection(String message) {
-    Printer.printWrapped(String.format(
-        "DETECCIÓN SINTÁCTICA: Línea %d: %s",
-        monitor.getLineNumber(), message
-    ));
+
+    if (printDetections) {
+
+        Printer.printWrapped(String.format(
+            "DETECCIÓN SINTÁCTICA: Línea %d: %s",
+            monitor.getLineNumber(), message
+        ));
+    }
 }
 
 // --------------------------------------------------------------------------------------------------------------------

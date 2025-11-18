@@ -1,10 +1,11 @@
 package semantic;
 
-import common.Monitor;
+import java.math.BigDecimal;
+
 import common.Symbol;
-import common.SymbolCategory;
+import common.Monitor;
 import common.SymbolTable;
-import common.SymbolType;
+import common.SymbolCategory;
 
 public final class TypeChecker {
 
@@ -24,8 +25,7 @@ public final class TypeChecker {
 
     private static boolean isDividendZero(Symbol dividend) {
         return dividend.isCategory(SymbolCategory.CONSTANT)
-                && ((dividend.isType(SymbolType.UINT) && Integer.valueOf(dividend.getValue()) == 0)
-                        || (dividend.isType(SymbolType.FLOAT) && Float.valueOf(dividend.getValue()) == 0.0f));
+                && dividend.getValue().compareTo(BigDecimal.ZERO) == 0;
     }
 
     private static void notifyError(String errorMessage) {

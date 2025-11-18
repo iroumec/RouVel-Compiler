@@ -9,13 +9,13 @@ public final class CodeRepository {
 
     // --------------------------------------------------------------------------------------------
 
-    StringBuilder imports;
-    Deque<String> operands;
-    StringBuilder executableCode;
+    private StringBuilder imports;
+    private Deque<String> operands;
+    private StringBuilder executableCode;
 
     // --------------------------------------------------------------------------------------------
 
-    Deque<Block> blockStack;
+    private Deque<Block> blockStack;
 
     // --------------------------------------------------------------------------------------------
 

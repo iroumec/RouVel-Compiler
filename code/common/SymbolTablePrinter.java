@@ -81,7 +81,8 @@ public final class SymbolTablePrinter {
 
         symbols.forEach(symbol -> {
             widths.compute("Lexema", (_, v) -> Math.min(maxLexemaWidth, Math.max(v, symbol.getLexema().length())));
-            widths.compute("Valor", (_, v) -> Math.max(v, symbol.getValue().length()));
+            widths.compute("Valor",
+                    (_, v) -> Math.max(v, (symbol.getValue() != null) ? symbol.getValue().toString().length() : 0));
             widths.compute("Tipo", (_, v) -> Math.max(v, safeToString(symbol.getType()).length()));
             widths.compute("Categoría", (_, v) -> Math.max(v, safeToString(symbol.getCategory()).length()));
             widths.compute("Referencias", (_, v) -> Math.max(v, String.valueOf(symbol.getReferences()).length()));
@@ -161,7 +162,7 @@ public final class SymbolTablePrinter {
             // Primera línea con todos los datos.
             Printer.print(String.format(rowFormat,
                     lexemaLines.get(0),
-                    symbol.getValue(),
+                    (symbol.getValue() != null) ? symbol.getValue() : "",
                     safeToString(symbol.getType()),
                     safeToString(symbol.getCategory()),
                     String.valueOf(symbol.getReferences())));

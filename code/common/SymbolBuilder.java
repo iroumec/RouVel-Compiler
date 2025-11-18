@@ -1,10 +1,12 @@
 package common;
 
+import java.math.BigDecimal;
+
 class SymbolBuilder {
 
     private int references;
     private SymbolType type;
-    private StringBuilder value;
+    private BigDecimal value;
     private StringBuilder lexema;
     private SymbolCategory category;
 
@@ -30,8 +32,11 @@ class SymbolBuilder {
 
     // --------------------------------------------------------------------------------------------
 
-    SymbolBuilder value(String value) {
-        this.value = new StringBuilder(value);
+    SymbolBuilder value(BigDecimal value) {
+
+        if (value != null) {
+            this.value = new BigDecimal(value.toString());
+        }
         return this;
     }
 

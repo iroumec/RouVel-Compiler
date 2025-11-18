@@ -103,7 +103,7 @@ class Function {
 
         for (Argument argument : orderedArguments) {
 
-            String formalParameter = argument.getParameter() + ":" + this.name;
+            String formalParameter = argument.getParameter() + ":" + this.scope;
 
             out.addAll(argument.getExpression());
             out.add(formalParameter);
