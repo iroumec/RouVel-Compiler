@@ -25,6 +25,7 @@ public class WebAssemblyExporter {
         try {
             Files.writeString(path, code, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
             Printer.printCentered("Archivo `.wat` generado: " + path.toString());
+            Printer.printSeparator();
         } catch (IOException i) {
             Printer.printCentered("ERROR: Ocurrió un problema al exportar el código a .wat.");
         }
@@ -54,8 +55,6 @@ public class WebAssemblyExporter {
 
             int exitCode = process.waitFor();
 
-            Printer.printSeparator();
-
             if (exitCode != 0) {
                 Printer.printBlankSpace();
                 Printer.printSeparator();
@@ -65,12 +64,19 @@ public class WebAssemblyExporter {
                 Printer.printFramed(error.strip());
                 Printer.printSeparator();
                 System.exit(1);
-                return;
             }
 
             Printer.printCentered("Archivo `.wasm` generado: " + outputPath.toString());
         } catch (IOException | InterruptedException _) {
+            Printer.printBlankSpace();
+            Printer.printSeparator();
             Printer.printCentered("ERROR: Ocurrió un problema al exportar el código a .wasm.");
+            Printer.printSeparator();
+            Printer.printCentered("Asegúrese de tener la herramienta wat2wasm instalada.");
+            Printer.printSeparator();
+            Printer.printFramed("Ubuntu/Debian: sudo apt-get install wabt");
+            Printer.printSeparator();
+            System.exit(1);
         }
     }
 

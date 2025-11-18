@@ -97,7 +97,10 @@ public final class CodeRepository {
     // ============================================================================================
 
     public void addImport(String importCode) {
-        this.imports.append(importCode).append("\n");
+
+        if (!this.imports.toString().contains(importCode)) {
+            this.imports.append(importCode).append("\n");
+        }
     }
 
     // ============================================================================================

@@ -15,5 +15,8 @@ MAIN {
 
     ##return(3UI);##
 
-    FUNC1(A -> I, 3UI -> H, A -> J);
+    A := FUNC1(A -> I, 3UI -> H, A -> J);
+
+    print("Valor de A:");
+    print(A);
 }
