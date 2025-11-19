@@ -85,6 +85,13 @@ public class SymbolDirector {
 
     // --------------------------------------------------------------------------------------------
 
+    public static Symbol getNegativeVersion(Symbol symbol) {
+
+        return symbol.getNegative();
+    }
+
+    // --------------------------------------------------------------------------------------------
+
     public static Symbol createNewAppropiateSymbol(String lexema, String value, SymbolType type) {
 
         if (lexema.startsWith("\"") && lexema.endsWith("\"")) {

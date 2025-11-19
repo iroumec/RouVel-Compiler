@@ -283,6 +283,7 @@ public final class SymbolTable {
     // --------------------------------------------------------------------------------------------
 
     public Symbol getSymbol(String lexema) {
+
         Symbol symbol = symbolTable.get(lexema);
         if (symbol == null) {
             Printer.printWrapped(String.format(

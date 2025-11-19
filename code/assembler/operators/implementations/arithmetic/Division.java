@@ -5,6 +5,7 @@ import common.SymbolDirector;
 import common.SymbolTable;
 import utilities.Printer;
 
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 
 import assembler.CodeRepository;
@@ -97,13 +98,24 @@ public class Division extends ArithmeticOperator {
     @Override
     protected void applyRuntimeControls(Symbol firstOperand, Symbol secondOperand, CodeRepository repository) {
 
-        // Si se colocan los dos puntos, por alguna razón, no lo agrega al assembler.
         String message = "RUNTIME ERROR: División por cero.";
 
         Symbol messageSymbol = SymbolDirector.createNewString(message);
 
         // Se agrega el string con el mensaje a la tabla de símbolos.
         SymbolTable.getInstance().addEntry(messageSymbol);
+
+        repository.addImport("(import \"console\" \"log_string\" (func $console_log_string (param i32 i32)))");
+
+        int messageLength = 0;
+        try {
+            // No puede usarse message.length(), porque no tiene en cuenta que en
+            // WebAssembly la tilde ocupa dos caracteres.
+            // TODO: llevar esto a otra clase.
+            messageLength = message.getBytes("UTF-8").length;
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
 
         repository.addCode("""
                 ;; Chequeo de división por cero.
@@ -119,6 +131,6 @@ public class Division extends ArithmeticOperator {
                     return
                 ) ;; $continue
                 """.formatted(secondOperand.getLexemaWithoutScope(), messageSymbol.getValue(),
-                message.length() - 2));
+                messageLength));
     }
 }

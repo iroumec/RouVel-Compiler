@@ -1,0 +1,10 @@
+DIVISION {
+    print(5. / 0.);
+}
+
+##
+No existen variables flotantes, por lo que la única forma de dividir por cero entre flotantes es usar literalmente el '0.'. 
+Tampoco se pueden usar paréntesis por lo que 5./(1.-1.) tampoco funciona.
+
+Si se usa la constante cero, salta error semántico (cosa que no nos parece mal) y no error en tiempo de ejecución como pide el enunciado.
+##

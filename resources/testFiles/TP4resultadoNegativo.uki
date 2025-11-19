@@ -1,0 +1,20 @@
+NEGATIVO {
+    ## Resultado negativo a través de resta de constantes ##
+
+    ##
+    uint A;
+    A := 1UI - 2UI;
+    ## ##                                          devuelve error de compilacion (bien?)##
+
+    ## Resultado negativo a través de resta de variables ##
+    ##
+    uint A,B;
+    A := 1UI;
+    B := 2UI;
+    print(A - B);
+    ####                                              error de $console_log_string##
+
+    ## Resultado negativo a través de suma de constantes ##
+    uint A;
+    A := 1UI + -2.0F+1;
+}

@@ -1,0 +1,5 @@
+MAIN {
+    uint A;
+    A := 2.0F;
+    print("Guatemala");
+}

@@ -1,22 +1,22 @@
-package assembler.operators.implementations.bifurcations;
+package assembler.operators.implementations.loops;
 
 import assembler.CodeRepository;
 import assembler.operators.AssemblerOperator;
 
-public class TrueBifurcation implements AssemblerOperator {
+public class LoopJumper implements AssemblerOperator {
 
-    private TrueBifurcation() {
+    private LoopJumper() {
     }
 
     // --------------------------------------------------------------------------------------------
 
     private static class Holder {
-        private static final TrueBifurcation INSTANCE = new TrueBifurcation();
+        private static final LoopJumper INSTANCE = new LoopJumper();
     }
 
     // --------------------------------------------------------------------------------------------
 
-    public static TrueBifurcation getInstance() {
+    public static LoopJumper getInstance() {
         return Holder.INSTANCE;
     }
 

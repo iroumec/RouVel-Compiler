@@ -38,11 +38,11 @@ public class SelectionCloser implements AssemblerOperator {
             if (selectionManager.getClosers() > 0) 
                 repository.addCode(String.format("br $out%s%n",selectionManager.getOutValue()));
 
-            while (selectionManager.getClosers() > 0 ) {
+            /*while (selectionManager.getClosers() > 0 ) {
                 repository.decreaseIndentation();
                 repository.addCode(")");
                 selectionManager.decreaseClosers();
-            }
+            }*/
 
         }
     }

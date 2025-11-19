@@ -1,0 +1,29 @@
+OVERFLOW {
+    ## Rango de UINT = [ 0 ; 65535 ] ##
+
+    ## Overflow a través de constantes               error de compilacion (bien?) ##
+    ##print(65535UI + 1UI);##
+
+
+    ## Overflow a través de variables                 da error de runtime ##
+    ##uint A, B;
+    A := 65535UI;
+    B := 1UI;
+
+    print(A + B); ##
+
+    ## Overflow a través de variable + constante        da error de runtime ##
+    ##uint A;
+    A := 65535UI;
+
+    print(A + 1UI);##
+
+    ## Overflow a través de constante + retorno función     todavía no da error, deberíamos contemplar esto? ##
+    uint F1(uint X) {
+        return (X);
+    }
+
+    print(65535UI + F1(1UI->X));
+}
+
+## Para la entrega final, dividir los distintos casos en otros archivos ##

@@ -31,18 +31,13 @@ public abstract class ArithmeticOperator implements AssemblerOperator {
         // Obtención del símbolo del primer operando.
         Symbol firstOperand = symbolTable.getSymbol(repository.popOperand());
 
-        String code = resolveOperation(firstOperand, secondOperand, repository);
-
-        if (!code.isBlank()) {
-            repository.addCode(code);
-        }
+        resolveOperation(firstOperand, secondOperand, repository);
     }
 
     // --------------------------------------------------------------------------------------------
 
-    private String resolveOperation(Symbol firstOperand, Symbol secondOperand, CodeRepository repository) {
+    private void resolveOperation(Symbol firstOperand, Symbol secondOperand, CodeRepository repository) {
 
-        String code = "";
         PairType pairType = PairType.getType(firstOperand, secondOperand);
 
         SymbolTable symbolTable = SymbolTable.getInstance();
@@ -73,16 +68,13 @@ public abstract class ArithmeticOperator implements AssemblerOperator {
             // Se añade la variable auxiliar como nuevo operando.
             repository.pushOperand(auxiliarVariable.getLexema());
 
-            applyRuntimeControls(firstOperand, secondOperand, repository);
-
-            code += this.getCode(pairType, symbolTable, firstOperand, secondOperand, auxiliarVariable.getLexema());
+            this.generateCode(pairType, symbolTable, firstOperand, secondOperand, auxiliarVariable, repository);
         }
 
         // Se remueve una referencia de cada operando.
-        symbolTable.removeEntry(firstOperand.getLexema());
-        symbolTable.removeEntry(secondOperand.getLexema());
-
-        return code;
+        // TODO: ¿tiene sentido que saquemos referencias en este punto?
+        //symbolTable.removeEntry(firstOperand.getLexema());
+        //symbolTable.removeEntry(secondOperand.getLexema());
     }
 
     // --------------------------------------------------------------------------------------------
@@ -125,33 +117,26 @@ public abstract class ArithmeticOperator implements AssemblerOperator {
 
     // --------------------------------------------------------------------------------------------
 
-    private String getCode(PairType pairType, SymbolTable symbolTable, Symbol firstOperand, Symbol secondOperand,
-            String newOperandName) {
+    private void generateCode(PairType pairType, SymbolTable symbolTable, Symbol firstOperand, Symbol secondOperand,
+            Symbol auxiliarVariable, CodeRepository repository) {
 
-        return switch (pairType) {
-            case UINT_UINT, UINT_FLOAT -> """
-                    %s\
-                    %s\
-                    i32.%s
-                    local.set $%s
-                    """.formatted(
-                    getCode(firstOperand, SymbolType.UINT),
-                    getCode(secondOperand, SymbolType.UINT),
-                    this.getAssemblerOperator(),
-                    symbolTable.getSymbol(newOperandName).getLexemaWithoutScope());
+        // local.tee es un local.set y un local.get al mismo tiempo.
 
-            case FLOAT_FLOAT -> """
-                    %s\
-                    %s\
-                    f32.%s
-                    local.set $%s
-                    """.formatted(
-                    getCode(firstOperand, null),
-                    getCode(secondOperand, null),
-                    this.getAssemblerOperator(),
-                    symbolTable.getSymbol(newOperandName).getLexemaWithoutScope());
-
-            default -> null;
+        switch (pairType) {
+            case UINT_UINT, UINT_FLOAT -> {
+                repository.addCode(getCode(firstOperand, SymbolType.UINT));
+                repository.addCode(getCode(secondOperand, SymbolType.UINT));
+                repository.addCode(String.format("i32.%s", this.getAssemblerOperator()));
+                repository.addCode(String.format("local.tee $%s", auxiliarVariable.getLexemaWithoutScope()));
+                this.applyRuntimeControls(firstOperand, secondOperand, repository);
+            }
+            case FLOAT_FLOAT -> {
+                repository.addCode(getCode(firstOperand, null));
+                repository.addCode(getCode(secondOperand, null));
+                repository.addCode(String.format("i32.%s", this.getAssemblerOperator()));
+                repository.addCode(String.format("local.tee $%s", auxiliarVariable.getLexemaWithoutScope()));
+                this.applyRuntimeControls(firstOperand, secondOperand, repository);
+            }
         };
     }
 

@@ -108,6 +108,7 @@ public final class DataManager {
         Arrays.fill(STATE_TRANSITION_MATRIX[5], -4);
         STATE_TRANSITION_MATRIX[5][charToIndex('-')] = 6;
         STATE_TRANSITION_MATRIX[5][charToIndex('+')] = 6;
+        STATE_TRANSITION_MATRIX[5][charToIndex(';')] = -4; // Parche.
 
         // Estado 6
         Arrays.fill(STATE_TRANSITION_MATRIX[6], -5);
@@ -213,6 +214,7 @@ public final class DataManager {
         Arrays.fill(SEMANTIC_ACTIONS_MATRIX[5], EMPTY);
         SEMANTIC_ACTIONS_MATRIX[5][charToIndex('-')] = LA;
         SEMANTIC_ACTIONS_MATRIX[5][charToIndex('+')] = LA;
+        SEMANTIC_ACTIONS_MATRIX[5][charToIndex(';')] = EMPTY; // Parche.
 
         // Estado 6
         Arrays.fill(SEMANTIC_ACTIONS_MATRIX[6], EMPTY);

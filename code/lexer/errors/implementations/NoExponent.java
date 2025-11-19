@@ -32,6 +32,7 @@ public class NoExponent implements LexicalError {
 
     @Override
     public void handleError(Lexer lexicalAnalyzer) {
+
         lexicalAnalyzer.notifyError("""
                 Se debe especificar un número entero como exponente. \
                 Se asumirá que el exponente de interés es: F%s0. \

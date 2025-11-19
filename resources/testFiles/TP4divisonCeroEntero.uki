@@ -1,0 +1,12 @@
+DIVISION {
+    uint A;
+    uint B;
+    ##B := 0UI;
+    A := 5UI / B;##
+
+    uint F1(uint X) {
+        return (X);
+    }
+
+    A := 5UI / F1(0UI->X);
+}

@@ -11,6 +11,10 @@ import common.SymbolType;
 
 public class Assignment implements AssemblerOperator {
 
+    private static final int MAX_UINT = 65535;
+
+    // --------------------------------------------------------------------------------------------
+
     private Assignment() {
     }
 
@@ -82,6 +86,8 @@ public class Assignment implements AssemblerOperator {
         // Si es negativo, se agrega la conversión a absoluto.
         if (operandValue.signum() < 0) {
             code += String.format("f32.abs %n");
+            code += String.format("f32.const %s%n", MAX_UINT); // TODO: preguntarlo.
+            code += String.format("f32.min %n");
         }
 
         // Conversión a entero.

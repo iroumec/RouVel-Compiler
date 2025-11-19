@@ -19,3 +19,6 @@ Adignación de nuevo en CVR.
 
 3. es correcto que si el flotante que quiero asignar a una variable entera es negativo tomo el valor absoluto?
 4. las filminas están mal o nosotros estamos mal con la seleccion?
+5. duda en TP4divisionCeroFlotante.uki
+6. duda de casos en TP4overflowEnteros.uki
+7. ArithmeticOperation ¿tiene sentido que saquemos referencias en este punto?

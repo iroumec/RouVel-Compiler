@@ -27,8 +27,14 @@ public class Main {
 
         File file = new File(args[0]);
         if (isFileValid(file)) {
-            System.out.println("El archivo no existe o no tiene la extensión '.uki': " + args[0]);
-            return;
+
+            Printer.printBlankSpace();
+            Printer.printSeparator();
+            Printer.printCentered("ERROR");
+            Printer.printSeparator();
+            Printer.printFramed("El archivo no existe o no tiene la extensión '.uki': " + args[0]);
+            Printer.printSeparator();
+            System.exit(1);
         }
 
         startCompilation(file);

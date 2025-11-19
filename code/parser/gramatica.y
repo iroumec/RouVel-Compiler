@@ -601,8 +601,8 @@ constant
 
             $$ = '-' + $2;
 
+            this.symbolTable.addEntry(SymbolDirector.getNegativeVersion(this.symbolTable.getSymbol($2)));
             this.symbolTable.removeEntry($2);
-            this.symbolTable.addEntry(SymbolDirector.createNewString($$));
         }
     ;
 
@@ -1047,8 +1047,6 @@ invocacion_funcion
     : function_start '(' lista_argumentos ')' 
         {
             if (this.statementAppearsInValidState()) {
-
-                $$ = $1 + '(' + $3 + ')';
 
                 this.reversePolish.closeFunctionCall();
             } else {
