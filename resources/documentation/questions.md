@@ -16,3 +16,6 @@ Primero las asignaciones.
 Invocación a función.
 
 Adignación de nuevo en CVR.
+
+3. es correcto que si el flotante que quiero asignar a una variable entera es negativo tomo el valor absoluto?
+4. las filminas están mal o nosotros estamos mal con la seleccion?

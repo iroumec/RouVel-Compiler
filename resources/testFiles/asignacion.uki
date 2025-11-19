@@ -1,0 +1,7 @@
+ASIGNACION {
+    uint F1(uint X) {
+        return (X);
+    }
+    uint A;
+    A := F1(10UI->X);
+}

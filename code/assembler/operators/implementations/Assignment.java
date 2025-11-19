@@ -57,7 +57,7 @@ public class Assignment implements AssemblerOperator {
 
         String code;
 
-        if (operand.isCategory(SymbolCategory.VARIABLE)) {
+        if (operand.isCategory(SymbolCategory.VARIABLE) || operand.isCategory(SymbolCategory.CV_PARAMETER) || operand.isCategory(SymbolCategory.CVR_PARAMETER)) {
 
             code = String.format("local.get $%s %n", operand.getLexemaWithoutScope());
 
