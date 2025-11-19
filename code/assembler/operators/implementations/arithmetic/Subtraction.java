@@ -1,5 +1,6 @@
 package assembler.operators.implementations.arithmetic;
 
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 
 import assembler.CodeRepository;
@@ -101,20 +102,30 @@ public class Subtraction extends ArithmeticOperator {
         Symbol messageSymbol = SymbolDirector.createNewString(message);
         SymbolTable.getInstance().addEntry(messageSymbol);
 
+        int messageLength = 0;
+        try {
+            // No puede usarse message.length(), porque no tiene en cuenta que en
+            // WebAssembly la tilde ocupa dos caracteres.
+            // TODO: llevar esto a otra clase.
+            messageLength = message.getBytes("UTF-8").length;
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
         repository.addCode("""
                 ;; Chequeo de resta negativa.
                 ;; Si compara si el primer operando es menor al segundo.
                 (block $continue
 
                     ;; Lectura del primer operando.
-                    %s
+                    %s\
 
                     ;; Lectura del segundo operando.
-                    %s
+                    %s\
 
-                    ;; Se compara si el primer
-                    ;; operando es menor al segundo.
-                    i32.lt_s
+                    ;; Se compara si el primer operando
+                    ;; es mayor o igual al segundo.
+                    i32.ge_s
 
                     ;; De ser el primer operando
                     ;; >= al segundo, se continua.
@@ -124,13 +135,13 @@ public class Subtraction extends ArithmeticOperator {
                     i32.const %s       ;; ptr
                     i32.const %d       ;; len
                     call $console_log_string
-                    return
+                    unreachable
                 ) ;; $continue
                 """.formatted(
                 getCode(firstOperand, SymbolType.UINT),
                 getCode(secondOperand, SymbolType.UINT),
                 messageSymbol.getValue(),
-                message.length() - 2));
+                messageLength));
 
     }
 }

@@ -1,0 +1,20 @@
+FACTORIAL {
+    uint FACT(uint X) {
+
+        if (X == 1UI) {
+            return(1UI);
+        } endif;
+
+        return (X*FACTORIAL.FACT(X-1UI->X));
+    }
+
+    uint A;
+
+    A := 5UI;
+
+    print("El factorial de ");
+    print(A);
+    print("es:");
+
+    print(FACT(A->X));
+}

@@ -128,7 +128,7 @@ public class Division extends ArithmeticOperator {
                     i32.const %s     ;; ptr
                     i32.const %d    ;; len
                     call $console_log_string
-                    return
+                    unreachable
                 ) ;; $continue
                 """.formatted(secondOperand.getLexemaWithoutScope(), messageSymbol.getValue(),
                 messageLength));

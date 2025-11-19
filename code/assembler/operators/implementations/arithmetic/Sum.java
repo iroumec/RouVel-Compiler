@@ -123,13 +123,13 @@ public class Sum extends ArithmeticOperator {
         }
 
         /*
-            El "param i32" es necesario para explicitarle al bloque que debe
-            tomar lo que había antes de la pila. En otro caso, el bloque
-            tiene su propia pila, la cual arranca vacía.
-        */
+         * El "param i32" es necesario para explicitarle al bloque que debe
+         * tomar lo que había antes de la pila. En otro caso, el bloque
+         * tiene su propia pila, la cual arranca vacía.
+         */
         repository.addCode("""
                 ;; Chequeo de overflow de enteros.
-                (block $continue (param i32) 
+                (block $continue (param i32)
                     ;; ¿Es el resultado mayor al máximo entero?
                     i32.const %s
                     i32.le_u
@@ -139,7 +139,7 @@ public class Sum extends ArithmeticOperator {
                     i32.const %s     ;; ptr
                     i32.const %d    ;; len
                     call $console_log_string
-                    return
+                    unreachable
                 ) ;; $continue
                 """.formatted(MAX_UINT, messageSymbol.getValue(),
                 messageLength));

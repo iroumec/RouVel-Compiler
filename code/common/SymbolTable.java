@@ -171,38 +171,9 @@ public final class SymbolTable {
 
         List<Symbol> out = new ArrayList<>();
 
-        // System.out.println(category);
-
         for (Symbol symbol : this.symbolTable.values()) {
-
-            // System.out.println(symbol.getCategory());
-            // System.out.println(symbol.getLexema());
 
             if (symbol.isCategory(category)
-                    && symbol.getScope().equals(scope)) {
-                out.add(symbol);
-            }
-        }
-
-        return out;
-    }
-
-    // --------------------------------------------------------------------------------------------
-
-    /**
-     * If the scope is null, it will return all global variables.
-     * 
-     * @param scope
-     * @param category
-     * @return
-     */
-    public List<Symbol> get(String scope, SymbolType type) {
-
-        List<Symbol> out = new ArrayList<>();
-
-        for (Symbol symbol : this.symbolTable.values()) {
-
-            if (symbol.isType(type)
                     && symbol.getScope().equals(scope)) {
                 out.add(symbol);
             }

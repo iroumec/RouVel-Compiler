@@ -3,10 +3,9 @@ package assembler.operators.implementations.functions.declaration;
 import java.util.List;
 
 import common.Symbol;
-import assembler.CodeRepository;
-import assembler.Dumper;
 import common.SymbolTable;
 import common.SymbolCategory;
+import assembler.CodeRepository;
 import assembler.operators.AssemblerOperator;
 
 public class FunctionOpener implements AssemblerOperator {
@@ -43,13 +42,11 @@ public class FunctionOpener implements AssemblerOperator {
 
         code.append(String.format("(func $%s %n", functionName));
 
-        code.append(dumpParameters(functionName));
+        code.append(dumpParameters(symbol.getScope() + ":" + symbol.getLexemaWithoutScope()));
 
-        String functionVariables = Dumper.dumpBlockVariables(symbol.getScope() + ":" + symbol.getLexemaWithoutScope());
-
-        if (!functionVariables.isBlank()) {
-            code.append("\n").append(functionVariables);
-        }
+        // Se agrega una etiqueta que, luego de haber determinado todas las variables
+        // temporales que serán necesarias, se remplaza por su declaración.
+        code.append("<local_variables>");
 
         repository.addCode(code);
         repository.increaseIndentation();

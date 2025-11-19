@@ -125,7 +125,7 @@ public class Multiplication extends ArithmeticOperator {
                     i32.const %s     ;; ptr
                     i32.const %d    ;; len
                     call $console_log_string
-                    return
+                    unreachable
                 ) ;; $continue
                 """.formatted(MAX_UINT, messageSymbol.getValue(),
                 messageLength));

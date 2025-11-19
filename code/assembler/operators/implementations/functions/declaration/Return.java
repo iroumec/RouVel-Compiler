@@ -33,7 +33,8 @@ public class Return implements AssemblerOperator {
         // En WebAssembly, el retorno simplemente se deja apilado en la pila.
 
         String out = ";; Retorno de la función.\n";
-        out += getCode(operand, SymbolType.UINT) + "\n";
+        out += getCode(operand, SymbolType.UINT);
+        out += "return";
 
         repository.addCode(out);
     }
