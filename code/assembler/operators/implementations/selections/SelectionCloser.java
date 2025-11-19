@@ -35,15 +35,18 @@ public class SelectionCloser implements AssemblerOperator {
 
         if (selectionManager.getSelectionLevel() == 0) {
 
-            if (selectionManager.getClosers() > 0) 
+            if (selectionManager.getClosers() > 0) {
                 repository.addCode(String.format("br $out%s%n",selectionManager.getOutValue()));
+                repository.decreaseIndentation();
+                repository.addCode(")");
+                selectionManager.decreaseClosers();
+            }
 
             /*while (selectionManager.getClosers() > 0 ) {
                 repository.decreaseIndentation();
                 repository.addCode(")");
                 selectionManager.decreaseClosers();
             }*/
-
         }
     }
 }

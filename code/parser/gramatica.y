@@ -852,10 +852,7 @@ declaracion_funcion
                 if (this.returnsController.isThereReturn()) {
 
                     notifyDetection("Declaración de función.");
-                    this.symbolTable.setType($1, SymbolType.UINT);
-                    this.symbolTable.setCategory($1, SymbolCategory.FUNCTION);
                     this.scopeStack.pop();
-                    this.symbolTable.setScope($1, this.scopeStack.asText());
                     this.reversePolish.closeFunctionDeclaration(this.scopeStack.appendScope($1));
                     this.reversePolish.addSeparation(String.format("Leaving scope '%s'...", $1));
                 } else {
@@ -888,9 +885,10 @@ declaracion_funcion
 inicio_funcion
     : UINT ID
         {
-
             this.reversePolish.addSeparation(String.format("Entering scope '%s'...", $2));
             this.reversePolish.startFunctionDeclaration($2 + ":" + this.scopeStack.asText());
+            SymbolTable.getInstance().removeEntry($2);
+            SymbolTable.getInstance().addEntry(SymbolDirector.createNewFunction($2 + ":" + this.scopeStack.asText()));
 
             $$ = $2;
             this.scopeStack.push($2);

@@ -155,7 +155,7 @@ public final class SymbolTable {
 
     public String getProgramName() {
 
-        return SymbolTable.getInstance().get(null, SymbolCategory.PROGRAM).getFirst().getLexema();
+        return SymbolTable.getInstance().get("", SymbolCategory.PROGRAM).getFirst().getLexema();
     }
 
     // --------------------------------------------------------------------------------------------
@@ -179,7 +179,7 @@ public final class SymbolTable {
             // System.out.println(symbol.getLexema());
 
             if (symbol.isCategory(category)
-                    && this.scopeMatches(symbol, scope)) {
+                    && symbol.getScope().equals(scope)) {
                 out.add(symbol);
             }
         }
@@ -203,7 +203,7 @@ public final class SymbolTable {
         for (Symbol symbol : this.symbolTable.values()) {
 
             if (symbol.isType(type)
-                    && this.scopeMatches(symbol, scope)) {
+                    && symbol.getScope().equals(scope)) {
                 out.add(symbol);
             }
         }
@@ -225,18 +225,6 @@ public final class SymbolTable {
         }
 
         return out;
-    }
-
-    // --------------------------------------------------------------------------------------------
-
-    private boolean scopeMatches(Symbol symbol, String scope) {
-
-        if (scope == null) {
-            return symbol.getLexema().split(":").length == 1;
-        }
-
-        return (scope == null && symbol.getLexema().split(":").length == 2)
-                || (scope != null && symbol.getLexema().endsWith(scope));
     }
 
     // --------------------------------------------------------------------------------------------

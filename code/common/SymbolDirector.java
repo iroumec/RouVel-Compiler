@@ -52,6 +52,14 @@ public class SymbolDirector {
 
     // --------------------------------------------------------------------------------------------
 
+    public static Symbol createNewFunction(String functionName) {
+
+        return new SymbolBuilder(functionName).category(SymbolCategory.FUNCTION)
+                .type(SymbolType.UINT).build();
+    }
+
+    // --------------------------------------------------------------------------------------------
+
     public static Symbol createNewFloat(float value) {
 
         return createNewFloat(String.valueOf(value));

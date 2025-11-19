@@ -36,7 +36,7 @@ public class FunctionOpener implements AssemblerOperator {
         // TODO: revisar qué pasa si hay dos funciones con un mismo nombre pero en
         // distintos ámbitos.
 
-        repository.startBlock(symbol.getScope());
+        repository.startBlock(symbol.getScope() + ":" + symbol.getLexemaWithoutScope());
 
         StringBuilder code = new StringBuilder();
         String functionName = symbol.getLexemaWithoutScope();
@@ -45,7 +45,7 @@ public class FunctionOpener implements AssemblerOperator {
 
         code.append(dumpParameters(functionName));
 
-        String functionVariables = Dumper.dumpBlockVariables(functionName);
+        String functionVariables = Dumper.dumpBlockVariables(symbol.getScope() + ":" + symbol.getLexemaWithoutScope());
 
         if (!functionVariables.isBlank()) {
             code.append("\n").append(functionVariables);

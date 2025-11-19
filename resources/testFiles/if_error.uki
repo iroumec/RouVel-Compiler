@@ -8,7 +8,7 @@ MAIN {
                 A := 11UI;
             endif;
             A := 51UI;
-        }
+        } 
         endif;
         return (A);
     }

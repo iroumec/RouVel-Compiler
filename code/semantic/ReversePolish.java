@@ -285,7 +285,9 @@ public final class ReversePolish implements Iterable<String> {
 
     public void addArgument(String parameter) {
 
-        functionCalled.addArgument(parameter, this.temporalPolishes);
+        if (functionCalled != null) {
+            functionCalled.addArgument(parameter, this.temporalPolishes);
+        }
 
         this.temporalPolishes.clear();
     }

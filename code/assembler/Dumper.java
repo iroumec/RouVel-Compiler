@@ -24,7 +24,7 @@ public final class Dumper {
 
         StringBuilder code = new StringBuilder();
 
-        String functionName = SymbolTable.getInstance().get(null, SymbolCategory.PROGRAM).getFirst().getLexema();
+        String functionName = SymbolTable.getInstance().get("", SymbolCategory.PROGRAM).getFirst().getLexema();
 
         String functionVariables = dumpBlockVariables(functionName);
 

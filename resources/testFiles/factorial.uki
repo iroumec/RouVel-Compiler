@@ -1,0 +1,15 @@
+FACTORIAL {
+    uint FACT(uint X) {
+
+        if (X == 1UI) {
+            return(1UI);
+        } else if (X == 0UI) {
+            return (1UI);
+        } else {
+            return (X*FACTORIAL.FACT(X-1UI->X));
+        } endif;
+        endif;
+    }
+
+    print(FACT(5UI->X));
+}

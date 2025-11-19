@@ -163,7 +163,7 @@ public class Symbol {
     public String getScope() {
         String[] parts = this.lexema.toString().split(":");
         if (parts.length <= 1) {
-            return null;
+            return "";
         }
         return String.join(":", Arrays.copyOfRange(parts, 1, parts.length));
     }
