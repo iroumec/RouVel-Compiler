@@ -152,7 +152,9 @@ public final class ReversePolish implements Iterable<String> {
     // --------------------------------------------------------------------------------------------
 
     public void discardSelection() {
-        this.getLastPromise();
+        if (!this.stackedPromises.isEmpty()) {
+            this.getLastPromise();
+        }
     }
 
     // --------------------------------------------------------------------------------------------

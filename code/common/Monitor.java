@@ -69,7 +69,7 @@ public class Monitor {
     // --------------------------------------------------------------------------------------------
 
     public boolean hasWarningMessages() {
-        return this.errorCollector.hasMessages();
+        return this.warningCollector.hasMessages();
     }
 
     // --------------------------------------------------------------------------------------------

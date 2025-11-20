@@ -1,5 +1,7 @@
 package semantic;
 
+import common.Monitor;
+
 /**
  * Clase encargada de controlar que exista una cantidad de retornos apropiada en
  * el código.
@@ -13,6 +15,7 @@ public class ReturnsController {
     private int returnsNeeded;
     private int selectionDepth;
     private boolean isThereReturn;
+    private boolean returnInSection;
 
     private static final boolean debug = true;
 
@@ -24,6 +27,7 @@ public class ReturnsController {
         this.returnsNeeded = 0;
         this.selectionDepth = 0;
         this.isThereReturn = false;
+        this.returnInSection = false;
 
         if (debug) debugPrint("ReturnsController");
     }
@@ -33,6 +37,7 @@ public class ReturnsController {
     public void notifyStartOfFunctionDeclaration() {
         this.functionLevel++;
         this.returnsNeeded++;
+        this.notifySectionStart();
 
         if (debug) debugPrint("notifyStartOfFunctionDeclaration");
     }
@@ -44,6 +49,7 @@ public class ReturnsController {
         this.returnsFound--;
         this.returnsNeeded--;
         this.isThereReturn = false;
+        this.notifySectionEnd();
 
         if (debug) debugPrint("notifyEndOfFunctionDeclaration");
     }
@@ -66,37 +72,93 @@ public class ReturnsController {
     public void notifySelectionStart() {
         this.returnsNeeded++;
         this.selectionDepth++;
+        this.notifySectionStart();
 
         if (debug) debugPrint("notifySelectionStart");
     }
 
     // --------------------------------------------------------------------------------------------
 
+    public void notifyAlternativeStart() {
+        this.returnsNeeded++;
+        this.notifySectionStart();
+
+        if (debug)
+            debugPrint("notifyAlternativeStart");
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    public void notifyAlternativeEnd() {
+
+        this.notifySectionEnd();
+
+        if (debug)
+            debugPrint("notifyAlternativeEnd");
+    }
+
+    // --------------------------------------------------------------------------------------------
+
     public void notifySelectionEnd() {
+
+        System.out.println("Entreéeé");
 
         // Se está saliendo del if más externo.
         if (this.selectionDepth == 1) {
             if (this.returnsNeeded == this.returnsFound) {
                 this.isThereReturn = true;
+            } else {
+                if (!this.isThereReturn) {
+                    this.returnsNeeded = 1;
+                    this.returnsFound = 0;
+                }
             }
         }
 
         this.selectionDepth--;
+
+        this.notifySectionEnd();
 
         if (debug) debugPrint("notifySelectionEnd");
     }
 
     // --------------------------------------------------------------------------------------------
 
-    public void notifyReturn() {
+    public void notifySectionStart() {
+        this.returnInSection = false;
+    }
 
-        this.returnsFound++;
+    // --------------------------------------------------------------------------------------------
 
-        if (this.selectionDepth == 0) {
-            this.isThereReturn = true;
+
+    public void notifySectionEnd() {
+        this.returnInSection = false;
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    public boolean notifyReturn() {
+
+        if (!this.returnInSection) {
+            this.returnsFound++;
+            this.returnInSection = true;
+            
+            if (this.selectionDepth == 0) {
+                this.isThereReturn = true;
+            }
+
         }
-
+        
         if (debug) debugPrint("notifyReturn");
+
+        return !this.returnInSection; 
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    public boolean isThereReturnInSection() {
+
+        return this.returnInSection;
     }
 
     // --------------------------------------------------------------------------------------------
@@ -107,14 +169,31 @@ public class ReturnsController {
 
     // --------------------------------------------------------------------------------------------
 
-    public boolean isThereReturn() {
+    public boolean isThereReturnInDeclaration() {
         return this.isThereReturn;
     }
 
     // --------------------------------------------------------------------------------------------
 
     public void debugPrint(String message) {
-        System.out.println(message+"\nreturnsFound: "+returnsFound+"\nfunctionLevel: "+functionLevel+"\nreturnsNeeded: "+returnsNeeded+"\nselectionDepth: "+selectionDepth+"\nisThereReturn: "+isThereReturn);
+        System.out.println(message+
+            "\nreturnsFound: "+returnsFound+
+            "\nfunctionLevel: "+functionLevel+
+            "\nreturnsNeeded: "+returnsNeeded+
+            "\nselectionDepth: "+selectionDepth+
+            "\nisThereReturn: "+isThereReturn+
+            "\nreturnInSectionFlag: "+returnInSection
+        );
     }
 
+    // --------------------------------------------------------------------------------------------
+
+    private static void notifyError(String errorMessage) {
+
+        Monitor monitor = Monitor.getInstance();
+
+        monitor.addError(String.format(
+                "ERROR SEMÁNTICO: Línea %d: %s",
+                monitor.getLineNumber(), errorMessage));
+    }
 }

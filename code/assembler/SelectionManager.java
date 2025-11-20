@@ -2,6 +2,8 @@ package assembler;
 
 public class SelectionManager {
 
+    // -----------------------------------------------------------------------------------------
+
     private static SelectionManager INSTANCE;
 
     private SelectionManager() {}
@@ -11,6 +13,8 @@ public class SelectionManager {
             INSTANCE = new SelectionManager();
         return INSTANCE;
     }
+
+    // -----------------------------------------------------------------------------------------
 
     private int selectionLevel = 0;
     private int outAmount = 0;

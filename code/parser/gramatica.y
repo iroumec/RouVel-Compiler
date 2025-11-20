@@ -720,6 +720,8 @@ if
                 this.reversePolish.addSeparation("Leaving 'if-else' body...");
                 notifyDetection("Sentencia 'if'."); 
             } else {
+                System.out.println("Acá me rompo");
+                System.out.println(this.errorState);
                 this.treatInvalidState("Sentencia 'if'");
                 this.reversePolish.discardSelection(); 
             }
@@ -739,9 +741,11 @@ if
 if_start
     : IF { reversePolish.addPolish("open-selection"); } condicion
         {
-            this.reversePolish.addSeparation("Entering 'if' body...");
-            this.reversePolish.openSelection();
-            this.returnsController.notifySelectionStart();
+            if (!this.returnsController.isThereReturnInSection()) {
+                this.reversePolish.addSeparation("Entering 'if' body...");
+                this.reversePolish.openSelection();
+                this.returnsController.notifySelectionStart();
+            }
         }
     ;
 
@@ -768,6 +772,7 @@ rama_else
     : // lambda //
         { this.returnsController.notifyEmptyElse(); }
     | else_start cuerpo_ejecutable
+        { this.returnsController.notifyAlternativeEnd(); }
 
     // |========================= REGLAS DE ERROR =========================| //
     
@@ -782,6 +787,7 @@ else_start
     : ELSE
         {
             this.reversePolish.openAlternative();
+            this.returnsController.notifyAlternativeStart();
             this.reversePolish.addSeparation("Entering 'else' body...");
         }
     ;
@@ -849,7 +855,7 @@ declaracion_funcion
         {
             if (!this.errorState) {
 
-                if (this.returnsController.isThereReturn()) {
+                if (this.returnsController.isThereReturnInDeclaration()) {
 
                     notifyDetection("Declaración de función.");
                     this.scopeStack.pop();
@@ -1002,8 +1008,11 @@ sentencia_retorno
                     notifyDetection("Sentencia 'return'.");
 
                     this.returnsController.notifyReturn();
+                    //if(!this.returnsController.notifyReturn())
+                        //notifyError("Solo se permite una sentencia return por sección.");
                 } else {
                     notifyError("La sentencia 'return' no está permitida fuera de la declaración de una función.");
+                    this.errorState = true;
                 }
             } else {
 
@@ -1330,14 +1339,15 @@ private void replaceLastErrorWith(String errorMessage) {
 
 private boolean statementAppearsInValidState() {
 
-    return !this.returnsController.isThereReturn() && !errorState;
+    return !this.returnsController.isThereReturnInDeclaration()
+        && !this.returnsController.isThereReturnInSection() && !errorState;
 }
 
 // --------------------------------------------------------------------------------------------------------------------
 
 private void treatInvalidState(String statementName) {
 
-    if (this.returnsController.isThereReturn()) {
+    if (this.returnsController.isThereReturnInDeclaration() || this.returnsController.isThereReturnInSection()) {
         this.showOmittedStatementNotification(statementName);
     }
 

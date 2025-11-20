@@ -456,7 +456,7 @@ venv
 index.html
 
 # Archivos utilizados dentro del MakeFile.
-.compile_filed
+.compile_failed
 .server.pid
 
 # Carpeta con las salidas.

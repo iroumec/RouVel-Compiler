@@ -1,0 +1,9 @@
+MAIN {
+    uint F(uint X) {
+        if (X < 10UI) {
+            return (10UI);
+        } else {
+            return (5UI);
+        } endif;
+    }
+}

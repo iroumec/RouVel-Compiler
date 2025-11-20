@@ -1,0 +1,15 @@
+MAIN {
+    uint F(uint X) {
+        if(X<10UI) {
+            return (1UI); 
+
+            if (X > 4UI) { 
+                print("HAY");
+            } endif; ## TODO: si acá no se pone "endif", aparece un error no tratado ##
+
+            return(5UI);
+        } endif;
+
+        return(3UI);
+    }
+}

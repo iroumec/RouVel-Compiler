@@ -1,0 +1,12 @@
+MAIN {
+    uint F(uint X) {
+        if(X<10UI) {
+            return (1UI);
+            return (2UI); ## TODO: ver problema de número de línea ##
+        } else {
+            print(X);
+        } endif;
+        return(8UI);
+    }
+
+}
