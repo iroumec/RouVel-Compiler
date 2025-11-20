@@ -34,7 +34,6 @@ public class FunctionOpener implements AssemblerOperator {
 
         // TODO: revisar qué pasa si hay dos funciones con un mismo nombre pero en
         // distintos ámbitos.
-
         repository.startBlock(symbol.getScope() + ":" + symbol.getLexemaWithoutScope());
 
         StringBuilder code = new StringBuilder();
@@ -46,7 +45,7 @@ public class FunctionOpener implements AssemblerOperator {
 
         // Se agrega una etiqueta que, luego de haber determinado todas las variables
         // temporales que serán necesarias, se remplaza por su declaración.
-        code.append("<local_variables>");
+        code.append("<local_variables>"); 
 
         repository.addCode(code);
         repository.increaseIndentation();

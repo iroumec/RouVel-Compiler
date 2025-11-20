@@ -2,10 +2,11 @@ FACTORIAL {
     uint FACT(uint X) {
 
         if (X == 1UI) {
-            return(1UI);
+            return(1UI); 
         } else {
-            return (X*FACTORIAL.FACT(X-1UI->X));
+            return(X*FACTORIAL.FACT(X-1UI->X));
         } endif;
+
     }
 
     uint A;

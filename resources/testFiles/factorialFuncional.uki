@@ -6,7 +6,7 @@ FACTORIAL {
         } endif;
 
         return (X*FACTORIAL.FACT(X-1UI->X));
-    }
+    } 
 
     uint A;
 

@@ -1,0 +1,10 @@
+MAIN {
+    uint F(uint X) {
+        if(0. < 1.) {
+            return (0UI);
+            return (2UI);
+        } else {
+            print("hello");
+        } endif;
+    }
+}

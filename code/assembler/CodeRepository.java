@@ -77,15 +77,13 @@ public final class CodeRepository {
 
         String blockVariables = Indenter.indent(Dumper.dumpBlockVariables(this.getCurrentScope()), INDENTATION);
 
-        if (!blockVariables.isBlank()) {
-
-            String searchString = "<local_variables>";
-            int index = this.blockStack.peek().code().indexOf(searchString);
-            if (index != -1) {
-                this.blockStack.peek().code().replace(index, index + searchString.length(),
-                        String.format("%n%s", blockVariables));
-            }
-        }
+        String searchString = "<local_variables>";
+        int index = this.blockStack.peek().code().indexOf(searchString);
+        
+        if (index != -1) {
+            this.blockStack.peek().code().replace(index, index + searchString.length(),
+                String.format("%n%s", blockVariables));
+        } 
 
         this.executableCode.append(this.blockStack.pop().code());
     }

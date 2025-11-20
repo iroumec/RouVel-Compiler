@@ -14,6 +14,8 @@ public class ReturnsController {
     private int selectionDepth;
     private boolean isThereReturn;
 
+    private static final boolean debug = true;
+
     // --------------------------------------------------------------------------------------------
 
     public ReturnsController() {
@@ -22,6 +24,8 @@ public class ReturnsController {
         this.returnsNeeded = 0;
         this.selectionDepth = 0;
         this.isThereReturn = false;
+
+        if (debug) debugPrint("ReturnsController");
     }
 
     // --------------------------------------------------------------------------------------------
@@ -29,6 +33,8 @@ public class ReturnsController {
     public void notifyStartOfFunctionDeclaration() {
         this.functionLevel++;
         this.returnsNeeded++;
+
+        if (debug) debugPrint("notifyStartOfFunctionDeclaration");
     }
 
     // --------------------------------------------------------------------------------------------
@@ -38,6 +44,8 @@ public class ReturnsController {
         this.returnsFound--;
         this.returnsNeeded--;
         this.isThereReturn = false;
+
+        if (debug) debugPrint("notifyEndOfFunctionDeclaration");
     }
 
     // --------------------------------------------------------------------------------------------
@@ -49,6 +57,8 @@ public class ReturnsController {
         // Se decrementa la cantidad de returns hallados.
         // TODO: REVISAR QUÉ PASA SI DENTRO DEL IF HAY VARIOS RETURNS.
         this.returnsFound--;
+
+        if (debug) debugPrint("notifyEmptyElse");
     }
 
     // --------------------------------------------------------------------------------------------
@@ -56,6 +66,8 @@ public class ReturnsController {
     public void notifySelectionStart() {
         this.returnsNeeded++;
         this.selectionDepth++;
+
+        if (debug) debugPrint("notifySelectionStart");
     }
 
     // --------------------------------------------------------------------------------------------
@@ -70,6 +82,8 @@ public class ReturnsController {
         }
 
         this.selectionDepth--;
+
+        if (debug) debugPrint("notifySelectionEnd");
     }
 
     // --------------------------------------------------------------------------------------------
@@ -81,6 +95,8 @@ public class ReturnsController {
         if (this.selectionDepth == 0) {
             this.isThereReturn = true;
         }
+
+        if (debug) debugPrint("notifyReturn");
     }
 
     // --------------------------------------------------------------------------------------------
@@ -93,6 +109,12 @@ public class ReturnsController {
 
     public boolean isThereReturn() {
         return this.isThereReturn;
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    public void debugPrint(String message) {
+        System.out.println(message+"\nreturnsFound: "+returnsFound+"\nfunctionLevel: "+functionLevel+"\nreturnsNeeded: "+returnsNeeded+"\nselectionDepth: "+selectionDepth+"\nisThereReturn: "+isThereReturn);
     }
 
 }

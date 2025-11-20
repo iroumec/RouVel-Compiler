@@ -42,6 +42,8 @@ public class SelectionCloser implements AssemblerOperator {
                 selectionManager.decreaseClosers();
             }
 
+            //repository.addCode("unreachable");
+
             /*
              * while (selectionManager.getClosers() > 0) {
              * repository.decreaseIndentation();

@@ -874,7 +874,7 @@ private void treatInvalidState(String statementName) {
     // De haber un error, no se trata acá, sino que se levanta
     // hasta el nivel de sentencia. Esto se realiza de esta forma
     // porque, de haber un error dentro de un if, se quiere invalidar
-    // toda la estructura de control completa y no, solamente la 
+    // toda la estructura de control completa y no, solamente, la 
     // sentencia.
 }
 
@@ -1559,7 +1559,7 @@ case 106:
                 notifyDetection("Sentencia 'if'."); 
             } else {
                 this.treatInvalidState("Sentencia 'if'");
-                this.reversePolish.discardSelection();
+                this.reversePolish.discardSelection(); 
             }
 
             this.returnsController.notifySelectionEnd();
