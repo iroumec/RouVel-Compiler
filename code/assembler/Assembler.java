@@ -40,8 +40,6 @@ public class Assembler {
         // Se cierra el programa principal.
         codeRepository.endProgram();
 
-        SymbolTable.getInstance().print();
-
         // Se retorna el código completo.
         return codeRepository.getProgram();
     }
