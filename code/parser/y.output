@@ -75,12 +75,12 @@
 
   52  identifier : ID
 
-  53  asignacion_simple : left_hand_size DASIG expression ';'
-  54                    | left_hand_size DASIG expression error
-  55                    | left_hand_size expression ';'
-  56                    | left_hand_size DASIG error
+  53  asignacion_simple : left_hand_side DASIG expression ';'
+  54                    | left_hand_side DASIG expression error
+  55                    | left_hand_side expression ';'
+  56                    | left_hand_side DASIG error
 
-  57  left_hand_size : variable
+  57  left_hand_side : variable
 
   58  multiple_assignment : list_of_variables list_of_constants ';'
   59                      | list_of_variables list_of_constants error
@@ -313,7 +313,7 @@ state 5
 	parametro_lambda  goto 22
 	list_of_variables  goto 23
 	multiple_assignment  goto 24
-	left_hand_size  goto 25
+	left_hand_side  goto 25
 	program_body  goto 26
 	statement_list  goto 27
 	open_brace_list  goto 28
@@ -514,7 +514,7 @@ state 16
 	parametro_lambda  goto 22
 	list_of_variables  goto 23
 	multiple_assignment  goto 24
-	left_hand_size  goto 25
+	left_hand_side  goto 25
 	statement_list  goto 76
 	statement  goto 29
 	executable_statement  goto 30
@@ -548,7 +548,7 @@ state 18
 
 
 state 19
-	left_hand_size : variable .  (57)
+	left_hand_side : variable .  (57)
 	list_of_variables : variable . '='  (60)
 	list_of_variables : variable . ',' list_of_variables  (61)
 	list_of_variables : variable . error list_of_variables  (62)
@@ -608,7 +608,7 @@ state 22
 	parametro_lambda  goto 22
 	list_of_variables  goto 23
 	multiple_assignment  goto 24
-	left_hand_size  goto 25
+	left_hand_side  goto 25
 	executable_statement  goto 87
 	bloque_ejecutable  goto 88
 	conjunto_sentencias_ejecutables  goto 89
@@ -643,10 +643,10 @@ state 24
 
 
 state 25
-	asignacion_simple : left_hand_size . DASIG expression ';'  (53)
-	asignacion_simple : left_hand_size . DASIG expression error  (54)
-	asignacion_simple : left_hand_size . expression ';'  (55)
-	asignacion_simple : left_hand_size . DASIG error  (56)
+	asignacion_simple : left_hand_side . DASIG expression ';'  (53)
+	asignacion_simple : left_hand_side . DASIG expression error  (54)
+	asignacion_simple : left_hand_side . expression ';'  (55)
+	asignacion_simple : left_hand_side . DASIG error  (56)
 
 	ID  shift 10
 	CTE  shift 48
@@ -693,7 +693,7 @@ state 27
 	parametro_lambda  goto 22
 	list_of_variables  goto 23
 	multiple_assignment  goto 24
-	left_hand_size  goto 25
+	left_hand_side  goto 25
 	statement  goto 94
 	executable_statement  goto 30
 	declarative_statement  goto 31
@@ -839,7 +839,7 @@ state 42
 	parametro_lambda  goto 22
 	list_of_variables  goto 23
 	multiple_assignment  goto 24
-	left_hand_size  goto 25
+	left_hand_side  goto 25
 	executable_statement  goto 101
 	cuerpo_ejecutable  goto 102
 	bloque_ejecutable  goto 103
@@ -880,7 +880,7 @@ state 43
 	parametro_lambda  goto 22
 	list_of_variables  goto 23
 	multiple_assignment  goto 24
-	left_hand_size  goto 25
+	left_hand_side  goto 25
 	executable_statement  goto 101
 	cuerpo_ejecutable  goto 109
 	bloque_ejecutable  goto 103
@@ -1284,7 +1284,7 @@ state 76
 	parametro_lambda  goto 22
 	list_of_variables  goto 23
 	multiple_assignment  goto 24
-	left_hand_size  goto 25
+	left_hand_side  goto 25
 	close_brace_list  goto 145
 	statement  goto 94
 	executable_statement  goto 30
@@ -1419,7 +1419,7 @@ state 86
 	parametro_lambda  goto 22
 	list_of_variables  goto 23
 	multiple_assignment  goto 24
-	left_hand_size  goto 25
+	left_hand_side  goto 25
 	executable_statement  goto 87
 	conjunto_sentencias_ejecutables  goto 164
 	asignacion_simple  goto 34
@@ -1474,7 +1474,7 @@ state 89
 	argumento_lambda  goto 169
 	list_of_variables  goto 23
 	multiple_assignment  goto 24
-	left_hand_size  goto 25
+	left_hand_side  goto 25
 	executable_statement  goto 170
 	asignacion_simple  goto 34
 	inline_function_invocation  goto 35
@@ -1511,9 +1511,9 @@ state 91
 
 
 state 92
-	asignacion_simple : left_hand_size DASIG . expression ';'  (53)
-	asignacion_simple : left_hand_size DASIG . expression error  (54)
-	asignacion_simple : left_hand_size DASIG . error  (56)
+	asignacion_simple : left_hand_side DASIG . expression ';'  (53)
+	asignacion_simple : left_hand_side DASIG . expression error  (54)
+	asignacion_simple : left_hand_side DASIG . error  (56)
 
 	error  shift 175
 	ID  shift 10
@@ -1535,7 +1535,7 @@ state 92
 
 
 state 93
-	asignacion_simple : left_hand_size expression . ';'  (55)
+	asignacion_simple : left_hand_side expression . ';'  (55)
 	expression : expression . operador_suma term  (67)
 	expression : expression . operador_suma error  (68)
 	expression : expression . term_simple  (69)
@@ -1587,7 +1587,7 @@ state 96
 	parametro_lambda  goto 22
 	list_of_variables  goto 23
 	multiple_assignment  goto 24
-	left_hand_size  goto 25
+	left_hand_side  goto 25
 	statement_list  goto 178
 	statement  goto 29
 	executable_statement  goto 30
@@ -1643,7 +1643,7 @@ state 100
 	parametro_lambda  goto 22
 	list_of_variables  goto 23
 	multiple_assignment  goto 24
-	left_hand_size  goto 25
+	left_hand_side  goto 25
 	executable_statement  goto 87
 	conjunto_sentencias_ejecutables  goto 179
 	asignacion_simple  goto 34
@@ -1720,7 +1720,7 @@ state 106
 	parametro_lambda  goto 22
 	list_of_variables  goto 23
 	multiple_assignment  goto 24
-	left_hand_size  goto 25
+	left_hand_side  goto 25
 	executable_statement  goto 101
 	cuerpo_ejecutable  goto 182
 	bloque_ejecutable  goto 103
@@ -2342,7 +2342,7 @@ state 162
 	parametro_lambda  goto 22
 	list_of_variables  goto 23
 	multiple_assignment  goto 24
-	left_hand_size  goto 25
+	left_hand_side  goto 25
 	statement  goto 223
 	executable_statement  goto 30
 	declarative_statement  goto 31
@@ -2389,7 +2389,7 @@ state 164
 	argumento_lambda  goto 226
 	list_of_variables  goto 23
 	multiple_assignment  goto 24
-	left_hand_size  goto 25
+	left_hand_side  goto 25
 	executable_statement  goto 170
 	asignacion_simple  goto 34
 	inline_function_invocation  goto 35
@@ -2500,14 +2500,14 @@ state 174
 
 
 state 175
-	asignacion_simple : left_hand_size DASIG error .  (56)
+	asignacion_simple : left_hand_side DASIG error .  (56)
 
 	.  reduce 56
 
 
 state 176
-	asignacion_simple : left_hand_size DASIG expression . ';'  (53)
-	asignacion_simple : left_hand_size DASIG expression . error  (54)
+	asignacion_simple : left_hand_side DASIG expression . ';'  (53)
+	asignacion_simple : left_hand_side DASIG expression . error  (54)
 	expression : expression . operador_suma term  (67)
 	expression : expression . operador_suma error  (68)
 	expression : expression . term_simple  (69)
@@ -2529,7 +2529,7 @@ state 176
 
 
 state 177
-	asignacion_simple : left_hand_size expression ';' .  (55)
+	asignacion_simple : left_hand_side expression ';' .  (55)
 
 	.  reduce 55
 
@@ -2555,7 +2555,7 @@ state 178
 	parametro_lambda  goto 22
 	list_of_variables  goto 23
 	multiple_assignment  goto 24
-	left_hand_size  goto 25
+	left_hand_side  goto 25
 	statement  goto 94
 	executable_statement  goto 30
 	declarative_statement  goto 31
@@ -2592,7 +2592,7 @@ state 179
 	parametro_lambda  goto 22
 	list_of_variables  goto 23
 	multiple_assignment  goto 24
-	left_hand_size  goto 25
+	left_hand_side  goto 25
 	executable_statement  goto 170
 	asignacion_simple  goto 34
 	inline_function_invocation  goto 35
@@ -3010,7 +3010,7 @@ state 224
 	parametro_lambda  goto 22
 	list_of_variables  goto 23
 	multiple_assignment  goto 24
-	left_hand_size  goto 25
+	left_hand_side  goto 25
 	statement  goto 255
 	executable_statement  goto 30
 	declarative_statement  goto 31
@@ -3086,13 +3086,13 @@ state 233
 
 
 state 234
-	asignacion_simple : left_hand_size DASIG expression error .  (54)
+	asignacion_simple : left_hand_side DASIG expression error .  (54)
 
 	.  reduce 54
 
 
 state 235
-	asignacion_simple : left_hand_size DASIG expression ';' .  (53)
+	asignacion_simple : left_hand_side DASIG expression ';' .  (53)
 
 	.  reduce 53
 

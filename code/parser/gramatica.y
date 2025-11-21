@@ -64,7 +64,7 @@
 %type <sval> expression, term, factor, term_simple, factor_simple
 %type <sval> list_of_variables, list_of_constants, multiple_assignment
 
-%type <sval> left_hand_size
+%type <sval> left_hand_side
 
 // ====================================================================================================================
 // FIN DE DECLARACIONES
@@ -313,7 +313,7 @@ identifier
 // ********************************************************************************************************************
 
 asignacion_simple
-    : left_hand_size DASIG expression ';'                              
+    : left_hand_side DASIG expression ';'                              
         { 
 
             if (this.statementAppearsInValidState()) {
@@ -335,20 +335,20 @@ asignacion_simple
 
     // |========================= REGLAS DE ERROR =========================| //
 
-    | left_hand_size DASIG expression error
+    | left_hand_side DASIG expression error
         // Nunca reduce por esta regla por alguna razón que se desconoce.
         { notifyError("Las asignaciones simples deben terminar con ';'."); }
 
-    | left_hand_size expression ';'
+    | left_hand_side expression ';'
         { notifyError("Error en asignación simple. Se esperaba un ':=' entre la variable y la expresión."); }
 
-    | left_hand_size DASIG error
+    | left_hand_side DASIG error
         { notifyError("Asignación simple inválida."); }
     ;
 
 // --------------------------------------------------------------------------------------------------------------------
 
-left_hand_size
+left_hand_side
     : variable
         { this.reversePolish.addPolish($1); }
     ;
