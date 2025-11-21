@@ -93,7 +93,7 @@ public final class CodeRepository {
     // ============================================================================================
 
     public void addCode(String code) {
-        this.blockStack.peek().code().append("\n")
+        this.blockStack.peek().code()//.append("\n")
                 .append(Indenter.indent(code, this.blockStack.peek().indentation().toString()));
     }
 

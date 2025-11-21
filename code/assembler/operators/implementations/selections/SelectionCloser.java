@@ -28,29 +28,21 @@ public class SelectionCloser implements AssemblerOperator {
         SelectionManager selectionManager = SelectionManager.getInstance();
 
         selectionManager.decreaseSelectionLevel();
-
-        repository.decreaseIndentation();
-        repository.addCode(")");
-        selectionManager.decreaseClosers();
-
+        int closers = selectionManager.popLevel();
+        
         if (selectionManager.getSelectionLevel() == 0) {
-
-            if (selectionManager.getClosers() > 0) {
-                repository.addCode(String.format("br $out%s%n", selectionManager.getOutValue()));
+            while (closers > 0) {
                 repository.decreaseIndentation();
                 repository.addCode(")");
-                selectionManager.decreaseClosers();
+                closers--;
             }
-
-            //repository.addCode("unreachable");
-
-            /*
-             * while (selectionManager.getClosers() > 0) {
-             * repository.decreaseIndentation();
-             * repository.addCode(")");
-             * selectionManager.decreaseClosers();
-             * }
-             */
+        } else {
+            closers--;
+            if (closers >= 0) {
+                repository.decreaseIndentation();
+                repository.addCode(")");
+            }   
         }
+            
     }
 }

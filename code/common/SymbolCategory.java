@@ -9,7 +9,8 @@ public enum SymbolCategory {
     ARGUMENT("Argument"), // Real parameter
     CONSTANT("Constant"),
     PROGRAM("Program Name"),
-    FUNCTION("Function");
+    FUNCTION("Function"),
+    AUXILIAR_VARIABLE("Auxiliar Variable");
 
     // --------------------------------------------------------------------------------------------
 

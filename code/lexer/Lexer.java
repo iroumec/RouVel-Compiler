@@ -24,7 +24,7 @@ public final class Lexer {
 
     // --------------------------------------------------------------------------------------------
 
-    private static final boolean printTokens = true;
+    private static final boolean printTokens = false;
 
     // --------------------------------------------------------------------------------------------
 
