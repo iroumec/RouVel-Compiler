@@ -43,6 +43,7 @@ public final class Dumper {
         StringBuilder code = new StringBuilder();
 
         List<Symbol> localVariable = SymbolTable.getInstance().get(blockName, SymbolCategory.VARIABLE);
+        localVariable.addAll(SymbolTable.getInstance().get(blockName, SymbolCategory.AUXILIAR_VARIABLE));
 
         for (Symbol symbol : localVariable) {
             // Todas las variables que se tienen en el lenguaje son enteros de 32 bits.
