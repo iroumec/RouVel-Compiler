@@ -30,7 +30,6 @@ public final class ReversePolish implements Iterable<String> {
 
     private final List<Element> elements;
     private final List<Function> functions;
-    private final List<String> temporalPolishes;
 
     // --------------------------------------------------------------------------------------------
 
@@ -46,7 +45,6 @@ public final class ReversePolish implements Iterable<String> {
         this.functions = new ArrayList<>();
         this.aggregatePoints = new ArrayDeque<>();
         this.stackedPromises = new ArrayDeque<>();
-        this.temporalPolishes = new ArrayList<>();
     }
 
     // --------------------------------------------------------------------------------------------
@@ -203,40 +201,6 @@ public final class ReversePolish implements Iterable<String> {
     }
 
     // --------------------------------------------------------------------------------------------
-    // Almacen Temporal de Polacas
-    // --------------------------------------------------------------------------------------------
-
-    /**
-     * No siempre todos los factores deben agregarse a la polaca. Acá se guardarán
-     * estos y, luego, de ser necesarios, se añaden.
-     */
-
-    public void addTemporalPolish(String polish) {
-
-        this.temporalPolishes.add(polish);
-    }
-
-    // --------------------------------------------------------------------------------------------
-
-    public void makeTemporalPolishesDefinitive() {
-
-        for (String polish : this.temporalPolishes) {
-            // It would be more efficient adding the polishes directly to "elements".
-            // But it was preferred to be done like this so there is only one point of
-            // adding to the list.
-            this.addPolish(polish);
-        }
-
-        this.emptyTemporalPolishes();
-    }
-
-    // --------------------------------------------------------------------------------------------
-
-    public void emptyTemporalPolishes() {
-        this.temporalPolishes.clear();
-    }
-
-    // --------------------------------------------------------------------------------------------
     // Manejo de Estado Seguro
     // --------------------------------------------------------------------------------------------
 
@@ -278,6 +242,7 @@ public final class ReversePolish implements Iterable<String> {
 
             if (function.getName().equals(functionName)) {
                 this.functionCalled = function;
+                this.addPolish(functionCalled.getName());
                 break; // TODO: mejorar esto.
             }
         }
@@ -288,20 +253,47 @@ public final class ReversePolish implements Iterable<String> {
     public void addArgument(String parameter) {
 
         if (functionCalled != null) {
-            functionCalled.addArgument(parameter, this.temporalPolishes);
+            functionCalled.addArgument(parameter, getRealParameters(functionCalled.getName()));
+        }
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    public List<String> getRealParameters(String stopPolish) {
+
+        List<String> out = new ArrayList<>();
+
+        while (!this.elements.isEmpty() && this.elements.getLast().getPolish() != null
+                && !this.elements.getLast().getPolish().equals(stopPolish)) {
+
+            out.add(this.removeLastPolish());
         }
 
-        this.temporalPolishes.clear();
+        return out;
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    private String removeLastPolish() {
+
+        this.polishNumber--;
+        return this.elements.removeLast().getPolish();
     }
 
     // --------------------------------------------------------------------------------------------
 
     public void closeFunctionCall() {
 
+        // Se elimina el nombre de la función, que se utilizó como delimitador.
+        // TODO: ¿QUÉ PASA CON FUNCIÓN QUE SE LLAMA PASÁNDOLE A SÍ MISMA UN RESULTADO DE
+        // SU PROPIA FUNCIÓN?
+        // DEBE CAMBIARSE EL DELIMITADOR.
+        this.removeLastPolish();
+
         List<String> polishesGenerated = this.functionCalled.closeCall(this, "->");
 
         for (String polish : polishesGenerated) {
-            this.addTemporalPolish(polish);
+            this.addPolish(polish);
         }
     }
 

@@ -64,6 +64,8 @@
 %type <sval> expression, term, factor, term_simple, factor_simple
 %type <sval> list_of_variables, list_of_constants, multiple_assignment
 
+%type <sval> left_hand_size
+
 // ====================================================================================================================
 // FIN DE DECLARACIONES
 // ====================================================================================================================
@@ -311,42 +313,44 @@ identifier
 // ********************************************************************************************************************
 
 asignacion_simple
-    : variable DASIG expression ';'                              
+    : left_hand_size DASIG expression ';'                              
         { 
 
             if (this.statementAppearsInValidState()) {
                 
                 notifyDetection("Asignación simple.");
 
-                // El valor aún no debe calcularse.
-                // this.symbolTable.setValue($1, $3);
-
-                reversePolish.addPolish($1);
-
-                this.reversePolish.makeTemporalPolishesDefinitive();
-
+                // Se añade el operador.
                 reversePolish.addPolish($2);
+
             } else {
 
                 this.treatInvalidState("asignación simple");
 
                 // Se decrementan las referencias, puesto a que se está frente a una referencia no válida.
-                this.symbolTable.removeEntry($1);
-                this.symbolTable.removeEntry($3);
+                //this.symbolTable.removeEntry($1);
+                //this.symbolTable.removeEntry($3);
             }
         }
 
     // |========================= REGLAS DE ERROR =========================| //
 
-    | variable DASIG expression error
+    | left_hand_size DASIG expression error
         // Nunca reduce por esta regla por alguna razón que se desconoce.
         { notifyError("Las asignaciones simples deben terminar con ';'."); }
 
-    | variable expression ';'
+    | left_hand_size expression ';'
         { notifyError("Error en asignación simple. Se esperaba un ':=' entre la variable y la expresión."); }
 
-    | variable DASIG error
+    | left_hand_size DASIG error
         { notifyError("Asignación simple inválida."); }
+    ;
+
+// --------------------------------------------------------------------------------------------------------------------
+
+left_hand_size
+    : variable
+        { this.reversePolish.addPolish($1); }
     ;
 
 // ********************************************************************************************************************
@@ -472,7 +476,7 @@ expression
     | expression operador_suma term
         { 
             $$ = $3;
-            reversePolish.addTemporalPolish($2);
+            reversePolish.addPolish($2);
         }
 
     // |========================= REGLAS DE ERROR =========================| //
@@ -509,7 +513,7 @@ operador_suma
 term                         
     : term operador_multiplicacion factor
         {   
-            reversePolish.addTemporalPolish($2);
+            reversePolish.addPolish($2);
             $$ = $3; 
 
             TypeChecker.checkDivisionByZero($2, $3);
@@ -534,7 +538,7 @@ term
 term_simple
     : term_simple operador_multiplicacion factor
         {   
-            reversePolish.addTemporalPolish($2);
+            reversePolish.addPolish($2);
             $$ = $1;
 
             TypeChecker.checkDivisionByZero($2, $3);
@@ -561,13 +565,9 @@ operador_multiplicacion
 // Factor que contempla la posibilidad de constantes negativas.
 factor
     : variable
-        {
-            reversePolish.addTemporalPolish($1);
-        }
+        { reversePolish.addPolish($1); }
     | constant
-        {
-            reversePolish.addTemporalPolish($1);
-        }
+        { reversePolish.addPolish($1); }
     | invocacion_funcion
     ;
 
@@ -576,13 +576,9 @@ factor
 // Factor que no contempla la posibilidad de constantes negativas.
 factor_simple
     : variable
-        {
-            reversePolish.addTemporalPolish($1);
-        }
+        { reversePolish.addPolish($1); }
     | CTE
-        {
-            reversePolish.addTemporalPolish($1);
-        }
+        { reversePolish.addPolish($1); }
     | invocacion_funcion
     ;
 
@@ -673,7 +669,6 @@ cuerpo_condicion
     : expression comparador expression
         {
             if(!this.returnsController.isThereReturnInSection()) {
-                this.reversePolish.makeTemporalPolishesDefinitive();
                 this.reversePolish.addPolish($2);
             }
         }
@@ -1007,7 +1002,6 @@ sentencia_retorno
 
                 if (this.returnsController.insideFunction()) {
 
-                    this.reversePolish.makeTemporalPolishesDefinitive();
                     reversePolish.addPolish("return");
                     notifyDetection("Sentencia 'return'.");
 
@@ -1017,8 +1011,6 @@ sentencia_retorno
                     this.errorState = true;
                 }
             } else {
-
-                this.reversePolish.emptyTemporalPolishes();
 
                 this.treatInvalidState("Sentencia 'return'");
             }
@@ -1042,7 +1034,7 @@ sentencia_retorno
 
 inline_function_invocation
     : invocacion_funcion ';'
-        { notifyDetection("Invocación de función."); this.reversePolish.makeTemporalPolishesDefinitive(); }
+        { notifyDetection("Invocación de función."); }
 
     // |========================= REGLAS DE ERROR =========================| //
 
@@ -1085,9 +1077,7 @@ lista_argumentos
 
 argumento
     : expression FLECHA ID
-        {
-            this.reversePolish.addArgument($3);
-        }
+        { this.reversePolish.addArgument($3); }
 
     // |========================= REGLAS DE ERROR =========================| //
 
@@ -1103,12 +1093,9 @@ impresion
     : PRINT imprimible ';'
         {
             if (this.statementAppearsInValidState()) {
-                // Se añaden las polacas correspondiente al imprimible.
-                this.reversePolish.makeTemporalPolishesDefinitive();
                 reversePolish.addPolish("print");
                 notifyDetection("Sentencia 'print'.");
             } else {
-                this.reversePolish.emptyTemporalPolishes();
                 this.treatInvalidState("Sentencia 'print'");
             }
         }
@@ -1118,7 +1105,6 @@ impresion
     | PRINT imprimible error
         {
             errorState = true;
-            this.reversePolish.emptyTemporalPolishes();
             notifyError("La sentencia 'print' debe finalizar con ';'.");
         }
     ;
@@ -1135,7 +1121,6 @@ imprimible
     | elemento_imprimible
         {
             errorState = true;
-            this.reversePolish.emptyTemporalPolishes();
             notifyError("El imprimible debe encerrarse entre paréntesis.");
         }
     | // lambda //
@@ -1146,7 +1131,7 @@ imprimible
 
 elemento_imprimible
     : STR
-        { reversePolish.addTemporalPolish($1); }
+        { reversePolish.addPolish($1); }
     | expression
     ;
 
@@ -1381,7 +1366,6 @@ private void treatErrorState() {
 
 private void recoverFromErrorState() {
 
-    this.reversePolish.emptyTemporalPolishes();
     this.reversePolish.returnToLastSafeState();
     this.errorState = false;
 }

@@ -133,7 +133,7 @@ class Function {
                             "El argumento no es un objeto referenciable y, por lo tanto, no es válido para pasaje por CVR.");
                 } else {
 
-                    String formalParameter = argument.getParameter() + ":" + this.name;
+                    String formalParameter = argument.getParameter() + ":" + this.scope;
 
                     out.add(formalParameter);
                     out.add(expressions.getFirst());

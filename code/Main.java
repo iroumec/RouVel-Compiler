@@ -99,6 +99,7 @@ public class Main {
 
             Printer.printBlankSpace();
         } else {
+            Printer.printSeparator();
             Printer.printFramed("El código contiene errores, por lo que no fue posible generar un código assembler.");
             Printer.printSeparator();
             Printer.printBlankSpace();
