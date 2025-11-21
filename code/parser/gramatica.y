@@ -1020,7 +1020,7 @@ sentencia_retorno
 
                 this.reversePolish.emptyTemporalPolishes();
 
-                this.treatInvalidState("return");
+                this.treatInvalidState("Sentencia 'return'");
             }
         }
     
