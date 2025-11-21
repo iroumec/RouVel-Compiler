@@ -159,7 +159,6 @@ public final class Printer {
         printCentered("Resultados de la Compilación");
         printCentered("Archivo: " + fileName);
         printSeparator();
-        printBlankSpace();
     }
 
     // --------------------------------------------------------------------------------------------------------------------

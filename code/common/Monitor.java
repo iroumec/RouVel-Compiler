@@ -13,7 +13,7 @@ public class Monitor {
     // --------------------------------------------------------------------------------------------
 
     private Monitor() {
-        this.lineNumber = 0;
+        this.lineNumber = 1;
         this.errorCollector = new MessageCollector();
         this.warningCollector = new MessageCollector();
     }

@@ -21,7 +21,14 @@ public class Main {
     public static void main(String[] args) throws IOException {
 
         if (args.length == 0) {
-            System.out.println("Se debe indicar un archivo .uki como argumento.");
+
+            Printer.printBlankSpace();
+            Printer.printSeparator();
+            Printer.printCentered("ERROR");
+            Printer.printSeparator();
+            Printer.printFramed("Se debe indicar un archivo .uki como argumento.");
+            Printer.printSeparator();
+            System.exit(1);
             return;
         }
 
@@ -52,31 +59,44 @@ public class Main {
 
         Parser sintacticalAnalyzer = new Parser(lexicalAnalyzer);
 
-        Printer.printSeparator();
-        sintacticalAnalyzer.execute();
-        Printer.printSeparator();
-
-        printReport();
-
-        if (printAssemblerCode) {
-            Printer.printSeparator();
-            Printer.printCentered("Código WebAssembly");
+        if (lexicalAnalyzer.isPrintOn() || sintacticalAnalyzer.isPrintOn()) {
+            Printer.printBlankSpace();
             Printer.printSeparator();
         }
 
+        sintacticalAnalyzer.execute();
+
+        if (lexicalAnalyzer.isPrintOn() || sintacticalAnalyzer.isPrintOn()) {
+            Printer.printSeparator();
+        }
+
+        printReport();
+
         if (!monitor.hasErrorMessages()) {
 
-            String assemblerCode = Assembler.generate(sintacticalAnalyzer.getReversePolish());
+            ReversePolish.getInstance().print();
+
+            Printer.printBlankSpace();
 
             if (printAssemblerCode) {
+                Printer.printSeparator();
+                Printer.printCentered("Código WebAssembly");
+                Printer.printSeparator();
+
+                String assemblerCode = Assembler.generate(sintacticalAnalyzer.getReversePolish());
+
                 Printer.printFramed(assemblerCode);
+                Printer.printSeparator();
+                Printer.printBlankSpace();
+
+                Printer.printSeparator();
+                WebAssemblyExporter.exportToWasm(file, assemblerCode);
                 Printer.printSeparator();
                 Printer.printBlankSpace();
             }
 
-            Printer.printSeparator();
-            WebAssemblyExporter.exportToWasm(file, assemblerCode);
-            Printer.printSeparator();
+            SymbolTable.getInstance().print();
+
             Printer.printBlankSpace();
         } else {
             Printer.printFramed("El código contiene errores, por lo que no fue posible generar un código assembler.");
@@ -128,13 +148,5 @@ public class Main {
             Printer.printSeparator();
             Printer.printBlankSpace();
         }
-
-        SymbolTable.getInstance().print();
-
-        Printer.printBlankSpace();
-
-        ReversePolish.getInstance().print();
-
-        Printer.printBlankSpace();
     }
 }

@@ -85,7 +85,7 @@ public class SymbolDirector {
 
     public static Symbol createNewAuxiliarVariable(String scope) {
 
-        String lexema = "temp" + (auxiliarVariableNumber++) + ":" + scope;
+        String lexema = "aux" + (auxiliarVariableNumber++) + ":" + scope;
 
         return new SymbolBuilder(lexema).category(SymbolCategory.VARIABLE)
                 .type(SymbolType.UINT).build();

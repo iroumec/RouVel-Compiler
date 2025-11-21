@@ -24,7 +24,7 @@ public final class Lexer {
 
     // --------------------------------------------------------------------------------------------
 
-    private static final boolean printTokens = true;
+    private static final boolean printTokens = false;
 
     // --------------------------------------------------------------------------------------------
 
@@ -373,5 +373,11 @@ public final class Lexer {
 
     public void loadType(SymbolType type) {
         this.type = type;
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    public boolean isPrintOn() {
+        return printTokens;
     }
 }

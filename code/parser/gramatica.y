@@ -717,16 +717,20 @@ comparador
 if 
     : if_start cuerpo_if
         { 
-            this.returnsController.notifySelectionEnd();
+
+            this.returnsController.notifySectionEnd();
 
             if (this.statementAppearsInValidState()) {
                 this.reversePolish.closeSelection();
                 this.reversePolish.addSeparation("Leaving 'if-else' body...");
                 notifyDetection("Sentencia 'if'."); 
             } else {
+
                 this.treatInvalidState("Sentencia 'if'");
                 this.reversePolish.discardSelection(); 
             }
+
+            this.returnsController.notifySelectionEnd();
         }
     ; 
 
@@ -1008,8 +1012,6 @@ sentencia_retorno
                     notifyDetection("Sentencia 'return'.");
 
                     this.returnsController.notifyReturn();
-                    //if(!this.returnsController.notifyReturn())
-                        //notifyError("Solo se permite una sentencia return por sección.");
                 } else {
                     notifyError("La sentencia 'return' no está permitida fuera de la declaración de una función.");
                     this.errorState = true;
@@ -1388,6 +1390,12 @@ private void recoverFromErrorState() {
 
 private boolean isUint(String number) {
     return !number.contains(".");
+}
+
+// --------------------------------------------------------------------------------------------------------------------
+
+public boolean isPrintOn() {
+    return printDetections;
 }
 
 // ====================================================================================================================
