@@ -8,13 +8,15 @@ import java.util.Iterator;
 import java.util.ArrayList;
 import java.util.ArrayDeque;
 
+import common.Monitor;
+
 public final class ReversePolish implements Iterable<String> {
 
     private static final ReversePolish INSTANCE = new ReversePolish();
 
     // --------------------------------------------------------------------------------------------
 
-    private boolean debug = false;
+    private boolean debug = true;
 
     // --------------------------------------------------------------------------------------------
 
@@ -61,7 +63,7 @@ public final class ReversePolish implements Iterable<String> {
         this.elements.add(new Polish(symbol, ++this.polishNumber));
 
         if (this.debug) {
-            System.out.println("Polish added: " + symbol);
+            System.out.println(Monitor.getInstance().getLineNumber() + ": Polish added: " + symbol);
         }
     }
 
@@ -293,6 +295,7 @@ public final class ReversePolish implements Iterable<String> {
         List<String> polishesGenerated = this.functionCalled.closeCall(this, "->");
 
         for (String polish : polishesGenerated) {
+            System.out.println("estoy aca");
             this.addPolish(polish);
         }
     }

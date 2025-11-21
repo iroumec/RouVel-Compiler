@@ -1,18 +1,11 @@
 FACTORIAL {
-
     uint FACT(uint X) {
-        uint RESTA(uint A, uint B) {
-            return (A - B);
-        }
 
         if (X == 1UI) {
             return(1UI);
         } endif;
 
-        uint Y;
-        Y := RESTA(X->A,1UI->B);
-
-        return (X*FACTORIAL.FACT(Y->X));
+        return (X*FACTORIAL.FACT(X-1UI->X));
     } 
 
     uint A;

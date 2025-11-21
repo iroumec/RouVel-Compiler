@@ -1,0 +1,7 @@
+FACTORIAL {
+    uint FACT(uint X) {
+
+        return (X*FACTORIAL.FACT(X-1UI->X));
+    } 
+
+}

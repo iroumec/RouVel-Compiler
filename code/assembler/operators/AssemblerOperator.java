@@ -17,10 +17,10 @@ public interface AssemblerOperator {
 
         if (operand.isCategory(SymbolCategory.CONSTANT)) {
             if (operand.isType(SymbolType.UINT)) {
-                out = String.format("i32.const %s", operand.getValue());
+                out = String.format("i32.const %s%n", operand.getValue());
             } else {
 
-                out = String.format("f32.const %s", operand.getValue());
+                out = String.format("f32.const %s%n", operand.getValue());
 
                 if (conversionType == SymbolType.UINT) {
                     out += String.format("%ni32.trunc_f32_u");
@@ -28,7 +28,7 @@ public interface AssemblerOperator {
             }
         } else {
 
-            out = String.format("local.get $%s", operand.getLexemaWithoutScope());
+            out = String.format("local.get $%s ", operand.getLexemaWithoutScope());
         }
 
         return out;

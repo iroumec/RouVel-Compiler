@@ -10,18 +10,23 @@ FACTORIAL {
         } endif;
 
         uint Y;
-        Y := RESTA(X->A,1UI->B);
+        Y := FACTORIAL.RESTA(X->A,1UI->B);
 
         return (X*FACTORIAL.FACT(Y->X));
     } 
 
     uint A;
 
-    A := 6UI;
+    A := 1UI;
 
-    print("El factorial de ");
-    print(A);
-    print("es:");
+    do {
+        print("");
+        print("El factorial de ");
+        print(A);
+        print("es:");
 
-    print(FACT(A->X));
+        print(FACT(A->X));
+
+        A := A + 1UI;
+    } while (A < 7UI);
 }
