@@ -1,4 +1,11 @@
 FACTORIAL {
+
+    uint A;
+
+    A := 3UI * A;
+
+    ## TODO: varios errores de sintaxis al escribir A = 3UI * A; ##
+
     uint FACT(uint X) {
 
         return (X*FACTORIAL.FACT(X-1UI->X));

@@ -16,7 +16,7 @@ public final class ReversePolish implements Iterable<String> {
 
     // --------------------------------------------------------------------------------------------
 
-    private boolean debug = true;
+    private boolean debug = false;
 
     // --------------------------------------------------------------------------------------------
 
@@ -268,7 +268,7 @@ public final class ReversePolish implements Iterable<String> {
         while (!this.elements.isEmpty() && this.elements.getLast().getPolish() != null
                 && !this.elements.getLast().getPolish().equals(stopPolish)) {
 
-            out.add(this.removeLastPolish());
+            out.addFirst(this.removeLastPolish());
         }
 
         return out;
@@ -295,7 +295,6 @@ public final class ReversePolish implements Iterable<String> {
         List<String> polishesGenerated = this.functionCalled.closeCall(this, "->");
 
         for (String polish : polishesGenerated) {
-            System.out.println("estoy aca");
             this.addPolish(polish);
         }
     }
