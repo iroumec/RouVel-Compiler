@@ -673,7 +673,6 @@ cuerpo_condicion
     : expression comparador expression
         {
             if(!this.returnsController.isThereReturnInSection()) {
-                System.out.println("NOOOOOOOOOOOOO");
                 this.reversePolish.makeTemporalPolishesDefinitive();
                 this.reversePolish.addPolish($2);
             }
@@ -718,20 +717,16 @@ comparador
 if 
     : if_start cuerpo_if
         { 
+            this.returnsController.notifySelectionEnd();
 
             if (this.statementAppearsInValidState()) {
                 this.reversePolish.closeSelection();
-                System.out.println("Entré acáJAJAJA");
                 this.reversePolish.addSeparation("Leaving 'if-else' body...");
                 notifyDetection("Sentencia 'if'."); 
             } else {
-                System.out.println("Acá me rompo");
-                System.out.println(this.errorState);
                 this.treatInvalidState("Sentencia 'if'");
                 this.reversePolish.discardSelection(); 
             }
-
-            this.returnsController.notifySelectionEnd();
         }
     ; 
 
@@ -744,11 +739,13 @@ if
 // --------------------------------------------------------------------------------------------------------------------
 
 if_start
-    : IF { reversePolish.addPolish("open-selection"); } condicion
+    : IF { if (!this.returnsController.isThereReturnInSection()) reversePolish.addPolish("open-selection"); } condicion
         {
-            this.reversePolish.addSeparation("Entering 'if' body...");
-            this.reversePolish.openSelection();
-            this.returnsController.notifySelectionStart();
+            if (!this.returnsController.isThereReturnInSection()) {  
+                this.reversePolish.addSeparation("Entering 'if' body...");
+                this.reversePolish.openSelection();
+                this.returnsController.notifySelectionStart();
+            }
         }
     ;
 

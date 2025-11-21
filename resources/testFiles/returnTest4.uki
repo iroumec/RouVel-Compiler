@@ -1,0 +1,25 @@
+MAIN {
+    uint F(uint X) {
+        if(X==0UI)
+            return (0UI);
+        endif;
+        if(X==1UI)
+            return (1UI);
+        endif;
+        if(X==2UI)
+            return (2UI);
+        endif;
+        if(X==3UI)
+            return (3UI);
+        endif;
+        if(X==4UI)
+            return (4UI);
+        endif;
+        if(X==5UI)
+            return (5UI);
+        endif;
+        return (X);
+    }
+
+    print(F(5UI->X));
+}

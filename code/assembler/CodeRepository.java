@@ -174,7 +174,14 @@ public final class CodeRepository {
         }
 
         String stringsSection = Dumper.dumpStrings();
-        if (!stringsSection.isBlank()) {
+        /**
+         * Puede ser que haya un string en la tabla de símbolos por el análisis léxico,
+         * pero que no aparezca en la polaca por aparecer en un caso de error.
+         * 
+         * En tal caso, no habrá instrucciones que usen el string y, por lo tanto,
+         * no habrá importaciones. En ese caso, los string no deben dumpearse.
+         */
+        if (!imports.isEmpty() && !stringsSection.isBlank()) {
             code.append("\n").append(stringsSection);
         }
 

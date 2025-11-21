@@ -13,9 +13,20 @@ public class ReturnsController {
     private int returnsFound;
     private int functionLevel;
     private int returnsNeeded;
+
+    /**
+     * Número par para selecciones.
+     * Número impar para alternativas.
+     */
     private int selectionDepth;
     private boolean isThereReturn;
-    private boolean returnInSection;
+
+    /**
+     * -1 si no hay retorno.
+     * Si tiene otro número, indica la
+     * profundidad en la que aparece.
+     */
+    private int depthOfReturn;
 
     private static final boolean debug = true;
 
@@ -26,8 +37,8 @@ public class ReturnsController {
         this.functionLevel = 0;
         this.returnsNeeded = 0;
         this.selectionDepth = 0;
+        this.depthOfReturn = -1;
         this.isThereReturn = false;
-        this.returnInSection = false;
 
         if (debug) debugPrint("ReturnsController");
     }
@@ -71,7 +82,14 @@ public class ReturnsController {
 
     public void notifySelectionStart() {
         this.returnsNeeded++;
-        this.selectionDepth++;
+
+        // If dentro del if.
+        if (this.selectionDepth % 2 != 0) {
+            this.selectionDepth += 2;
+        } else {
+            this.selectionDepth++;
+        }
+
         this.notifySectionStart();
 
         if (debug) debugPrint("notifySelectionStart");
@@ -80,7 +98,9 @@ public class ReturnsController {
     // --------------------------------------------------------------------------------------------
 
     public void notifyAlternativeStart() {
-        this.returnsNeeded++;
+        //this.returnsNeeded++;
+        this.selectionDepth++;
+        this.depthOfReturn = -1;
         this.notifySectionStart();
 
         if (debug)
@@ -93,6 +113,8 @@ public class ReturnsController {
 
         this.notifySectionEnd();
 
+        this.selectionDepth--;
+
         if (debug)
             debugPrint("notifyAlternativeEnd");
     }
@@ -100,8 +122,6 @@ public class ReturnsController {
     // --------------------------------------------------------------------------------------------
 
     public void notifySelectionEnd() {
-
-        System.out.println("Entreéeé");
 
         // Se está saliendo del if más externo.
         if (this.selectionDepth == 1) {
@@ -115,33 +135,43 @@ public class ReturnsController {
             }
         }
 
-        this.selectionDepth--;
-
         this.notifySectionEnd();
+
+        this.selectionDepth--;
 
         if (debug) debugPrint("notifySelectionEnd");
     }
 
     // --------------------------------------------------------------------------------------------
 
-    public void notifySectionStart() {
-        this.returnInSection = false;
+    private void notifySectionStart() {
+        // Empty
+        /*
+        if (this.depthOfReturn == -1) {
+            this.depthOfReturn = selectionDepth;
+        }
+        */
     }
 
     // --------------------------------------------------------------------------------------------
 
 
-    public void notifySectionEnd() {
-        this.returnInSection = false;
+    private void notifySectionEnd() {
+        if (this.selectionDepth == this.depthOfReturn) {
+            this.depthOfReturn = -1;
+        }
+
+        if (debug)
+            debugPrint("notifySectionEnd");
     }
 
     // --------------------------------------------------------------------------------------------
 
     public boolean notifyReturn() {
 
-        if (!this.returnInSection) {
+        if (!this.isThereReturnInSection()) {
             this.returnsFound++;
-            this.returnInSection = true;
+            this.depthOfReturn = this.selectionDepth;
             
             if (this.selectionDepth == 0) {
                 this.isThereReturn = true;
@@ -151,14 +181,14 @@ public class ReturnsController {
         
         if (debug) debugPrint("notifyReturn");
 
-        return !this.returnInSection; 
+        return !this.isThereReturnInSection();
     }
 
     // --------------------------------------------------------------------------------------------
 
     public boolean isThereReturnInSection() {
 
-        return this.returnInSection;
+        return this.depthOfReturn != -1;
     }
 
     // --------------------------------------------------------------------------------------------
@@ -182,7 +212,7 @@ public class ReturnsController {
             "\nreturnsNeeded: "+returnsNeeded+
             "\nselectionDepth: "+selectionDepth+
             "\nisThereReturn: "+isThereReturn+
-            "\nreturnInSectionFlag: "+returnInSection
+            "\ndepthOfReturn: "+depthOfReturn
         );
     }
 

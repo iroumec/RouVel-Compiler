@@ -38,10 +38,15 @@ public class FunctionCloser implements AssemblerOperator {
 
         code.append(dumpResultsParameters(functionName));
 
-        repository.decreaseIndentation();
         repository.addCode(code);
         repository.removeLastLine(); // Para que la llave no quede separada.
         repository.removeLastLine();
+        // Si se cerró el bloque correspondiente a una función, se agrega
+        // un unreachable. Esto es necesario para que wasm no dé errores
+        // en el caso de tener un if-else, con return en ambas ramas, y que
+        // no haya un retorno al final de la función.
+        repository.addCode("unreachable");
+        repository.decreaseIndentation();
         repository.addCode(")");
         repository.endBlock();
     }
@@ -56,9 +61,9 @@ public class FunctionCloser implements AssemblerOperator {
 
         for (Symbol symbol : parameters) {
 
-            code.append(String.format("    ;; Apilamiento del resultado del parámetro formal por CVR %s. %n",
+            code.append(String.format(";; Apilamiento del resultado del parámetro formal por CVR %s. %n",
                     symbol.getLexemaWithoutScope()));
-            code.append(String.format("    %s %n", getCode(symbol, SymbolType.UINT), symbol.getLexemaWithoutScope()));
+            code.append(String.format("%s %n", getCode(symbol, SymbolType.UINT), symbol.getLexemaWithoutScope()));
         }
 
         return code.toString();

@@ -14,11 +14,11 @@ Invocar un operador de invocación para funciones.
 Primero las asignaciones.
 
 Invocación a función.
-
+ 
 Adignación de nuevo en CVR.
 
-3. es correcto que si el flotante que quiero asignar a una variable entera es negativo tomo el valor absoluto?
-4. las filminas están mal o nosotros estamos mal con la seleccion?
-5. duda en TP4divisionCeroFlotante.uki
-6. duda de casos en TP4overflowEnteros.uki
-7. ArithmeticOperation ¿tiene sentido que saquemos referencias en este punto?
+3. es correcto que si el flotante que quiero asignar a una variable entera es negativo tomo el valor absoluto? // sí está bien, tiene q saltar warning
+4. las filminas están mal o nosotros estamos mal con la seleccion? // están mal las filminas
+5. duda en TP4divisionCeroFlotante.uki // pasar la detección de sintáctica a runtime
+6. duda de casos en TP4overflowEnteros.uki // está bien informarlo como error de compilación
+7. ArithmeticOperation ¿tiene sentido que saquemos referencias en este punto? // no las sacamos, imprimimos la tabla de símbolos post assembler
