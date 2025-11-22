@@ -1,6 +1,8 @@
 package assembler;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import common.Symbol;
 import common.SymbolTable;
@@ -29,8 +31,8 @@ public final class Dumper {
         String functionVariables = dumpBlockVariables(functionName);
 
         if (!functionVariables.isBlank()) {
-            code.append("    ;; Variables globales.");
-            code.append("\n").append(functionVariables);
+            code.append("    ;; Variables globales.\n");
+            code.append(functionVariables);
         }
 
         return code.toString();
@@ -42,16 +44,20 @@ public final class Dumper {
 
         StringBuilder code = new StringBuilder();
 
-        List<Symbol> localVariable = SymbolTable.getInstance().get(blockName, SymbolCategory.VARIABLE);
-        localVariable.addAll(SymbolTable.getInstance().get(blockName, SymbolCategory.AUXILIAR_VARIABLE));
+        List<Symbol> localVariables = SymbolTable.getInstance().get(blockName, SymbolCategory.VARIABLE);
+        localVariables.addAll(SymbolTable.getInstance().get(blockName, SymbolCategory.AUXILIAR_VARIABLE));
 
-        for (Symbol symbol : localVariable) {
+        for (Symbol symbol : localVariables) {
             // Todas las variables que se tienen en el lenguaje son enteros de 32 bits.
             // Por eso está "hardcodeado" el "i32".
             code.append(String.format("    (local $%s i32)%n", symbol.getLexemaWithoutScope()));
         }
 
-        return code.toString();
+        String cleanCode = Arrays.stream(code.toString().split("\n"))
+                .filter(l -> !l.trim().isEmpty())
+                .collect(Collectors.joining("\n"));
+
+        return cleanCode;
     }
 
     // --------------------------------------------------------------------------------------------

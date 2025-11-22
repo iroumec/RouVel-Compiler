@@ -21,6 +21,7 @@ public interface ComparisonOperator extends AssemblerOperator {
         code += this.getAssemblerComparator();
 
         repository.addCode(code);
+        repository.addCode("\n");
     }
 
     String getAssemblerComparator();

@@ -27,12 +27,9 @@ public class FunctionCall implements AssemblerOperator {
     @Override
     public void generateAssembler(CodeRepository repository) {
 
-        SymbolTable symbolTable = SymbolTable.getInstance();
-        Symbol function = symbolTable.getSymbol(repository.popOperand());
+        Symbol function = SymbolTable.getInstance().getSymbol(repository.popOperand());
 
-        // Invocación a la función.
-        String code = String.format("call $%s %n", function.getLexemaWithoutScope());
-
-        repository.addCode(code);
+        repository.addCode(String.format("call $%s %n", function.getLexemaWithoutScope()));
+        repository.addCode("\n");
     }
 }

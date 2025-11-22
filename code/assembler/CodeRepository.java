@@ -54,9 +54,10 @@ public final class CodeRepository {
     public void endProgram() {
 
         StringBuilder program = this.blockStack.peek().code();
+        program.insert(0, "\n");
+        program.insert(0, "\n" + Indenter.indent(Dumper.dumpGlobalVariables(), INDENTATION));
+        program.insert(0, Indenter.indent(Dumper.dumpEntryPoint(), INDENTATION));
         this.decreaseIndentation();
-        program.insert(0, Indenter.indent(Dumper.dumpGlobalVariables(), INDENTATION));
-        program.insert(0, "\n" + Indenter.indent(Dumper.dumpEntryPoint(), INDENTATION));
         this.addCode(")");
 
         this.endBlock();
@@ -81,10 +82,11 @@ public final class CodeRepository {
 
         if (index != -1) {
             this.blockStack.peek().code().replace(index, index + searchString.length(),
-                    String.format("%n%s", blockVariables));
+                    String.format("", blockVariables));
         }
 
         this.executableCode.append(this.blockStack.pop().code());
+        this.executableCode.append("\n");
     }
 
     // ============================================================================================
@@ -185,7 +187,7 @@ public final class CodeRepository {
         }
 
         if (!executableCode.isEmpty()) {
-            code.append(executableCode).append("\n");
+            code.append("\n").append(executableCode);
         }
 
         return code.append(")").toString();

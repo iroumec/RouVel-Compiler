@@ -64,6 +64,7 @@ public class Print implements AssemblerOperator {
         }
 
         repository.addCode(code);
+        repository.addCode("\n");
         repository.addImport(importCode);
     }
 

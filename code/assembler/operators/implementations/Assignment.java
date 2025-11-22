@@ -36,7 +36,6 @@ public class Assignment implements AssemblerOperator {
     public void generateAssembler(CodeRepository repository) {
 
         Symbol firstOperand, secondOperand;
-        StringBuilder code = new StringBuilder();
 
         // El primer operando siempre es una variable (por cómo es nuestro lenguaje).
         // Y las variables siempre son de tipo UINT.
@@ -45,14 +44,12 @@ public class Assignment implements AssemblerOperator {
 
         // No se requiere conversión.
         if (secondOperand.isType(SymbolType.UINT)) {
-            code.append(this.getNonConversionAssignment(secondOperand));
+            repository.addCode(this.getNonConversionAssignment(secondOperand));
         } else {
-            code.append(this.getConversionAssignment(secondOperand));
+            repository.addCode(this.getConversionAssignment(secondOperand));
         }
 
-        code.append(String.format("local.set $%s %n", firstOperand.getLexemaWithoutScope()));
-
-        repository.addCode(code);
+        repository.addCode(String.format("local.set $%s %n", firstOperand.getLexemaWithoutScope()));
     }
 
     // --------------------------------------------------------------------------------------------
@@ -61,11 +58,10 @@ public class Assignment implements AssemblerOperator {
 
         String code;
 
-        if (
-            operand.isCategory(SymbolCategory.VARIABLE) || 
-            operand.isCategory(SymbolCategory.CV_PARAMETER) || 
-            operand.isCategory(SymbolCategory.CVR_PARAMETER) ||
-            operand.isCategory(SymbolCategory.AUXILIAR_VARIABLE) ) {
+        if (operand.isCategory(SymbolCategory.VARIABLE) ||
+                operand.isCategory(SymbolCategory.CV_PARAMETER) ||
+                operand.isCategory(SymbolCategory.CVR_PARAMETER) ||
+                operand.isCategory(SymbolCategory.AUXILIAR_VARIABLE)) {
 
             code = String.format("local.get $%s %n", operand.getLexemaWithoutScope());
 
@@ -90,7 +86,7 @@ public class Assignment implements AssemblerOperator {
         // Si es negativo, se agrega la conversión a absoluto.
         if (operandValue.signum() < 0) {
             code += String.format("f32.abs %n");
-            code += String.format("f32.const %s%n", MAX_UINT); //TODO: hay que tirar warning 
+            code += String.format("f32.const %s%n", MAX_UINT); // TODO: hay que tirar warning
             code += String.format("f32.min %n");
         }
 

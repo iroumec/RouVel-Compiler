@@ -1,6 +1,7 @@
 MAIN {
 
     uint FUN1(uint B) {
+
         return(3UI);
     }
 

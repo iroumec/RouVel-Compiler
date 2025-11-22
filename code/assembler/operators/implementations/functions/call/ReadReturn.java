@@ -42,5 +42,6 @@ public class ReadReturn implements AssemblerOperator {
         // pueda ser usado dentro de operaciones.
         repository.pushOperand(auxiliarVariable.getLexema());
         repository.addCode(code);
+        repository.addCode("\n");
     }
 }

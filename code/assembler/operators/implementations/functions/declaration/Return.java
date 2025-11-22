@@ -36,29 +36,28 @@ public class Return implements AssemblerOperator {
 
         // Previo a cada retorno, deben retornarse los valores correspondientes
         // a los parámetros por CVR.
-        repository.addCode(dumpResultsParameters(repository.getCurrentScope()));
+        dumpResultsParameters(repository);
 
         // En WebAssembly, el retorno simplemente se deja apilado en la pila.
         repository.addCode(";; Retorno de la función.");
         repository.addCode(getCode(operand, SymbolType.UINT));
         repository.addCode("return");
+        repository.addCode("\n");
     }
 
     // --------------------------------------------------------------------------------------------
 
-    private String dumpResultsParameters(String functionName) {
+    private void dumpResultsParameters(CodeRepository repository) {
 
-        StringBuilder code = new StringBuilder();
-
-        List<Symbol> parameters = SymbolTable.getInstance().get(functionName, SymbolCategory.CVR_PARAMETER);
+        List<Symbol> parameters = SymbolTable.getInstance().get(repository.getCurrentScope(),
+                SymbolCategory.CVR_PARAMETER);
 
         for (Symbol symbol : parameters) {
 
-            code.append(String.format("%n;; Apilamiento del resultado del parámetro formal por CVR %s. %n",
+            repository.addCode(String.format("%n;; Apilamiento del resultado del parámetro formal por CVR %s. %n",
                     symbol.getLexemaWithoutScope()));
-            code.append(String.format("%s %n", getCode(symbol, SymbolType.UINT), symbol.getLexemaWithoutScope()));
+            repository
+                    .addCode(String.format("%s %n", getCode(symbol, SymbolType.UINT), symbol.getLexemaWithoutScope()));
         }
-
-        return code.toString();
     }
 }

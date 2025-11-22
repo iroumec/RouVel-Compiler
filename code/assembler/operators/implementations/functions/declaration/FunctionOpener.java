@@ -36,37 +36,31 @@ public class FunctionOpener implements AssemblerOperator {
         // distintos ámbitos.
         repository.startBlock(symbol.getScope() + ":" + symbol.getLexemaWithoutScope());
 
-        StringBuilder code = new StringBuilder();
-        String functionName = symbol.getLexemaWithoutScope();
+        repository.addCode(String.format("(func $%s %n", symbol.getLexemaWithoutScope()));
 
-        code.append(String.format("(func $%s %n", functionName));
+        repository.increaseIndentation();
 
-        code.append(dumpParameters(symbol.getScope() + ":" + symbol.getLexemaWithoutScope()));
+        dumpParameters(repository);
 
         // Se agrega una etiqueta que, luego de haber determinado todas las variables
         // temporales que serán necesarias, se remplaza por su declaración.
-        code.append("<local_variables>"); 
-
-        repository.addCode(code);
-        repository.increaseIndentation();
+        repository.addCode("<local_variables>");
     }
 
     // --------------------------------------------------------------------------------------------
 
-    private String dumpParameters(String functionName) {
+    private void dumpParameters(CodeRepository repository) {
 
-        StringBuilder code = new StringBuilder();
-
-        // TODO: mejorar esto para no hacer dos recorridos en la tabla de símbolos.
-        // TODO: aclarar en el informe el no guardado de variable auxiliar flotante.
-        List<Symbol> parameters = SymbolTable.getInstance().get(functionName, SymbolCategory.CV_PARAMETER);
-        List<Symbol> copyRestoreParameter = SymbolTable.getInstance().get(functionName, SymbolCategory.CVR_PARAMETER);
+        List<Symbol> parameters = SymbolTable.getInstance().get(repository.getCurrentScope(),
+                SymbolCategory.CV_PARAMETER);
+        List<Symbol> copyRestoreParameter = SymbolTable.getInstance().get(repository.getCurrentScope(),
+                SymbolCategory.CVR_PARAMETER);
         parameters.addAll(copyRestoreParameter);
 
         for (Symbol symbol : parameters) {
             // El lenguaje solo tiene como parámetros válidos enteros de 32 bits.
             // Por eso está "hardcodeado" el "i32".
-            code.append(String.format("    (param $%s i32) %n", symbol.getLexemaWithoutScope()));
+            repository.addCode(String.format("(param $%s i32) %n", symbol.getLexemaWithoutScope()));
         }
 
         /**
@@ -81,9 +75,6 @@ public class FunctionOpener implements AssemblerOperator {
          * la cantidad de operandos que van a quedar en la pila al salir de la función,
          * se pierden.
          */
-
-        String retornos = " i32".repeat(1 + copyRestoreParameter.size());
-
-        return code.append("    (result" + retornos + ") \n").toString();
+        repository.addCode("(result" + " i32".repeat(1 + copyRestoreParameter.size()) + ")");
     }
 }

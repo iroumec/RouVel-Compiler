@@ -32,13 +32,12 @@ public class Argument implements AssemblerOperator {
 
         // Se descarta el parámetro formal al que corresponde, debido a que eso ya está
         // resuelto. Únicamente se agrega como comentario para más claridad.
-        String code = String.format(";; Pasaje de parámetro %s %n",
-                symbolTable.getSymbol(repository.popOperand()).getLexemaWithoutScope());
+        repository.addCode(String.format(";; Pasaje de parámetro %s %n",
+                symbolTable.getSymbol(repository.popOperand()).getLexemaWithoutScope()));
 
         Symbol argument = SymbolTable.getInstance().getSymbol(repository.popOperand());
 
-        code += getCode(argument, SymbolType.UINT);
-
-        repository.addCode(code);
+        repository.addCode(getCode(argument, SymbolType.UINT));
+        repository.addCode("\n");
     }
 }
