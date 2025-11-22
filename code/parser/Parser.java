@@ -1744,7 +1744,7 @@ case 141:
                 this.symbolTable.setCategory(val_peek(0).sval, (val_peek(2).sval == "CVR" ? SymbolCategory.CVR_PARAMETER : SymbolCategory.CV_PARAMETER));
                 this.symbolTable.setScope(val_peek(0).sval,scopeStack.asText());
 
-                this.reversePolish.addParameter(val_peek(0).sval, "uint", val_peek(2).sval);
+                this.reversePolish.addParameter(val_peek(0).sval, val_peek(2).sval);
             } else {
                 this.treatInvalidState("Parámetro formal");
             }
@@ -1943,7 +1943,7 @@ case 177:
             this.reversePolish.addSeparation("Entering lambda expression body...");
             String lambdaName = this.reversePolish.startLambdaDeclaration(this.scopeStack.asText());
             this.scopeStack.push(lambdaName);
-            this.reversePolish.addParameter(val_peek(1).sval, "uint", "cv");
+            this.reversePolish.addParameter(val_peek(1).sval, "cv");
             this.symbolTable.removeEntry(val_peek(1).sval);
             yyval.sval = this.scopeStack.appendScope(val_peek(1).sval);
             this.symbolTable.addEntry(SymbolDirector.createNewParameter(yyval.sval));

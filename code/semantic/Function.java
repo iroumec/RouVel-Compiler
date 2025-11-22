@@ -43,9 +43,9 @@ class Function {
 
     // --------------------------------------------------------------------------------------------
 
-    void addParameter(String id, String type, String semantic) {
+    void addParameter(String id, String semantic) {
 
-        this.parameters.add(new Parameter(id, type, semantic));
+        this.parameters.add(new Parameter(id, semantic));
     }
 
     // --------------------------------------------------------------------------------------------
@@ -220,12 +220,11 @@ class Function {
     private class Parameter {
 
         @SuppressWarnings("unused")
-        private String id, type, semantic;
+        private String id, semantic;
 
-        private Parameter(String id, String type, String semantic) {
+        private Parameter(String id, String semantic) {
 
             this.id = id;
-            this.type = type;
             this.semantic = semantic;
         }
 

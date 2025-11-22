@@ -1,8 +1,10 @@
 package semantic;
 
 import java.util.List;
-
+import java.util.Map;
 import java.util.Deque;
+import java.util.HashMap;
+
 import utilities.Printer;
 import java.util.Iterator;
 import java.util.ArrayList;
@@ -22,34 +24,41 @@ public final class ReversePolish implements Iterable<String> {
 
     // --------------------------------------------------------------------------------------------
 
-    private int separations;
     private int polishNumber;
-    private int lambdaCounter;
+    private final List<Element> elements;
+
+    // --------------------------------------------------------------------------------------------
 
     // Es un polish number.
     private int lastSafeState;
     private int lastPolishNumber;
-    private Function functionCalled;
 
     // --------------------------------------------------------------------------------------------
 
-    private final List<Element> elements;
+    private int lambdaCounter;
+    private Function functionCalled;
     private final List<Function> functions;
 
     // --------------------------------------------------------------------------------------------
 
-    private final Deque<Promise> stackedPromises;
-    private final Deque<AggregatePoint> aggregatePoints;
+    private final Deque<Integer> stackedPromises;
+
+    // --------------------------------------------------------------------------------------------
+
+    /**
+     * Planteado únicamente con fines estéticos.
+     * Coloca un separador previo a la impresión determinada por la clave.
+     */
+    private final Map<Integer, List<String>> separations;
 
     // --------------------------------------------------------------------------------------------
 
     private ReversePolish() {
-        this.separations = 0;
         this.polishNumber = 0;
         this.lambdaCounter = 0;
         this.elements = new ArrayList<>();
         this.functions = new ArrayList<>();
-        this.aggregatePoints = new ArrayDeque<>();
+        this.separations = new HashMap<>();
         this.stackedPromises = new ArrayDeque<>();
     }
 
@@ -64,6 +73,7 @@ public final class ReversePolish implements Iterable<String> {
     // --------------------------------------------------------------------------------------------
 
     public void addPolish(String symbol) {
+
         this.elements.add(new Polish(symbol, ++this.polishNumber));
 
         if (this.debug) {
@@ -76,8 +86,18 @@ public final class ReversePolish implements Iterable<String> {
     // --------------------------------------------------------------------------------------------
 
     public void addSeparation(String separationLabel) {
-        this.separations++;
-        this.elements.add(new Separator(separationLabel));
+
+        List<String> separations = this.separations.get(polishNumber);
+
+        if (separations != null) {
+
+            separations.add(separationLabel);
+        } else {
+
+            separations = new ArrayList<>();
+            separations.add(separationLabel);
+            this.separations.put(polishNumber, separations);
+        }
 
         if (this.debug) {
             System.out.println("Separation added: " + separationLabel);
@@ -89,14 +109,14 @@ public final class ReversePolish implements Iterable<String> {
     // --------------------------------------------------------------------------------------------
 
     public void stackBifurcationPoint() {
-        this.stackedPromises.push(new Promise(polishNumber + 1, this.separations));
+        this.stackedPromises.push(polishNumber + 1);
     }
 
     // --------------------------------------------------------------------------------------------
 
     public void connectToLastBifurcationPoint() {
-        Promise promise = this.stackedPromises.pop();
-        this.elements.add(new BifurcationPoint(String.valueOf(promise.bifurcationPoint()), ++this.polishNumber));
+        int promise = this.stackedPromises.pop();
+        this.elements.add(new BifurcationPoint(String.valueOf(promise), ++this.polishNumber));
     }
 
     // --------------------------------------------------------------------------------------------
@@ -109,26 +129,26 @@ public final class ReversePolish implements Iterable<String> {
         // Se está diciendo: "Reservame un lugar que luego te prometo que lo lleno.".
         this.elements.add(null);
         this.polishNumber++;
-        this.stackedPromises.push(new Promise(this.elements.size(), this.separations));
+        this.stackedPromises.push(this.elements.size());
     }
 
     // --------------------------------------------------------------------------------------------
 
-    public Promise getLastPromise() {
+    public int getLastPromise() {
         return this.stackedPromises.pop();
     }
 
     // --------------------------------------------------------------------------------------------
 
-    public void fulfillPromise(Promise promise) {
+    public void fulfillPromise(int promise) {
 
         // Se debe remover el nulo que se agregó para realizar la promesa.
         // Los separadores agregados deben considerarse para ir al índice correcto,
         // ya que ocupan lugar en la lista.
-        this.elements.remove(promise.bifurcationPoint() - 1);
-        this.elements.add(promise.bifurcationPoint() - 1,
+        this.elements.remove(promise - 1);
+        this.elements.add(promise - 1,
                 new BifurcationPoint(String.valueOf(polishNumber + 1),
-                        promise.bifurcationPoint() - promise.separations()));
+                        promise));
     }
 
     // --------------------------------------------------------------------------------------------
@@ -168,7 +188,7 @@ public final class ReversePolish implements Iterable<String> {
      */
     public void openAlternative() {
         // Se obtiene la promesa del cuerpo then.
-        Promise promise = this.getLastPromise();
+        int promise = this.getLastPromise();
 
         // Se promete un nuevo punto de bifurcación.
         this.promiseBifurcationPoint();
@@ -177,33 +197,6 @@ public final class ReversePolish implements Iterable<String> {
         // Se cumple la promesa obtenida al comienzo.
         // Es necesario que se realice así para respetar los índices de la polaca.
         this.fulfillPromise(promise);
-    }
-
-    // --------------------------------------------------------------------------------------------
-    // Probando para las Lambda
-    // --------------------------------------------------------------------------------------------
-
-    public void setAggregatePoint() {
-        // Comienza a partir del último elemento, con `polishNumber` como primer número
-        // de polaca.
-        this.aggregatePoints.push(new AggregatePoint(this.elements.size(), polishNumber));
-    }
-
-    // --------------------------------------------------------------------------------------------
-
-    public void fillLastAggregatePoint(String... symbols) {
-        AggregatePoint aggregatePoint = this.aggregatePoints.pop();
-
-        int index = aggregatePoint.startIndex();
-        int polishNumber = aggregatePoint.firstPolishNumber();
-
-        for (String symbol : symbols) {
-            this.elements.add(++index, new Polish(symbol, ++polishNumber));
-        }
-
-        // Incrementar a todos los elementos *posteriores* a los nuevos.
-        this.elements.subList(aggregatePoint.startIndex() + symbols.length + 1, elements.size())
-                .forEach(e -> e.increaseNumber(symbols.length));
     }
 
     // --------------------------------------------------------------------------------------------
@@ -220,9 +213,9 @@ public final class ReversePolish implements Iterable<String> {
 
     // --------------------------------------------------------------------------------------------
 
-    public void addParameter(String id, String type, String semantic) {
+    public void addParameter(String id, String semantic) {
 
-        this.functions.getLast().addParameter(id, type, semantic);
+        this.functions.getLast().addParameter(id, semantic);
     }
 
     // --------------------------------------------------------------------------------------------
@@ -432,11 +425,37 @@ public final class ReversePolish implements Iterable<String> {
         Printer.printCentered("Polaca Inversa");
         Printer.printSeparator();
 
+        int polishNumber = 0;
         for (Element element : this.elements) {
+
+            List<String> separations = this.separations.get(polishNumber);
+            if (separations != null) {
+
+                for (String separation : separations) {
+
+                    Printer.printSeparator();
+                    Printer.printCentered(separation);
+                    Printer.printSeparator();
+                }
+            }
+            polishNumber++;
+
             if (element != null) {
                 element.print();
             } else {
                 Printer.printWrapped("null");
+            }
+        }
+
+        // Separaciones de cierre.
+        List<String> separations = this.separations.get(polishNumber);
+        if (separations != null) {
+
+            for (String separation : separations) {
+
+                Printer.printSeparator();
+                Printer.printCentered(separation);
+                Printer.printSeparator();
             }
         }
 
@@ -543,52 +562,4 @@ public final class ReversePolish implements Iterable<String> {
             this.setPolishText(String.valueOf(Integer.valueOf(super.getPolishText()) + n));
         }
     }
-
-    // --------------------------------------------------------------------------------------------
-
-    private class Separator extends Element {
-
-        private String separationLabel;
-
-        private Separator(String separationLabel) {
-            this.separationLabel = separationLabel;
-        }
-
-        @Override
-        public void increaseNumber(int n) {
-            // Intentionally empty...
-        }
-
-        @Override
-        public void print() {
-            Printer.printSeparator();
-            Printer.printCentered(separationLabel);
-            Printer.printSeparator();
-        }
-
-        @Override
-        public String getPolish() {
-            return null;
-        }
-    }
-
-    // --------------------------------------------------------------------------------------------
-    // Inner Records
-    // --------------------------------------------------------------------------------------------
-
-    private record AggregatePoint(int startIndex, int firstPolishNumber) {
-    }
-
-    /**
-     * Este 'record' se justifica en que los puntos de bifurcación que se prometen
-     * pueden completarse en un futuro en el que la cantidad actual de separaciones
-     * no es la que había al momento en el que se realizó la promesa. Como
-     * resultado, el índice de la polaca podría ser erróneo.
-     * 
-     * Lo mismo con los AggregatePoints.
-     */
-    private record Promise(int bifurcationPoint, int separations) {
-
-    }
-
 }

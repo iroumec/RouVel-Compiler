@@ -961,7 +961,7 @@ parametro_formal
                 this.symbolTable.setCategory($3, ($1 == "CVR" ? SymbolCategory.CVR_PARAMETER : SymbolCategory.CV_PARAMETER));
                 this.symbolTable.setScope($3,scopeStack.asText());
 
-                this.reversePolish.addParameter($3, "uint", $1);
+                this.reversePolish.addParameter($3, $1);
             } else {
                 this.treatInvalidState("Parámetro formal");
             }
@@ -1203,7 +1203,7 @@ parametro_lambda
             this.reversePolish.addSeparation("Entering lambda expression body...");
             String lambdaName = this.reversePolish.startLambdaDeclaration(this.scopeStack.asText());
             this.scopeStack.push(lambdaName);
-            this.reversePolish.addParameter($3, "uint", "cv");
+            this.reversePolish.addParameter($3, "cv");
             this.symbolTable.removeEntry($3);
             $$ = this.scopeStack.appendScope($3);
             this.symbolTable.addEntry(SymbolDirector.createNewParameter($$));
