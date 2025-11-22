@@ -121,18 +121,21 @@ public abstract class ArithmeticOperator implements AssemblerOperator {
             case UINT_UINT, UINT_FLOAT -> {
                 repository.addCode(getCode(firstOperand, SymbolType.UINT));
                 repository.addCode(getCode(secondOperand, SymbolType.UINT));
+                this.applyPreviosOperationRuntimeControls(firstOperand, secondOperand, SymbolType.UINT, repository);
                 repository.addCode(String.format("i32.%s", this.getAssemblerOperator()));
                 repository.addCode(String.format("local.tee $%s", auxiliarVariable.getLexemaWithoutScope()));
-                this.applyRuntimeControls(firstOperand, secondOperand, repository);
+                this.applyPostOperationRuntimeControls(firstOperand, secondOperand, SymbolType.UINT, repository);
             }
             case FLOAT_FLOAT -> {
                 repository.addCode(getCode(firstOperand, null));
                 repository.addCode(getCode(secondOperand, null));
+                this.applyPreviosOperationRuntimeControls(firstOperand, secondOperand, null, repository);
                 repository.addCode(String.format("i32.%s", this.getAssemblerOperator()));
                 repository.addCode(String.format("local.tee $%s", auxiliarVariable.getLexemaWithoutScope()));
-                this.applyRuntimeControls(firstOperand, secondOperand, repository);
+                this.applyPostOperationRuntimeControls(firstOperand, secondOperand, null, repository);
             }
-        };
+        }
+        ;
     }
 
     // --------------------------------------------------------------------------------------------
@@ -146,5 +149,13 @@ public abstract class ArithmeticOperator implements AssemblerOperator {
 
     // --------------------------------------------------------------------------------------------
 
-    protected abstract void applyRuntimeControls(Symbol firstOperand, Symbol secondOperand, CodeRepository repository);
+    protected abstract void applyPreviosOperationRuntimeControls(Symbol firstOperand, Symbol secondOperand,
+            SymbolType conversionType, CodeRepository repository);
+
+    // --------------------------------------------------------------------------------------------
+
+    protected abstract void applyPostOperationRuntimeControls(Symbol firstOperand, Symbol secondOperand,
+            SymbolType conversionType, CodeRepository repository);
+
+    // --------------------------------------------------------------------------------------------
 }

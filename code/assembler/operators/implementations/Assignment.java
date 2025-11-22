@@ -49,7 +49,8 @@ public class Assignment implements AssemblerOperator {
             repository.addCode(this.getConversionAssignment(secondOperand));
         }
 
-        repository.addCode(String.format("local.set $%s %n", firstOperand.getLexemaWithoutScope()));
+        repository.addCode(String.format("local.set $%s", firstOperand.getLexemaWithoutScope()));
+        repository.addCode("\n");
     }
 
     // --------------------------------------------------------------------------------------------

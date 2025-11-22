@@ -4,15 +4,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Deque;
 import java.util.HashMap;
-
-import utilities.Printer;
 import java.util.Iterator;
 import java.util.ArrayList;
 import java.util.ArrayDeque;
 
 import common.Monitor;
-import common.SymbolDirector;
+import utilities.Printer;
 import common.SymbolTable;
+import common.SymbolDirector;
 
 public final class ReversePolish implements Iterable<String> {
 

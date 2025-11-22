@@ -2,13 +2,12 @@ package assembler.operators.implementations.arithmetic;
 
 import java.math.BigDecimal;
 
-import assembler.CodeRepository;
-import assembler.WebAssemblyExporter;
 import common.Symbol;
-import common.SymbolDirector;
+import utilities.Printer;
 import common.SymbolTable;
 import common.SymbolType;
-import utilities.Printer;
+import common.SymbolDirector;
+import assembler.CodeRepository;
 
 public class Subtraction extends ArithmeticOperator {
 
@@ -88,6 +87,14 @@ public class Subtraction extends ArithmeticOperator {
 
     // --------------------------------------------------------------------------------------------
 
+    @Override
+    protected void applyPreviosOperationRuntimeControls(Symbol firstOperand, Symbol secondOperand,
+            SymbolType conversionType, CodeRepository repository) {
+        // Empty intentionally...
+    }
+
+    // --------------------------------------------------------------------------------------------
+
     /**
      * Este chequeo ocasionalmente podría hacerse en el semántico, pero sería en
      * casos muy particulares, como A := 3UI - 8UI. Si se tiene algo como
@@ -95,43 +102,9 @@ public class Subtraction extends ArithmeticOperator {
      * decisión de realizarlo completamente en la pragmática.
      */
     @Override
-    protected void applyRuntimeControls(Symbol firstOperand, Symbol secondOperand, CodeRepository repository) {
+    protected void applyPostOperationRuntimeControls(Symbol firstOperand, Symbol secondOperand,
+            SymbolType conversionType, CodeRepository repository) {
 
-        String message = "RUNTIME ERROR: Resultado negativo.";
-
-        Symbol messageSymbol = SymbolDirector.createNewString(message);
-        SymbolTable.getInstance().addEntry(messageSymbol);
-
-        repository.addCode("""
-                ;; Chequeo de resta negativa.
-                ;; Si compara si el primer operando es menor al segundo.
-                (block $continue
-
-                    ;; Lectura del primer operando.
-                    %s\
-
-                    ;; Lectura del segundo operando.
-                    %s\
-
-                    ;; Se compara si el primer operando
-                    ;; es mayor o igual al segundo.
-                    i32.ge_s
-
-                    ;; De ser el primer operando
-                    ;; >= al segundo, se continua.
-                    br_if $continue
-
-                    ;; -------- ERROR --------
-                    i32.const %s       ;; ptr
-                    i32.const %d       ;; len
-                    call $console_log_string
-                    unreachable
-                ) ;; $continue
-                """.formatted(
-                getCode(firstOperand, SymbolType.UINT),
-                getCode(secondOperand, SymbolType.UINT),
-                messageSymbol.getValue(),
-                WebAssemblyExporter.getAppropiateMessageLength(message)));
-
+        RuntimeControlsManager.addIntegerNegativeSubtractionChecker(repository);
     }
 }

@@ -3,12 +3,12 @@ package assembler.operators.implementations.arithmetic;
 import common.Symbol;
 import common.SymbolDirector;
 import common.SymbolTable;
+import common.SymbolType;
 import utilities.Printer;
 
 import java.math.BigDecimal;
 
 import assembler.CodeRepository;
-import assembler.WebAssemblyExporter;
 
 public class Division extends ArithmeticOperator {
 
@@ -96,31 +96,26 @@ public class Division extends ArithmeticOperator {
     // --------------------------------------------------------------------------------------------
 
     @Override
-    protected void applyRuntimeControls(Symbol firstOperand, Symbol secondOperand, CodeRepository repository) {
+    protected void applyPreviosOperationRuntimeControls(Symbol firstOperand, Symbol secondOperand,
+            SymbolType conversionType, CodeRepository repository) {
 
-        String message = "RUNTIME ERROR: División por cero.";
+        RuntimeControlsManager.addZeroDividendChecker(repository);
 
-        Symbol messageSymbol = SymbolDirector.createNewString(message);
+        // Debido a que el último operando se envió como parámetro
+        // a la función, debe volver a apilarse.
+        repository.addCode(getCode(secondOperand, conversionType));
+    }
 
-        // Se agrega el string con el mensaje a la tabla de símbolos.
-        SymbolTable.getInstance().addEntry(messageSymbol);
+    // --------------------------------------------------------------------------------------------
 
-        repository.addImport("(import \"console\" \"log_string\" (func $console_log_string (param i32 i32)))");
+    @Override
+    protected void applyPostOperationRuntimeControls(Symbol firstOperand, Symbol secondOperand,
+            SymbolType conversionType, CodeRepository repository) {
 
-        repository.addCode("""
-                ;; Chequeo de división por cero.
-                (block $continue
-                    ;; ¿Es el denominador igual a 0?
-                    local.get $%s
-                    br_if $continue ;; Si no es cero -> continuar.
-
-                    ;; -------- ERROR --------
-                    i32.const %s     ;; ptr
-                    i32.const %d    ;; len
-                    call $console_log_string
-                    unreachable
-                ) ;; $continue
-                """.formatted(secondOperand.getLexemaWithoutScope(), messageSymbol.getValue(),
-                WebAssemblyExporter.getAppropiateMessageLength(message)));
+        // Se tira el tope de la pila.
+        // Necesario ya que se usa "tee" siempre, y al no tener la división controles
+        // post-operación, la pila siempre tiene algo al final y esta debe estar vacía
+        // para terminar el programa.
+        repository.addCode("drop");
     }
 }

@@ -2,12 +2,12 @@ package assembler.operators.implementations.arithmetic;
 
 import java.math.BigDecimal;
 
-import assembler.CodeRepository;
-import assembler.WebAssemblyExporter;
 import common.Symbol;
-import common.SymbolDirector;
-import common.SymbolTable;
 import utilities.Printer;
+import common.SymbolTable;
+import common.SymbolType;
+import common.SymbolDirector;
+import assembler.CodeRepository;
 
 public class Multiplication extends ArithmeticOperator {
 
@@ -87,7 +87,16 @@ public class Multiplication extends ArithmeticOperator {
     // --------------------------------------------------------------------------------------------
 
     @Override
-    protected void applyRuntimeControls(Symbol firstOperand, Symbol secondOperand, CodeRepository repository) {
+    protected void applyPreviosOperationRuntimeControls(Symbol firstOperand, Symbol secondOperand,
+            SymbolType conversionType, CodeRepository repository) {
+        // Empty intentionally...
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    @Override
+    protected void applyPostOperationRuntimeControls(Symbol firstOperand, Symbol secondOperand,
+            SymbolType conversionType, CodeRepository repository) {
 
         String message = "RUNTIME ERROR: Overflow en multiplicación de enteros.";
 
@@ -98,27 +107,7 @@ public class Multiplication extends ArithmeticOperator {
 
         repository.addImport("(import \"console\" \"log_string\" (func $console_log_string (param i32 i32)))");
 
-        /*
-         * El "param i32" es necesario para explicitarle al bloque que debe
-         * tomar lo que había antes de la pila. En otro caso, el bloque
-         * tiene su propia pila, la cual arranca vacía.
-         */
-        repository.addCode("""
-                ;; Chequeo de overflow de enteros.
-                (block $continue (param i32)
-                    ;; ¿Es el resultado mayor al máximo entero?
-                    i32.const %s
-                    i32.le_u
-                    br_if $continue ;; Si es menor al máximo entero, se sale del bloque.
-
-                    ;; -------- OVERFLOW --------
-                    i32.const %s     ;; ptr
-                    i32.const %d    ;; len
-                    call $console_log_string
-                    unreachable
-                ) ;; $continue
-                """.formatted(MAX_UINT, messageSymbol.getValue(),
-                WebAssemblyExporter.getAppropiateMessageLength(message)));
+        RuntimeControlsManager.addIntegerOverflowChecker(repository);
     }
 
 }
