@@ -3,6 +3,6 @@ MAIN {
         return (A);
     }
 
-    uint X, Y, Z;
-    X := F1(Y -> A) + F1(Z -> A);
+    uint X, Y;
+    X := F1(Y -> B);
 }
