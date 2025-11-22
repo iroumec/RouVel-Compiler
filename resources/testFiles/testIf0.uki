@@ -1,0 +1,11 @@
+MAIN {
+    uint A(uint X) {
+        if (X == 0UI) {
+            if (X == 1UI){
+                return(1UI);
+            } endif;
+            return(0UI);
+        } else return (X);
+        endif;
+    }
+}

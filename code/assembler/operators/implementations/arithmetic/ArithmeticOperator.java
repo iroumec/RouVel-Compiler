@@ -70,11 +70,6 @@ public abstract class ArithmeticOperator implements AssemblerOperator {
 
             this.generateCode(pairType, symbolTable, firstOperand, secondOperand, auxiliarVariable, repository);
         }
-
-        // Se remueve una referencia de cada operando.
-        // TODO: ¿tiene sentido que saquemos referencias en este punto?
-        //symbolTable.removeEntry(firstOperand.getLexema());
-        //symbolTable.removeEntry(secondOperand.getLexema());
     }
 
     // --------------------------------------------------------------------------------------------

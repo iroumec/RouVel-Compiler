@@ -32,6 +32,5 @@ public class ConditionCloser implements AssemblerOperator {
         repository.addCode(String.format("br_if $then%s %nbr $else%s%n",selectionManager.getThenValue(),selectionManager.getElseValue()));
         repository.decreaseIndentation();
         repository.addCode(")");
-        selectionManager.decreaseClosers();
     }
 }

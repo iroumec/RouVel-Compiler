@@ -28,7 +28,7 @@ public interface AssemblerOperator {
             }
         } else {
 
-            out = String.format("local.get $%s ", operand.getLexemaWithoutScope());
+            out = String.format("local.get $%s%n", operand.getLexemaWithoutScope());
         }
 
         return out;

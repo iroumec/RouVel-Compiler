@@ -61,7 +61,11 @@ public class Assignment implements AssemblerOperator {
 
         String code;
 
-        if (operand.isCategory(SymbolCategory.VARIABLE) || operand.isCategory(SymbolCategory.CV_PARAMETER) || operand.isCategory(SymbolCategory.CVR_PARAMETER)) {
+        if (
+            operand.isCategory(SymbolCategory.VARIABLE) || 
+            operand.isCategory(SymbolCategory.CV_PARAMETER) || 
+            operand.isCategory(SymbolCategory.CVR_PARAMETER) ||
+            operand.isCategory(SymbolCategory.AUXILIAR_VARIABLE) ) {
 
             code = String.format("local.get $%s %n", operand.getLexemaWithoutScope());
 
@@ -86,7 +90,7 @@ public class Assignment implements AssemblerOperator {
         // Si es negativo, se agrega la conversión a absoluto.
         if (operandValue.signum() < 0) {
             code += String.format("f32.abs %n");
-            code += String.format("f32.const %s%n", MAX_UINT); // TODO: preguntarlo.
+            code += String.format("f32.const %s%n", MAX_UINT); //TODO: hay que tirar warning 
             code += String.format("f32.min %n");
         }
 

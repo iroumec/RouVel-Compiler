@@ -28,18 +28,27 @@ public class SelectionOpener implements AssemblerOperator {
         SelectionManager selectionManager = SelectionManager.getInstance();
 
         selectionManager.increaseSelectionLevel();
+        int level;
 
         if (selectionManager.getSelectionLevel() == 1) {
+
+            level = 2;
 
             repository.addCode(String.format("(block $out%s%n",selectionManager.obtainOutValue()));
             repository.increaseIndentation();
             
+        } else {
+
+            level = 1;
+
         }
 
         repository.addCode(String.format("(block $else%s%n",selectionManager.obtainElseValue()));
         repository.increaseIndentation();
         repository.addCode(String.format("(block $then%s%n",selectionManager.obtainThenValue()));
         repository.increaseIndentation();
+        
+        selectionManager.pushSelectionLevel(level);
 
     }
 }

@@ -1,5 +1,7 @@
 package assembler;
 
+import java.util.Stack;
+
 public class SelectionManager {
 
     // -----------------------------------------------------------------------------------------
@@ -20,7 +22,7 @@ public class SelectionManager {
     private int outAmount = 0;
     private int thenAmount = 0;
     private int elseAmount = 0;
-    private int closers = 0;
+    private Stack<Integer> levelStack = new Stack<>();
 
     public void increaseSelectionLevel() {
         this.selectionLevel++;
@@ -35,7 +37,6 @@ public class SelectionManager {
     }
 
     public int obtainOutValue() {
-        increaseClosers();
         return ++this.outAmount;
     }
 
@@ -44,7 +45,6 @@ public class SelectionManager {
     }
 
     public int obtainThenValue() {
-        increaseClosers();
         return ++this.thenAmount;
     }
 
@@ -53,7 +53,6 @@ public class SelectionManager {
     }
 
     public int obtainElseValue() {
-        increaseClosers();
         return ++this.elseAmount;
     }
 
@@ -61,16 +60,18 @@ public class SelectionManager {
         return this.elseAmount;
     }
 
-    public int getClosers() {
-        return this.closers;
-    }
-
-    public void increaseClosers() {
-        this.closers++;
+    public void pushSelectionLevel(int level) {
+        this.levelStack.push(level);
     }
 
     public void decreaseClosers() {
-        this.closers--;
+        int closers = this.levelStack.pop();
+        closers--;
+        this.levelStack.push(closers);
+    }
+
+    public int popLevel() {
+        return this.levelStack.pop();
     }
 
 }
