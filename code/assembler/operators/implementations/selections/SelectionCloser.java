@@ -8,19 +8,19 @@ public class SelectionCloser implements AssemblerOperator {
     private SelectionCloser() {
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     private static class Holder {
         private static final SelectionCloser INSTANCE = new SelectionCloser();
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     public static SelectionCloser getInstance() {
         return Holder.INSTANCE;
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     @Override
     public void generateAssembler(CodeRepository repository) {
@@ -29,7 +29,7 @@ public class SelectionCloser implements AssemblerOperator {
 
         selectionManager.decreaseSelectionLevel();
         int closers = selectionManager.popLevel();
-        
+
         if (selectionManager.getSelectionLevel() == 0) {
             while (closers > 0) {
                 repository.decreaseIndentation();
@@ -41,8 +41,8 @@ public class SelectionCloser implements AssemblerOperator {
             if (closers >= 0) {
                 repository.decreaseIndentation();
                 repository.addCode(")");
-            }   
+            }
         }
-            
+
     }
 }

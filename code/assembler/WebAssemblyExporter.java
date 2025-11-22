@@ -15,7 +15,7 @@ public class WebAssemblyExporter {
     private static final String watPath = "outputs/wat/";
     private static final String wasmPath = "outputs/wasm/";
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     public static void exportToWat(File file, String code) {
 
@@ -32,7 +32,7 @@ public class WebAssemblyExporter {
         }
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     public static void exportToWasm(File file, String code) {
 
@@ -81,7 +81,7 @@ public class WebAssemblyExporter {
         }
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     private static void createDirectoryIfNotExists(String directoryPath) {
         try {
@@ -94,7 +94,7 @@ public class WebAssemblyExporter {
         }
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     private static String extractBaseName(File file) {
 
@@ -105,7 +105,7 @@ public class WebAssemblyExporter {
         return baseName;
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     public static int getAppropiateMessageLength(String message) {
 

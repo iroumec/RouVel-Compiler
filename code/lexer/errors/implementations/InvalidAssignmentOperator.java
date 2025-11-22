@@ -11,12 +11,12 @@ public class InvalidAssignmentOperator implements lexer.errors.LexicalError {
 
     private static InvalidAssignmentOperator INSTANCE;
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     private InvalidAssignmentOperator() {
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     public static InvalidAssignmentOperator getInstance() {
         if (INSTANCE == null) {
@@ -25,7 +25,7 @@ public class InvalidAssignmentOperator implements lexer.errors.LexicalError {
         return INSTANCE;
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     @Override
     public void handleError(lexer.Lexer lexicalAnalyzer) {
@@ -39,14 +39,14 @@ public class InvalidAssignmentOperator implements lexer.errors.LexicalError {
         ReturnCharacterToEntry.getInstance().execute(lexicalAnalyzer);
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     @Override
     public boolean requiresFinalization() {
         return true;
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     @Override
     public String toString() {

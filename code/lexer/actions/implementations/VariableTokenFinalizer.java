@@ -14,12 +14,12 @@ public class VariableTokenFinalizer implements SemanticAction {
 
     private static VariableTokenFinalizer INSTANCE;
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     private VariableTokenFinalizer() {
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     public static VariableTokenFinalizer getInstance() {
         if (INSTANCE == null) {
@@ -28,7 +28,7 @@ public class VariableTokenFinalizer implements SemanticAction {
         return INSTANCE;
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     @Override
     public void execute(Lexer lexicalAnalyzer) {
@@ -36,7 +36,7 @@ public class VariableTokenFinalizer implements SemanticAction {
         lexicalAnalyzer.finalizeVariableToken();
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     public String toString() {
         return "VTF";

@@ -18,12 +18,12 @@ public class FloatChecker implements SemanticAction {
     private static final BigDecimal ABSOLUTE_MINIMUN = new BigDecimal("1.17549435E-38");
     private static final BigDecimal ABSOLUTE_MAXIMUM = new BigDecimal("3.40282347E38");
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     private FloatChecker() {
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     public static FloatChecker getInstance() {
         if (INSTANCE == null) {
@@ -32,7 +32,7 @@ public class FloatChecker implements SemanticAction {
         return INSTANCE;
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     @Override
     public void execute(Lexer lexicalAnalyzer) {
@@ -50,7 +50,7 @@ public class FloatChecker implements SemanticAction {
         lexicalAnalyzer.loadValue(lexema.replace("F", "e"));
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     private String cleanFloat(String lexema) {
         if (lexema.matches(".*F.*")) {
@@ -83,7 +83,7 @@ public class FloatChecker implements SemanticAction {
         return lexema;
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     private String parseToFloat(String lexema, Lexer lexicalAnalyzer) {
 
@@ -100,7 +100,7 @@ public class FloatChecker implements SemanticAction {
         return number.replace("E", "F");
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     private String transformToScientific(String number) {
 
@@ -142,7 +142,7 @@ public class FloatChecker implements SemanticAction {
         return number;
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     private boolean isInRange(String number) {
 
@@ -152,7 +152,7 @@ public class FloatChecker implements SemanticAction {
                 || value.compareTo(BigDecimal.ZERO) == 0;
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     @Override
     public String toString() {

@@ -8,19 +8,19 @@ public class FunctionCloser implements AssemblerOperator {
     private FunctionCloser() {
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     private static class Holder {
         private static final FunctionCloser INSTANCE = new FunctionCloser();
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     public static FunctionCloser getInstance() {
         return Holder.INSTANCE;
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     @Override
     public void generateAssembler(CodeRepository repository) {

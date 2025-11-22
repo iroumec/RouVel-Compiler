@@ -11,12 +11,12 @@ public class InvalidSymbol implements LexicalError {
 
     private static InvalidSymbol INSTANCE;
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     private InvalidSymbol() {
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     public static InvalidSymbol getInstance() {
         if (INSTANCE == null) {
@@ -25,7 +25,7 @@ public class InvalidSymbol implements LexicalError {
         return INSTANCE;
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     @Override
     public void handleError(Lexer lexicalAnalyzer) {
@@ -35,7 +35,7 @@ public class InvalidSymbol implements LexicalError {
                 """.formatted(lexicalAnalyzer.getLastCharRead()));
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     @Override
     public String toString() {

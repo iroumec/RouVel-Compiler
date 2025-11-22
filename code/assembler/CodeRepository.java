@@ -7,17 +7,17 @@ public final class CodeRepository {
 
     private final static String INDENTATION = "    ";
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     private StringBuilder imports;
     private Deque<String> operands;
     private StringBuilder executableCode;
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     private Deque<Block> blockStack;
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     public CodeRepository() {
         this.imports = new StringBuilder();
@@ -34,7 +34,7 @@ public final class CodeRepository {
         return operands.pop();
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     public void pushOperand(String operand) {
         operands.push(operand);
@@ -49,7 +49,7 @@ public final class CodeRepository {
         this.increaseIndentation();
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     public void endProgram() {
 
@@ -71,7 +71,7 @@ public final class CodeRepository {
         this.blockStack.push(new Block(scope, new StringBuilder(), new StringBuilder(INDENTATION)));
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     public void endBlock() {
 
@@ -98,7 +98,7 @@ public final class CodeRepository {
                 .append(Indenter.indent(code, this.blockStack.peek().indentation().toString()));
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     public void addCode(StringBuilder code) {
         this.addCode(code.toString());
@@ -123,7 +123,7 @@ public final class CodeRepository {
         this.blockStack.peek().indentation().append(INDENTATION);
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     public void decreaseIndentation() {
         this.blockStack.peek().indentation()
@@ -138,7 +138,7 @@ public final class CodeRepository {
         return this.blockStack.peek().scope();
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     // Este método solo tiene fines estéticos.
     public void removeLastLine() {

@@ -14,19 +14,19 @@ public class Multiplication extends ArithmeticOperator {
     private Multiplication() {
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     private static class Holder {
         private static final Multiplication INSTANCE = new Multiplication();
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     public static Multiplication getInstance() {
         return Holder.INSTANCE;
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     @Override
     protected void applyDirectOperation(Symbol firstOperand, Symbol secondOperand, PairType pairType,
@@ -77,14 +77,14 @@ public class Multiplication extends ArithmeticOperator {
         }
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     @Override
     protected String getAssemblerOperator() {
         return "mul";
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     @Override
     protected void applyPreviosOperationRuntimeControls(Symbol firstOperand, Symbol secondOperand,
@@ -92,7 +92,7 @@ public class Multiplication extends ArithmeticOperator {
         // Empty intentionally...
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     @Override
     protected void applyPostOperationRuntimeControls(Symbol firstOperand, Symbol secondOperand,

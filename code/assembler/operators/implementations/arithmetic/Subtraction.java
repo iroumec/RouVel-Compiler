@@ -14,19 +14,19 @@ public class Subtraction extends ArithmeticOperator {
     private Subtraction() {
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     private static class Holder {
         private static final Subtraction INSTANCE = new Subtraction();
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     public static Subtraction getInstance() {
         return Holder.INSTANCE;
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     @Override
     protected void applyDirectOperation(Symbol firstOperand, Symbol secondOperand, PairType pairType,
@@ -78,14 +78,14 @@ public class Subtraction extends ArithmeticOperator {
 
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     @Override
     protected String getAssemblerOperator() {
         return "sub";
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     @Override
     protected void applyPreviosOperationRuntimeControls(Symbol firstOperand, Symbol secondOperand,
@@ -93,7 +93,7 @@ public class Subtraction extends ArithmeticOperator {
         // Empty intentionally...
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     /**
      * Este chequeo ocasionalmente podría hacerse en el semántico, pero sería en

@@ -9,7 +9,7 @@ public interface AssemblerOperator {
 
     void generateAssembler(CodeRepository repository);
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     default String getCode(Symbol operand, SymbolType conversionType) {
 

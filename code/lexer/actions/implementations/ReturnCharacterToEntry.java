@@ -11,12 +11,12 @@ public class ReturnCharacterToEntry implements SemanticAction {
 
     private static ReturnCharacterToEntry INSTANCE;
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     private ReturnCharacterToEntry() {
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     public static ReturnCharacterToEntry getInstance() {
         if (INSTANCE == null) {
@@ -25,14 +25,14 @@ public class ReturnCharacterToEntry implements SemanticAction {
         return INSTANCE;
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     @Override
     public void execute(Lexer lexicalAnalyzer) {
         lexicalAnalyzer.decrementarSiguienteCaracterALeer();
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     @Override
     public String toString() {

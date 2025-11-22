@@ -11,12 +11,12 @@ public class LexemaInitializer implements SemanticAction {
 
     private static LexemaInitializer INSTANCE;
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     private LexemaInitializer() {
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     public static LexemaInitializer getInstance() {
         if (INSTANCE == null) {
@@ -25,14 +25,14 @@ public class LexemaInitializer implements SemanticAction {
         return INSTANCE;
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     @Override
     public void execute(Lexer lexicalAnalyzer) {
         lexicalAnalyzer.initializeLexema(lexicalAnalyzer.getLastCharRead());
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     @Override
     public String toString() {

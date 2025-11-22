@@ -12,12 +12,12 @@ public class NewLineDetected implements SemanticAction {
 
     private static NewLineDetected INSTANCE;
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     private NewLineDetected() {
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     public static NewLineDetected getInstance() {
         if (INSTANCE == null) {
@@ -26,7 +26,7 @@ public class NewLineDetected implements SemanticAction {
         return INSTANCE;
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     @Override
     public void execute(Lexer lexicalAnalyzer) {
@@ -34,7 +34,7 @@ public class NewLineDetected implements SemanticAction {
         lexicalAnalyzer.resetearNroCaracter();
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     @Override
     public String toString() {

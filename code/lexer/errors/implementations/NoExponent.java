@@ -14,12 +14,12 @@ public class NoExponent implements LexicalError {
 
     private static NoExponent INSTANCE;
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     private NoExponent() {
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     public static NoExponent getInstance() {
         if (INSTANCE == null) {
@@ -28,7 +28,7 @@ public class NoExponent implements LexicalError {
         return INSTANCE;
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     @Override
     public void handleError(Lexer lexicalAnalyzer) {
@@ -46,7 +46,7 @@ public class NoExponent implements LexicalError {
         ReturnCharacterToEntry.getInstance().execute(lexicalAnalyzer);
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     /**
      * El handler realiza las acciones semánticas necesarias,
@@ -57,7 +57,7 @@ public class NoExponent implements LexicalError {
         return true;
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     @Override
     public String toString() {

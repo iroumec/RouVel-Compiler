@@ -15,12 +15,12 @@ public class UndeterminedNumber implements LexicalError {
 
     private static UndeterminedNumber INSTANCE;
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     private UndeterminedNumber() {
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     public static UndeterminedNumber getInstance() {
         if (INSTANCE == null) {
@@ -29,7 +29,7 @@ public class UndeterminedNumber implements LexicalError {
         return INSTANCE;
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     @Override
     public void handleError(Lexer lexicalAnalyzer) {
@@ -48,14 +48,14 @@ public class UndeterminedNumber implements LexicalError {
         ReturnCharacterToEntry.getInstance().execute(lexicalAnalyzer);
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     @Override
     public boolean requiresFinalization() {
         return true;
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     @Override
     public String toString() {

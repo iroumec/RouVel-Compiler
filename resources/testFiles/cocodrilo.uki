@@ -1,0 +1,30 @@
+MAIN {
+
+    uint A;
+
+    A := 3UI;
+
+    if (A < 2UI) {
+
+        print(3UI);
+    } else {
+
+        print("Hello");
+    } endif;
+
+    A := 7UI;
+
+    do {
+
+        print("JIJI");
+    } while (1UI > 3UI);
+
+    A := 8UI;
+
+    uint FUN1(uint A, uint B) {
+
+        return(3UI);
+    }
+
+    FUN1(2UI -> B, 5UI -> A);
+}

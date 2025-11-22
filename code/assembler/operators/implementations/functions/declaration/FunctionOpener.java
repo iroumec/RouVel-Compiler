@@ -13,19 +13,19 @@ public class FunctionOpener implements AssemblerOperator {
     private FunctionOpener() {
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     private static class Holder {
         private static final FunctionOpener INSTANCE = new FunctionOpener();
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     public static FunctionOpener getInstance() {
         return Holder.INSTANCE;
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     @Override
     public void generateAssembler(CodeRepository repository) {
@@ -47,7 +47,7 @@ public class FunctionOpener implements AssemblerOperator {
         repository.addCode("<local_variables>");
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     private void dumpParameters(CodeRepository repository) {
 

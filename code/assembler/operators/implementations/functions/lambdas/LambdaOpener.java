@@ -11,19 +11,19 @@ public class LambdaOpener implements AssemblerOperator {
     private LambdaOpener() {
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     private static class Holder {
         private static final LambdaOpener INSTANCE = new LambdaOpener();
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     public static LambdaOpener getInstance() {
         return Holder.INSTANCE;
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     @Override
     public void generateAssembler(CodeRepository repository) {
@@ -43,7 +43,7 @@ public class LambdaOpener implements AssemblerOperator {
         repository.addCode("<local_variables>");
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     private void dumpParameters(CodeRepository repository) {
 

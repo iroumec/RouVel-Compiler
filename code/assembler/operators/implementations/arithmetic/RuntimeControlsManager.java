@@ -10,9 +10,13 @@ public final class RuntimeControlsManager {
 
     private static final int MAX_UINT = 65535;
 
+    // ============================================================================================
+
     private static boolean zeroDividendCheckerAdded = false;
     private static boolean integerOverflowCheckerAdded = false;
     private static boolean integerNegativeSubtractionCheckerAdded = false;
+
+    // ============================================================================================
 
     public static void addIntegerOverflowChecker(CodeRepository repository) {
 
@@ -56,6 +60,8 @@ public final class RuntimeControlsManager {
         repository.addCode("\n");
     }
 
+    // ============================================================================================
+
     public static void addZeroDividendChecker(CodeRepository repository) {
 
         String message = "RUNTIME ERROR: Dividend is Zero.";
@@ -96,6 +102,8 @@ public final class RuntimeControlsManager {
         repository.addCode("call $zero-dividend-checker");
         repository.addCode("\n");
     }
+
+    // ============================================================================================
 
     public static void addIntegerNegativeSubtractionChecker(CodeRepository repository) {
 

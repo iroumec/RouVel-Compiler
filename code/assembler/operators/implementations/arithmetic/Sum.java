@@ -14,19 +14,19 @@ public class Sum extends ArithmeticOperator {
     private Sum() {
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     private static class Holder {
         private static final Sum INSTANCE = new Sum();
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     public static Sum getInstance() {
         return Holder.INSTANCE;
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     @Override
     protected void applyDirectOperation(Symbol firstOperand, Symbol secondOperand, PairType pairType,
@@ -91,14 +91,14 @@ public class Sum extends ArithmeticOperator {
         }
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     @Override
     protected String getAssemblerOperator() {
         return "add";
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     @Override
     protected void applyPreviosOperationRuntimeControls(Symbol firstOperand, Symbol secondOperand,
@@ -106,7 +106,7 @@ public class Sum extends ArithmeticOperator {
         // Empty intentionally...
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     @Override
     protected void applyPostOperationRuntimeControls(Symbol firstOperand, Symbol secondOperand,

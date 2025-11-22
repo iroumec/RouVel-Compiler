@@ -4,12 +4,12 @@ import java.math.BigDecimal;
 
 public class SymbolDirector {
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     private static int stringCounter = 0;
     private static int auxiliarVariableNumber = 0;
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     public static Symbol createNewString(String lexema) {
 
@@ -35,14 +35,14 @@ public class SymbolDirector {
         return symbol;
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     public static Symbol createNewUint(int value) {
 
         return createNewUint(String.valueOf(value));
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     public static Symbol createNewUint(String value) {
 
@@ -50,7 +50,7 @@ public class SymbolDirector {
                 .type(SymbolType.UINT).build();
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     public static Symbol createNewFunction(String functionName) {
 
@@ -58,14 +58,14 @@ public class SymbolDirector {
                 .type(SymbolType.UINT).build();
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     public static Symbol createNewFloat(float value) {
 
         return createNewFloat(String.valueOf(value));
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     public static Symbol createNewFloat(String value) {
 
@@ -73,7 +73,7 @@ public class SymbolDirector {
                 .type(SymbolType.FLOAT).build();
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     public static Symbol createNewVariable(String lexema) {
 
@@ -81,14 +81,14 @@ public class SymbolDirector {
                 .type(SymbolType.UINT).build();
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     public static Symbol createNewParameter(String lexema) {
 
         return createNewParameter(lexema, ParameterSemanticModel.CV);
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     public static Symbol createNewParameter(String lexema, ParameterSemanticModel parameterSemanticModel) {
 
@@ -96,7 +96,7 @@ public class SymbolDirector {
                 .type(SymbolType.UINT).build();
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     public static Symbol createNewAuxiliarVariable(String scope) {
 
@@ -106,14 +106,14 @@ public class SymbolDirector {
                 .type(SymbolType.UINT).build();
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     public static Symbol getNegativeVersion(Symbol symbol) {
 
         return symbol.getNegative();
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     public static Symbol createNewAppropiateSymbol(String lexema, String value, SymbolType type) {
 

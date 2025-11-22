@@ -12,13 +12,13 @@ import common.SymbolType;
 
 public abstract class ArithmeticOperator implements AssemblerOperator {
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     protected static final int MAX_UINT = 65535;
     protected static final BigDecimal ABSOLUTE_MAXIMUM = new BigDecimal("3.40282347E38");
     protected static final BigDecimal ABSOLUTE_MINIMUN = new BigDecimal("1.17549435E-38");
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     @Override
     public void generateAssembler(CodeRepository repository) {
@@ -34,7 +34,7 @@ public abstract class ArithmeticOperator implements AssemblerOperator {
         resolveOperation(firstOperand, secondOperand, repository);
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     private void resolveOperation(Symbol firstOperand, Symbol secondOperand, CodeRepository repository) {
 
@@ -72,7 +72,7 @@ public abstract class ArithmeticOperator implements AssemblerOperator {
         }
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     private boolean symbolsBelongToCategory(SymbolCategory category, Symbol... symbols) {
 
@@ -85,7 +85,7 @@ public abstract class ArithmeticOperator implements AssemblerOperator {
         return true;
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     protected enum PairType {
         UINT_UINT,
@@ -110,7 +110,7 @@ public abstract class ArithmeticOperator implements AssemblerOperator {
         }
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     private void generateCode(PairType pairType, SymbolTable symbolTable, Symbol firstOperand, Symbol secondOperand,
             Symbol auxiliarVariable, CodeRepository repository) {
@@ -138,24 +138,24 @@ public abstract class ArithmeticOperator implements AssemblerOperator {
         ;
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     protected abstract void applyDirectOperation(Symbol firstOperand, Symbol secondOperand, PairType pairType,
             CodeRepository repository);
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     protected abstract String getAssemblerOperator();
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     protected abstract void applyPreviosOperationRuntimeControls(Symbol firstOperand, Symbol secondOperand,
             SymbolType conversionType, CodeRepository repository);
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     protected abstract void applyPostOperationRuntimeControls(Symbol firstOperand, Symbol secondOperand,
             SymbolType conversionType, CodeRepository repository);
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 }

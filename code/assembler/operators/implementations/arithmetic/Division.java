@@ -15,19 +15,19 @@ public class Division extends ArithmeticOperator {
     private Division() {
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     private static class Holder {
         private static final Division INSTANCE = new Division();
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     public static Division getInstance() {
         return Holder.INSTANCE;
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     @Override
     protected void applyDirectOperation(Symbol firstOperand, Symbol secondOperand, PairType pairType,
@@ -86,14 +86,14 @@ public class Division extends ArithmeticOperator {
         }
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     @Override
     protected String getAssemblerOperator() {
         return "div_u";
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     @Override
     protected void applyPreviosOperationRuntimeControls(Symbol firstOperand, Symbol secondOperand,
@@ -106,7 +106,7 @@ public class Division extends ArithmeticOperator {
         repository.addCode(getCode(secondOperand, conversionType));
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     @Override
     protected void applyPostOperationRuntimeControls(Symbol firstOperand, Symbol secondOperand,

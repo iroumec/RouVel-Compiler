@@ -11,12 +11,12 @@ public class IdentifierLengthChecker implements SemanticAction {
     private static IdentifierLengthChecker INSTANCE;
     private static final int MAX_IDENTIFIER_LENGTH = 20;
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     private IdentifierLengthChecker() {
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     public static IdentifierLengthChecker getInstance() {
         if (INSTANCE == null) {
@@ -25,7 +25,7 @@ public class IdentifierLengthChecker implements SemanticAction {
         return INSTANCE;
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     @Override
     public void execute(Lexer lexicalAnalyzer) {
@@ -45,7 +45,7 @@ public class IdentifierLengthChecker implements SemanticAction {
         }
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     @Override
     public String toString() {

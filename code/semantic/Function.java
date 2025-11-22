@@ -13,15 +13,21 @@ import common.SymbolTable;
 
 class Function {
 
+    // ============================================================================================
+    // Atributos
+    // ============================================================================================
+
     private String name;
     private String scope;
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
-    private List<Argument> arguments;
-    private List<Parameter> parameters;
+    protected List<Argument> arguments;
+    protected List<Parameter> parameters;
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
+    // Constructor
+    // ============================================================================================
 
     Function(String name) {
         this.name = name;
@@ -41,21 +47,27 @@ class Function {
         }
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
+    // Añadido de Parámetros
+    // ============================================================================================
 
     void addParameter(String id, String semantic) {
 
         this.parameters.add(new Parameter(id, semantic));
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
+    // Añadido de Argumentos
+    // ============================================================================================
 
     void addArgument(String parameter, List<String> expression) {
 
         this.arguments.add(new Argument(parameter, expression));
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
+    // Generación de Polacas: Cierre de la Declaración
+    // ============================================================================================
 
     List<String> closeDeclaration() {
 
@@ -76,7 +88,7 @@ class Function {
         return out;
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     private List<Argument> reorderArgumentsAccordingToParameters() {
 
@@ -92,7 +104,9 @@ class Function {
         return orderedArguments;
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
+    // Generación de Polacas: Cierre de Invocación
+    // ============================================================================================
 
     List<String> closeCall(ReversePolish polish, String operator) {
 
@@ -152,43 +166,17 @@ class Function {
         return out;
     }
 
-    // --------------------------------------------------------------------------------------------
-
-    // TODO: este método debería separarse en una respectiva clase.
-    List<String> closeLambdaCall(ReversePolish polish, String operator) {
-
-        List<String> out = new ArrayList<>();
-
-        for (Argument argument : this.arguments) {
-
-            out.addAll(argument.getExpression());
-            out.add(argument.getParameter());
-            out.add(operator);
-        }
-
-        out.add(this.name);
-        out.add("call");
-
-        this.arguments.clear();
-
-        return out;
-    }
-
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
+    // Getters
+    // ============================================================================================
 
     String getName() {
         return this.name;
     }
 
-    String getScope() {
-        return this.scope;
-    }
-
-    String getJustName() {
-        return name.split("\\s*:\\s*")[0];
-    }
-
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
+    // Manejo de Errores
+    // ============================================================================================
 
     private void notifyError(String errorMessage) {
 
@@ -199,25 +187,11 @@ class Function {
                 monitor.getLineNumber(), errorMessage));
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
+    // Inner Classes
+    // ============================================================================================
 
-    @Override
-    public boolean equals(Object o) {
-
-        if (o == null) {
-            return false;
-        }
-
-        if (o instanceof Function) {
-            return ((Function) o).name.equals(this.name);
-        }
-
-        return false;
-    }
-
-    // --------------------------------------------------------------------------------------------
-
-    private class Parameter {
+    protected class Parameter {
 
         private String id, semantic;
 
@@ -236,9 +210,9 @@ class Function {
         }
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
-    private class Argument {
+    protected class Argument {
 
         private String parameter;
         private List<String> expression;
@@ -248,11 +222,11 @@ class Function {
             this.expression = new ArrayList<>(expression);
         }
 
-        private String getParameter() {
+        protected String getParameter() {
             return this.parameter;
         }
 
-        private List<String> getExpression() {
+        protected List<String> getExpression() {
             return this.expression;
         }
     }

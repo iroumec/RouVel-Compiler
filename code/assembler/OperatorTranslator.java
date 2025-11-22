@@ -7,10 +7,6 @@ import assembler.operators.implementations.Assignment;
 import assembler.operators.implementations.arithmetic.Sum;
 import assembler.operators.implementations.comparison.Equal;
 import assembler.operators.implementations.loops.LoopOpener;
-import assembler.operators.implementations.selections.SelectionOpener;
-import assembler.operators.implementations.selections.ConditionCloser;
-import assembler.operators.implementations.selections.SelectionCloser;
-import assembler.operators.implementations.selections.ThenBlockCloser;
 import assembler.operators.implementations.loops.LoopCloser;
 import assembler.operators.implementations.loops.LoopJumper;
 import assembler.operators.implementations.comparison.Greater;
@@ -24,6 +20,10 @@ import assembler.operators.implementations.comparison.GreaterOrEqual;
 import assembler.operators.implementations.functions.call.ReadResult;
 import assembler.operators.implementations.functions.call.ReadReturn;
 import assembler.operators.implementations.arithmetic.Multiplication;
+import assembler.operators.implementations.selections.SelectionOpener;
+import assembler.operators.implementations.selections.ConditionCloser;
+import assembler.operators.implementations.selections.SelectionCloser;
+import assembler.operators.implementations.selections.ThenBlockCloser;
 import assembler.operators.implementations.functions.call.FunctionCall;
 import assembler.operators.implementations.functions.declaration.Return;
 import assembler.operators.implementations.functions.lambdas.LambdaCloser;
@@ -32,6 +32,8 @@ import assembler.operators.implementations.functions.declaration.FunctionCloser;
 import assembler.operators.implementations.functions.declaration.FunctionOpener;
 
 class OperatorTranslator {
+
+    // ============================================================================================
 
     static AssemblerOperator getOperator(String operator) {
 
@@ -67,6 +69,7 @@ class OperatorTranslator {
             case "open-selection" -> SelectionOpener.getInstance();
             case "close-selection" -> SelectionCloser.getInstance();
         };
-
     }
+
+    // ============================================================================================
 }

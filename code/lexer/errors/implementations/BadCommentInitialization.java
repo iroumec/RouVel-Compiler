@@ -12,12 +12,12 @@ public class BadCommentInitialization implements LexicalError {
 
     private static BadCommentInitialization INSTANCE;
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     private BadCommentInitialization() {
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     public static BadCommentInitialization getInstance() {
         if (INSTANCE == null) {
@@ -26,7 +26,7 @@ public class BadCommentInitialization implements LexicalError {
         return INSTANCE;
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     @Override
     public void handleError(Lexer lexicalAnalyzer) {
@@ -40,14 +40,14 @@ public class BadCommentInitialization implements LexicalError {
         ReturnCharacterToEntry.getInstance().execute(lexicalAnalyzer);
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     @Override
     public boolean requiresReturnToStart() {
         return true;
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     @Override
     public String toString() {

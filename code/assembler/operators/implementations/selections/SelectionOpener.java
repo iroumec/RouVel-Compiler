@@ -8,19 +8,19 @@ public class SelectionOpener implements AssemblerOperator {
     private SelectionOpener() {
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     private static class Holder {
         private static final SelectionOpener INSTANCE = new SelectionOpener();
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     public static SelectionOpener getInstance() {
         return Holder.INSTANCE;
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     @Override
     public void generateAssembler(CodeRepository repository) {
@@ -34,20 +34,20 @@ public class SelectionOpener implements AssemblerOperator {
 
             level = 2;
 
-            repository.addCode(String.format("(block $out%s%n",selectionManager.obtainOutValue()));
+            repository.addCode(String.format("(block $out%s%n", selectionManager.obtainOutValue()));
             repository.increaseIndentation();
-            
+
         } else {
 
             level = 1;
 
         }
 
-        repository.addCode(String.format("(block $else%s%n",selectionManager.obtainElseValue()));
+        repository.addCode(String.format("(block $else%s%n", selectionManager.obtainElseValue()));
         repository.increaseIndentation();
-        repository.addCode(String.format("(block $then%s%n",selectionManager.obtainThenValue()));
+        repository.addCode(String.format("(block $then%s%n", selectionManager.obtainThenValue()));
         repository.increaseIndentation();
-        
+
         selectionManager.pushSelectionLevel(level);
 
     }

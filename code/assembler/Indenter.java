@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
  */
 public final class Indenter {
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     static String indent(String text, String indentation) {
         return Arrays.stream(text.split("\n"))
@@ -17,19 +17,19 @@ public final class Indenter {
                 + "\n";
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     static String indent(String text, StringBuilder indentation) {
         return indent(text, indentation.toString());
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     static String indent(StringBuilder text, String indentation) {
         return indent(text.toString(), indentation);
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     static String indent(StringBuilder text, StringBuilder indentation) {
         return indent(text.toString(), indentation.toString());

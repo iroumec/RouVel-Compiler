@@ -14,12 +14,12 @@ public class NoExponentSign implements LexicalError {
 
     private static NoExponentSign INSTANCE;
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     private NoExponentSign() {
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     public static NoExponentSign getInstance() {
         if (INSTANCE == null) {
@@ -28,7 +28,7 @@ public class NoExponentSign implements LexicalError {
         return INSTANCE;
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     @Override
     public void handleError(Lexer lexicalAnalyzer) {
@@ -61,7 +61,7 @@ public class NoExponentSign implements LexicalError {
         ReturnCharacterToEntry.getInstance().execute(lexicalAnalyzer);
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     /**
      * El handler realiza las acciones semánticas necesarias,
@@ -72,7 +72,7 @@ public class NoExponentSign implements LexicalError {
         return true;
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     @Override
     public String toString() {

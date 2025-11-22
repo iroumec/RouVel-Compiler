@@ -8,6 +8,8 @@ import common.SymbolType;
 
 public interface ComparisonOperator extends AssemblerOperator {
 
+    // ============================================================================================
+
     @Override
     default void generateAssembler(CodeRepository repository) {
 
@@ -23,6 +25,8 @@ public interface ComparisonOperator extends AssemblerOperator {
         repository.addCode(code);
         repository.addCode("\n");
     }
+
+    // ============================================================================================
 
     String getAssemblerComparator();
 

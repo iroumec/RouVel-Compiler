@@ -14,12 +14,12 @@ public class FixedTokenFinalizer implements SemanticAction {
 
     private static FixedTokenFinalizer INSTANCE;
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     private FixedTokenFinalizer() {
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     public static FixedTokenFinalizer getInstance() {
         if (INSTANCE == null) {
@@ -28,7 +28,7 @@ public class FixedTokenFinalizer implements SemanticAction {
         return INSTANCE;
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     @Override
     public void execute(Lexer lexicalAnalyzer) {
@@ -36,7 +36,7 @@ public class FixedTokenFinalizer implements SemanticAction {
         lexicalAnalyzer.finalizeFixedToken();
     }
 
-    // --------------------------------------------------------------------------------------------
+    // ============================================================================================
 
     @Override
     public String toString() {
