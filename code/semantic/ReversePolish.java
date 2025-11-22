@@ -237,12 +237,17 @@ public final class ReversePolish implements Iterable<String> {
 
     public void startFunctionCall(String functionName) {
 
-        for (Function function : this.functions) {
+        boolean functionFound = false;
 
-            if (function.getName().equals(functionName)) {
-                this.functionCalled = function;
-                this.addPolish(functionCalled.getName());
-                break; // TODO: mejorar esto.
+        Iterator<Function> iterator = this.functions.iterator();
+        while (!functionFound && iterator.hasNext()) {
+
+            Function currentFunction = iterator.next();
+
+            if (currentFunction.getName().equals(functionName)) {
+                this.functionCalled = currentFunction;
+                this.addPolish(currentFunction.getName());
+                functionFound = true;
             }
         }
     }

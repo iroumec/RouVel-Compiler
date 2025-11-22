@@ -1,9 +1,9 @@
 package assembler.operators.implementations.arithmetic;
 
-import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 
 import assembler.CodeRepository;
+import assembler.WebAssemblyExporter;
 import common.Symbol;
 import common.SymbolDirector;
 import common.SymbolTable;
@@ -98,16 +98,6 @@ public class Multiplication extends ArithmeticOperator {
 
         repository.addImport("(import \"console\" \"log_string\" (func $console_log_string (param i32 i32)))");
 
-        int messageLength = 0;
-        try {
-            // No puede usarse message.length(), porque no tiene en cuenta que en
-            // WebAssembly la tilde ocupa dos caracteres.
-            // TODO: llevar esto a otra clase.
-            messageLength = message.getBytes("UTF-8").length;
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-
         /*
          * El "param i32" es necesario para explicitarle al bloque que debe
          * tomar lo que había antes de la pila. En otro caso, el bloque
@@ -128,7 +118,7 @@ public class Multiplication extends ArithmeticOperator {
                     unreachable
                 ) ;; $continue
                 """.formatted(MAX_UINT, messageSymbol.getValue(),
-                messageLength));
+                WebAssemblyExporter.getAppropiateMessageLength(message)));
     }
 
 }

@@ -5,10 +5,10 @@ import common.SymbolDirector;
 import common.SymbolTable;
 import utilities.Printer;
 
-import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 
 import assembler.CodeRepository;
+import assembler.WebAssemblyExporter;
 
 public class Division extends ArithmeticOperator {
 
@@ -107,16 +107,6 @@ public class Division extends ArithmeticOperator {
 
         repository.addImport("(import \"console\" \"log_string\" (func $console_log_string (param i32 i32)))");
 
-        int messageLength = 0;
-        try {
-            // No puede usarse message.length(), porque no tiene en cuenta que en
-            // WebAssembly la tilde ocupa dos caracteres.
-            // TODO: llevar esto a otra clase.
-            messageLength = message.getBytes("UTF-8").length;
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-
         repository.addCode("""
                 ;; Chequeo de división por cero.
                 (block $continue
@@ -131,6 +121,6 @@ public class Division extends ArithmeticOperator {
                     unreachable
                 ) ;; $continue
                 """.formatted(secondOperand.getLexemaWithoutScope(), messageSymbol.getValue(),
-                messageLength));
+                WebAssemblyExporter.getAppropiateMessageLength(message)));
     }
 }

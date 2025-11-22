@@ -1,9 +1,9 @@
 package assembler.operators.implementations.arithmetic;
 
-import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 
 import assembler.CodeRepository;
+import assembler.WebAssemblyExporter;
 import common.Symbol;
 import common.SymbolDirector;
 import common.SymbolTable;
@@ -102,16 +102,6 @@ public class Subtraction extends ArithmeticOperator {
         Symbol messageSymbol = SymbolDirector.createNewString(message);
         SymbolTable.getInstance().addEntry(messageSymbol);
 
-        int messageLength = 0;
-        try {
-            // No puede usarse message.length(), porque no tiene en cuenta que en
-            // WebAssembly la tilde ocupa dos caracteres.
-            // TODO: llevar esto a otra clase.
-            messageLength = message.getBytes("UTF-8").length;
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-
         repository.addCode("""
                 ;; Chequeo de resta negativa.
                 ;; Si compara si el primer operando es menor al segundo.
@@ -141,7 +131,7 @@ public class Subtraction extends ArithmeticOperator {
                 getCode(firstOperand, SymbolType.UINT),
                 getCode(secondOperand, SymbolType.UINT),
                 messageSymbol.getValue(),
-                messageLength));
+                WebAssemblyExporter.getAppropiateMessageLength(message)));
 
     }
 }

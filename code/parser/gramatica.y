@@ -514,8 +514,6 @@ term
         {   
             reversePolish.addPolish($2);
             $$ = $3; 
-
-            //TypeChecker.checkDivisionByZero($2, $3); TODO: eliminamos esta clase?
         }
     | factor
 

@@ -219,7 +219,6 @@ class Function {
 
     private class Parameter {
 
-        @SuppressWarnings("unused")
         private String id, semantic;
 
         private Parameter(String id, String semantic) {

@@ -64,11 +64,11 @@ public class ReturnsController {
     // --------------------------------------------------------------------------------------------
 
     public void notifyEmptyElse() {
+
         // Se decrementa la cantidad de retornos que se requieren si el if está solo.
         this.returnsNeeded--;
 
         // Se decrementa la cantidad de returns hallados.
-        // TODO: REVISAR QUÉ PASA SI DENTRO DEL IF HAY VARIOS RETURNS.
         this.returnsFound--;
 
         if (debug)

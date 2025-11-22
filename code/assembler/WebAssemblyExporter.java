@@ -2,6 +2,7 @@ package assembler;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -102,5 +103,19 @@ public class WebAssemblyExporter {
         String baseName = (dotIndex == -1) ? fileName : fileName.substring(0, dotIndex);
 
         return baseName;
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    public static int getAppropiateMessageLength(String message) {
+
+        int messageLength = 0;
+        try {
+            messageLength = message.getBytes("UTF-8").length;
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        return messageLength;
     }
 }
