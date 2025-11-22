@@ -26,6 +26,8 @@ import assembler.operators.implementations.functions.call.ReadReturn;
 import assembler.operators.implementations.arithmetic.Multiplication;
 import assembler.operators.implementations.functions.call.FunctionCall;
 import assembler.operators.implementations.functions.declaration.Return;
+import assembler.operators.implementations.functions.lambdas.LambdaCloser;
+import assembler.operators.implementations.functions.lambdas.LambdaOpener;
 import assembler.operators.implementations.functions.declaration.FunctionCloser;
 import assembler.operators.implementations.functions.declaration.FunctionOpener;
 
@@ -60,6 +62,8 @@ class OperatorTranslator {
             case "read-return" -> ReadReturn.getInstance();
             case "open-function" -> FunctionOpener.getInstance();
             case "close-function" -> FunctionCloser.getInstance();
+            case "open-lambda" -> LambdaOpener.getInstance();
+            case "close-lambda" -> LambdaCloser.getInstance();
             case "open-selection" -> SelectionOpener.getInstance();
             case "close-selection" -> SelectionCloser.getInstance();
         };

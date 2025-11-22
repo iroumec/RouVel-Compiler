@@ -75,9 +75,24 @@ public class SymbolDirector {
 
     // --------------------------------------------------------------------------------------------
 
-    public static Symbol createNewVariable(String value) {
+    public static Symbol createNewVariable(String lexema) {
 
-        return new SymbolBuilder(value).category(SymbolCategory.VARIABLE)
+        return new SymbolBuilder(lexema).category(SymbolCategory.VARIABLE)
+                .type(SymbolType.UINT).build();
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    public static Symbol createNewParameter(String lexema) {
+
+        return createNewParameter(lexema, ParameterSemanticModel.CV);
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    public static Symbol createNewParameter(String lexema, ParameterSemanticModel parameterSemanticModel) {
+
+        return new SymbolBuilder(lexema).category(parameterSemanticModel.getSymbolCategory())
                 .type(SymbolType.UINT).build();
     }
 

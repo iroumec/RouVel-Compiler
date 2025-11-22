@@ -1,0 +1,10 @@
+MAIN {
+
+    uint FUN1(uint B) {
+        return(3UI);
+    }
+
+    print(FUN1(2UI -> B));
+
+    (uint A) { if (A > 3UI) print("Hola"); endif; } (4UI);
+}

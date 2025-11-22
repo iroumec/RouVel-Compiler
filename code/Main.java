@@ -78,12 +78,16 @@ public class Main {
 
             Printer.printBlankSpace();
 
+            String assemblerCode = Assembler.generate(sintacticalAnalyzer.getReversePolish());
+
+            SymbolTable.getInstance().print();
+
+            Printer.printBlankSpace();
+
             if (printAssemblerCode) {
                 Printer.printSeparator();
                 Printer.printCentered("Código WebAssembly");
                 Printer.printSeparator();
-
-                String assemblerCode = Assembler.generate(sintacticalAnalyzer.getReversePolish());
 
                 Printer.printFramed(assemblerCode);
                 Printer.printSeparator();
@@ -95,9 +99,6 @@ public class Main {
                 Printer.printBlankSpace();
             }
 
-            SymbolTable.getInstance().print();
-
-            Printer.printBlankSpace();
         } else {
             Printer.printSeparator();
             Printer.printFramed("El código contiene errores, por lo que no fue posible generar un código assembler.");

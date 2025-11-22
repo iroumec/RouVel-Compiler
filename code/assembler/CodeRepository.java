@@ -57,7 +57,6 @@ public final class CodeRepository {
         this.decreaseIndentation();
         program.insert(0, Indenter.indent(Dumper.dumpGlobalVariables(), INDENTATION));
         program.insert(0, "\n" + Indenter.indent(Dumper.dumpEntryPoint(), INDENTATION));
-        this.removeLastLine(); // Fines estéticos.
         this.addCode(")");
 
         this.endBlock();
@@ -79,11 +78,11 @@ public final class CodeRepository {
 
         String searchString = "<local_variables>";
         int index = this.blockStack.peek().code().indexOf(searchString);
-        
+
         if (index != -1) {
             this.blockStack.peek().code().replace(index, index + searchString.length(),
-                String.format("%n%s", blockVariables));
-        } 
+                    String.format("%n%s", blockVariables));
+        }
 
         this.executableCode.append(this.blockStack.pop().code());
     }
@@ -93,7 +92,7 @@ public final class CodeRepository {
     // ============================================================================================
 
     public void addCode(String code) {
-        this.blockStack.peek().code()//.append("\n")
+        this.blockStack.peek().code()// .append("\n")
                 .append(Indenter.indent(code, this.blockStack.peek().indentation().toString()));
     }
 

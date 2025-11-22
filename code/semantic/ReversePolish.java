@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.ArrayDeque;
 
 import common.Monitor;
+import common.SymbolDirector;
+import common.SymbolTable;
 
 public final class ReversePolish implements Iterable<String> {
 
@@ -22,6 +24,7 @@ public final class ReversePolish implements Iterable<String> {
 
     private int separations;
     private int polishNumber;
+    private int lambdaCounter;
 
     // Es un polish number.
     private int lastSafeState;
@@ -43,6 +46,7 @@ public final class ReversePolish implements Iterable<String> {
     private ReversePolish() {
         this.separations = 0;
         this.polishNumber = 0;
+        this.lambdaCounter = 0;
         this.elements = new ArrayList<>();
         this.functions = new ArrayList<>();
         this.aggregatePoints = new ArrayDeque<>();
@@ -203,7 +207,7 @@ public final class ReversePolish implements Iterable<String> {
     }
 
     // --------------------------------------------------------------------------------------------
-    // Manejo de Estado Seguro
+    // Manejo de Funciones
     // --------------------------------------------------------------------------------------------
 
     public void startFunctionDeclaration(String functionName) {
@@ -306,6 +310,77 @@ public final class ReversePolish implements Iterable<String> {
         this.functionCalled = null;
     }
 
+    // --------------------------------------------------------------------------------------------
+    // Manejo de Lambdas
+    // --------------------------------------------------------------------------------------------
+
+    public String startLambdaDeclaration(String scope) {
+
+        String lambdaName = "lambda" + this.lambdaCounter++;
+        String scopedLambdaName = lambdaName + ":" + scope;
+
+        this.functions.add(new Function(scopedLambdaName));
+
+        this.addPolish(scopedLambdaName);
+        this.addPolish("open-lambda");
+
+        SymbolTable.getInstance().addEntry(SymbolDirector.createNewFunction(scopedLambdaName));
+
+        return lambdaName;
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    public void closeLambdaDeclaration() {
+
+        this.addPolish(this.functions.getLast().getName());
+        this.addPolish("close-lambda");
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    public void discardLambdaDeclaration() {
+
+        this.functions.removeLast();
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    public void startLambdaCall() {
+
+        // Las funciones lambda siempre se invocan inmediatamente después de ser
+        // declaradas, y no pueden contener declaraciones de funciones dentro, por lo
+        // que será la última función en la lista de funciones.
+        this.functionCalled = this.functions.getLast();
+        this.addPolish(functionCalled.getName());
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    public void closeLambdaCall() {
+
+        // Se elimina el nombre de la función, que se utilizó como delimitador.
+        // TODO: ¿QUÉ PASA CON FUNCIÓN QUE SE LLAMA PASÁNDOLE A SÍ MISMA UN RESULTADO DE
+        // SU PROPIA FUNCIÓN?
+        // DEBE CAMBIARSE EL DELIMITADOR.
+        this.removeLastPolish();
+
+        List<String> polishesGenerated = this.functionCalled.closeLambdaCall(this, "->");
+
+        for (String polish : polishesGenerated) {
+            this.addPolish(polish);
+        }
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    public void discardLambdaCall() {
+
+        this.discardFunctionCall();
+    }
+
+    // --------------------------------------------------------------------------------------------
+    // Manejo de Loops
     // --------------------------------------------------------------------------------------------
 
     public void openLoop() {

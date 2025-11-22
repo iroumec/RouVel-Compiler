@@ -51,6 +51,7 @@ class Function {
     // --------------------------------------------------------------------------------------------
 
     void addArgument(String parameter, List<String> expression) {
+
         this.arguments.add(new Argument(parameter, expression));
     }
 
@@ -147,6 +148,28 @@ class Function {
         this.arguments.clear();
 
         out.add("read-return");
+
+        return out;
+    }
+
+    // --------------------------------------------------------------------------------------------
+
+    // TODO: este método debería separarse en una respectiva clase.
+    List<String> closeLambdaCall(ReversePolish polish, String operator) {
+
+        List<String> out = new ArrayList<>();
+
+        for (Argument argument : this.arguments) {
+
+            out.addAll(argument.getExpression());
+            out.add(argument.getParameter());
+            out.add(operator);
+        }
+
+        out.add(this.name);
+        out.add("call");
+
+        this.arguments.clear();
 
         return out;
     }

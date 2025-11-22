@@ -16,7 +16,6 @@
     import common.SymbolType;
     import common.SymbolTable;
     import semantic.ScopeStack;
-    import semantic.TypeChecker;
     import common.SymbolCategory;
     import common.SymbolDirector;
     import semantic.ReversePolish;
@@ -1140,25 +1139,25 @@ elemento_imprimible
 // ********************************************************************************************************************
 
 lambda
-    : parametro_lambda bloque_ejecutable argumento_lambda ';'
+    : parametro_lambda lambda_body argumento_lambda ';'
         { 
             if (this.statementAppearsInValidState()) {
 
-                // Se llena el punto de agregación reservado con la asignación
-                // del argumento al parámetro.
-                this.reversePolish.fillLastAggregatePoint($1, $3, ":=");
+                this.reversePolish.addArgument($1);
+                this.reversePolish.closeLambdaCall();
 
                 notifyDetection("Expresión lambda.");
                 this.reversePolish.addSeparation("Leaving lambda expression body...");
 
             } else {
+                this.reversePolish.discardLambdaCall();
                 this.treatInvalidState("Expresión 'lambda'");
             }
         }
 
     // |========================= REGLAS DE ERROR =========================| //
 
-    | parametro_lambda bloque_ejecutable argumento_lambda error
+    | parametro_lambda lambda_body argumento_lambda error
         { notifyError("La expresión 'lambda' debe terminar con ';'."); errorState = false; }
 
     | parametro_lambda '{' conjunto_sentencias_ejecutables argumento_lambda error
@@ -1168,6 +1167,18 @@ lambda
     | parametro_lambda conjunto_sentencias_ejecutables '}' argumento_lambda error
         { replaceLastErrorWith("Falta delimitador de apertura en expresión 'lambda'."); errorState = false; }
     ;
+
+// --------------------------------------------------------------------------------------------------------------------
+
+lambda_body
+    : bloque_ejecutable
+        {
+            if (this.statementAppearsInValidState()) {
+                this.reversePolish.closeLambdaDeclaration();
+                this.reversePolish.startLambdaCall();
+                this.scopeStack.pop();
+            }
+        }
 
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -1187,11 +1198,15 @@ argumento_lambda
 // --------------------------------------------------------------------------------------------------------------------
 
 parametro_lambda
-    : '(' UINT identifier ')'
+    : '(' UINT ID ')'
         {
-            $$ = $3;
-            this.reversePolish.setAggregatePoint();
             this.reversePolish.addSeparation("Entering lambda expression body...");
+            String lambdaName = this.reversePolish.startLambdaDeclaration(this.scopeStack.asText());
+            this.scopeStack.push(lambdaName);
+            this.reversePolish.addParameter($3, "uint", "cv");
+            this.symbolTable.removeEntry($3);
+            $$ = this.scopeStack.appendScope($3);
+            this.symbolTable.addEntry(SymbolDirector.createNewParameter($$));
         }
     ;
 
