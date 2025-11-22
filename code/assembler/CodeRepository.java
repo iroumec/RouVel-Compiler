@@ -79,10 +79,10 @@ public final class CodeRepository {
 
         String searchString = "<local_variables>";
         int index = this.blockStack.peek().code().indexOf(searchString);
-
+        
         if (index != -1) {
             this.blockStack.peek().code().replace(index, index + searchString.length(),
-                    String.format("", blockVariables));
+                    String.format("%s", blockVariables));
         }
 
         this.executableCode.append(this.blockStack.pop().code());
