@@ -136,7 +136,7 @@ public class FloatChecker implements SemanticAction {
 
             char firstDigit = decPart.charAt(firstDigitIndex);
             int exponent = zeroCount + 1; // Cantidad de ceros antes del primer dígito.
-            return firstDigit + ".0E-" + exponent;
+            return firstDigit + "." + decPart.substring(firstDigitIndex + 1) + "E-" + exponent;
         }
 
         return number;
