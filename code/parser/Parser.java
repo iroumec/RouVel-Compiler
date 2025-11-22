@@ -1394,7 +1394,7 @@ case 73:
             reversePolish.addPolish(val_peek(1).sval);
             yyval.sval = val_peek(0).sval; 
 
-            TypeChecker.checkDivisionByZero(val_peek(1).sval, val_peek(0).sval);
+            /*TypeChecker.checkDivisionByZero($2, $3); TODO: eliminamos esta clase?*/
         }
 break;
 case 75:
@@ -1416,7 +1416,7 @@ case 77:
             reversePolish.addPolish(val_peek(1).sval);
             yyval.sval = val_peek(2).sval;
 
-            TypeChecker.checkDivisionByZero(val_peek(1).sval, val_peek(0).sval);
+            /*TypeChecker.checkDivisionByZero($2, $3);*/
         }
 break;
 case 79:

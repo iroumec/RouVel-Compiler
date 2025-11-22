@@ -516,7 +516,7 @@ term
             reversePolish.addPolish($2);
             $$ = $3; 
 
-            TypeChecker.checkDivisionByZero($2, $3);
+            //TypeChecker.checkDivisionByZero($2, $3); TODO: eliminamos esta clase?
         }
     | factor
 
@@ -541,7 +541,7 @@ term_simple
             reversePolish.addPolish($2);
             $$ = $1;
 
-            TypeChecker.checkDivisionByZero($2, $3);
+            //TypeChecker.checkDivisionByZero($2, $3);
         }
     | factor_simple
 
