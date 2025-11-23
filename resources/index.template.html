@@ -51,13 +51,23 @@
             appendOutput("[str] " + str);
         }
 
+        //Errores custom
+        const tagDivideByZeroException = new WebAssembly.Tag({ parameters: []});
+        const tagOverflowException = new WebAssembly.Tag({ parameters: ['i32','i32']});
+        const tagNegativeSubtractionException = new WebAssembly.Tag({ parameters: []});
+
         const importObject = {
             console: {
                 log_i32,
                 log_f32,
                 log_string
             },
-            js: { mem: memory }
+            js: { mem: memory },
+            errors: {
+                divideByZeroException: tagDivideByZeroException,
+                overflowException: tagOverflowException,
+                negativeSubtractionException: tagNegativeSubtractionException
+            }
         };
 
         // Carga dinámica del WASM.
@@ -71,7 +81,24 @@
                     appendOutput("ERROR: El módulo no exporta main()");
                 }
             })
-            .catch(err => appendOutput("Error cargando WASM: " + err));
+            //.catch(err => appendOutput("Error cargando WASM: " + err));
+            .catch(e => {
+                if (e instanceof WebAssembly.Exception) {
+                    if (e.is(tagDivideByZeroException)) {
+                        appendOutput("RUNTIME ERROR: Dividend is zero.");
+                    } else if (e.is(tagOverflowException)) {
+                        const value = e.getArg(tagOverflowException, 0);
+                        const max = e.getArg(tagOverflowException, 1);
+                        appendOutput("RUNTIME ERROR: Integer overflow, value " + value + " exceeds max " + max + " for uint.");
+                    } else if (e.is(tagNegativeSubtractionException)) {
+                        appendOutput("RUNTIME ERROR: Integer negative subtraction.");
+                    } else {
+                        appendOutput("RUNTIME ERROR: Unknown exception.");
+                    }
+                } else {
+                    appendOutput("Error cargando WASM: " + e);
+                }
+            }) 
     </script>
 </body>
 

@@ -44,8 +44,11 @@ public class WebAssemblyExporter {
         Path outputPath = Paths.get(wasmPath + extractBaseName(file) + ".wasm");
 
         // sudo apt-get wabt in Debian.
-        ProcessBuilder processBuilder = new ProcessBuilder("wat2wasm", inputPath.toString(), "-o",
+        ProcessBuilder processBuilder = new ProcessBuilder("wat2wasm", inputPath.toString(), 
+                "--enable-exceptions",
+                "-o", 
                 outputPath.toString());
+                
 
         try {
             Process process = processBuilder.start();

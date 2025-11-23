@@ -7,7 +7,7 @@
 # --- Variables de Configuración ---
 FILE ?= program.uki
 TEST_FILE_DIR ?= resources/testFiles/
-WASM := outputs/wasm/$(basename $(FILE)).wasm
+WASM := outputs/wasm/$(notdir $(basename $(FILE))).wasm
 SCRIPT ?= "resources/scripts/yacc-compile-run.sh"
 DOCKER_SCRIPT ?= "resources/scripts/docker/generate.sh"
 
@@ -35,8 +35,7 @@ generate-docker: ## Genera ejecutables que permiten correr el compilador utiliza
 
 uki-compile compile: ## Ejecuta yacc, compila el programa y lo ejecuta. Ejemplo de uso: `make run FILE="main.uki"`.
 	@chmod +x "$(SCRIPT)"
-	@"$(SCRIPT)" "$(TEST_FILE_DIR)$(FILE)" \
-	| tee outputs/logs/$(notdir $(basename $(FILE))).txt ; \
+	@"$(SCRIPT)" "$(TEST_FILE_DIR)$(FILE)"; \
 	EXIT_CODE=$$?; \
 	echo; \
 	if [ $$EXIT_CODE -ne 0 ]; then \

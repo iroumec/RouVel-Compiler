@@ -1,0 +1,4 @@
+## Caso 0 constante ##
+DIVISION {
+    print(1UI / 0UI);  ## error de compilacion ##
+}
