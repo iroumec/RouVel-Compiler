@@ -6,6 +6,7 @@ import lexer.Lexer;
 import parser.Parser;
 import common.Monitor;
 import utilities.Printer;
+import utilities.ResultsExporter;
 import common.SymbolTable;
 import assembler.Assembler;
 import semantic.ReversePolish;
@@ -106,6 +107,8 @@ public class Main {
             Printer.printBlankSpace();
             System.exit(1); // Se retorna código de error.
         }
+
+        ResultsExporter.exportResults(file);
     }
 
     // ============================================================================================

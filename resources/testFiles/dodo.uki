@@ -1,0 +1,10 @@
+MAIN {
+
+    uint A, B;
+
+    A := 1UI;
+
+    B := 65535UI + A;
+
+    print(B);
+}

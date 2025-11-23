@@ -9,6 +9,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 
 import utilities.Printer;
+import utilities.ResultsExporter;
 
 public class WebAssemblyExporter {
 
@@ -25,7 +26,7 @@ public class WebAssemblyExporter {
 
         try {
             Files.writeString(path, code, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
-            Printer.printCentered("Archivo `.wat` generado: " + path.toString());
+            Printer.printCentered("Archivo .wat generado: " + path.toString());
             Printer.printSeparator();
         } catch (IOException i) {
             Printer.printCentered("ERROR: Ocurrió un problema al exportar el código a .wat.");
@@ -44,11 +45,10 @@ public class WebAssemblyExporter {
         Path outputPath = Paths.get(wasmPath + extractBaseName(file) + ".wasm");
 
         // sudo apt-get wabt in Debian.
-        ProcessBuilder processBuilder = new ProcessBuilder("wat2wasm", inputPath.toString(), 
+        ProcessBuilder processBuilder = new ProcessBuilder("wat2wasm", inputPath.toString(),
                 "--enable-exceptions",
-                "-o", 
+                "-o",
                 outputPath.toString());
-                
 
         try {
             Process process = processBuilder.start();
@@ -70,7 +70,7 @@ public class WebAssemblyExporter {
                 System.exit(1);
             }
 
-            Printer.printCentered("Archivo `.wasm` generado: " + outputPath.toString());
+            Printer.printCentered("Archivo .wasm generado: " + outputPath.toString());
         } catch (IOException | InterruptedException _) {
             Printer.printBlankSpace();
             Printer.printSeparator();
@@ -78,8 +78,16 @@ public class WebAssemblyExporter {
             Printer.printSeparator();
             Printer.printCentered("Asegúrese de tener la herramienta wat2wasm instalada.");
             Printer.printSeparator();
+            Printer.printFramed("macOS: brew install wabt");
+            Printer.printSeparator();
+            Printer.printFramed("Arch/Manjaro: sudo pacman -S wabt");
+            Printer.printSeparator();
             Printer.printFramed("Ubuntu/Debian: sudo apt-get install wabt");
             Printer.printSeparator();
+            Printer.printFramed("Windows: scoop install wabt ó choco install wabt");
+            Printer.printSeparator();
+            Printer.printBlankSpace();
+            ResultsExporter.exportResults(file);
             System.exit(1);
         }
     }

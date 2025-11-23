@@ -1102,7 +1102,7 @@ impresion
     | PRINT imprimible error
         {
             errorState = true;
-            notifyError("La sentencia 'print' debe finalizar con ';'.");
+            replaceLastErrorWith("La sentencia 'print' debe finalizar con ';'.");
         }
     ;
 
