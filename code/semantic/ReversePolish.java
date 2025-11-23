@@ -40,7 +40,12 @@ public final class ReversePolish implements Iterable<String> {
 
     // ============================================================================================
 
+    /**
+     * Puede usarse una única pila para ambos.
+     * Pero se separan debido a que comparten distinto significado semántico.
+     */
     private final Deque<Integer> stackedPromises;
+    private final Deque<Integer> stackedIterationPoints;
 
     // ============================================================================================
 
@@ -59,6 +64,7 @@ public final class ReversePolish implements Iterable<String> {
         this.functions = new ArrayList<>();
         this.separations = new HashMap<>();
         this.stackedPromises = new ArrayDeque<>();
+        this.stackedIterationPoints = new ArrayDeque<>();
     }
 
     // ============================================================================================
@@ -107,15 +113,15 @@ public final class ReversePolish implements Iterable<String> {
     // Construcción de la Polaca de Iteraciones
     // ============================================================================================
 
-    public void stackBifurcationPoint() {
-        this.stackedPromises.push(this.polishes.size() + 1);
+    public void stackIterationPoint() {
+        this.stackedIterationPoints.push(this.polishes.size() + 1);
     }
 
     // ============================================================================================
 
-    public void connectToLastBifurcationPoint() {
-        int promise = this.stackedPromises.pop();
-        this.polishes.add(String.valueOf(promise));
+    public void connectToLastIterationPoint() {
+        int iterationPoint = this.stackedIterationPoints.pop();
+        this.polishes.add(String.valueOf(iterationPoint));
     }
 
     // ============================================================================================
@@ -375,7 +381,7 @@ public final class ReversePolish implements Iterable<String> {
 
     public void openLoop() {
 
-        this.stackBifurcationPoint();
+        this.stackIterationPoint();
         this.addPolish(String.valueOf(this.polishes.size() + 1));
         this.addPolish("open-loop");
     }
@@ -384,7 +390,7 @@ public final class ReversePolish implements Iterable<String> {
 
     public void closeLoop() {
 
-        this.connectToLastBifurcationPoint();
+        this.connectToLastIterationPoint();
         this.addPolish("TB");
         this.addPolish("close-loop");
     }
