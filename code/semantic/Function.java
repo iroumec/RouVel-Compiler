@@ -130,14 +130,16 @@ class Function {
         out.add(this.name);
         out.add("call");
 
-        Iterator<Parameter> iteratorParameter = parameters.iterator();
-        Iterator<Argument> iteratorArguments = orderedArguments.iterator();
+        out.add("read-return");
+
+        Iterator<Parameter> iteratorParameter = parameters.reversed().iterator();
+        Iterator<Argument> iteratorArguments = orderedArguments.reversed().iterator();
 
         while (iteratorParameter.hasNext() && iteratorArguments.hasNext()) {
 
             Parameter parameter = iteratorParameter.next();
 
-            if (parameter.getSemantic() == "CVR") {
+            if (parameter.getSemantic().equals("CVR")) {
                 Argument argument = iteratorArguments.next();
 
                 List<String> expressions = argument.getExpression();
@@ -160,8 +162,6 @@ class Function {
         }
 
         this.arguments.clear();
-
-        out.add("read-return");
 
         return out;
     }

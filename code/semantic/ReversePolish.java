@@ -282,7 +282,8 @@ public final class ReversePolish implements Iterable<String> {
 
     private String removeLastPolish() {
 
-        this.polishNumber--;
+        System.out.println(this.polishes.size());
+
         return this.polishes.removeLast();
     }
 
@@ -348,7 +349,9 @@ public final class ReversePolish implements Iterable<String> {
         // declaradas, y no pueden contener declaraciones de funciones dentro, por lo
         // que será la última función en la lista de funciones.
         this.functionCalled = this.functions.getLast();
-        this.addPolish(functionCalled.getName());
+
+        // Se agrega el punto de stop para la toma del argumento.
+        this.addPolish(functionCalled.getName() + "stop");
     }
 
     // ============================================================================================

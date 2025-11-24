@@ -1,0 +1,18 @@
+MAIN {
+
+    uint A;
+
+    if (A > 3UI) {
+
+        print(3UI);
+    } else {
+
+        print("Hola");
+
+        if (A == 2UI) {
+
+            print("Yes");
+        } endif;
+    
+    } endif;
+}

@@ -1,8 +1,8 @@
 MAIN {
-    uint F1(uint X){
+    uint F1(cvr uint X, cvr uint Y){
         return (X);
     }
 
     uint Y;
-    F1(Y->X);
+    F1(Y->X, Y -> Y);
 }
