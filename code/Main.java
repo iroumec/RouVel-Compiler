@@ -105,6 +105,7 @@ public class Main {
             Printer.printFramed("El código contiene errores, por lo que no fue posible generar un código assembler.");
             Printer.printSeparator();
             Printer.printBlankSpace();
+            ResultsExporter.exportResults(file);
             System.exit(1); // Se retorna código de error.
         }
 

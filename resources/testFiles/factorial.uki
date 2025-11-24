@@ -1,4 +1,7 @@
 FACTORIAL {
+
+    uint A;
+
     uint FACT(uint X) {
 
         if (X == 1UI) {
@@ -13,5 +16,8 @@ FACTORIAL {
         return(0UI);
     }
 
-    print(FACT(5UI->X));
+    A := 5UI;
+
+    print("El factorial de 5 es: ");
+    print(FACT(A->X));
 }
