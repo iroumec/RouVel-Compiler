@@ -2,7 +2,6 @@ package assembler;
 
 import assembler.operators.AssemblerOperator;
 import assembler.operators.implementations.Print;
-import assembler.operators.implementations.EndLabel;
 import assembler.operators.implementations.Assignment;
 import assembler.operators.implementations.arithmetic.Sum;
 import assembler.operators.implementations.comparison.Equal;
@@ -47,6 +46,7 @@ class OperatorTranslator {
             case "=!" -> NotEqual.getInstance();
             case "->" -> Argument.getInstance();
             case "print" -> Print.getInstance();
+            case "TB" -> LoopJumper.getInstance();
             case "-" -> Subtraction.getInstance();
             case "return" -> Return.getInstance();
             case "<-" -> ReadResult.getInstance();
@@ -55,17 +55,15 @@ class OperatorTranslator {
             case "*" -> Multiplication.getInstance();
             case "call" -> FunctionCall.getInstance();
             case ">=" -> GreaterOrEqual.getInstance();
-            case "TB" -> LoopJumper.getInstance();
-            case "end-label" -> EndLabel.getInstance();
             case "FB" -> ConditionCloser.getInstance();
-            case "open-loop" -> LoopOpener.getInstance();
             case "UB" -> ThenBlockCloser.getInstance();
+            case "open-loop" -> LoopOpener.getInstance();
             case "close-loop" -> LoopCloser.getInstance();
             case "read-return" -> ReadReturn.getInstance();
-            case "open-function" -> FunctionOpener.getInstance();
-            case "close-function" -> FunctionCloser.getInstance();
             case "open-lambda" -> LambdaOpener.getInstance();
             case "close-lambda" -> LambdaCloser.getInstance();
+            case "open-function" -> FunctionOpener.getInstance();
+            case "close-function" -> FunctionCloser.getInstance();
             case "open-selection" -> SelectionOpener.getInstance();
             case "close-selection" -> SelectionCloser.getInstance();
         };
