@@ -200,6 +200,24 @@ public final class SymbolTable {
 
     // ============================================================================================
 
+    public List<Symbol> getParameters(String scope) {
+
+        List<Symbol> out = new ArrayList<>();
+
+        for (Symbol symbol : this.symbolTable.values()) {
+
+            if ((symbol.isCategory(SymbolCategory.CV_PARAMETER)
+                    || symbol.isCategory(SymbolCategory.CVR_PARAMETER))
+                    && symbol.getScope().equals(scope)) {
+                out.add(symbol);
+            }
+        }
+
+        return out;
+    }
+
+    // ============================================================================================
+
     public void setScope(String lexema, String scope) {
 
         String newLexema = lexema + ":" + scope;
