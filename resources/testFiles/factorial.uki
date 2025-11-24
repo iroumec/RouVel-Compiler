@@ -9,6 +9,8 @@ FACTORIAL {
             return (X*FACTORIAL.FACT(X-1UI->X));
         } endif;
         endif;
+
+        return(0UI);
     }
 
     print(FACT(5UI->X));

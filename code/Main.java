@@ -15,7 +15,7 @@ import assembler.WebAssemblyExporter;
 public class Main {
 
     private static final String fileSuffix = ".uki";
-    private static final boolean printAssemblerCode = true;
+    private static final boolean printAssemblerCode = false;
 
     // ============================================================================================
 
@@ -93,12 +93,12 @@ public class Main {
                 Printer.printFramed(assemblerCode);
                 Printer.printSeparator();
                 Printer.printBlankSpace();
-
-                Printer.printSeparator();
-                WebAssemblyExporter.exportToWasm(file, assemblerCode);
-                Printer.printSeparator();
-                Printer.printBlankSpace();
             }
+
+            Printer.printSeparator();
+            WebAssemblyExporter.exportToWasm(file, assemblerCode);
+            Printer.printSeparator();
+            Printer.printBlankSpace();
 
         } else {
             Printer.printSeparator();
