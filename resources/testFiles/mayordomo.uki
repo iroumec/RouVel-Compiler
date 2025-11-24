@@ -10,5 +10,5 @@ MAIN {
         return(0UI);
     }
 
-    A := FUN1(2UI -> Z, FUN1(1UI -> Z) -> X);
+    A := FUN1(2UI -> Z, FUN1(1UI -> Z, 3UI -> X) -> X);
 }

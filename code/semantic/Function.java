@@ -176,6 +176,20 @@ class Function {
     }
 
     // ============================================================================================
+
+    Function getCopy() {
+
+        Function copy = new Function(this.name);
+
+        for (Parameter parameter : this.parameters) {
+
+            copy.addParameter(parameter.id, parameter.semantic);
+        }
+
+        return copy;
+    }
+
+    // ============================================================================================
     // Manejo de Errores
     // ============================================================================================
 

@@ -33,8 +33,8 @@ public final class ReversePolish implements Iterable<String> {
     // ============================================================================================
 
     private int lambdaCounter;
-    private Function functionCalled;
     private final List<Function> functions;
+    private final Deque<Function> functionsCalled;
 
     // ============================================================================================
 
@@ -60,6 +60,7 @@ public final class ReversePolish implements Iterable<String> {
         this.polishes = new ArrayList<>();
         this.functions = new ArrayList<>();
         this.separations = new HashMap<>();
+        this.functionsCalled = new ArrayDeque<>();
         this.stackedPromises = new ArrayDeque<>();
         this.stackedIterationPoints = new ArrayDeque<>();
     }
@@ -242,10 +243,13 @@ public final class ReversePolish implements Iterable<String> {
             Function currentFunction = iterator.next();
 
             if (currentFunction.getName().equals(functionName)) {
-                this.functionCalled = currentFunction;
+
+                this.functionsCalled.push(currentFunction.getCopy());
+
                 // Cuando se busquen los argumentos, se debe tener un delimitador
                 // que indique cuándo parar.
                 this.addPolish(currentFunction.getName() + "stop");
+
                 functionFound = true;
             }
         }
@@ -255,8 +259,9 @@ public final class ReversePolish implements Iterable<String> {
 
     public void addArgument(String parameter) {
 
-        if (functionCalled != null) {
-            functionCalled.addArgument(parameter, getRealParameters(functionCalled.getName() + "stop"));
+        if (!this.functionsCalled.isEmpty()) {
+            this.functionsCalled.peek().addArgument(parameter,
+                    getRealParameters(this.functionsCalled.peek().getName() + "stop"));
         }
     }
 
@@ -279,8 +284,6 @@ public final class ReversePolish implements Iterable<String> {
 
     private String removeLastPolish() {
 
-        System.out.println(this.polishes.size());
-
         return this.polishes.removeLast();
     }
 
@@ -290,7 +293,10 @@ public final class ReversePolish implements Iterable<String> {
 
         this.removeLastPolish(); // Se elimina el nombre de la función, que se utilizó como delimitador.
 
-        List<String> polishesGenerated = this.functionCalled.closeCall(this, "->");
+        List<String> polishesGenerated = this.functionsCalled.peek().closeCall(this, "->");
+
+        // Se desapila la función invocada.
+        this.discardFunctionCall();
 
         for (String polish : polishesGenerated) {
             this.addPolish(polish);
@@ -301,7 +307,7 @@ public final class ReversePolish implements Iterable<String> {
 
     public void discardFunctionCall() {
 
-        this.functionCalled = null;
+        this.functionsCalled.pop();
     }
 
     // ============================================================================================
@@ -345,23 +351,19 @@ public final class ReversePolish implements Iterable<String> {
         // Las funciones lambda siempre se invocan inmediatamente después de ser
         // declaradas, y no pueden contener declaraciones de funciones dentro, por lo
         // que será la última función en la lista de funciones.
-        this.functionCalled = this.functions.getLast();
+        this.functionsCalled.push(this.functions.getLast());
 
         // Se agrega el punto de stop para la toma del argumento.
-        this.addPolish(functionCalled.getName() + "stop");
+        this.addPolish(this.functionsCalled.peek().getName() + "stop");
     }
 
     // ============================================================================================
 
     public void closeLambdaCall() {
 
-        // Se elimina el nombre de la función, que se utilizó como delimitador.
-        // TODO: ¿QUÉ PASA CON FUNCIÓN QUE SE LLAMA PASÁNDOLE A SÍ MISMA UN RESULTADO DE
-        // SU PROPIA FUNCIÓN?
-        // DEBE CAMBIARSE EL DELIMITADOR.
         this.removeLastPolish();
 
-        List<String> polishesGenerated = this.functionCalled.closeCall(this, "->");
+        List<String> polishesGenerated = this.functionsCalled.peek().closeCall(this, "->");
 
         for (String polish : polishesGenerated) {
             this.addPolish(polish);
