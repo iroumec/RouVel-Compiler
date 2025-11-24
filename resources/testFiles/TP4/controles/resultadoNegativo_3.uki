@@ -1,4 +1,4 @@
 ## Suma de constantes ##
 NEGATIVO {
-    print(1UI + -2.);
+    print(1UI + -2.); ## Error de compilación ##
 }

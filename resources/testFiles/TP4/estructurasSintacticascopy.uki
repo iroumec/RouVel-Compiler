@@ -15,7 +15,6 @@ ESTRUCTURASSINTACTICAS {            ## Longitud de ID > 20, se truncará. ##
 
     uint FUNCION(cvr uint P1, uint P2) {    ## Declaración de función con cvr ##
         if (P2 > P1) {
-            print("P2 es mayor que P1");
             P1 := P1 + 1UI;                 ## Modificación de P1 que se verá reflejada (si se ejecuta) ##
             return (P2);
         } else {
@@ -29,16 +28,16 @@ ESTRUCTURASSINTACTICAS {            ## Longitud de ID > 20, se truncará. ##
     }                                       ## Retornos en los if y else anidados ##
 
     uint NADA(uint X) {          
-        return (X);
+        return (X)
     };
 
     ## ------ Invocación a función ------ ##
-    NADA(0UI->X);                     ## Llamada a función sin uso del valor de retorno ##
+    ##NADA(0UI->X);##                     ## Llamada a función sin uso del valor de retorno ##
 
     ## ------ Asignación simple ------ ##
     A := 1UI;                               ## Asignación simple con constante ##
     B := 4UI * 5UI - 6UI / 7UI;             ## Asignación con expresión aritmética ##
-    C := 8UI * SUMA(9UI->X,10UI->Y) / 11UI; ## Asignación con expresión aritmética con llamada a función ##
+    ##C := 8UI * SUMA(9UI->X,10UI->Y) / 11UI;## ## Asignación con expresión aritmética con llamada a función ##
 
     ## ------ Asignación múltiple ------ ##
     D, E, F = 12UI, 13., 14UI;            ## Asignación múltiple equilibrada, con conversión implícita ##
@@ -50,52 +49,23 @@ ESTRUCTURASSINTACTICAS {            ## Longitud de ID > 20, se truncará. ##
     print(19.);                         ## Impresión de constante flotante ##
     print("Hola Mundo");              ## Impresión de cadena de caracteres ##
     print(5.*A);                    ## Impresión de resultado expresión aritmética ##
-    print(RESTA(C->X,B->Y));          ## Impresión de retorno de función ##
+    ##print(RESTA(C->Y,B->X));##          ## Impresión de retorno de función ##
 
     ## ------ Estructura de control if ------ ##
     if (A > B) {                ## If simple ##
         A := A + 1UI;
     } endif;
 
-    if (B < C) {                ## If con else ##   
-        B := B + 1UI;
-    } else {
-        B := B - 1UI;
-    } endif;
 
-    if (C == 13.) {         ## If con else if y else, con comparación entre variable uint y constante float ##
-        C := C + 1UI;
-    } else {
-        if (D =! E) {
-            D := D + 1UI;
-        } else {
-            D := D - 1UI;
-        } endif;
-    } endif;
 
-    if (E >= F)             ## If con else ifs anidados ##
-        E := E + 1UI;
-    else if (F <= A)
-        F := F + 1UI;
-    else if (A =! B) 
-        F := F - 1UI;
-    else
-        A := A - 1UI;
-    endif;
-    endif;
-    endif;
+
+
+    
 
     ## Estructura de control do-while ##
-    do {                                    ## Do-while de múltiples líneas ##
-        ## Inicialmente B == 8 y A == 1, FUNCION devuelve B e incrementa A. ##
-        print(FUNCION(A->P1,B->P2));
-        print(A);
-    } while (A < 5UI);
 
-    do C := C + 1UI; while (C < 20UI);   ## Do-while de una sola línea ##
 
+    
     ## Expresiones Lambda ##
-    ##(uint G) {
-        print(G);
-    }(25UI); ##                           ## Llamada a lambda con impresión ##
+                                ## Llamada a lambda con impresión ##
 }

@@ -1,0 +1,15 @@
+MAIN {
+    uint F(cvr uint X) {
+        X:=1UI;
+        return (100UI);
+    }
+
+    uint A;
+    uint B;
+
+    A := 20UI;
+    B := F(A->X);
+
+    print(A);
+    print(B);
+}
