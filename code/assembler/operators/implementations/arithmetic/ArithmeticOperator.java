@@ -119,7 +119,7 @@ public abstract class ArithmeticOperator implements AssemblerOperator {
 
         switch (pairType) {
             case UINT_UINT, UINT_FLOAT -> {
-                repository.addCode(getCode(firstOperand, SymbolType.UINT));
+                repository.addCode(getCode(firstOperand, SymbolType.UINT)); 
                 repository.addCode(getCode(secondOperand, SymbolType.UINT));
                 this.applyPreviosOperationRuntimeControls(firstOperand, secondOperand, SymbolType.UINT, repository);
                 repository.addCode(String.format("i32.%s", this.getAssemblerOperator()));

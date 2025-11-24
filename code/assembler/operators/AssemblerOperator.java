@@ -46,6 +46,7 @@ public interface AssemblerOperator {
 
                     out += String.format("%ni32.trunc_f32_u");
                 }
+
             }
         } else {
 

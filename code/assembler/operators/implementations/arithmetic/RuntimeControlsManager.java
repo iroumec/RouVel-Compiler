@@ -70,7 +70,7 @@ public final class RuntimeControlsManager {
                             ;; ¿Es el resultado mayor al máximo entero?
                             local.get $value
                             i32.const %s
-                            i32.gt_u
+                            i32.gt_s
 
                             br_if $evaluate ;; Si es mayor al máximo entero, salta a las instrucciones de error.
                             return ;; Si es menor o igual, vuelve a la funcion llamadora.

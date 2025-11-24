@@ -1,0 +1,6 @@
+## Suma con variable ##
+NEGATIVO {
+    uint A;
+    A := 1UI;
+    print(A + -2.);
+}
