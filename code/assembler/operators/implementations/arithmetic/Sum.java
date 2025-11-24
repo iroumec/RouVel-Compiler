@@ -113,6 +113,5 @@ public class Sum extends ArithmeticOperator {
             SymbolType conversionType, CodeRepository repository) {
 
         RuntimeControlsManager.addIntegerOverflowChecker(repository);
-        //RuntimeControlsManager.addIntegerNegativeSubtractionChecker(repository);
     }
 }

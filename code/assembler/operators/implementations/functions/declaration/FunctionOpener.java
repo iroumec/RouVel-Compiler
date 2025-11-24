@@ -41,6 +41,7 @@ public class FunctionOpener implements AssemblerOperator {
         repository.increaseIndentation();
 
         dumpParameters(repository);
+        repository.addCode("\n");
 
         // Se agrega una etiqueta que, luego de haber determinado todas las variables
         // temporales que serán necesarias, se remplaza por su declaración.
@@ -52,7 +53,7 @@ public class FunctionOpener implements AssemblerOperator {
     private void dumpParameters(CodeRepository repository) {
 
         List<Symbol> parameters = SymbolTable.getInstance().getParameters(repository.getCurrentScope());
-        
+
         List<Symbol> copyRestoreParameter = SymbolTable.getInstance().get(repository.getCurrentScope(),
                 SymbolCategory.CVR_PARAMETER);
 

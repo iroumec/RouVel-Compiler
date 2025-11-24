@@ -54,8 +54,6 @@ public final class CodeRepository {
     public void endProgram() {
 
         StringBuilder program = this.blockStack.peek().code();
-        program.insert(0, "\n");
-        program.insert(0, "\n" + Indenter.indent(Dumper.dumpGlobalVariables(), INDENTATION));
         program.insert(0, Indenter.indent(Dumper.dumpEntryPoint(), INDENTATION));
         this.decreaseIndentation();
         this.addCode(")");
@@ -75,11 +73,12 @@ public final class CodeRepository {
 
     public void endBlock() {
 
-        String blockVariables = Indenter.indent(Dumper.dumpBlockVariables(this.getCurrentScope()), INDENTATION);
+        String blockVariables = Indenter
+                .indent(Indenter.indent(Dumper.dumpBlockVariables(this.getCurrentScope()), INDENTATION), INDENTATION);
 
-        String searchString = "<local_variables>";
+        String searchString = INDENTATION + INDENTATION + "<local_variables>";
         int index = this.blockStack.peek().code().indexOf(searchString);
-        
+
         if (index != -1) {
             this.blockStack.peek().code().replace(index, index + searchString.length(),
                     String.format("%s", blockVariables));

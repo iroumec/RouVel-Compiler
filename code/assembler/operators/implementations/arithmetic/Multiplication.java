@@ -98,14 +98,18 @@ public class Multiplication extends ArithmeticOperator {
     protected void applyPostOperationRuntimeControls(Symbol firstOperand, Symbol secondOperand,
             SymbolType conversionType, CodeRepository repository) {
 
-        String message = "RUNTIME ERROR: Overflow en multiplicación de enteros.";
-
-        Symbol messageSymbol = SymbolDirector.createNewString(message);
-
-        // Se agrega el string con el mensaje a la tabla de símbolos.
-        SymbolTable.getInstance().addEntry(messageSymbol);
-
-        repository.addImport("(import \"console\" \"log_string\" (func $console_log_string (param i32 i32)))");
+        /*
+         * String message = "RUNTIME ERROR: Overflow en multiplicación de enteros.";
+         * 
+         * Symbol messageSymbol = SymbolDirector.createNewString(message);
+         * 
+         * // Se agrega el string con el mensaje a la tabla de símbolos.
+         * SymbolTable.getInstance().addEntry(messageSymbol);
+         * 
+         * repository.
+         * addImport("(import \"console\" \"log_string\" (func $console_log_string (param i32 i32)))"
+         * );
+         */
 
         RuntimeControlsManager.addIntegerOverflowChecker(repository);
     }
