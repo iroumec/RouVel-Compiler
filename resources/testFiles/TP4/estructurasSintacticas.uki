@@ -15,7 +15,6 @@ ESTRUCTURASSINTACTICAS {            ## Longitud de ID > 20, se truncará. ##
 
     uint FUNCION(cvr uint P1, uint P2) {    ## Declaración de función con cvr ##
         if (P2 > P1) {
-            print("P2 es mayor que P1");
             P1 := P1 + 1UI;                 ## Modificación de P1 que se verá reflejada (si se ejecuta) ##
             return (P2);
         } else {

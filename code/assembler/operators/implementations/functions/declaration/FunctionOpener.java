@@ -51,11 +51,10 @@ public class FunctionOpener implements AssemblerOperator {
 
     private void dumpParameters(CodeRepository repository) {
 
-        List<Symbol> parameters = SymbolTable.getInstance().get(repository.getCurrentScope(),
-                SymbolCategory.CV_PARAMETER);
+        List<Symbol> parameters = SymbolTable.getInstance().getParameters(repository.getCurrentScope());
+        
         List<Symbol> copyRestoreParameter = SymbolTable.getInstance().get(repository.getCurrentScope(),
                 SymbolCategory.CVR_PARAMETER);
-        parameters.addAll(copyRestoreParameter);
 
         for (Symbol symbol : parameters) {
             // El lenguaje solo tiene como parámetros válidos enteros de 32 bits.
