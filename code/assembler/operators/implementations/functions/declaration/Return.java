@@ -54,10 +54,12 @@ public class Return implements AssemblerOperator {
 
         for (Symbol symbol : parameters) {
 
-            repository.addCode(String.format("%n;; Apilamiento del resultado del parámetro formal por CVR %s. %n",
+            repository.addCode(String.format(";; Apilamiento del resultado del parámetro formal por CVR %s.",
                     symbol.getLexemaWithoutScope()));
             repository
-                    .addCode(String.format("%s %n", getCode(symbol, SymbolType.UINT), symbol.getLexemaWithoutScope()));
+                    .addCode(String.format("%s", getCode(symbol, SymbolType.UINT)));
+
+            repository.addCode("\n");
         }
     }
 }

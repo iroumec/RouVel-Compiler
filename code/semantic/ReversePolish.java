@@ -23,14 +23,12 @@ public final class ReversePolish implements Iterable<String> {
 
     // ============================================================================================
 
-    private int polishNumber;
     private final List<String> polishes;
 
     // ============================================================================================
 
     // Es un polish number.
     private int lastSafeState;
-    private int lastPolishNumber;
 
     // ============================================================================================
 
@@ -58,7 +56,6 @@ public final class ReversePolish implements Iterable<String> {
     // ============================================================================================
 
     private ReversePolish() {
-        this.polishNumber = 0;
         this.lambdaCounter = 0;
         this.polishes = new ArrayList<>();
         this.functions = new ArrayList<>();
@@ -291,7 +288,7 @@ public final class ReversePolish implements Iterable<String> {
 
     public void closeFunctionCall() {
 
-        this.removeLastPolish();
+        this.removeLastPolish(); // Se elimina el nombre de la función, que se utilizó como delimitador.
 
         List<String> polishesGenerated = this.functionCalled.closeCall(this, "->");
 
@@ -404,7 +401,6 @@ public final class ReversePolish implements Iterable<String> {
 
     public void recordSafeState() {
         this.lastSafeState = this.polishes.size();
-        this.lastPolishNumber = this.polishNumber;
 
         if (this.debug) {
             System.out.println("Safe state recorded in: " + this.lastSafeState);
@@ -416,7 +412,6 @@ public final class ReversePolish implements Iterable<String> {
     public void returnToLastSafeState() {
         // Se eliminan todos los elementos agregados luego del último estado seguro.
         this.polishes.subList(lastSafeState, this.polishes.size()).clear();
-        this.polishNumber = this.lastPolishNumber;
 
         if (this.debug) {
             System.out.println("The reverse polished was restored to last safe state: " + this.lastSafeState);

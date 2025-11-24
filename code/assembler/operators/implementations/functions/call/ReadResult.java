@@ -31,10 +31,9 @@ public class ReadResult implements AssemblerOperator {
         Symbol argument = SymbolTable.getInstance().getSymbol(repository.popOperand());
         Symbol parameter = SymbolTable.getInstance().getSymbol(repository.popOperand());
 
-        String code = String.format(";; Copia del valor del parámetro %s en el argumento %s. %n",
-                parameter.getLexemaWithoutScope(), argument.getLexemaWithoutScope());
-        code += String.format("local.set $%s %n", argument.getLexemaWithoutScope());
-
-        repository.addCode(code);
+        repository.addCode(String.format(";; Copia del valor del parámetro %s en el argumento %s. %n",
+                parameter.getLexemaWithoutScope(), argument.getLexemaWithoutScope()));
+        repository.addCode(String.format("local.set $%s", argument.getLexemaWithoutScope()));
+        repository.addCode("\n");
     }
 }

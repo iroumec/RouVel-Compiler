@@ -36,7 +36,7 @@ public class FunctionOpener implements AssemblerOperator {
         // distintos ámbitos.
         repository.startBlock(symbol.getScope() + ":" + symbol.getLexemaWithoutScope());
 
-        repository.addCode(String.format("(func $%s %n", symbol.getLexemaWithoutScope()));
+        repository.addCode(String.format("(func $%s", symbol.getLexemaWithoutScope()));
 
         repository.increaseIndentation();
 
@@ -60,7 +60,7 @@ public class FunctionOpener implements AssemblerOperator {
         for (Symbol symbol : parameters) {
             // El lenguaje solo tiene como parámetros válidos enteros de 32 bits.
             // Por eso está "hardcodeado" el "i32".
-            repository.addCode(String.format("(param $%s i32) %n", symbol.getLexemaWithoutScope()));
+            repository.addCode(String.format("(param $%s i32)", symbol.getLexemaWithoutScope()));
         }
 
         /**
