@@ -23,8 +23,9 @@ public interface AssemblerOperator {
                 out = String.format("f32.const %s%n", operand.getValue());
 
                 if (conversionType == SymbolType.UINT) {
-                    out += String.format("%ni32.trunc_f32_u");
+                    out += String.format("i32.trunc_f32_s%n");
                 }
+
             }
         } else {
 

@@ -1,5 +1,4 @@
 ## Suma de constantes ##
 NEGATIVO {
-    uint A;
-    A := 1UI + -2.;
+    print(1UI + -2.);
 }

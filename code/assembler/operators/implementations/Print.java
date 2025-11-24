@@ -54,7 +54,7 @@ public class Print implements AssemblerOperator {
                 code = String.format("f32.const %s %n", operand.getValue());
                 code += String.format("call $console_log_f32 %n");
 
-                importCode = "(import \"console\" \"log_f32\" (func $console_log_f32 (param i32)))";
+                importCode = "(import \"console\" \"log_f32\" (func $console_log_f32 (param f32)))";
             }
         } else { // Es variable.
             code = String.format("local.get $%s %n", operand.getLexemaWithoutScope());
