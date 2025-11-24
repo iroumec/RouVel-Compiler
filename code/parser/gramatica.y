@@ -852,7 +852,6 @@ declaracion_funcion
             if (!this.errorState) {
 
                 if (this.returnsController.isThereReturnInDeclaration()) {
-
                     notifyDetection("Declaración de función.");
                     this.scopeStack.pop();
                     this.reversePolish.closeFunctionDeclaration(this.scopeStack.appendScope($1));
@@ -861,6 +860,7 @@ declaracion_funcion
                     notifyError("La función necesita, en todos los casos, retornar un valor.");
                     this.errorState = true;
                 }
+                
             } else {
                 this.treatInvalidState("Declaración de función");
             }
@@ -912,8 +912,7 @@ inicio_funcion
 
 // --------------------------------------------------------------------------------------------------------------------
 
-// Why isn't used `statement_list`? Because of its semantic actions.
-// We don't want in the scope of a function.
+// No se usa statement_list por sus acciones semánticas.
 function_body
     : statement
     | function_body statement

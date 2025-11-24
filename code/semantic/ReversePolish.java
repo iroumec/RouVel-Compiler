@@ -290,7 +290,7 @@ public final class ReversePolish implements Iterable<String> {
 
     public void closeFunctionCall() {
 
-        this.removeLastPolish();
+        this.removeLastPolish(); // Se elimina el nombre de la función, que se utilizó como delimitador.
 
         List<String> polishesGenerated = this.functionCalled.closeCall(this, "->");
 
@@ -348,7 +348,7 @@ public final class ReversePolish implements Iterable<String> {
         // declaradas, y no pueden contener declaraciones de funciones dentro, por lo
         // que será la última función en la lista de funciones.
         this.functionCalled = this.functions.getLast();
-        this.addPolish(functionCalled.getName());
+        this.addPolish(functionCalled.getName() + "stop");
     }
 
     // ============================================================================================

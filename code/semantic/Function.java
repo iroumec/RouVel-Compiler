@@ -130,8 +130,11 @@ class Function {
         out.add(this.name);
         out.add("call");
 
-        Iterator<Parameter> iteratorParameter = parameters.iterator();
-        Iterator<Argument> iteratorArguments = orderedArguments.iterator();
+        out.add("read-return"); // Lee primero el valor de retorno de la función ya que es lo último en apilarse.
+
+        Iterator<Parameter> iteratorParameter = parameters.reversed().iterator();
+        Iterator<Argument> iteratorArguments = orderedArguments.reversed().iterator();
+
 
         while (iteratorParameter.hasNext() && iteratorArguments.hasNext()) {
 
@@ -160,8 +163,6 @@ class Function {
         }
 
         this.arguments.clear();
-
-        out.add("read-return");
 
         return out;
     }

@@ -1,15 +1,18 @@
 MAIN {
-    uint F(cvr uint X) {
+    uint F(cvr uint X, cvr uint Y) {
         X:=1UI;
+        Y:=2UI;
         return (100UI);
     }
 
     uint A;
     uint B;
+    uint C;
 
     A := 20UI;
-    B := F(A->X);
+    B := F(A->X,C->Y);
 
     print(A);
     print(B);
+    print(C);
 }
