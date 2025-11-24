@@ -1,0 +1,8 @@
+MAIN {
+
+    uint A;
+
+    A := 1UI;
+
+    print(A + -2.0);
+}

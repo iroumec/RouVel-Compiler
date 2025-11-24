@@ -84,9 +84,17 @@ public class Assignment implements AssemblerOperator {
         // Carga de la constante flotante.
         code = String.format("f32.const %s %n", operandValue);
 
-        // Si es negativo, se agrega la conversión a absoluto.
+        // Si el flotante es negativo, en la conversión a entero, se
+        // convierte en absoluto.
         if (operandValue.signum() < 0) {
             code += String.format("f32.abs %n");
+        }
+
+        BigDecimal absoluteOperand = operandValue.abs();
+
+        // Si el valor absoluto del flotante es mayor al máximo uint,
+        // se toma el mínimo entre ellos.
+        if (absoluteOperand.compareTo(BigDecimal.valueOf(MAX_UINT)) > 0) {
             code += String.format("f32.const %s%n", MAX_UINT); // TODO: hay que tirar warning
             code += String.format("f32.min %n");
         }
