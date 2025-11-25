@@ -34,8 +34,6 @@ public class FunctionOpener implements AssemblerOperator {
 
         Symbol symbol = symbolTable.getSymbol(repository.popOperand());
 
-        // TODO: revisar qué pasa si hay dos funciones con un mismo nombre pero en
-        // distintos ámbitos.
         repository.startBlock((symbol.getScope() + ":" + symbol.getLexemaWithoutScope()).replaceFirst(symbolTable.getProgramName(), "main"));
 
         repository.addCode(String.format("(func $%s", symbol.getLexema().replaceFirst(symbolTable.getProgramName(), "main")));
@@ -56,16 +54,6 @@ public class FunctionOpener implements AssemblerOperator {
 
         SymbolTable symbolTable = SymbolTable.getInstance();
 
-        // Variables fuera de ámbito.
-        List<Symbol> outOfScopeVariables = symbolTable.getOutOfScopeVariables(function);
-
-        for (Symbol symbol : outOfScopeVariables) {
-
-            repository
-                    .addCode(String.format("(param $%s i32)",
-                            symbol.getLexema().replaceFirst(symbolTable.getProgramName(), "main")));
-        }
-
         // Parámetros de la función.
         List<Symbol> parameters = symbolTable.getParameters(repository.getCurrentScope());
         List<Symbol> copyRestoreParameter = symbolTable.get(repository.getCurrentScope(),
@@ -75,6 +63,16 @@ public class FunctionOpener implements AssemblerOperator {
             // El lenguaje solo tiene como parámetros válidos enteros de 32 bits.
             // Por eso está "hardcodeado" el "i32".
             repository.addCode(String.format("(param $%s i32)", symbol.getLexemaWithoutScope()));
+        }
+
+        // Variables fuera de ámbito.
+        List<Symbol> outOfScopeVariables = symbolTable.getOutOfScopeVariables(function);
+
+        for (Symbol symbol : outOfScopeVariables) {
+
+            repository
+                    .addCode(String.format("(param $%s i32)",
+                            symbol.getLexema().replaceFirst(symbolTable.getProgramName(), "main")));
         }
 
         // Los valores de variables fuera de ámbito se leen primero, por lo que se

@@ -7,4 +7,4 @@ MAIN {
 
     GLOBAL := 5UI;
     print(A(1UI->X));
-}
+} 

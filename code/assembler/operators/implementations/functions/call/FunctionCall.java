@@ -33,11 +33,10 @@ public class FunctionCall implements AssemblerOperator {
         SymbolTable symbolTable = SymbolTable.getInstance();
 
         Symbol functionCalled = symbolTable.getSymbol(repository.popOperand());
-
         loadOutOfScopeVariables(functionCalled, repository);
         loadLocalVariables(functionCalled, repository);
 
-        //repository.addCode(String.format("call $%s %n", functionCalled.getLexemaWithoutScope()));
+        //repository.addCode(String.format("call $%s %n", functionCalled.getLexemaWithoutScope())); 
         repository.addCode(String.format("call $%s %n", functionCalled.getLexema().replaceFirst(symbolTable.getProgramName(),"main")));
         repository.addCode("\n");
         readReturn(repository);
@@ -74,15 +73,25 @@ public class FunctionCall implements AssemblerOperator {
 
         // Variables fuera de ámbito.
         List<Symbol> outOfScopeVariables = symbolTable.getOutOfScopeVariables(function);
+
         for (Symbol symbol : outOfScopeVariables) {
+
             if (!symbol.getScope()
-                    .endsWith(symbolTable.getFunctionSymbol(repository.getCurrentScope()).getLexemaWithoutScope())) {
+                    .endsWith(symbolTable.getFunctionSymbol(repository.getCurrentScope()).getLexemaWithoutScope())) { // Variables no globales
 
                 repository.addCode(";; Pasaje de las variables de ámbitos superiores.");
                 repository
                         .addCode(String.format("local.get $%s",
                                 symbol.getLexema().replaceFirst(symbolTable.getProgramName(), "main")));
 
+                repository.addCode("\n");
+
+            } else if (symbol.getScope().equals(symbolTable.getProgramName())) { // Variables globales
+
+                repository.addCode(";; Pasaje de las variables de ámbitos superiores.");
+                repository.addCode(String.format("local.get $%s",
+                    symbol.getLexemaWithoutScope()));
+                
                 repository.addCode("\n");
             }
         }
@@ -108,6 +117,16 @@ public class FunctionCall implements AssemblerOperator {
                                 symbol.getLexema().replaceFirst(symbolTable.getProgramName(), "main")));
 
                 repository.addCode("\n");
+
+            } else if (symbol.getScope().equals(symbolTable.getProgramName())) {
+
+                repository.addCode(";; Lectura de las variables de otros ámbitos.");
+                repository
+                        .addCode(String.format("local.set $%s",
+                                symbol.getLexemaWithoutScope()));
+
+                repository.addCode("\n");
+
             }
         }
     }
