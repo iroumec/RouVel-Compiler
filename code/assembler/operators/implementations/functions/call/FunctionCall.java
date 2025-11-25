@@ -33,14 +33,11 @@ public class FunctionCall implements AssemblerOperator {
         Symbol functionCalled = SymbolTable.getInstance().getSymbol(repository.popOperand());
 
         loadOutOfScopeVariables(functionCalled, repository);
-        repository.addCode("\n");
         loadLocalVariables(functionCalled, repository);
-        repository.addCode("\n");
         repository.addCode(String.format("call $%s %n", functionCalled.getLexemaWithoutScope()));
         repository.addCode("\n");
         readReturn(repository);
         readOutOfScopeVariables(functionCalled, repository);
-        repository.addCode("\n");
         readLocalVariables(functionCalled, repository);
     }
 
@@ -83,6 +80,8 @@ public class FunctionCall implements AssemblerOperator {
                 repository
                         .addCode(String.format("local.get $%s",
                                 symbol.getLexema().replaceFirst(symbolTable.getProgramName(), "main")));
+
+                repository.addCode("\n");
             }
         }
     }
@@ -105,6 +104,8 @@ public class FunctionCall implements AssemblerOperator {
                 repository
                         .addCode(String.format("local.set $%s",
                                 symbol.getLexema().replaceFirst(symbolTable.getProgramName(), "main")));
+
+                repository.addCode("\n");
             }
         }
     }
@@ -127,6 +128,8 @@ public class FunctionCall implements AssemblerOperator {
             repository
                     .addCode(String.format("local.get $%s",
                             symbol.getLexemaWithoutScope()));
+
+            repository.addCode("\n");
         }
     }
 
@@ -147,6 +150,8 @@ public class FunctionCall implements AssemblerOperator {
             repository
                     .addCode(String.format("local.set $%s",
                             symbol.getLexemaWithoutScope()));
+
+            repository.addCode("\n");
         }
     }
 }
