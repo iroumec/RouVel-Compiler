@@ -1,6 +1,9 @@
 package assembler;
 
 import java.util.Deque;
+
+import common.SymbolTable;
+
 import java.util.ArrayDeque;
 
 public final class CodeRepository {
@@ -134,7 +137,9 @@ public final class CodeRepository {
     // ============================================================================================
 
     public String getCurrentScope() {
-        return this.blockStack.peek().scope();
+        SymbolTable symbolTable = SymbolTable.getInstance();
+        return this.blockStack.peek().scope().
+            replaceFirst("main",symbolTable.getProgramName());
     }
 
     // ============================================================================================
@@ -168,7 +173,7 @@ public final class CodeRepository {
         code.append("(module \n");
 
         if (!imports.isEmpty()) {
-            code.append("\n").append(INDENTATION + ";; Importación de funciones.").append("\n");
+            code.append("\n").append(INDENTATION + ";; Importación de recursos.").append("\n");
             code.append(Indenter.indent(imports, INDENTATION));
             code.append("\n").append(INDENTATION + "(import \"js\" \"mem\" (memory 1))").append("\n");
         }

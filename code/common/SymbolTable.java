@@ -214,7 +214,10 @@ public final class SymbolTable {
             } else {
 
                 // TODO: variables auxiliares NO.
-                if (symbol.isCategory(SymbolCategory.VARIABLE) && function.getScope().contains(symbol.getScope())
+                if ((symbol.isCategory(SymbolCategory.VARIABLE) ||
+                        symbol.isCategory(SymbolCategory.CV_PARAMETER) ||
+                        symbol.isCategory(SymbolCategory.CVR_PARAMETER) )
+                        && function.getScope().contains(symbol.getScope())
                         && !symbol.getScope().equals(function.getScope() + ":" + function.getLexemaWithoutScope())) {
                     // Esta condición creo que no es necesaria.
 
@@ -270,6 +273,24 @@ public final class SymbolTable {
 
     // ============================================================================================
 
+    // Devuelve el lexema del símbolo tal como aparece en la tabla de símbolos
+    public String getSymbolTableLexema(String scope) {
+
+        int lastSeparatorIndex = scope.lastIndexOf(':');
+
+        if (lastSeparatorIndex != -1) {
+            // La función en la tabla de símbolos es nombreFunc : restoScope
+            String prefix = scope.substring(0, lastSeparatorIndex);
+            String lastElement = scope.substring(lastSeparatorIndex + 1);
+            return lastElement + ":" + prefix;
+        } else {
+            // En este caso, el scope no tiene ':' y coincide con el nombre de programa.
+            return scope;
+        }
+    }
+
+    // ============================================================================================
+
     public Symbol getFunctionSymbol(String scope) {
 
         Iterator<Symbol> iterator = this.symbolTable.values().iterator();
@@ -277,25 +298,15 @@ public final class SymbolTable {
         boolean found = false;
         Symbol funcionSymbol = null;
 
-        int lastSeparatorIndex = scope.lastIndexOf(':');
-
-        String prefix;
-        String lastElement;
-
-        if (lastSeparatorIndex != -1) {
-            prefix = scope.substring(0, lastSeparatorIndex);
-            lastElement = scope.substring(lastSeparatorIndex + 1);
-        } else {
-            prefix = "";
-            lastElement = scope;
-        }
+        //Entrada de la tabla de símbolos que se busca
+        String symbolTableEntry = getSymbolTableLexema(scope); 
 
         while (!found && iterator.hasNext()) {
 
             Symbol symbol = iterator.next();
 
-            if (symbol.isCategory(SymbolCategory.FUNCTION)
-                    && symbol.getLexema().equals(lastElement + ":" + prefix)) {
+            if ((symbol.isCategory(SymbolCategory.FUNCTION) || symbol.isCategory(SymbolCategory.PROGRAM)) && 
+                    symbol.getLexema().equals(symbolTableEntry)) {
 
                 funcionSymbol = symbol;
                 found = true;

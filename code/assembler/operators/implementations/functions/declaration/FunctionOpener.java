@@ -30,13 +30,15 @@ public class FunctionOpener implements AssemblerOperator {
     @Override
     public void generateAssembler(CodeRepository repository) {
 
-        Symbol symbol = SymbolTable.getInstance().getSymbol(repository.popOperand());
+        SymbolTable symbolTable = SymbolTable.getInstance();
+
+        Symbol symbol = symbolTable.getSymbol(repository.popOperand());
 
         // TODO: revisar qué pasa si hay dos funciones con un mismo nombre pero en
         // distintos ámbitos.
-        repository.startBlock(symbol.getScope() + ":" + symbol.getLexemaWithoutScope());
+        repository.startBlock((symbol.getScope() + ":" + symbol.getLexemaWithoutScope()).replaceFirst(symbolTable.getProgramName(), "main"));
 
-        repository.addCode(String.format("(func $%s", symbol.getLexemaWithoutScope()));
+        repository.addCode(String.format("(func $%s", symbol.getLexema().replaceFirst(symbolTable.getProgramName(), "main")));
 
         repository.increaseIndentation();
 

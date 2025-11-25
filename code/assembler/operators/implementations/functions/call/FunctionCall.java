@@ -30,11 +30,15 @@ public class FunctionCall implements AssemblerOperator {
     @Override
     public void generateAssembler(CodeRepository repository) {
 
-        Symbol functionCalled = SymbolTable.getInstance().getSymbol(repository.popOperand());
+        SymbolTable symbolTable = SymbolTable.getInstance();
+
+        Symbol functionCalled = symbolTable.getSymbol(repository.popOperand());
 
         loadOutOfScopeVariables(functionCalled, repository);
         loadLocalVariables(functionCalled, repository);
-        repository.addCode(String.format("call $%s %n", functionCalled.getLexemaWithoutScope()));
+
+        //repository.addCode(String.format("call $%s %n", functionCalled.getLexemaWithoutScope()));
+        repository.addCode(String.format("call $%s %n", functionCalled.getLexema().replaceFirst(symbolTable.getProgramName(),"main")));
         repository.addCode("\n");
         readReturn(repository);
         readOutOfScopeVariables(functionCalled, repository);
@@ -65,14 +69,12 @@ public class FunctionCall implements AssemblerOperator {
     // ============================================================================================
 
     public void loadOutOfScopeVariables(Symbol function, CodeRepository repository) {
-
+        
         SymbolTable symbolTable = SymbolTable.getInstance();
 
         // Variables fuera de ámbito.
         List<Symbol> outOfScopeVariables = symbolTable.getOutOfScopeVariables(function);
-
         for (Symbol symbol : outOfScopeVariables) {
-
             if (!symbol.getScope()
                     .endsWith(symbolTable.getFunctionSymbol(repository.getCurrentScope()).getLexemaWithoutScope())) {
 

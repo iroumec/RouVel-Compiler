@@ -1,0 +1,10 @@
+MAIN {
+    uint GLOBAL;
+
+    uint A (uint X) {
+        return (MAIN.GLOBAL + X);
+    }
+
+    GLOBAL := 5UI;
+    print(A(1UI->X));
+}

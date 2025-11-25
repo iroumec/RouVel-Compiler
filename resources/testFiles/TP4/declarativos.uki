@@ -35,4 +35,4 @@ DECLARATIVOS {
     }
     A := F(3UI->X) * G(14UI->F);
     print(A);
-}
+} 

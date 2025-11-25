@@ -72,7 +72,7 @@ public class Return implements AssemblerOperator {
         SymbolTable symbolTable = SymbolTable.getInstance();
 
         List<Symbol> outOfScopeVariables = symbolTable
-                .getOutOfScopeVariables(symbolTable.getFunctionSymbol(repository.getCurrentScope()));
+                .getOutOfScopeVariables(symbolTable.getFunctionSymbol(repository.getCurrentScope().replaceFirst("main",symbolTable.getProgramName())));
 
         for (Symbol symbol : outOfScopeVariables) {
 

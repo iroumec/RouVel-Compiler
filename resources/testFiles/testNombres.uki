@@ -1,0 +1,9 @@
+MAIN {
+    uint B;
+    uint A (uint X) {
+        uint A (uint X) {
+            return (MAIN.B);
+        }
+        return (2UI);
+    }
+}
