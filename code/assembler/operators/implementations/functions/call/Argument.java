@@ -37,7 +37,7 @@ public class Argument implements AssemblerOperator {
 
         Symbol argument = SymbolTable.getInstance().getSymbol(repository.popOperand());
 
-        repository.addCode(getCode(argument, SymbolType.UINT));
+        repository.addCode(getCode(argument, SymbolType.UINT, repository));
         repository.addCode("\n");
     }
 }

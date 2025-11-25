@@ -18,8 +18,8 @@ public interface ComparisonOperator extends AssemblerOperator {
         Symbol secondOperand = symbolTable.getSymbol(repository.popOperand());
         Symbol firstOperand = symbolTable.getSymbol(repository.popOperand());
 
-        String code = getCode(firstOperand, SymbolType.UINT);
-        code += getCode(secondOperand, SymbolType.UINT);
+        String code = getCode(firstOperand, SymbolType.UINT, repository);
+        code += getCode(secondOperand, SymbolType.UINT, repository);
         code += this.getAssemblerComparator();
 
         repository.addCode(code);

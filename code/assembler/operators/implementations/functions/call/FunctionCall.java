@@ -1,8 +1,11 @@
 package assembler.operators.implementations.functions.call;
 
+import java.util.List;
+
 import assembler.CodeRepository;
 import assembler.operators.AssemblerOperator;
 import common.Symbol;
+import common.SymbolDirector;
 import common.SymbolTable;
 
 public class FunctionCall implements AssemblerOperator {
@@ -27,9 +30,123 @@ public class FunctionCall implements AssemblerOperator {
     @Override
     public void generateAssembler(CodeRepository repository) {
 
-        Symbol function = SymbolTable.getInstance().getSymbol(repository.popOperand());
+        Symbol functionCalled = SymbolTable.getInstance().getSymbol(repository.popOperand());
 
-        repository.addCode(String.format("call $%s %n", function.getLexemaWithoutScope()));
+        loadOutOfScopeVariables(functionCalled, repository);
         repository.addCode("\n");
+        loadLocalVariables(functionCalled, repository);
+        repository.addCode("\n");
+        repository.addCode(String.format("call $%s %n", functionCalled.getLexemaWithoutScope()));
+        repository.addCode("\n");
+        readReturn(repository);
+        readOutOfScopeVariables(functionCalled, repository);
+        repository.addCode("\n");
+        readLocalVariables(functionCalled, repository);
+    }
+
+    // ============================================================================================
+
+    public void readReturn(CodeRepository repository) {
+
+        String code;
+
+        // Variale auxiliar en la que se guardará el retorno de la función.
+        Symbol auxiliarVariable = SymbolDirector.createNewAuxiliarVariable(repository.getCurrentScope());
+        SymbolTable.getInstance().addEntry(auxiliarVariable);
+
+        code = String.format(";; Lectura del retorno de la invocación de la función%n");
+        code += String.format(";; y guardado en una variable auxiliar%n");
+        code += String.format("local.set $%s", auxiliarVariable.getLexemaWithoutScope());
+
+        // Se agrega el operando a la pila, para que el retorno
+        // pueda ser usado dentro de operaciones.
+        repository.pushOperand(auxiliarVariable.getLexema());
+        repository.addCode(code);
+        repository.addCode("\n");
+    }
+
+    // ============================================================================================
+
+    public void loadOutOfScopeVariables(Symbol function, CodeRepository repository) {
+
+        SymbolTable symbolTable = SymbolTable.getInstance();
+
+        // Variables fuera de ámbito.
+        List<Symbol> outOfScopeVariables = symbolTable.getOutOfScopeVariables(function);
+
+        for (Symbol symbol : outOfScopeVariables) {
+
+            if (!symbol.getScope()
+                    .endsWith(symbolTable.getFunctionSymbol(repository.getCurrentScope()).getLexemaWithoutScope())) {
+
+                repository.addCode(";; Pasaje de las variables de ámbitos superiores.");
+                repository
+                        .addCode(String.format("local.get $%s",
+                                symbol.getLexema().replaceFirst(symbolTable.getProgramName(), "main")));
+            }
+        }
+    }
+
+    // ============================================================================================
+
+    public void readOutOfScopeVariables(Symbol function, CodeRepository repository) {
+
+        SymbolTable symbolTable = SymbolTable.getInstance();
+
+        // Variables fuera de ámbito.
+        List<Symbol> outOfScopeVariables = symbolTable.getOutOfScopeVariables(function);
+
+        for (Symbol symbol : outOfScopeVariables) {
+
+            if (!symbol.getScope()
+                    .endsWith(symbolTable.getFunctionSymbol(repository.getCurrentScope()).getLexemaWithoutScope())) {
+
+                repository.addCode(";; Lectura de las variables de otros ámbitos.");
+                repository
+                        .addCode(String.format("local.set $%s",
+                                symbol.getLexema().replaceFirst(symbolTable.getProgramName(), "main")));
+            }
+        }
+    }
+
+    // ============================================================================================
+
+    public void loadLocalVariables(Symbol functionCalled, CodeRepository repository) {
+
+        SymbolTable symbolTable = SymbolTable.getInstance();
+
+        // Variables locales, que se pasaron como parámetro a la otra función
+        // para que pueda utilizarlas.
+        List<Symbol> localVariables = symbolTable
+                .getLocalVariablesOfUntil(symbolTable.getFunctionSymbol(repository.getCurrentScope()), functionCalled);
+
+        for (Symbol symbol : localVariables) {
+
+            repository.addCode(";; Enviado de las variables locales de la función definidas");
+            repository.addCode(";; hasta el momento de la declaración de la función invocada.");
+            repository
+                    .addCode(String.format("local.get $%s",
+                            symbol.getLexemaWithoutScope()));
+        }
+    }
+
+    // ============================================================================================
+
+    public void readLocalVariables(Symbol functionCalled, CodeRepository repository) {
+
+        SymbolTable symbolTable = SymbolTable.getInstance();
+
+        // Variables locales, que se pasaron como parámetro a la otra función
+        // para que pueda utilizarlas.
+        List<Symbol> localVariables = symbolTable
+                .getLocalVariablesOfUntil(symbolTable.getFunctionSymbol(repository.getCurrentScope()), functionCalled);
+
+        for (Symbol symbol : localVariables) {
+
+            repository.addCode(";; Lectura de las variables locales.");
+            repository
+                    .addCode(String.format("local.set $%s",
+                            symbol.getLexemaWithoutScope()));
+        }
     }
 }

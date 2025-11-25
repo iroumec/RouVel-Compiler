@@ -119,16 +119,16 @@ public abstract class ArithmeticOperator implements AssemblerOperator {
 
         switch (pairType) {
             case UINT_UINT, UINT_FLOAT -> {
-                repository.addCode(getCode(firstOperand, SymbolType.UINT)); 
-                repository.addCode(getCode(secondOperand, SymbolType.UINT));
+                repository.addCode(getCode(firstOperand, SymbolType.UINT, repository));
+                repository.addCode(getCode(secondOperand, SymbolType.UINT, repository));
                 this.applyPreviosOperationRuntimeControls(firstOperand, secondOperand, SymbolType.UINT, repository);
                 repository.addCode(String.format("i32.%s", this.getAssemblerOperator()));
                 repository.addCode(String.format("local.tee $%s", auxiliarVariable.getLexemaWithoutScope()));
                 this.applyPostOperationRuntimeControls(firstOperand, secondOperand, SymbolType.UINT, repository);
             }
             case FLOAT_FLOAT -> {
-                repository.addCode(getCode(firstOperand, null));
-                repository.addCode(getCode(secondOperand, null));
+                repository.addCode(getCode(firstOperand, null, repository));
+                repository.addCode(getCode(secondOperand, null, repository));
                 this.applyPreviosOperationRuntimeControls(firstOperand, secondOperand, null, repository);
                 repository.addCode(String.format("i32.%s", this.getAssemblerOperator()));
                 repository.addCode(String.format("local.tee $%s", auxiliarVariable.getLexemaWithoutScope()));

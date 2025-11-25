@@ -42,7 +42,7 @@ public class Return implements AssemblerOperator {
 
         // En WebAssembly, el retorno simplemente se deja apilado en la pila.
         repository.addCode(";; Retorno de la función.");
-        repository.addCode(getCode(operand, SymbolType.UINT));
+        repository.addCode(getCode(operand, SymbolType.UINT, repository));
         repository.addCode("return");
         repository.addCode("\n");
     }
@@ -59,7 +59,7 @@ public class Return implements AssemblerOperator {
             repository.addCode(String.format(";; Apilamiento del resultado del parámetro formal por CVR %s.",
                     symbol.getLexemaWithoutScope()));
             repository
-                    .addCode(String.format("%s", getCode(symbol, SymbolType.UINT)));
+                    .addCode(String.format("%s", getCode(symbol, SymbolType.UINT, repository)));
 
             repository.addCode("\n");
         }
@@ -78,9 +78,7 @@ public class Return implements AssemblerOperator {
 
             repository.addCode(String.format(";; Apilamiento del valor de las variables pertenecientes a otro ámbito.",
                     symbol.getLexemaWithoutScope()));
-            repository
-                    .addCode(String.format("%s" + ":" + symbol.getScope().replace(symbolTable.getProgramName(), "main"),
-                            getCode(symbol, SymbolType.UINT)));
+            repository.addCode(String.format("%s", getCode(symbol, SymbolType.UINT, repository)));
 
             repository.addCode("\n");
         }

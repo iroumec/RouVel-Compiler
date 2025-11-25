@@ -103,7 +103,7 @@ public class Division extends ArithmeticOperator {
 
         // Debido a que el último operando se envió como parámetro
         // a la función, debe volver a apilarse.
-        repository.addCode(getCode(secondOperand, conversionType));
+        repository.addCode(getCode(secondOperand, conversionType, repository));
     }
 
     // ============================================================================================

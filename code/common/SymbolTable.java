@@ -228,6 +228,48 @@ public final class SymbolTable {
 
     // ============================================================================================
 
+    /**
+     * @param scope    Únicamente se buscan las variables previas a la declaración
+     *                 de la función.
+     * @param category
+     * @return Una lista con las variables que pueden llegarse a usarse con
+     *         prefijado.
+     */
+    public List<Symbol> getLocalVariablesOfUntil(Symbol ofFunction, Symbol untilFunction) {
+
+        List<Symbol> out = new ArrayList<>();
+
+        Iterator<Symbol> iterator = this.symbolTable.values().iterator();
+
+        boolean search = true;
+        while (search && iterator.hasNext()) {
+
+            Symbol symbol = iterator.next();
+
+            if (symbol.isCategory(SymbolCategory.FUNCTION)
+                    && symbol.getLexema().equals(untilFunction.getLexema())) {
+
+                // De llegar a la declaración de función, la búsqueda se detiene.
+                // Las variables declaradas luego no deben ser pasadas.
+                search = false;
+
+            } else {
+
+                // TODO: variables auxiliares NO.
+                if (symbol.isCategory(SymbolCategory.VARIABLE)
+                        && symbol.getScope().equals(ofFunction.getScope() + ":" + ofFunction.getLexemaWithoutScope())) {
+                    // Esta condición creo que no es necesaria.
+
+                    out.add(symbol);
+                }
+            }
+        }
+
+        return out;
+    }
+
+    // ============================================================================================
+
     public Symbol getFunctionSymbol(String scope) {
 
         Iterator<Symbol> iterator = this.symbolTable.values().iterator();

@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import assembler.CodeRepository;
 import common.Symbol;
 import common.SymbolCategory;
+import common.SymbolTable;
 import common.SymbolType;
 
 public interface AssemblerOperator {
@@ -13,7 +14,7 @@ public interface AssemblerOperator {
 
     // ============================================================================================
 
-    default String getCode(Symbol operand, SymbolType conversionType) {
+    default String getCode(Symbol operand, SymbolType conversionType, CodeRepository repository) {
 
         String out;
         int maxUINT = 65535;
@@ -50,7 +51,18 @@ public interface AssemblerOperator {
             }
         } else {
 
-            out = String.format("local.get $%s", operand.getLexemaWithoutScope());
+            SymbolTable symbolTable = SymbolTable.getInstance();
+
+            Symbol currentFunction = symbolTable.getFunctionSymbol(repository.getCurrentScope());
+
+            // Si es local...
+            if (operand.getScope().equals(currentFunction.getScope() + ":" + currentFunction.getLexemaWithoutScope())) {
+                out = String.format("local.get $%s", operand.getLexemaWithoutScope());
+            } else {
+
+                out = String.format("local.get $%s",
+                        operand.getLexema().replaceFirst(symbolTable.getProgramName(), "main"));
+            }
         }
 
         return out;

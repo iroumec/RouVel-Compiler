@@ -17,7 +17,6 @@ import assembler.operators.implementations.arithmetic.Subtraction;
 import assembler.operators.implementations.functions.call.Argument;
 import assembler.operators.implementations.comparison.GreaterOrEqual;
 import assembler.operators.implementations.functions.call.ReadResult;
-import assembler.operators.implementations.functions.call.ReadReturn;
 import assembler.operators.implementations.arithmetic.Multiplication;
 import assembler.operators.implementations.selections.SelectionOpener;
 import assembler.operators.implementations.selections.ConditionCloser;
@@ -59,7 +58,6 @@ class OperatorTranslator {
             case "UB" -> ThenBlockCloser.getInstance();
             case "open-loop" -> LoopOpener.getInstance();
             case "close-loop" -> LoopCloser.getInstance();
-            case "read-return" -> ReadReturn.getInstance();
             case "open-lambda" -> LambdaOpener.getInstance();
             case "close-lambda" -> LambdaCloser.getInstance();
             case "open-function" -> FunctionOpener.getInstance();
