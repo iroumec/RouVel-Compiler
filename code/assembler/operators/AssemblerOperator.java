@@ -20,19 +20,19 @@ public interface AssemblerOperator {
 
         if (operand.isCategory(SymbolCategory.CONSTANT)) {
             if (operand.isType(SymbolType.UINT)) {
-                out = String.format("i32.const %s%n", operand.getValue());
+                out = String.format("i32.const %s", operand.getValue());
             } else {
 
                 BigDecimal operandValue = operand.getValue();
 
-                out = String.format("f32.const %s%n", operandValue);
+                out = String.format("f32.const %s", operandValue);
 
                 if (conversionType == SymbolType.UINT) {
 
                     // Si el flotante es negativo, en la conversión a entero, se
                     // convierte en absoluto.
                     if (operandValue.signum() < 0) {
-                        out += String.format("f32.abs %n");
+                        out += String.format("%nf32.abs ");
                     }
 
                     BigDecimal absoluteOperand = operandValue.abs();
@@ -40,17 +40,17 @@ public interface AssemblerOperator {
                     // Si el valor absoluto del flotante es mayor al máximo uint,
                     // se toma el mínimo entre ellos.
                     if (absoluteOperand.compareTo(BigDecimal.valueOf(maxUINT)) > 0) {
-                        out += String.format("f32.const %s%n", maxUINT); // TODO: hay que tirar warning
-                        out += String.format("f32.min %n");
+                        out += String.format("%nf32.const %s", maxUINT); // TODO: hay que tirar warning
+                        out += String.format("%nf32.min");
                     }
 
-                    out += String.format("i32.trunc_f32_u%n");
+                    out += String.format("i32.trunc_f32_u");
                 }
 
             }
         } else {
 
-            out = String.format("local.get $%s%n", operand.getLexemaWithoutScope());
+            out = String.format("local.get $%s", operand.getLexemaWithoutScope());
         }
 
         return out;

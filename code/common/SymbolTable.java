@@ -1,10 +1,12 @@
 package common;
 
 import java.util.Map;
+
 import utilities.Printer;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 
 public final class SymbolTable {
@@ -180,6 +182,85 @@ public final class SymbolTable {
         }
 
         return out;
+    }
+
+    // ============================================================================================
+
+    /**
+     * @param scope    Únicamente se buscan las variables previas a la declaración
+     *                 de la función.
+     * @param category
+     * @return Una lista con las variables que pueden llegarse a usarse con
+     *         prefijado.
+     */
+    public List<Symbol> getOutOfScopeVariables(Symbol function) {
+
+        List<Symbol> out = new ArrayList<>();
+
+        Iterator<Symbol> iterator = this.symbolTable.values().iterator();
+
+        boolean search = true;
+        while (search && iterator.hasNext()) {
+
+            Symbol symbol = iterator.next();
+
+            if (symbol.isCategory(SymbolCategory.FUNCTION)
+                    && symbol.getLexema().equals(function.getLexema())) {
+
+                // De llegar a la declaración de función, la búsqueda se detiene.
+                // Las variables declaradas luego no deben ser pasadas.
+                search = false;
+
+            } else {
+
+                // TODO: variables auxiliares NO.
+                if (symbol.isCategory(SymbolCategory.VARIABLE) && function.getScope().contains(symbol.getScope())
+                        && !symbol.getScope().equals(function.getScope() + ":" + function.getLexemaWithoutScope())) {
+                    // Esta condición creo que no es necesaria.
+
+                    out.add(symbol);
+                }
+            }
+        }
+
+        return out;
+    }
+
+    // ============================================================================================
+
+    public Symbol getFunctionSymbol(String scope) {
+
+        Iterator<Symbol> iterator = this.symbolTable.values().iterator();
+
+        boolean found = false;
+        Symbol funcionSymbol = null;
+
+        int lastSeparatorIndex = scope.lastIndexOf(':');
+
+        String prefix;
+        String lastElement;
+
+        if (lastSeparatorIndex != -1) {
+            prefix = scope.substring(0, lastSeparatorIndex);
+            lastElement = scope.substring(lastSeparatorIndex + 1);
+        } else {
+            prefix = "";
+            lastElement = scope;
+        }
+
+        while (!found && iterator.hasNext()) {
+
+            Symbol symbol = iterator.next();
+
+            if (symbol.isCategory(SymbolCategory.FUNCTION)
+                    && symbol.getLexema().equals(lastElement + ":" + prefix)) {
+
+                funcionSymbol = symbol;
+                found = true;
+            }
+        }
+
+        return funcionSymbol;
     }
 
     // ============================================================================================

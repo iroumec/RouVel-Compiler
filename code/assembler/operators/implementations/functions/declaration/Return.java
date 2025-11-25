@@ -38,6 +38,8 @@ public class Return implements AssemblerOperator {
         // a los parámetros por CVR.
         dumpResultsParameters(repository);
 
+        dumpOutOfScopeParameters(repository);
+
         // En WebAssembly, el retorno simplemente se deja apilado en la pila.
         repository.addCode(";; Retorno de la función.");
         repository.addCode(getCode(operand, SymbolType.UINT));
@@ -58,6 +60,27 @@ public class Return implements AssemblerOperator {
                     symbol.getLexemaWithoutScope()));
             repository
                     .addCode(String.format("%s", getCode(symbol, SymbolType.UINT)));
+
+            repository.addCode("\n");
+        }
+    }
+
+    // ============================================================================================
+
+    private void dumpOutOfScopeParameters(CodeRepository repository) {
+
+        SymbolTable symbolTable = SymbolTable.getInstance();
+
+        List<Symbol> outOfScopeVariables = symbolTable
+                .getOutOfScopeVariables(symbolTable.getFunctionSymbol(repository.getCurrentScope()));
+
+        for (Symbol symbol : outOfScopeVariables) {
+
+            repository.addCode(String.format(";; Apilamiento del valor de las variables pertenecientes a otro ámbito.",
+                    symbol.getLexemaWithoutScope()));
+            repository
+                    .addCode(String.format("%s" + ":" + symbol.getScope().replace(symbolTable.getProgramName(), "main"),
+                            getCode(symbol, SymbolType.UINT)));
 
             repository.addCode("\n");
         }

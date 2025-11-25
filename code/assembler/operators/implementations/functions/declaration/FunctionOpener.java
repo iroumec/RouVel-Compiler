@@ -40,7 +40,7 @@ public class FunctionOpener implements AssemblerOperator {
 
         repository.increaseIndentation();
 
-        dumpParameters(repository);
+        dumpParameters(symbol, repository);
         repository.addCode("\n");
 
         // Se agrega una etiqueta que, luego de haber determinado todas las variables
@@ -50,11 +50,23 @@ public class FunctionOpener implements AssemblerOperator {
 
     // ============================================================================================
 
-    private void dumpParameters(CodeRepository repository) {
+    private void dumpParameters(Symbol function, CodeRepository repository) {
 
-        List<Symbol> parameters = SymbolTable.getInstance().getParameters(repository.getCurrentScope());
+        SymbolTable symbolTable = SymbolTable.getInstance();
 
-        List<Symbol> copyRestoreParameter = SymbolTable.getInstance().get(repository.getCurrentScope(),
+        // Variables fuera de ámbito.
+        List<Symbol> outOfScopeVariables = symbolTable.getOutOfScopeVariables(function);
+
+        for (Symbol symbol : outOfScopeVariables) {
+
+            repository
+                    .addCode(String.format("(param $%s i32)",
+                            symbol.getLexema().replaceFirst(symbolTable.getProgramName(), "main")));
+        }
+
+        // Parámetros de la función.
+        List<Symbol> parameters = symbolTable.getParameters(repository.getCurrentScope());
+        List<Symbol> copyRestoreParameter = symbolTable.get(repository.getCurrentScope(),
                 SymbolCategory.CVR_PARAMETER);
 
         for (Symbol symbol : parameters) {
@@ -62,6 +74,11 @@ public class FunctionOpener implements AssemblerOperator {
             // Por eso está "hardcodeado" el "i32".
             repository.addCode(String.format("(param $%s i32)", symbol.getLexemaWithoutScope()));
         }
+
+        // Los valores de variables fuera de ámbito se leen primero, por lo que se
+        // agregan a la lista
+        // al final.
+        copyRestoreParameter.addAll(outOfScopeVariables);
 
         /**
          * Al invocar a una función, ya se realiza automáticamente la asignación en
