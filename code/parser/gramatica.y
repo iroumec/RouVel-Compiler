@@ -301,10 +301,8 @@ identifier
     : ID
         { 
             if (!symbolTable.entryExists($1 + ":" + scopeStack.asText())) {
-                this.symbolTable.setType($1, SymbolType.UINT);
-                this.symbolTable.setCategory($1, SymbolCategory.VARIABLE);
-                this.symbolTable.setScope($1, scopeStack.asText());
-                $$ = this.scopeStack.appendScope($1);
+                symbolTable.removeEntry($1);
+                symbolTable.addEntry(SymbolDirector.createNewVariable(this.scopeStack.appendScope($1)));
             } else {
                 errorState = true;
                 notifySemanticError(String.format("El identificador '%s' ya fue declarado en el ámbito '%s'.", $1, scopeStack.asText()));
@@ -616,15 +614,13 @@ variable
             } else {
                 // A la entrada sin el scope, se le agrega el scope.
                 // Se combina con otra entrada en caso de coincidir el scope.
-                this.symbolTable.setScope($1, scopeStack.asText());
                 $$ = this.scopeStack.appendScope($1);
+                this.symbolTable.replaceEntry($1, $$);
             }
         }
     | ID '.' ID
         { 
-            System.out.println("id.id" + $1);
             String scopedVariable = $3 + this.scopeStack.getScopeRoad($1);
-            System.out.println("id.id" + scopedVariable);
             if (!this.scopeStack.isReacheable($1)) {
                 errorState = true;
                 notifyError(String.format("Variable %s no declarada (no visible).",$3));
@@ -1070,12 +1066,9 @@ invocacion_funcion
 function_start
     : variable
         { 
-            System.out.println("function_start" + $1);
             if (reversePolish.functionExists($1)) {
-                System.out.println("existe" + $1);
                 this.reversePolish.startFunctionCall($1);
             } else {
-                System.out.println("no existe" + $1);
                 notifySemanticError(String.format("La función '%s' no fue declarada.", $1));
                 errorState = true;
             }

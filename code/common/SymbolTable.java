@@ -374,8 +374,8 @@ public final class SymbolTable {
             }
         } else {
             Printer.printWrapped(String.format(
-                    "Error inesperado. Se intentó decrementar la referencia del lexema \"%s\", que no existe.",
-                    lexema));
+                    "Error inesperado. Método \"decreaseReferences()\". Linea %s. Se intentó decrementar la referencia del lexema \"%s\", que no existe.",
+                    Monitor.getInstance().getLineNumber(), lexema));
         }
 
     }
@@ -387,8 +387,8 @@ public final class SymbolTable {
         Symbol symbol = symbolTable.get(lexema);
         if (symbol == null) {
             Printer.printWrapped(String.format(
-                    "Error inesperado. Se intentó obtener el símbolo asociado al lexema \"%s\", que no existe.",
-                    lexema));
+                    "Error inesperado. Método \"getSymbol()\". Linea %s. Se intentó acceder al símbolo del lexema \"%s\", que no existe.",
+                    Monitor.getInstance().getLineNumber(), lexema));
         }
         return symbol;
     }
