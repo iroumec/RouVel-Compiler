@@ -1,0 +1,9 @@
+## Redeclaración de identificador, variable y parámetro ##
+DECLARATIVOS {
+    uint X;
+    uint Y(uint F) {
+        uint F;
+        F := 0UI;
+        return (F);
+    };
+}

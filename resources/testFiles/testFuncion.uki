@@ -1,0 +1,9 @@
+MAIN {
+    uint A, B;
+
+    uint F(uint X, uint Z){
+        return (0UI);
+    }
+
+    A := F(2UI->X);
+}

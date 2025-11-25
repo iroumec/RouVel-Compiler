@@ -1,0 +1,5 @@
+## Invocación a función no declarada ##
+DECLARATIVOS {
+    uint A;
+    A := FUNC(1UI->X);
+}

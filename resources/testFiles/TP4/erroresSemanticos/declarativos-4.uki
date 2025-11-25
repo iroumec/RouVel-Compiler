@@ -1,0 +1,5 @@
+## Uso de variable no declarada ##
+DECLARATIVOS {
+    uint A;
+    A := 1UI + B;
+}

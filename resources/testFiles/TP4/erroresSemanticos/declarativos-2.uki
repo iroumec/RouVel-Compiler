@@ -1,0 +1,7 @@
+## Redeclaración de identificador, variable y funcion ##
+DECLARATIVOS {
+    uint X;
+    uint X(uint F) {
+        return (F);
+    };
+}

@@ -299,11 +299,16 @@ list_of_identifiers
 // Separado de variable ya que las acciones semánticas a realizar son distintas.
 identifier
     : ID
-        {
-            this.symbolTable.setType($1, SymbolType.UINT);
-            this.symbolTable.setCategory($1, SymbolCategory.VARIABLE);
-            this.symbolTable.setScope($1, scopeStack.asText());
-            $$ = this.scopeStack.appendScope($1);
+        { 
+            if (!symbolTable.entryExists($1 + ":" + scopeStack.asText())) {
+                this.symbolTable.setType($1, SymbolType.UINT);
+                this.symbolTable.setCategory($1, SymbolCategory.VARIABLE);
+                this.symbolTable.setScope($1, scopeStack.asText());
+                $$ = this.scopeStack.appendScope($1);
+            } else {
+                errorState = true;
+                notifySemanticError(String.format("El identificador '%s' ya fue declarado en el ámbito '%s'.", $1, scopeStack.asText()));
+            }
         }
     ;
 
@@ -617,8 +622,9 @@ variable
         }
     | ID '.' ID
         { 
+            System.out.println("id.id" + $1);
             String scopedVariable = $3 + this.scopeStack.getScopeRoad($1);
-
+            System.out.println("id.id" + scopedVariable);
             if (!this.scopeStack.isReacheable($1)) {
                 errorState = true;
                 notifyError(String.format("Variable %s no declarada (no visible).",$3));
@@ -852,12 +858,12 @@ declaracion_funcion
             if (!this.errorState) {
 
                 if (this.returnsController.isThereReturnInDeclaration()) {
-                    notifyDetection("Declaración de función.");
                     this.scopeStack.pop();
+                    notifyDetection("Declaración de función.");
                     this.reversePolish.closeFunctionDeclaration(this.scopeStack.appendScope($1));
                     this.reversePolish.addSeparation(String.format("Leaving scope '%s'...", $1));
                 } else {
-                    notifyError("La función necesita, en todos los casos, retornar un valor.");
+                    notifySemanticError("La función necesita, en todos los casos, retornar un valor.");
                     this.errorState = true;
                 }
                 
@@ -887,15 +893,20 @@ declaracion_funcion
 inicio_funcion
     : UINT ID
         {
-            this.reversePolish.addSeparation(String.format("Entering scope '%s'...", $2));
-            this.reversePolish.startFunctionDeclaration($2 + ":" + this.scopeStack.asText());
-            SymbolTable.getInstance().removeEntry($2);
-            SymbolTable.getInstance().addEntry(SymbolDirector.createNewFunction($2 + ":" + this.scopeStack.asText()));
+            if (!symbolTable.entryExists($2 + ":" + this.scopeStack.asText())) {
+                this.reversePolish.addSeparation(String.format("Entering scope '%s'...", $2));
+                this.reversePolish.startFunctionDeclaration($2 + ":" + this.scopeStack.asText());
+                SymbolTable.getInstance().removeEntry($2);
+                SymbolTable.getInstance().addEntry(SymbolDirector.createNewFunction($2 + ":" + this.scopeStack.asText()));
 
-            $$ = $2;
-            this.scopeStack.push($2);
+                $$ = $2;
+                this.scopeStack.push($2);
 
-            this.returnsController.notifyStartOfFunctionDeclaration();
+                this.returnsController.notifyStartOfFunctionDeclaration();
+            } else {
+                this.errorState = true;
+                notifySemanticError(String.format("El identificador '%s' ya fue declarado en el ámbito '%s'.", $2, scopeStack.asText()));
+            }
         }
     
     // |========================= REGLAS DE ERROR =========================| //
@@ -1048,8 +1059,8 @@ invocacion_funcion
                 this.reversePolish.closeFunctionCall();
             } else {
                 this.treatInvalidState("Invocación de función");
-
-                this.reversePolish.discardFunctionCall();
+                if (reversePolish.functionExists($1))
+                    this.reversePolish.discardFunctionCall();
             }
         }
     ;
@@ -1058,7 +1069,17 @@ invocacion_funcion
 
 function_start
     : variable
-        { this.reversePolish.startFunctionCall($1); }
+        { 
+            System.out.println("function_start" + $1);
+            if (reversePolish.functionExists($1)) {
+                System.out.println("existe" + $1);
+                this.reversePolish.startFunctionCall($1);
+            } else {
+                System.out.println("no existe" + $1);
+                notifySemanticError(String.format("La función '%s' no fue declarada.", $1));
+                errorState = true;
+            }
+        }
     ;
 
 // --------------------------------------------------------------------------------------------------------------------
@@ -1320,6 +1341,14 @@ private void notifyError(String errorMessage) {
 
     monitor.addError(String.format(
         "ERROR SINTÁCTICO: Línea %d: %s",
+        monitor.getLineNumber(), errorMessage
+    ));
+}
+
+private void notifySemanticError(String errorMessage) {
+
+    monitor.addError(String.format(
+        "ERROR SEMÁNTICO: Línea %d: %s",
         monitor.getLineNumber(), errorMessage
     ));
 }

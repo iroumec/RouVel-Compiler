@@ -311,6 +311,26 @@ public final class ReversePolish implements Iterable<String> {
     }
 
     // ============================================================================================
+
+    public boolean functionExists(String functionName) {
+
+        boolean functionFound = false;
+
+        Iterator<Function> iterator = this.functions.iterator();
+        while (!functionFound && iterator.hasNext()) {
+
+            Function currentFunction = iterator.next();
+
+            if (currentFunction.getName().equals(functionName)) {
+
+                functionFound = true;
+            }
+        }
+
+        return functionFound;
+    }
+
+    // ============================================================================================
     // Manejo de Lambdas
     // ============================================================================================
 

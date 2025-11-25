@@ -1,0 +1,29 @@
+## 
+ # En este programa se explorarán los distintos casos de conversión.
+ # Por indicación de la cátedra, en todos los casos, la conversion 
+ # es de float a uint.
+ # Al ejecutar el programa, se puede comprobar la conversión implícita
+ # efectuada en el código assembler.
+##
+CONVERSIONES {
+    uint A, B, C;
+    uint F(uint X) {
+        return(X);
+    };
+
+    ## Conversión en asignacion ##
+    A := 1.;
+
+    ## Conversión en asignacion múltiple ## 
+    A, B = 2., 3.;
+
+    ## Conversión en suma de constantes ## 
+    C := 1. + 4.;
+
+    ## Conversión en suma de variable y constante ## 
+    C := A + 5.;
+
+    ## Conversión en invocación a función ## 
+    F(6.->X);
+
+}

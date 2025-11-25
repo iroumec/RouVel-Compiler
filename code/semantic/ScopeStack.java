@@ -65,7 +65,7 @@ public class ScopeStack {
     public String getScopeRoad(String scope) {
         if (asText().indexOf(scope) == 0)
             return ":" + scope;
-        return asText().split(":" + scope + ":", 2)[0] + ":" + scope + ":";
+        return ":" + asText().split(":" + scope + ":", 2)[0] + ":" + scope;
     }
 
     // ============================================================================================

@@ -1,0 +1,5 @@
+## Redeclaración de identificador, dos variables ##
+DECLARATIVOS {
+    uint X;
+    uint X;
+}
