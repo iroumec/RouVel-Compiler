@@ -1,0 +1,38 @@
+DECLARATIVOS {
+
+    uint A;                                             ## Se declara A:DECLARATIVOS // Variable global ##
+    A := 271UI;                                         ## Se asigna 271UI a A:DECLARATIVOS ##
+
+    uint F (uint X) {                                   ## Se declara F:DECLARATIVOS // Función ; Se declara X:F:DECLARATIVOS // Parámetro ##
+        uint A;                                         ## Se declara A:F:DECLARATIVOS // Variable local ##
+        uint I (uint X, uint A) {                       ## Se declara I:F:DECLARATIVOS // Función ; Se declara X:I:F:DECLARATIVOS y A:I:F:DECLARATIVOS // Parámetros ##
+            uint F;                                     ## Se declara F:I:F:DECLARATIVOS // Variable local ##
+            uint J (uint F) {                           ## Se declara J:I:F:DECLARATIVOS // Función ; Se declara F:J:I:F:DECLARATIVOS // Parámetro ##
+                uint I;                                 ## Se declara I:J:I:F:DECLARATIVOS // Variable local ##
+                uint A;                                 ## Se declara A:J:I:F:DECLARATIVOS // Variable local ##
+                uint K (uint A) {
+                    return DECLARATIVOS.A;
+                }
+                return (K(A+I(I->X,A->A)->A));
+            }
+            return (F.A); 
+        }
+        return (I(DECLARATIVOS.A->A,A->X));
+    }
+    uint G (uint F) {
+        uint X;
+        uint A (uint A) {
+            uint X (uint A) {
+                uint I (uint J) {
+                    uint A;
+                    return (X.A);
+                }
+                return DECLARATIVOS.F(I(A->J)->X);
+            }
+            return (A);
+        }
+        return (1UI);
+    }
+    A := F(3UI->X) * G(14UI->F);
+    print(A);
+}

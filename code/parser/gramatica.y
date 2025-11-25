@@ -633,6 +633,9 @@ variable
 
             // Se remplaza el identificador sin ámbito por su versión con ámbito.
             this.symbolTable.replaceEntry($3, $$); 
+
+            // Se decrementa una referencia en la entrada del símbolo de ámbito.
+            this.symbolTable.removeEntry($1);
         }
     ;
 
