@@ -43,7 +43,7 @@ public class Assignment implements AssemblerOperator {
         secondOperand = SymbolTable.getInstance().getSymbol(repository.popOperand());
         firstOperand = SymbolTable.getInstance().getSymbol(repository.popOperand());
 
-        // No se requiere conversión. 
+        // No se requiere conversión.
         if (secondOperand.isType(SymbolType.UINT)) {
             repository.addCode(this.getNonConversionAssignment(secondOperand));
         } else {
