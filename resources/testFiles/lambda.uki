@@ -1,6 +1,0 @@
-LAMBDA {
-    uint E;
-    (uint G) { E := G; } (10.0);
-
-    G := 3UI;
-}

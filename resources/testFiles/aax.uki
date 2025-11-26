@@ -1,9 +1,0 @@
-PRUEBA {
-    uint F1(uint X) {
-        uint A;
-        A := X;
-        return (A);
-    }
-
-    F1(5UI->X);
-}

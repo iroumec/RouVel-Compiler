@@ -1,8 +1,0 @@
-MAIN {
-
-    uint A;
-    A := 9.0F+3;
-
-    print(0.23);
-    print(8.7F+12);
-}

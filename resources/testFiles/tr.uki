@@ -1,6 +1,0 @@
-MAIN {
-
-    uint A, B, C, D;
-
-    A, B, C = 3UI, 8UI, 96UI;
-}
