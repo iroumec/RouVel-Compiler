@@ -3,6 +3,7 @@ package assembler.operators;
 import java.math.BigDecimal;
 
 import assembler.CodeRepository;
+import common.Monitor;
 import common.Symbol;
 import common.SymbolCategory;
 import common.SymbolTable;
@@ -73,10 +74,9 @@ public interface AssemblerOperator {
             // convierte en absoluto.
             if (operandValue.signum() < 0) {
                 out += String.format("%nf32.abs ");
-                Printer.printWrapped(
-                        String.format(
-                                "WARNING: El valor flotante %s es negativo. Se tomará su absoluto para operar con enteros.",
-                                operandValue));
+                Monitor.getInstance().addCompilationWarning(String.format(
+                        "WARNING: El valor flotante %s es negativo. Se tomará su absoluto para operar con enteros.",
+                        operandValue));
             }
 
             BigDecimal absoluteOperand = operandValue.abs();

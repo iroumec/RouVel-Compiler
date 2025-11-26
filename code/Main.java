@@ -95,6 +95,14 @@ public class Main {
                 Printer.printBlankSpace();
             }
 
+            if (monitor.hasCompilationWarnings()) {
+                Printer.printSeparator();
+                Printer.printCentered("> Advertencias de Compilación <");
+                monitor.showCompilationWarnings();
+                Printer.printSeparator();
+                Printer.printBlankSpace();
+            }
+
             Printer.printSeparator();
             WebAssemblyExporter.exportToWasm(file, assemblerCode);
             Printer.printSeparator();

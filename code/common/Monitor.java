@@ -8,6 +8,7 @@ public class Monitor {
 
     // ============================================================================================
 
+    private final MessageCollector compilationMessages;
     private final MessageCollector errorCollector, warningCollector;
 
     // ============================================================================================
@@ -16,6 +17,7 @@ public class Monitor {
         this.lineNumber = 1;
         this.errorCollector = new MessageCollector();
         this.warningCollector = new MessageCollector();
+        this.compilationMessages = new MessageCollector();
     }
 
     // ============================================================================================
@@ -94,5 +96,23 @@ public class Monitor {
 
     public void showWarnings() {
         this.warningCollector.showMessages();
+    }
+
+    // ============================================================================================
+
+    public void addCompilationWarning(String warningMessage) {
+        this.compilationMessages.add(warningMessage);
+    }
+
+    // ============================================================================================
+
+    public boolean hasCompilationWarnings() {
+        return this.compilationMessages.hasMessages();
+    }
+
+    // ============================================================================================
+
+    public void showCompilationWarnings() {
+        this.compilationMessages.showMessages();
     }
 }
