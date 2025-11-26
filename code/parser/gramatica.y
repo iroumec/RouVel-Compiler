@@ -620,22 +620,29 @@ variable
         }
     | ID '.' ID
         { 
-            String scopedVariable = $3 + this.scopeStack.getScopeRoad($1);
-            if ((this.symbolTable.entryExists(scopedVariable)) && (!this.scopeStack.isReacheable($1))) {
+            String scopeRoad = this.scopeStack.getScopeRoad($1);
+
+            if (scopeRoad == null) {
+                if (this.symbolTable.existsFunction($1))
+                    notifySemanticError(String.format("El ámbito de %s no está al alcance.",$1));
+                else 
+                    notifySemanticError(String.format("El ámbito %s no existe.",$1));
                 errorState = true;
-                notifySemanticError(String.format("Variable/función %s existe, pero está fuera del alcance.",$3));
-            } else if (!this.symbolTable.entryExists(scopedVariable)) {
-                errorState = true;
-                notifySemanticError(String.format("Variable '%s' no declarada en el ámbito '%s'.",$3,$1));
+            } else {
+                String scopedVariable = $3 + scopeRoad;
+                if (!this.symbolTable.entryExists(scopedVariable)) {
+                    errorState = true;
+                    notifySemanticError(String.format("El identificador '%s' no corresponde a ninguna variable/función declarada en el ámbito '%s'.",$3,$1));
+                }
+
+                $$ = scopedVariable;
+
+                // Se remplaza el identificador sin ámbito por su versión con ámbito.
+                this.symbolTable.replaceEntry($3, $$); 
+
+                // Se decrementa una referencia en la entrada del símbolo de ámbito.
+                this.symbolTable.removeEntry($1);
             }
-
-            $$ = scopedVariable;
-
-            // Se remplaza el identificador sin ámbito por su versión con ámbito.
-            this.symbolTable.replaceEntry($3, $$); 
-
-            // Se decrementa una referencia en la entrada del símbolo de ámbito.
-            this.symbolTable.removeEntry($1);
         }
     ;
 

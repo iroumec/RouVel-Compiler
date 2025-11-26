@@ -57,10 +57,18 @@ public class ScopeStack {
     // ============================================================================================
 
     public boolean isReacheable(String scope) {
-        if (asText().indexOf(scope) == 0) // El ámbito es el nombre del programa.
-            return true;
+        String text = asText();  
 
-        return asText().contains(":" + scope);
+        // Está al inicio exactamente
+        if (text.startsWith(scope)) {
+            // Se verifica que le siga ":" o nada
+            if (text.length() == scope.length() || text.charAt(scope.length()) == ':') {
+                return true;
+            }
+        }
+
+        // Se busca ":" + scope + ":" o ":" + scope al final
+        return text.contains(":" + scope + ":") || text.endsWith(":" + scope);
     }
 
     // ============================================================================================

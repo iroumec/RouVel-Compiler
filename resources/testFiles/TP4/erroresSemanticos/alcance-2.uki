@@ -1,10 +1,10 @@
-DLCANCE {
+ALCANCE {
     uint F (uint X) {
         uint A (uint Y) {
             uint B;
             return (Y*B);
         }
-        A.B := 5UI;
+        C.B := 1UI;             ## El ambito C no existe ##
         return (A(2UI->Y));
     }
 

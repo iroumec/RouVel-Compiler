@@ -58,37 +58,7 @@ CASOSSEMANTICAMENTEVALIDOS {                                            ## Longi
     print(RESTA(C->X,B->Y));                                            ## Impresión de retorno de función ##
 
     ## ------ Estructura de control if ------ ##
-    if (A > B) {                                                        ## If simple ##
-        A := A + 1UI;
-    } endif;
-
-    if (B < C) {                                                        ## If con else ##   
-        B := B + 1UI;
-    } else {
-        B := B - 1UI;
-    } endif;
-
-    if (C == 13.) {                                                     ## If con else if y else, con comparación ##
-        C := C + 1UI;                                                   ## entre variable uint y constante float ##
-    } else {
-        if (D =! E) {
-            D := D + 1UI;
-        } else {
-            D := D - 1UI;
-        } endif;
-    } endif;
-
-    if (E >= F)                                                         ## If con else ifs anidados ##
-        E := E + 1UI;
-    else if (F <= A)
-        F := F + 1UI;
-    else if (A =! B) 
-        F := F - 1UI;
-    else
-        A := A - 1UI;
-    endif;
-    endif;
-    endif;
+    
 
     ## Estructura de control do-while ##
     do {                                                                ## Do-while de múltiples líneas ##
