@@ -2,7 +2,7 @@ MAIN {
     uint A;
     A := 5UI;
     uint F(uint X) {
-        X := MAIN.A + 5UI;
+        X := MAIN.A;
         return(X);
     }
     F(4UI->X);
