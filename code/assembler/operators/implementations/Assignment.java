@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 
 import assembler.CodeRepository;
 import assembler.operators.AssemblerOperator;
+import common.Monitor;
 import common.Symbol;
 import common.SymbolCategory;
 import common.SymbolTable;
@@ -88,6 +89,9 @@ public class Assignment implements AssemblerOperator {
         // convierte en absoluto.
         if (operandValue.signum() < 0) {
             code += String.format("f32.abs %n");
+            Monitor.getInstance().addCompilationWarning(String.format(
+                    "WARNING: El valor flotante %s es negativo. Se tomará su absoluto para realizar la asignación.",
+                    operandValue));
         }
 
         BigDecimal absoluteOperand = operandValue.abs();
@@ -95,8 +99,11 @@ public class Assignment implements AssemblerOperator {
         // Si el valor absoluto del flotante es mayor al máximo uint,
         // se toma el mínimo entre ellos.
         if (absoluteOperand.compareTo(BigDecimal.valueOf(MAX_UINT)) > 0) {
-            code += String.format("f32.const %s%n", MAX_UINT); // TODO: hay que tirar warning
+            code += String.format("f32.const %s%n", MAX_UINT);
             code += String.format("f32.min %n");
+            Monitor.getInstance().addCompilationWarning(String.format(
+                    "WARNING: El valor absoluto del flotante %s excede el rango de valores válidos del tipo de dato entero. Se asignará el máximo entero %s a la variable.",
+                    operandValue, MAX_UINT));
         }
 
         // Conversión a entero.

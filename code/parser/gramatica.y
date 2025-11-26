@@ -646,10 +646,10 @@ variable
 condicion
     : '(' cuerpo_condicion ')'
         { 
-            if (!errorState) {
+            if (this.statementAppearsInValidState()) {
                 notifyDetection("Condición."); 
             } else {
-                errorState = false; // TODO: creo que no debería reiniciarse el erro acá.
+                this.treatInvalidState("Condición");
             }
         }
 

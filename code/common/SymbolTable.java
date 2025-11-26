@@ -213,10 +213,11 @@ public final class SymbolTable {
 
             } else {
 
-                // TODO: variables auxiliares NO.
-                if ((symbol.isCategory(SymbolCategory.VARIABLE) ||
+                // No se consideran variables auxiliares. Estas no pueden ser accedidas fuera
+                // del ámbito de la función.
+                if ((symbol.isCategory(SymbolCategory.VARIABLE) && !symbol.getLexema().startsWith("aux") ||
                         symbol.isCategory(SymbolCategory.CV_PARAMETER) ||
-                        symbol.isCategory(SymbolCategory.CVR_PARAMETER) )
+                        symbol.isCategory(SymbolCategory.CVR_PARAMETER))
                         && function.getScope().contains(symbol.getScope())
                         && !symbol.getScope().equals(function.getScope() + ":" + function.getLexemaWithoutScope())) {
                     // Esta condición creo que no es necesaria.
@@ -258,11 +259,12 @@ public final class SymbolTable {
 
             } else {
 
-                // TODO: variables auxiliares NO.
-                if ((symbol.isCategory(SymbolCategory.VARIABLE) || 
-                    symbol.isCategory(SymbolCategory.CVR_PARAMETER) ||
-                    symbol.isCategory(SymbolCategory.CV_PARAMETER)
-                    ) && symbol.getScope().equals(ofFunction.getScope() + ":" + ofFunction.getLexemaWithoutScope())) {
+                // No se consideran variables auxiliares. Estas no pueden ser accedidas fuera
+                // del ámbito de la función.
+                if (((symbol.isCategory(SymbolCategory.VARIABLE) && !symbol.getLexema().startsWith("aux")) ||
+                        symbol.isCategory(SymbolCategory.CVR_PARAMETER) ||
+                        symbol.isCategory(SymbolCategory.CV_PARAMETER))
+                        && symbol.getScope().equals(ofFunction.getScope() + ":" + ofFunction.getLexemaWithoutScope())) {
                     // Esta condición creo que no es necesaria.
 
                     out.add(symbol);
@@ -300,14 +302,14 @@ public final class SymbolTable {
         boolean found = false;
         Symbol funcionSymbol = null;
 
-        //Entrada de la tabla de símbolos que se busca
-        String symbolTableEntry = getSymbolTableLexema(scope); 
+        // Entrada de la tabla de símbolos que se busca
+        String symbolTableEntry = getSymbolTableLexema(scope);
 
         while (!found && iterator.hasNext()) {
 
             Symbol symbol = iterator.next();
 
-            if ((symbol.isCategory(SymbolCategory.FUNCTION) || symbol.isCategory(SymbolCategory.PROGRAM)) && 
+            if ((symbol.isCategory(SymbolCategory.FUNCTION) || symbol.isCategory(SymbolCategory.PROGRAM)) &&
                     symbol.getLexema().equals(symbolTableEntry)) {
 
                 funcionSymbol = symbol;

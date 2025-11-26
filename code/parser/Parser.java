@@ -1520,10 +1520,10 @@ break;
 case 92:
 //#line 648 "gramatica.y"
 { 
-            if (!errorState) {
+            if (this.statementAppearsInValidState()) {
                 notifyDetection("Condición."); 
             } else {
-                errorState = false; /* TODO: creo que no debería reiniciarse el erro acá.*/
+                this.treatInvalidState("Condición");
             }
         }
 break;

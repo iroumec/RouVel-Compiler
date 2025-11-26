@@ -2,13 +2,12 @@ package assembler.operators;
 
 import java.math.BigDecimal;
 
-import assembler.CodeRepository;
-import common.Monitor;
 import common.Symbol;
-import common.SymbolCategory;
-import common.SymbolTable;
+import common.Monitor;
 import common.SymbolType;
-import utilities.Printer;
+import common.SymbolTable;
+import common.SymbolCategory;
+import assembler.CodeRepository;
 
 public interface AssemblerOperator {
 
@@ -86,10 +85,9 @@ public interface AssemblerOperator {
             if (absoluteOperand.compareTo(BigDecimal.valueOf(maxUINT)) > 0) {
                 out += String.format("%nf32.const %s", maxUINT);
                 out += String.format("%nf32.min");
-                Printer.printWrapped(
-                        String.format(
-                                "WARNING: El valor flotante %s excede el rango oeprable de los enteros. Durante la operación, redondeará al valor máximo entero %s",
-                                operandValue, maxUINT));
+                Monitor.getInstance().addCompilationWarning(String.format(
+                        "WARNING: El valor flotante %s excede el rango oeprable de los enteros. Durante la operación, redondeará al valor máximo entero %s",
+                        operandValue, maxUINT));
             }
 
             out += String.format("%ni32.trunc_f32_u");
