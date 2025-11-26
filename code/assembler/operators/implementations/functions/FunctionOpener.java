@@ -1,5 +1,6 @@
-package assembler.operators.implementations.functions.declaration;
+package assembler.operators.implementations.functions;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import common.Symbol;
@@ -8,27 +9,12 @@ import common.SymbolCategory;
 import assembler.CodeRepository;
 import assembler.operators.AssemblerOperator;
 
-public class FunctionOpener implements AssemblerOperator {
-
-    private FunctionOpener() {
-    }
-
-    // ============================================================================================
-
-    private static class Holder {
-        private static final FunctionOpener INSTANCE = new FunctionOpener();
-    }
-
-    // ============================================================================================
-
-    public static FunctionOpener getInstance() {
-        return Holder.INSTANCE;
-    }
+public abstract class FunctionOpener implements AssemblerOperator {
 
     // ============================================================================================
 
     @Override
-    public void generateAssembler(CodeRepository repository) {
+    public final void generateAssembler(CodeRepository repository) {
 
         SymbolTable symbolTable = SymbolTable.getInstance();
 
@@ -52,19 +38,23 @@ public class FunctionOpener implements AssemblerOperator {
 
     // ============================================================================================
 
-    private void dumpParameters(Symbol function, CodeRepository repository) {
+    private final void dumpParameters(Symbol function, CodeRepository repository) {
 
         SymbolTable symbolTable = SymbolTable.getInstance();
 
         // Parámetros de la función.
         List<Symbol> parameters = symbolTable.getParameters(repository.getCurrentScope());
-        List<Symbol> copyRestoreParameter = symbolTable.get(repository.getCurrentScope(),
-                SymbolCategory.CVR_PARAMETER);
+        List<Symbol> copyRestoreParameters = new ArrayList<>();
 
         for (Symbol symbol : parameters) {
             // El lenguaje solo tiene como parámetros válidos enteros de 32 bits.
             // Por eso está "hardcodeado" el "i32".
             repository.addCode(String.format("(param $%s i32)", symbol.getLexemaWithoutScope()));
+
+            if (symbol.isCategory(SymbolCategory.CVR_PARAMETER)) {
+
+                copyRestoreParameters.add(symbol);
+            }
         }
 
         // Variables fuera de ámbito.
@@ -78,9 +68,9 @@ public class FunctionOpener implements AssemblerOperator {
         }
 
         // Los valores de variables fuera de ámbito se leen primero, por lo que se
-        // agregan a la lista
-        // al final.
-        copyRestoreParameter.addAll(outOfScopeVariables);
+        // agregan a la lista al final.
+        List<Symbol> extraReturnedValues = new ArrayList<>(copyRestoreParameters);
+        extraReturnedValues.addAll(outOfScopeVariables);
 
         /**
          * Al invocar a una función, ya se realiza automáticamente la asignación en
@@ -90,10 +80,20 @@ public class FunctionOpener implements AssemblerOperator {
 
         /**
          * El número de retornos está compuesto por el retorno de la función,
-         * más todos los parámetros que sean por cvr. Si no se aclara en el retorno
+         * más todos los parámetros que sean por cvr y todas las variables de otros
+         * ámbitos que puedan ser accedidas. Si no se aclara en el retorno
          * la cantidad de operandos que van a quedar en la pila al salir de la función,
          * se pierden.
          */
-        repository.addCode("(result" + " i32".repeat(1 + copyRestoreParameter.size()) + ")");
+
+        if (this.getNumberOfReturns() + extraReturnedValues.size() > 0) {
+            repository
+                    .addCode("(result" + " i32".repeat(this.getNumberOfReturns() + extraReturnedValues.size()) + ")");
+        }
     }
+
+    // ============================================================================================
+
+    protected abstract int getNumberOfReturns();
+
 }

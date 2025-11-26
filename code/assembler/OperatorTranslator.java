@@ -27,7 +27,7 @@ import assembler.operators.implementations.functions.declaration.Return;
 import assembler.operators.implementations.functions.lambdas.LambdaCloser;
 import assembler.operators.implementations.functions.lambdas.LambdaOpener;
 import assembler.operators.implementations.functions.declaration.FunctionCloser;
-import assembler.operators.implementations.functions.declaration.FunctionOpener;
+import assembler.operators.implementations.functions.declaration.NamedFunctionOpener;
 
 class OperatorTranslator {
 
@@ -60,7 +60,7 @@ class OperatorTranslator {
             case "close-loop" -> LoopCloser.getInstance();
             case "open-lambda" -> LambdaOpener.getInstance();
             case "close-lambda" -> LambdaCloser.getInstance();
-            case "open-function" -> FunctionOpener.getInstance();
+            case "open-function" -> NamedFunctionOpener.getInstance();
             case "close-function" -> FunctionCloser.getInstance();
             case "open-selection" -> SelectionOpener.getInstance();
             case "close-selection" -> SelectionCloser.getInstance();

@@ -294,7 +294,8 @@ public final class SymbolTable {
 
             Symbol symbol = iterator.next();
 
-            // No hace falta contemplar PROGRAM ya que nunca se llama a esta función en un escenario donde eso es necesario.
+            // No hace falta contemplar PROGRAM ya que nunca se llama a esta función en un
+            // escenario donde eso es necesario.
             if (symbol.isCategory(SymbolCategory.FUNCTION) && symbol.getLexema().startsWith(entryBegining)) {
 
                 found = true;
