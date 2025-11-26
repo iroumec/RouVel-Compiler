@@ -9,6 +9,16 @@ MAIN {
         print(" - ");
     } while (X < 3UI);
 
+    X := 5UI / 1UI;
+
+    print(X);
+
+    X := 5UI + X + -60.0;
+
+    print(X);
+
+    ##X := 5UI + 66000.0;##
+
     print("\n");
     print("afuera");
 }

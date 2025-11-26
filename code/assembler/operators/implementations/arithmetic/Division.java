@@ -42,7 +42,7 @@ public class Division extends ArithmeticOperator {
         }
 
         SymbolTable symbolTable = SymbolTable.getInstance();
-        BigDecimal result = firstOperand.getValue().add(secondOperand.getValue());
+        BigDecimal result = firstOperand.getValue().divide(secondOperand.getValue());
 
         switch (pairType) {
             case UINT_UINT, UINT_FLOAT -> {

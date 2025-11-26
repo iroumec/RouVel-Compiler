@@ -51,7 +51,7 @@
             appendOutput("[str] " + str);
         }
 
-        //Errores custom
+        //Errores customizados.
         const tagDivideByZeroException = new WebAssembly.Tag({ parameters: []});
         const tagOverflowException = new WebAssembly.Tag({ parameters: ['i32','i32']});
         const tagNegativeSubtractionException = new WebAssembly.Tag({ parameters: []});
