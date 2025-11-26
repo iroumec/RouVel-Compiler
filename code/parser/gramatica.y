@@ -621,7 +621,6 @@ variable
     | ID '.' ID
         { 
             String scopedVariable = $3 + this.scopeStack.getScopeRoad($1);
-            System.out.println(scopedVariable);
             if ((this.symbolTable.entryExists(scopedVariable)) && (!this.scopeStack.isReacheable($1))) {
                 errorState = true;
                 notifyError(String.format("Variable/función %s existe, pero está fuera del alcance.",$3));
@@ -968,7 +967,7 @@ parametro_formal
                 this.symbolTable.removeEntry($3);
                 this.symbolTable.addEntry(
                     SymbolDirector.createNewParameter(
-                        this.scopeStack.appendScope($1),
+                        this.scopeStack.appendScope($3),
                         ($1 == "CVR" ? ParameterSemanticModel.CVR : ParameterSemanticModel.CV)));
 
                 this.reversePolish.addParameter($3, $1);

@@ -1,0 +1,7 @@
+MAIN {
+
+
+    uint FUN1(uint Y) {
+        return(Y);
+    }
+}

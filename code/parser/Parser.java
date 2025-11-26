@@ -1500,9 +1500,9 @@ case 91:
 //#line 622 "gramatica.y"
 { 
             String scopedVariable = val_peek(0).sval + this.scopeStack.getScopeRoad(val_peek(2).sval);
-            if (!this.scopeStack.isReacheable(val_peek(2).sval)) {
+            if ((this.symbolTable.entryExists(scopedVariable)) && (!this.scopeStack.isReacheable(val_peek(2).sval))) {
                 errorState = true;
-                notifyError(String.format("Variable %s no declarada (no visible).",val_peek(0).sval));
+                notifyError(String.format("Variable/función %s existe, pero está fuera del alcance.",val_peek(0).sval));
             } else if (!this.symbolTable.entryExists(scopedVariable)) {
                 errorState = true;
                 notifyError(String.format("Variable '%s' no declarada en el ámbito '%s'.",val_peek(0).sval,val_peek(2).sval));
@@ -1759,7 +1759,7 @@ case 141:
                 this.symbolTable.removeEntry(val_peek(0).sval);
                 this.symbolTable.addEntry(
                     SymbolDirector.createNewParameter(
-                        this.scopeStack.appendScope(val_peek(2).sval),
+                        this.scopeStack.appendScope(val_peek(0).sval),
                         (val_peek(2).sval == "CVR" ? ParameterSemanticModel.CVR : ParameterSemanticModel.CV)));
 
                 this.reversePolish.addParameter(val_peek(0).sval, val_peek(2).sval);
