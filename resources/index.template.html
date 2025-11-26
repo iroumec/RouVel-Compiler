@@ -44,7 +44,19 @@
 
         // Logs redefinidos para escribir en HTML
         function log_i32(x) { appendOutput("[i32] " + x); }
-        function log_f32(x) { appendOutput("[f32] " + x); }
+        function formatF32(x) {
+            // Fuerza la precisión de float32 y toma hasta 7 cifras significativas.
+            // Esto debido a que JavaScript recibe el flotante, desde Wasm, como double,
+            // con cifras basura al final.
+            const f = Math.fround(x);
+            let s = f.toPrecision(7);
+
+            // Se quitan los ceros finales innecesarios y el punto si queda al final.
+            s = s.replace(/(?:\.0+|(\.\d*?[1-9])0+)$/, '$1');
+
+            return s;
+        }
+        function log_f32(x) { appendOutput("[f32] " + formatF32(x)); }
         function log_string(ptr, len) {
             const bytes = new Uint8Array(memory.buffer, ptr, len);
             const str = new TextDecoder("utf8").decode(bytes);

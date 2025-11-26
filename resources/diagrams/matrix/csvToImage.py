@@ -1,7 +1,7 @@
 import csv
 import matplotlib.pyplot as plt
 
-column_headers = ["L", "l", "d", "U", "I", ".", "F", "-", "P", '"', ":", "=", "!", ">", "<", "%", "#", "n", "s", "t", "Otro"]
+column_headers = ["L", "l", "d", "U", "I", ".", "F", "+", "-", "P", '"', ":", "=", "!", ">", "<", "%", "#", "n", "s", "t", "Otro"]
 
 # -----------------------------
 # Lectura del CSV

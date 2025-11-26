@@ -19,7 +19,7 @@ import lexer.actions.implementations.VariableTokenFinalizer;
 public final class DataManager {
 
     private final static int NUM_ESTADOS = 18;
-    private final static int NUM_SIMBOLOS = 21;
+    private final static int NUM_SIMBOLOS = 22;
     private final static int ESTADO_INICIO = 0;
     private final static int ESTADO_ACEPTACION = 18;
 
@@ -106,9 +106,8 @@ public final class DataManager {
 
         // Estado 5
         Arrays.fill(STATE_TRANSITION_MATRIX[5], -4);
-        STATE_TRANSITION_MATRIX[5][charToIndex('-')] = 6;
         STATE_TRANSITION_MATRIX[5][charToIndex('+')] = 6;
-        STATE_TRANSITION_MATRIX[5][charToIndex(';')] = -4; // Parche.
+        STATE_TRANSITION_MATRIX[5][charToIndex('-')] = 6;
 
         // Estado 6
         Arrays.fill(STATE_TRANSITION_MATRIX[6], -5);
@@ -214,7 +213,6 @@ public final class DataManager {
         Arrays.fill(SEMANTIC_ACTIONS_MATRIX[5], EMPTY);
         SEMANTIC_ACTIONS_MATRIX[5][charToIndex('-')] = LA;
         SEMANTIC_ACTIONS_MATRIX[5][charToIndex('+')] = LA;
-        SEMANTIC_ACTIONS_MATRIX[5][charToIndex(';')] = EMPTY; // Parche.
 
         // Estado 6
         Arrays.fill(SEMANTIC_ACTIONS_MATRIX[6], EMPTY);
@@ -287,20 +285,21 @@ public final class DataManager {
             case 'I' -> 4;
             case '.' -> 5;
             case 'F' -> 6;
-            case '-' -> 7;
-            case '+', '*', '/', '(', ')', '{', '}', '_', ',', ';' -> 8;
-            case '"' -> 9;
-            case ':' -> 10;
-            case '=' -> 11;
-            case '!' -> 12;
-            case '>' -> 13;
-            case '<' -> 14;
-            case '%' -> 15;
-            case '#' -> 16;
-            case 'n' -> 17;
-            case 's' -> 18;
-            case 't' -> 19;
-            default -> 20;
+            case '+' -> 7;
+            case '-' -> 8;
+            case '*', '/', '(', ')', '{', '}', '_', ',', ';' -> 9;
+            case '"' -> 10;
+            case ':' -> 11;
+            case '=' -> 12;
+            case '!' -> 13;
+            case '>' -> 14;
+            case '<' -> 15;
+            case '%' -> 16;
+            case '#' -> 17;
+            case 'n' -> 18;
+            case 's' -> 19;
+            case 't' -> 20;
+            default -> 21;
         };
     }
 
