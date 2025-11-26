@@ -45,19 +45,17 @@ public class Assignment implements AssemblerOperator {
 
         // No se requiere conversión.
         if (secondOperand.isType(SymbolType.UINT)) {
-            repository.addCode(this.getNonConversionAssignment(secondOperand,repository));
+            repository.addCode(this.getNonConversionAssignment(secondOperand, repository));
         } else {
             repository.addCode(this.getConversionAssignment(secondOperand));
         }
 
-        //repository.addCode(String.format("local.set $%s", firstOperand.getLexemaWithoutScope()));
-        repository.addCode(getVariableCode(firstOperand, null, repository).replaceFirst("get","set"));
-        
+        repository.addCode(getVariableCode(firstOperand, null, repository).replaceFirst("get", "set"));
+
         repository.addCode("\n");
     }
 
     // ============================================================================================
-
 
     private String getNonConversionAssignment(Symbol operand, CodeRepository repository) {
 
@@ -67,10 +65,8 @@ public class Assignment implements AssemblerOperator {
                 operand.isCategory(SymbolCategory.CV_PARAMETER) ||
                 operand.isCategory(SymbolCategory.CVR_PARAMETER) ||
                 operand.isCategory(SymbolCategory.AUXILIAR_VARIABLE)) {
-            
-            code = getVariableCode(operand, null, repository);
 
-            //code = String.format("local.get $%s %n", operand.getLexemaWithoutScope());
+            code = getVariableCode(operand, null, repository);
 
         } else { // Si no es una variable, es una constante.
             code = String.format("i32.const %s %n", operand.getValue());
