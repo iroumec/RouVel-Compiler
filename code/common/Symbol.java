@@ -69,40 +69,16 @@ public class Symbol {
     }
 
     // ============================================================================================
-    // Setters
-    // ============================================================================================
-
-    void setLexema(String lexema) {
-        this.lexema.setLength(0);
-        this.lexema.append(lexema);
-    }
-
-    // ============================================================================================
-
-    void setValue(String value) {
-
-        this.value = new BigDecimal(value);
-    }
-
-    // ============================================================================================
-
-    void setCategory(SymbolCategory newCategory) {
-        this.category = newCategory;
-    }
-
-    // ============================================================================================
-
-    void setType(SymbolType newType) {
-        this.type = newType;
-    }
-
-    // ============================================================================================
     // Versionado
     // ============================================================================================
 
-    Symbol getCopy() {
+    /**
+     * @param newLexema
+     * @return Una copia del símbolo con el nuevo lexema especificado.
+     */
+    Symbol getCopy(String newLexema) {
 
-        return new SymbolBuilder(this.lexema.toString()).value(this.value).category(this.category)
+        return new SymbolBuilder(newLexema).value(this.value).category(this.category)
                 .type(this.type).build();
 
     }
@@ -167,12 +143,6 @@ public class Symbol {
             return "";
         }
         return String.join(":", Arrays.copyOfRange(parts, 1, parts.length));
-    }
-
-    // ============================================================================================
-
-    public boolean isNegative() {
-        return this.value.compareTo(BigDecimal.ZERO) < 0;
     }
 
     // ============================================================================================

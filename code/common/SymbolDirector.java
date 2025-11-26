@@ -11,6 +11,13 @@ public class SymbolDirector {
 
     // ============================================================================================
 
+    public static Symbol createProgram(String programName) {
+
+        return new SymbolBuilder(programName).category(SymbolCategory.PROGRAM).build();
+    }
+
+    // ============================================================================================
+
     public static Symbol createNewString(String lexema) {
 
         String finalLexema = lexema;

@@ -89,8 +89,7 @@ public final class SymbolTable {
             Symbol symbol = this.symbolTable.get(oldLexema);
             this.decreaseReferences(oldLexema, symbol);
 
-            Symbol newSymbol = symbol.getCopy();
-            newSymbol.setLexema(newLexema);
+            Symbol newSymbol = symbol.getCopy(newLexema);
 
             this.addEntry(newSymbol);
         }
@@ -112,45 +111,6 @@ public final class SymbolTable {
 
         // Alta de la tabla de símbolos.
         this.addEntry(entry.getNegative());
-    }
-
-    // ============================================================================================
-
-    /**
-     * Modifica el tipo de un símbolo.
-     * 
-     * @param lexema Lexema que mapea al símbolo.
-     * @param type   Nuevo tipo del símbolo.
-     */
-    public void setType(String lexema, SymbolType type) {
-
-        Symbol symbol = this.symbolTable.get(lexema);
-
-        if (symbol != null) {
-            symbol.setType(type);
-        }
-    }
-
-    // ============================================================================================
-
-    public void setValue(String lexema, String value) {
-
-        Symbol symbol = this.symbolTable.get(lexema);
-
-        if (symbol != null) {
-            symbol.setValue(value);
-        }
-    }
-
-    // ============================================================================================
-
-    public void setCategory(String lexema, SymbolCategory category) {
-
-        Symbol symbol = this.symbolTable.get(lexema);
-
-        if (symbol != null) {
-            symbol.setCategory(category);
-        }
     }
 
     // ============================================================================================
@@ -352,21 +312,6 @@ public final class SymbolTable {
         }
 
         return out;
-    }
-
-    // ============================================================================================
-
-    public void setScope(String lexema, String scope) {
-
-        String newLexema = lexema + ":" + scope;
-        Symbol symbol = this.symbolTable.get(lexema);
-
-        // Se decrementan las referencias de la entrada sin ámbito.
-        this.decreaseReferences(lexema, symbol);
-
-        symbol.setLexema(newLexema);
-        addEntry(symbol);
-
     }
 
     // ============================================================================================

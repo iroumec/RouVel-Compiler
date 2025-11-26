@@ -13,13 +13,12 @@
     import common.Monitor;
     import lexer.token.Token;
     import utilities.Printer;
-    import common.SymbolType;
     import common.SymbolTable;
     import semantic.ScopeStack;
-    import common.SymbolCategory;
     import common.SymbolDirector;
     import semantic.ReversePolish;
     import semantic.ReturnsController;
+    import common.ParameterSemanticModel;
 %}
 
 // ********************************************************************************************************************
@@ -53,17 +52,17 @@
 
 // No terminales cuyo valor semántico asociado es un String.
 %type <sval> program_name
-%type <sval> function_start
+%type <sval> left_hand_side
+%type <sval> function_invocation_start
 %type <sval> variable, constant
 %type <sval> identifier, list_of_identifiers
-%type <sval> inicio_funcion, invocacion_funcion
+%type <sval> inicio_funcion, function_invocation
 %type <sval> parametro_lambda, argumento_lambda
 %type <sval> lista_argumentos, argumento, semantica_pasaje
 %type <sval> operador_suma, operador_multiplicacion, comparador
 %type <sval> expression, term, factor, term_simple, factor_simple
 %type <sval> list_of_variables, list_of_constants, multiple_assignment
 
-%type <sval> left_hand_side
 
 // ====================================================================================================================
 // FIN DE DECLARACIONES
@@ -109,7 +108,8 @@ program_name
     : ID
         {
             this.scopeStack.push($1);
-            this.symbolTable.setCategory($1, SymbolCategory.PROGRAM);
+            this.symbolTable.removeEntry($1);
+            this.symbolTable.addEntry(SymbolDirector.createProgram($1));
             this.reversePolish.addSeparation(String.format("Entering scope '%s'...", $1));
             this.reversePolish.recordSafeState();
         }
@@ -568,7 +568,7 @@ factor
         { reversePolish.addPolish($1); }
     | constant
         { reversePolish.addPolish($1); }
-    | invocacion_funcion
+    | function_invocation
     ;
 
 // --------------------------------------------------------------------------------------------------------------------
@@ -579,7 +579,7 @@ factor_simple
         { reversePolish.addPolish($1); }
     | CTE
         { reversePolish.addPolish($1); }
-    | invocacion_funcion
+    | function_invocation
     ;
 
 // --------------------------------------------------------------------------------------------------------------------
@@ -964,9 +964,11 @@ parametro_formal
     : semantica_pasaje UINT ID
         {
             if (this.statementAppearsInValidState()) {
-                this.symbolTable.setType($3, SymbolType.UINT);
-                this.symbolTable.setCategory($3, ($1 == "CVR" ? SymbolCategory.CVR_PARAMETER : SymbolCategory.CV_PARAMETER));
-                this.symbolTable.setScope($3,scopeStack.asText());
+                this.symbolTable.removeEntry($3);
+                this.symbolTable.addEntry(
+                    SymbolDirector.createNewParameter(
+                        this.scopeStack.appendScope($1),
+                        ($1 == "CVR" ? ParameterSemanticModel.CVR : ParameterSemanticModel.CV)));
 
                 this.reversePolish.addParameter($3, $1);
             } else {
@@ -1039,19 +1041,19 @@ sentencia_retorno
 // ********************************************************************************************************************
 
 inline_function_invocation
-    : invocacion_funcion ';'
+    : function_invocation ';'
         { notifyDetection("Invocación de función."); }
 
     // |========================= REGLAS DE ERROR =========================| //
 
-    | invocacion_funcion error
+    | function_invocation error
         { notifyError("La invocación a función debe terminar con ';'."); }
     ;
 
 // --------------------------------------------------------------------------------------------------------------------
 
-invocacion_funcion
-    : function_start '(' lista_argumentos ')' 
+function_invocation
+    : function_invocation_start '(' lista_argumentos ')' 
         {
             if (this.statementAppearsInValidState()) {
 
@@ -1066,7 +1068,7 @@ invocacion_funcion
 
 // --------------------------------------------------------------------------------------------------------------------
 
-function_start
+function_invocation_start
     : variable
         { 
             if (reversePolish.functionExists($1)) {
