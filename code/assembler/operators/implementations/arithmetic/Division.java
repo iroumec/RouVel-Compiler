@@ -7,6 +7,7 @@ import common.SymbolType;
 import utilities.Printer;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 
 import assembler.CodeRepository;
 
@@ -41,8 +42,8 @@ public class Division extends ArithmeticOperator {
             System.exit(1);
         }
 
-        SymbolTable symbolTable = SymbolTable.getInstance();
-        BigDecimal result = firstOperand.getValue().divide(secondOperand.getValue());
+        SymbolTable symbolTable = SymbolTable.getInstance();                        //DECIMAL32 para redondeo en casos como 1/3.
+        BigDecimal result = firstOperand.getValue().divide(secondOperand.getValue(),MathContext.DECIMAL32);
 
         switch (pairType) {
             case UINT_UINT, UINT_FLOAT -> {
