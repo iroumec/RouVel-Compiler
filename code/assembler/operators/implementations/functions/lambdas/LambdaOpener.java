@@ -32,9 +32,11 @@ public class LambdaOpener implements AssemblerOperator {
 
         Symbol symbol = symbolTable.getSymbol(repository.popOperand());
 
-        repository.startBlock(symbol.getScope() + ":" + symbol.getLexemaWithoutScope().replaceFirst(symbolTable.getProgramName(),"main"));
+        repository.startBlock(symbol.getScope() + ":"
+                + symbol.getLexemaWithoutScope().replaceFirst(symbolTable.getProgramName(), "main"));
 
-        repository.addCode(String.format("(func $%s", symbol.getLexema().replaceFirst(symbolTable.getProgramName(),"main")));
+        repository.addCode(
+                String.format("(func $%s", symbol.getLexema().replaceFirst(symbolTable.getProgramName(), "main")));
 
         repository.increaseIndentation();
 

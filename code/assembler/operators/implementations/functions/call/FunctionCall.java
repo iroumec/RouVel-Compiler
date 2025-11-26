@@ -33,18 +33,23 @@ public class FunctionCall implements AssemblerOperator {
         SymbolTable symbolTable = SymbolTable.getInstance();
 
         Symbol functionCalled = symbolTable.getSymbol(repository.popOperand());
-        
+
         loadOutOfScopeVariables(functionCalled, repository);
         loadLocalVariables(functionCalled, repository);
 
-        //repository.addCode(String.format("call $%s %n", functionCalled.getLexemaWithoutScope())); 
-        repository.addCode(String.format("call $%s %n", functionCalled.getLexema().replaceFirst(symbolTable.getProgramName(),"main")));
+        // repository.addCode(String.format("call $%s %n",
+        // functionCalled.getLexemaWithoutScope()));
+        repository.addCode(String.format("call $%s %n",
+                functionCalled.getLexema().replaceFirst(symbolTable.getProgramName(), "main")));
         repository.addCode("\n");
-        readReturn(repository);
+
+        if (!functionCalled.getLexemaWithoutScope().startsWith("lambda")) {
+            readReturn(repository);
+        }
 
         readLocalVariables(functionCalled, repository);
         readOutOfScopeVariables(functionCalled, repository);
-        
+
     }
 
     // ============================================================================================
@@ -71,7 +76,7 @@ public class FunctionCall implements AssemblerOperator {
     // ============================================================================================
 
     public void loadOutOfScopeVariables(Symbol function, CodeRepository repository) {
-        
+
         SymbolTable symbolTable = SymbolTable.getInstance();
 
         // Variables fuera de ámbito.
@@ -80,7 +85,9 @@ public class FunctionCall implements AssemblerOperator {
         for (Symbol symbol : outOfScopeVariables) {
 
             if (!symbol.getScope()
-                    .endsWith(symbolTable.getFunctionSymbol(repository.getCurrentScope()).getLexemaWithoutScope())) { // Variables no globales
+                    .endsWith(symbolTable.getFunctionSymbol(repository.getCurrentScope()).getLexemaWithoutScope())) { // Variables
+                                                                                                                      // no
+                                                                                                                      // globales
 
                 repository.addCode(";; Pasaje de las variables de ámbitos superiores.");
                 repository
@@ -93,8 +100,8 @@ public class FunctionCall implements AssemblerOperator {
 
                 repository.addCode(";; Pasaje de las variables de ámbitos superiores.");
                 repository.addCode(String.format("local.get $%s",
-                    symbol.getLexemaWithoutScope()));
-                
+                        symbol.getLexemaWithoutScope()));
+
                 repository.addCode("\n");
             }
         }

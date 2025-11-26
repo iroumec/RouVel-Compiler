@@ -107,7 +107,7 @@ caddy file-server --listen :8000
 
 #### 3. Abrir en el navegador
 
-Navegue a: **http://localhost:8000**
+Navegue a: **<http://localhost:8000>**
 
 #### 4. Detener el servidor
 

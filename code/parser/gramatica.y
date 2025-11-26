@@ -379,7 +379,7 @@ multiple_assignment
                 
                     if (variables.length < constants.length) {
 
-                        notifySemanticWarning(String.format(
+                        notifyWarning(String.format(
                                 "El número de variables (%d) en el lado izquierdo de la asignación "
                                 + "es menor al número de constantes (%d) en el lado derecho de esta. "
                                 + "Las constantes sobrantes serán descartadas.",
@@ -1332,16 +1332,6 @@ private void notifyDetection(String message) {
 private void notifyWarning(String warningMessage) {
 
     monitor.addWarning(String.format(
-        "WARNING SINTÁCTICA: Línea %d: %s",
-        monitor.getLineNumber(), warningMessage
-    ));
-}
-
-// --------------------------------------------------------------------------------------------------------------------
-
-private void notifySemanticWarning(String warningMessage) {
-
-    monitor.addWarning(String.format(
         "WARNING SEMÁNTICA: Línea %d: %s",
         monitor.getLineNumber(), warningMessage
     ));
@@ -1403,7 +1393,7 @@ private void treatInvalidState(String statementName) {
 // --------------------------------------------------------------------------------------------------------------------
 
 private void showOmittedStatementNotification(String statementName) {
-    notifySemanticWarning(statementName + " no alcanzable. No se ejecutará.");
+    notifyWarning(statementName + " no alcanzable. No se ejecutará.");
 }
 
 // --------------------------------------------------------------------------------------------------------------------
