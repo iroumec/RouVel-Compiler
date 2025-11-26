@@ -1,0 +1,20 @@
+FUNCIONES {
+    uint FUNCION (uint X, uint Y, uint Z) {
+        return (X*Y+Z);
+    }
+
+    uint FUNCIONCVR (cvr uint X, uint Y) {
+        X := 5UI;
+        return (Y+X);
+    }
+
+    uint A,B,C;
+
+    A := FUNCION(1UI->X,2UI->Y,3UI->Z);         ## Invocación a función ##
+    B := FUNCION(2UI->Y,3UI->Z,1UI->X);         ## Invocación a función con argumentos en diferente orden ##
+    C := FUNCIONCVR(A->X,B->Y);                 ## Invocación a funcion con parametro CVR ##
+
+    print(A);
+    print(B);
+    print(C);
+}

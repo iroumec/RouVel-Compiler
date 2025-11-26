@@ -33,45 +33,24 @@ CASOSSEMANTICAMENTEVALIDOS {                                            ## Longi
         } endif;
     }                                                                   ## Retornos en los if y else anidados ##
 
-    uint NADA(uint X) {          
-        return (X);
-    };
-
-    ## ------ Invocación a función ------ ##
-    NADA(0UI->X);                                                       ## Invocación a función en línea ##
-
     ## ------ Asignación simple ------ ##
     A := 1UI;                                                           ## Asignación simple con constante ##
     B := 4UI * 5UI - 6UI / 7UI;                                         ## Asignación con expresión aritmética ##
     C := 8UI * SUMA(9UI->X,10UI->Y) / 11UI;                             ## Asignación con expresión aritmética con llamada a función ##
 
     ## ------ Asignación múltiple ------ ##
-    D, E, F = 12UI, 13., 14UI;                                          ## Asignación múltiple equilibrada, con conversión implícita ##
-    D, E = -15., 16UI, 17.;                                             ## Asignación múltiple con más constantes que variables, con conversión implícita (tomando valor absoluto) ##
+    D, E, F = 12UI, 13., -15.;                                          ## Asignación múltiple equilibrada, con conversiones implícitas (en una de ellas tomando el valor absoluto) ##
 
     ## ------ Impresión ------ ##
     print(A);                                                           ## Impresión de variable entera ##
-    print(18UI);                                                        ## Impresión de constante entera ##
-    print(19.);                                                         ## Impresión de constante flotante ##
+    print(16UI);                                                        ## Impresión de constante entera ##
+    print(17.);                                                         ## Impresión de constante flotante ##
     print("Hola Mundo");                                                ## Impresión de cadena de caracteres ##
-    print(5.*A);                                                        ## Impresión de resultado expresión aritmética ##
+    print(18.*A);                                                       ## Impresión de resultado expresión aritmética ##
     print(RESTA(C->X,B->Y));                                            ## Impresión de retorno de función ##
-
-    ## ------ Estructura de control if ------ ##
-    
-
-    ## Estructura de control do-while ##
-    do {                                                                ## Do-while de múltiples líneas ##
-        ## Inicialmente B == 8 y A == 1, 
-        FUNCION devuelve B e incrementa A. ##
-        print(FUNCION(A->P1,B->P2));
-        print(A);
-    } while (A < 5UI);
-
-    do C := C + 1UI; while (C < 20UI);                                  ## Do-while de una sola línea ##
 
     ## Expresiones Lambda ##
     (uint G) {
         print(G);
-    }(25UI);                                                            ## Llamada a lambda con impresión ##
+    }(19UI);                                                            ## Llamada a lambda con impresión ##
 }

@@ -138,6 +138,7 @@ public final class CodeRepository {
 
     public String getCurrentScope() {
         SymbolTable symbolTable = SymbolTable.getInstance();
+        System.out.println(this.blockStack.peek().scope());
         return this.blockStack.peek().scope().replaceFirst("main", symbolTable.getProgramName());
     }
 

@@ -28,11 +28,13 @@ public class LambdaOpener implements AssemblerOperator {
     @Override
     public void generateAssembler(CodeRepository repository) {
 
-        Symbol symbol = SymbolTable.getInstance().getSymbol(repository.popOperand());
+        SymbolTable symbolTable = SymbolTable.getInstance();
 
-        repository.startBlock(symbol.getScope() + ":" + symbol.getLexemaWithoutScope());
+        Symbol symbol = symbolTable.getSymbol(repository.popOperand());
 
-        repository.addCode(String.format("(func $%s", symbol.getLexemaWithoutScope()));
+        repository.startBlock(symbol.getScope() + ":" + symbol.getLexemaWithoutScope().replaceFirst(symbolTable.getProgramName(),"main"));
+
+        repository.addCode(String.format("(func $%s", symbol.getLexema().replaceFirst(symbolTable.getProgramName(),"main")));
 
         repository.increaseIndentation();
 
@@ -48,6 +50,8 @@ public class LambdaOpener implements AssemblerOperator {
     private void dumpParameters(CodeRepository repository) {
 
         // Las funciones lambda solo tienen parámetro por CV.
+
+        System.out.println(repository.getCurrentScope());
         Symbol parameter = SymbolTable.getInstance().get(repository.getCurrentScope(), SymbolCategory.CV_PARAMETER)
                 .getFirst();
 

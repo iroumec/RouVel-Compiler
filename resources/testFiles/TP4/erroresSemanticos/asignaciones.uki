@@ -1,0 +1,7 @@
+MULTIPLES {
+    uint A, B, C;
+
+    A, B, C = 4UI, 5UI;                 ## Error semántico ##
+    A, B, C = 4UI, 5UI, 6UI;            ## Válido ##
+    A, B, C = 4UI, 5UI, 6UI, 7UI;       ## Warning semántica ##
+}
