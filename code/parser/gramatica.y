@@ -370,7 +370,7 @@ multiple_assignment
 
                 if (variables.length > constants.length) {
 
-                    notifyError(String.format(
+                    notifySemanticError(String.format(
                             "El número de variables (%d) del lado izquierdo de la asignación "
                             + "no puede superar el número de constantes (%d) en el lado derecho.",
                             variables.length, constants.length));
@@ -379,7 +379,7 @@ multiple_assignment
                 
                     if (variables.length < constants.length) {
 
-                        notifyWarning(String.format(
+                        notifySemanticWarning(String.format(
                                 "El número de variables (%d) en el lado izquierdo de la asignación "
                                 + "es menor al número de constantes (%d) en el lado derecho de esta. "
                                 + "Las constantes sobrantes serán descartadas.",
@@ -1339,6 +1339,16 @@ private void notifyWarning(String warningMessage) {
 
 // --------------------------------------------------------------------------------------------------------------------
 
+private void notifySemanticWarning(String warningMessage) {
+
+    monitor.addWarning(String.format(
+        "WARNING SEMÁNTICA: Línea %d: %s",
+        monitor.getLineNumber(), warningMessage
+    ));
+}
+
+// --------------------------------------------------------------------------------------------------------------------
+
 private void notifyError(String errorMessage) {
 
     monitor.addError(String.format(
@@ -1393,7 +1403,7 @@ private void treatInvalidState(String statementName) {
 // --------------------------------------------------------------------------------------------------------------------
 
 private void showOmittedStatementNotification(String statementName) {
-    notifyWarning(statementName + " no alcanzable. No se ejecutará.");
+    notifySemanticWarning(statementName + " no alcanzable. No se ejecutará.");
 }
 
 // --------------------------------------------------------------------------------------------------------------------

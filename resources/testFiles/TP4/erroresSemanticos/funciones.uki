@@ -1,0 +1,14 @@
+## Invocación a función con argumento no referenciable como parametro CVR ##
+FUNCIONES {
+
+    uint FUNCIONCVR (cvr uint X, uint Y) {
+        X := 5UI;
+        return (Y+X);
+        X := 2UI;       ## Warning semántica ##
+    }
+
+    uint A;
+    A := 1UI;
+
+    A := FUNCIONCVR(1UI->X,A->Y);         
+}
