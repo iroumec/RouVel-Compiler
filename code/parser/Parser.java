@@ -748,7 +748,7 @@ final static String yyrule[] = {
 "parametro_lambda : '(' UINT ID ')'",
 };
 
-//#line 1234 "gramatica.y"
+//#line 1231 "gramatica.y"
 
 // ====================================================================================================================
 // INICIO DE CÓDIGO (Segmento Ocional)
@@ -861,6 +861,8 @@ private void notifyError(String errorMessage) {
     ));
 }
 
+// --------------------------------------------------------------------------------------------------------------------
+
 private void notifySemanticError(String errorMessage) {
 
     monitor.addError(String.format(
@@ -942,7 +944,7 @@ public boolean isPrintOn() {
 // ====================================================================================================================
 // FIN DE CÓDIGO
 // ====================================================================================================================
-//#line 874 "Parser.java"
+//#line 876 "Parser.java"
 //###############################################################
 // method: yylexdebug : check lexer state
 //###############################################################
@@ -1487,7 +1489,7 @@ case 90:
             if (!this.symbolTable.entryExists(this.scopeStack.appendScope(val_peek(0).sval))) {
                 /* De entrar acá, la variable debe ser local.*/
                 errorState = true;
-                notifyError(String.format("Variable %s no declarada.", val_peek(0).sval));
+                notifySemanticError(String.format("Variable %s no declarada.", val_peek(0).sval));
             } else {
                 /* A la entrada sin el scope, se le agrega el scope.*/
                 /* Se combina con otra entrada en caso de coincidir el scope.*/
@@ -1502,10 +1504,10 @@ case 91:
             String scopedVariable = val_peek(0).sval + this.scopeStack.getScopeRoad(val_peek(2).sval);
             if ((this.symbolTable.entryExists(scopedVariable)) && (!this.scopeStack.isReacheable(val_peek(2).sval))) {
                 errorState = true;
-                notifyError(String.format("Variable/función %s existe, pero está fuera del alcance.",val_peek(0).sval));
+                notifySemanticError(String.format("Variable/función %s existe, pero está fuera del alcance.",val_peek(0).sval));
             } else if (!this.symbolTable.entryExists(scopedVariable)) {
                 errorState = true;
-                notifyError(String.format("Variable '%s' no declarada en el ámbito '%s'.",val_peek(0).sval,val_peek(2).sval));
+                notifySemanticError(String.format("Variable '%s' no declarada en el ámbito '%s'.",val_peek(0).sval,val_peek(2).sval));
             }
 
             yyval.sval = scopedVariable;
@@ -1850,28 +1852,25 @@ break;
 case 155:
 //#line 1073 "gramatica.y"
 { 
-            if (reversePolish.functionExists(val_peek(0).sval)) {
+            if (this.reversePolish.functionExists(val_peek(0).sval)) {
                 this.reversePolish.startFunctionCall(val_peek(0).sval);
-            } else {
-                notifySemanticError(String.format("La función '%s' no fue declarada.", val_peek(0).sval));
-                errorState = true;
             }
         }
 break;
 case 157:
-//#line 1088 "gramatica.y"
+//#line 1085 "gramatica.y"
 { yyval.sval = val_peek(0).sval; }
 break;
 case 158:
-//#line 1095 "gramatica.y"
+//#line 1092 "gramatica.y"
 { this.reversePolish.addArgument(val_peek(0).sval); }
 break;
 case 159:
-//#line 1100 "gramatica.y"
+//#line 1097 "gramatica.y"
 { notifyError("Falta de especificación del parámetro formal al que corresponde el parámetro real."); errorState = true; }
 break;
 case 160:
-//#line 1109 "gramatica.y"
+//#line 1106 "gramatica.y"
 {
             if (this.statementAppearsInValidState()) {
                 reversePolish.addPolish("print");
@@ -1882,33 +1881,33 @@ case 160:
         }
 break;
 case 161:
-//#line 1121 "gramatica.y"
+//#line 1118 "gramatica.y"
 {
             errorState = true;
             replaceLastErrorWith("La sentencia 'print' debe finalizar con ';'.");
         }
 break;
 case 163:
-//#line 1135 "gramatica.y"
+//#line 1132 "gramatica.y"
 { notifyError("La sentencia 'print' requiere de al menos un argumento."); errorState = true; }
 break;
 case 164:
-//#line 1137 "gramatica.y"
+//#line 1134 "gramatica.y"
 {
             errorState = true;
             notifyError("El imprimible debe encerrarse entre paréntesis.");
         }
 break;
 case 165:
-//#line 1142 "gramatica.y"
+//#line 1139 "gramatica.y"
 { notifyError("La sentencia 'print' requiere de un argumento entre paréntesis."); errorState = true; }
 break;
 case 166:
-//#line 1149 "gramatica.y"
+//#line 1146 "gramatica.y"
 { reversePolish.addPolish(val_peek(0).sval); }
 break;
 case 168:
-//#line 1159 "gramatica.y"
+//#line 1156 "gramatica.y"
 { 
             if (this.statementAppearsInValidState()) {
 
@@ -1925,23 +1924,23 @@ case 168:
         }
 break;
 case 169:
-//#line 1177 "gramatica.y"
+//#line 1174 "gramatica.y"
 { notifyError("La expresión 'lambda' debe terminar con ';'."); errorState = false; }
 break;
 case 170:
-//#line 1180 "gramatica.y"
+//#line 1177 "gramatica.y"
 { replaceLastErrorWith("Falta delimitador de cierre en expresión 'lambda'."); errorState = false; }
 break;
 case 171:
-//#line 1182 "gramatica.y"
+//#line 1179 "gramatica.y"
 { replaceLastErrorWith("Faltan delimitadores en el conjunto de sentencias de la expresión 'lambda'."); errorState = false; }
 break;
 case 172:
-//#line 1184 "gramatica.y"
+//#line 1181 "gramatica.y"
 { replaceLastErrorWith("Falta delimitador de apertura en expresión 'lambda'."); errorState = false; }
 break;
 case 173:
-//#line 1191 "gramatica.y"
+//#line 1188 "gramatica.y"
 {
             if (this.statementAppearsInValidState()) {
                 this.reversePolish.closeLambdaDeclaration();
@@ -1951,19 +1950,19 @@ case 173:
         }
 break;
 case 174:
-//#line 1203 "gramatica.y"
+//#line 1200 "gramatica.y"
 { yyval.sval = val_peek(1).sval; }
 break;
 case 175:
-//#line 1208 "gramatica.y"
+//#line 1205 "gramatica.y"
 { notifyError("El argumento de la expresión 'lambda' no puede estar vacío."); errorState = true; }
 break;
 case 176:
-//#line 1211 "gramatica.y"
+//#line 1208 "gramatica.y"
 { notifyError("La expresión 'lambda' requiere de un argumento entre paréntesis."); errorState = true; }
 break;
 case 177:
-//#line 1218 "gramatica.y"
+//#line 1215 "gramatica.y"
 {
             this.reversePolish.addSeparation("Entering lambda expression body...");
             String lambdaName = this.reversePolish.startLambdaDeclaration(this.scopeStack.asText());
@@ -1974,7 +1973,7 @@ case 177:
             this.symbolTable.addEntry(SymbolDirector.createNewParameter(yyval.sval));
         }
 break;
-//#line 1901 "Parser.java"
+//#line 1900 "Parser.java"
 //########## END OF USER-SUPPLIED ACTIONS ##########
     }//switch
     //#### Now let's reduce... ####

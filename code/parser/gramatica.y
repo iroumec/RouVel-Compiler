@@ -610,7 +610,7 @@ variable
             if (!this.symbolTable.entryExists(this.scopeStack.appendScope($1))) {
                 // De entrar acá, la variable debe ser local.
                 errorState = true;
-                notifyError(String.format("Variable %s no declarada.", $1));
+                notifySemanticError(String.format("Variable %s no declarada.", $1));
             } else {
                 // A la entrada sin el scope, se le agrega el scope.
                 // Se combina con otra entrada en caso de coincidir el scope.
@@ -623,10 +623,10 @@ variable
             String scopedVariable = $3 + this.scopeStack.getScopeRoad($1);
             if ((this.symbolTable.entryExists(scopedVariable)) && (!this.scopeStack.isReacheable($1))) {
                 errorState = true;
-                notifyError(String.format("Variable/función %s existe, pero está fuera del alcance.",$3));
+                notifySemanticError(String.format("Variable/función %s existe, pero está fuera del alcance.",$3));
             } else if (!this.symbolTable.entryExists(scopedVariable)) {
                 errorState = true;
-                notifyError(String.format("Variable '%s' no declarada en el ámbito '%s'.",$3,$1));
+                notifySemanticError(String.format("Variable '%s' no declarada en el ámbito '%s'.",$3,$1));
             }
 
             $$ = scopedVariable;
@@ -1071,11 +1071,8 @@ function_invocation
 function_invocation_start
     : variable
         { 
-            if (reversePolish.functionExists($1)) {
+            if (this.reversePolish.functionExists($1)) {
                 this.reversePolish.startFunctionCall($1);
-            } else {
-                notifySemanticError(String.format("La función '%s' no fue declarada.", $1));
-                errorState = true;
             }
         }
     ;
@@ -1342,6 +1339,8 @@ private void notifyError(String errorMessage) {
         monitor.getLineNumber(), errorMessage
     ));
 }
+
+// --------------------------------------------------------------------------------------------------------------------
 
 private void notifySemanticError(String errorMessage) {
 
