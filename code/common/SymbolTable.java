@@ -259,8 +259,10 @@ public final class SymbolTable {
             } else {
 
                 // TODO: variables auxiliares NO.
-                if (symbol.isCategory(SymbolCategory.VARIABLE)
-                        && symbol.getScope().equals(ofFunction.getScope() + ":" + ofFunction.getLexemaWithoutScope())) {
+                if ((symbol.isCategory(SymbolCategory.VARIABLE) || 
+                    symbol.isCategory(SymbolCategory.CVR_PARAMETER) ||
+                    symbol.isCategory(SymbolCategory.CV_PARAMETER)
+                    ) && symbol.getScope().equals(ofFunction.getScope() + ":" + ofFunction.getLexemaWithoutScope())) {
                     // Esta condición creo que no es necesaria.
 
                     out.add(symbol);

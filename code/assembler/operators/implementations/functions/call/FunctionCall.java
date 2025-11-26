@@ -33,6 +33,7 @@ public class FunctionCall implements AssemblerOperator {
         SymbolTable symbolTable = SymbolTable.getInstance();
 
         Symbol functionCalled = symbolTable.getSymbol(repository.popOperand());
+        
         loadOutOfScopeVariables(functionCalled, repository);
         loadLocalVariables(functionCalled, repository);
 
@@ -40,8 +41,10 @@ public class FunctionCall implements AssemblerOperator {
         repository.addCode(String.format("call $%s %n", functionCalled.getLexema().replaceFirst(symbolTable.getProgramName(),"main")));
         repository.addCode("\n");
         readReturn(repository);
-        readOutOfScopeVariables(functionCalled, repository);
+
         readLocalVariables(functionCalled, repository);
+        readOutOfScopeVariables(functionCalled, repository);
+        
     }
 
     // ============================================================================================
@@ -104,7 +107,7 @@ public class FunctionCall implements AssemblerOperator {
         SymbolTable symbolTable = SymbolTable.getInstance();
 
         // Variables fuera de ámbito.
-        List<Symbol> outOfScopeVariables = symbolTable.getOutOfScopeVariables(function);
+        List<Symbol> outOfScopeVariables = symbolTable.getOutOfScopeVariables(function).reversed();
 
         for (Symbol symbol : outOfScopeVariables) {
 
@@ -163,7 +166,8 @@ public class FunctionCall implements AssemblerOperator {
         // Variables locales, que se pasaron como parámetro a la otra función
         // para que pueda utilizarlas.
         List<Symbol> localVariables = symbolTable
-                .getLocalVariablesOfUntil(symbolTable.getFunctionSymbol(repository.getCurrentScope()), functionCalled);
+                .getLocalVariablesOfUntil(symbolTable.getFunctionSymbol(repository.getCurrentScope()), functionCalled)
+                .reversed();
 
         for (Symbol symbol : localVariables) {
 

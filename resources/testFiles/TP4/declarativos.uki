@@ -29,9 +29,9 @@ DECLARATIVOS {
                 }
                 return (DECLARATIVOS.F(I(A->J)->X));
             }
-            return (A);
+            return (X(A->A));
         }
-        return (1UI);
+        return (A(X+F->A));
     }
     A := F(3UI->X) * G(14UI->F);
     print(A);
