@@ -1,8 +1,0 @@
-MAIN {
-    uint F1(cvr uint A) {
-        return (A);
-    }
-
-    uint X, Y;
-    X := F1(Y -> B);
-}

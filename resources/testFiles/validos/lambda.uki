@@ -1,0 +1,14 @@
+LAMBDA {
+
+    uint X;
+    (uint A) { if (A > .23) print(A); endif; } (8UI);
+
+    (uint A){print (A); }(3UI);
+
+    (uint A) { if (A > 3UI) print("Hola"); endif; } (4UI);
+
+    uint E;
+    (uint G) { E := G; } (10.0);
+
+    G := 3UI;
+}

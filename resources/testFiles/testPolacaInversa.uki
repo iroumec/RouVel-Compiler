@@ -1,8 +1,0 @@
-MAIN {
-    uint SUMA(uint A, uint B) {
-        return(A + B);
-    }
-
-    uint X;
-    X := X * SUMA(X->A,1UI->B);
-}

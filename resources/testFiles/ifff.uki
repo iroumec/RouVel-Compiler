@@ -1,9 +1,0 @@
-MAIN {
-    uint F6(uint X) {
-        uint A;
-        if (X > 3UI) 
-            A := 5UI;
-        endif;
-        return (A);
-    }
-}

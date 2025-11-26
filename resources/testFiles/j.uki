@@ -1,4 +1,0 @@
-MAIN {
-
-    (uint A) { if (X > 3UI) print(9UI); } (4UI);
-}

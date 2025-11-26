@@ -1,5 +1,0 @@
-MAIN {
-
-    uint X;
-    (uint A) { if (A > .23) print(A); endif; } (8UI);
-}
