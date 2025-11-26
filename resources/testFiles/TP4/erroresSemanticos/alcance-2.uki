@@ -1,10 +1,12 @@
-DLCANCE {
+ALCANCE {
     uint F (uint X) {
         uint A (uint Y) {
             uint B;
             return (Y*B);
         }
-        A.B := 5UI;
+        A.B := 5UI;             ## El ambito de A no está al alcance ##
+        C.B := 1UI;             ## El ambito C no existe ##
+        ALCANCE.H := 2UI;       ## El identificador 'H' no corresponde a ninguna variable/función declarada en el ámbito 'ALCANCE'. ##
         return (A(2UI->Y));
     }
 
