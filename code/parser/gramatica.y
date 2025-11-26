@@ -623,7 +623,7 @@ variable
             String scopeRoad = this.scopeStack.getScopeRoad($1);
 
             if (scopeRoad == null) {
-                if (this.symbolTable.entryExists($1 + ":" + this.scopeStack.asText()))
+                if (this.symbolTable.existsFunction($1))
                     notifySemanticError(String.format("El ámbito de %s no está al alcance.",$1));
                 else 
                     notifySemanticError(String.format("El ámbito %s no existe.",$1));

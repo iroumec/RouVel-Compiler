@@ -4,7 +4,7 @@ ALCANCE {
             uint B;
             return (Y*B);
         }
-        A.B := 5UI;             ## El ambito de A no está al alcance ##
+        ALCANCE.B := 2UI;       ## El identificador 'B' no corresponde a ninguna variable/función declarada en el ámbito 'ALCANCE'. ##
         return (A(2UI->Y));
     }
 

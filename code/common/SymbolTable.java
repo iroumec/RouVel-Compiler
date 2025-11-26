@@ -282,6 +282,30 @@ public final class SymbolTable {
 
     // ============================================================================================
 
+    public boolean existsFunction(String lexema) {
+        Iterator<Symbol> iterator = this.symbolTable.values().iterator();
+
+        boolean found = false;
+
+        // Entrada de la tabla de símbolos que se busca
+        String entryBegining = lexema + ":";
+
+        while (!found && iterator.hasNext()) {
+
+            Symbol symbol = iterator.next();
+
+            // No hace falta contemplar PROGRAM ya que nunca se llama a esta función en un escenario donde eso es necesario.
+            if (symbol.isCategory(SymbolCategory.FUNCTION) && symbol.getLexema().startsWith(entryBegining)) {
+
+                found = true;
+            }
+        }
+
+        return found;
+    }
+
+    // ============================================================================================
+
     public List<Symbol> getStrings() {
 
         List<Symbol> out = new ArrayList<>();
