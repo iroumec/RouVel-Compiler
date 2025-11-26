@@ -1,0 +1,34 @@
+## Este programa calcula los divisores de un número N indicado. ##
+DIVISORES {
+    uint MODULO (uint X, uint Y) {
+        uint AUX;
+
+        AUX := X + Y;
+        do { AUX := AUX - Y; } while ( AUX >= Y );
+
+        return (AUX);
+    }
+
+    uint N;
+    N := 100UI;   
+
+    uint AUX1, RESTO;
+
+    print("Divisores de: ");
+    print(N);
+    print("----------------------");
+
+    AUX1 := 1UI;
+    do {
+        RESTO := MODULO(N->X, AUX1->Y);
+
+        if (RESTO == 0UI) {
+            print(AUX1);   
+        } endif;
+
+        AUX1 := AUX1 + 1UI;
+    } while (AUX1 <= N);
+
+    print("----------------------");
+
+}
