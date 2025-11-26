@@ -1,0 +1,14 @@
+MAIN {
+
+    uint X;
+
+    X := 0UI;
+    do {
+        X := X + 1UI;
+        print(X);
+        print(" - ");
+    } while (X < 3UI);
+
+    print("\n");
+    print("afuera");
+}
