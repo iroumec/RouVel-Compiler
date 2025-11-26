@@ -16,7 +16,7 @@ public interface AssemblerOperator {
     // ============================================================================================
 
     default String getCode(Symbol operand, SymbolType conversionType, CodeRepository repository) {
-
+ 
         if (operand.isCategory(SymbolCategory.CONSTANT)) {
             if (operand.isType(SymbolType.UINT)) {
                 return getUINTCode(operand, conversionType, repository);
