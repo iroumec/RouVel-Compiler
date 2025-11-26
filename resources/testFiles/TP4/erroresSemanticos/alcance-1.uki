@@ -1,0 +1,9 @@
+ALCANCE {
+    uint F (uint X) {
+        uint A;
+        return (A*X);
+    }
+
+    F.A := 1UI;
+    print(F(2UI->X));
+}

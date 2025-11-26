@@ -3,6 +3,8 @@ package semantic;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
+import common.SymbolTable;
+
 public class ScopeStack {
 
     // ============================================================================================
@@ -57,14 +59,17 @@ public class ScopeStack {
     public boolean isReacheable(String scope) {
         if (asText().indexOf(scope) == 0) // El ámbito es el nombre del programa.
             return true;
+        
         return asText().contains(":" + scope);
     }
 
     // ============================================================================================
 
     public String getScopeRoad(String scope) {
-        if (asText().indexOf(scope) == 0)
+
+        if (SymbolTable.getInstance().getProgramName() == scope)
             return ":" + scope;
+        
         return ":" + asText().split(":" + scope + ":", 2)[0] + ":" + scope;
     }
 

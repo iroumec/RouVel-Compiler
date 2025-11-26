@@ -621,9 +621,10 @@ variable
     | ID '.' ID
         { 
             String scopedVariable = $3 + this.scopeStack.getScopeRoad($1);
-            if (!this.scopeStack.isReacheable($1)) {
+            System.out.println(scopedVariable);
+            if ((this.symbolTable.entryExists(scopedVariable)) && (!this.scopeStack.isReacheable($1))) {
                 errorState = true;
-                notifyError(String.format("Variable %s no declarada (no visible).",$3));
+                notifyError(String.format("Variable/función %s existe, pero está fuera del alcance.",$3));
             } else if (!this.symbolTable.entryExists(scopedVariable)) {
                 errorState = true;
                 notifyError(String.format("Variable '%s' no declarada en el ámbito '%s'.",$3,$1));

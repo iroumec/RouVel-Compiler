@@ -1,0 +1,12 @@
+DLCANCE {
+    uint F (uint X) {
+        uint A (uint Y) {
+            uint B;
+            return (Y*B);
+        }
+        A.B := 5UI;
+        return (A(2UI->Y));
+    }
+
+    print(F(2UI->X));
+}
