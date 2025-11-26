@@ -21,11 +21,11 @@ CASOSSEMANTICAMENTEVALIDOS {                                            ## Longi
         }
 
         if (P2 > P1) {
-            P1 := INCREMENTO(P1);                                       ## Modificación de P1 que se verá reflejada (si se ejecuta) ##
+            P1 := INCREMENTO(P1->V);                                       ## Modificación de P1 que se verá reflejada (si se ejecuta) ##
             return (P2);
         } else {
             if(CASOSSEMANTICAMENTEVALIDOS.SUMA(P2->Y,P1->X) < 10UI) {   ## Acceso a función fuera del scope, con parámetros en distinto orden al declarado ##
-                P2 := P2 - 1UI;
+                P2 := P2 + 1UI;
                 return (P2);
             } else {
                 return (0UI);
@@ -47,10 +47,5 @@ CASOSSEMANTICAMENTEVALIDOS {                                            ## Longi
     print(17.);                                                         ## Impresión de constante flotante ##
     print("Hola Mundo");                                                ## Impresión de cadena de caracteres ##
     print(18.*A);                                                       ## Impresión de resultado expresión aritmética ##
-    print(RESTA(C->X,B->Y));                                            ## Impresión de retorno de función ##
-
-    ## Expresiones Lambda ##
-    (uint G) {
-        print(G);
-    }(19UI);                                                            ## Llamada a lambda con impresión ##
+    print(RESTA(C->X,1UI->Y));                                            ## Impresión de retorno de función ##
 }
