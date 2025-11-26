@@ -53,14 +53,16 @@ public interface AssemblerOperator {
 
             SymbolTable symbolTable = SymbolTable.getInstance();
 
-            Symbol currentFunction = symbolTable.getFunctionSymbol(repository.getCurrentScope().replaceFirst("main",symbolTable.getProgramName()));
+            Symbol currentFunction = symbolTable
+                    .getFunctionSymbol(repository.getCurrentScope().replaceFirst("main", symbolTable.getProgramName()));
 
             // Si es local...
-            if (operand.getScope().equals(currentFunction.getScope() + ":" + currentFunction.getLexemaWithoutScope()) ||
-                operand.isCategory(SymbolCategory.AUXILIAR_VARIABLE)) {
-                    
+            if (operand.getScope().equals(currentFunction.getScope() + ":" + currentFunction.getLexemaWithoutScope())
+                    || currentFunction.getScope().isBlank() || operand.isCategory(SymbolCategory.AUXILIAR_VARIABLE)) {
+
                 out = String.format("local.get $%s", operand.getLexemaWithoutScope());
             } else {
+
                 out = String.format("local.get $%s",
                         operand.getLexema().replaceFirst(symbolTable.getProgramName(), "main"));
             }
