@@ -13,6 +13,8 @@ import utilities.ResultsExporter;
 
 public class WebAssemblyExporter {
 
+    // ============================================================================================
+
     private static final String watPath = "outputs/wat/";
     private static final String wasmPath = "outputs/wasm/";
 

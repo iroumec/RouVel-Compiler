@@ -2,6 +2,8 @@ package assembler.operators.implementations.comparison;
 
 public class Equal implements ComparisonOperator {
 
+    // ============================================================================================
+
     private Equal() {
     }
 

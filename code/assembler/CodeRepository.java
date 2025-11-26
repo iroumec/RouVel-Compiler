@@ -138,8 +138,7 @@ public final class CodeRepository {
 
     public String getCurrentScope() {
         SymbolTable symbolTable = SymbolTable.getInstance();
-        return this.blockStack.peek().scope().
-            replaceFirst("main",symbolTable.getProgramName());
+        return this.blockStack.peek().scope().replaceFirst("main", symbolTable.getProgramName());
     }
 
     // ============================================================================================
@@ -181,7 +180,8 @@ public final class CodeRepository {
         String stringsSection = Dumper.dumpStrings();
         /**
          * Puede ser que haya un string en la tabla de símbolos por el análisis léxico,
-         * pero que no aparezca en la polaca por aparecer en un caso de error.
+         * pero que no aparezca en la polaca por aparecer en un caso de error (como
+         * setencia no alcanzable).
          * 
          * En tal caso, no habrá instrucciones que usen el string y, por lo tanto,
          * no habrá importaciones. En ese caso, los string no deben dumpearse.

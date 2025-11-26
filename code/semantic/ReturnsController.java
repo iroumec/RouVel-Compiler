@@ -8,6 +8,12 @@ package semantic;
  */
 public class ReturnsController {
 
+    // ============================================================================================
+
+    private static final boolean debug = false;
+
+    // ============================================================================================
+
     private int returnsFound;
     private int functionLevel;
     private int returnsNeeded;
@@ -20,8 +26,6 @@ public class ReturnsController {
      * profundidad en la que aparece.
      */
     private int depthOfReturn;
-
-    private static final boolean debug = false;
 
     // ============================================================================================
 
