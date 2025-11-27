@@ -31,7 +31,7 @@ java -jar rouvel-compiler.jar resources/testFiles/ejemplo.uki
 
 ### Salida de la Compilación
 
-El comando anterior compila el archivo `.uki` especificado, mostrando los resultados en pantalla y guardándolos también en la carpeta `outputs/results/`, generando un `.txt` con el nombre del archivo compilado. De no presentarse ningún error durante la compilación, se genera el archivo `.wat` correspondiente en `outputs/wat`. Adicionalmente, de tener la herramienta `wat2wasm` instalada, compila el `.wat` y almacena el archivo `.wasm` resultante en `outputs/wasm/`.
+El comando anterior compila el archivo `.uki` especificado, mostrando los resultados en pantalla y guardándolos también en la carpeta `outputs/results/`, generando un `.txt` con el nombre del archivo compilado. De no presentarse ningún error durante la compilación, se genera el archivo `.wat` correspondiente en `outputs/wat`. Adicionalmente, de tener la herramienta `wat2wasm` instalada, se compila el `.wat` y se almacena el archivo `.wasm` resultante en `outputs/wasm/`.
 
 De compilar el archivo `.wat` manualmente, deberá especificar la opción `--enable-exceptions` en la herramienta `was2wasm`, debido a que el compilador utiliza una función experimental, provista por WASM, para el levantamiento de excepciones.
 
@@ -107,7 +107,7 @@ caddy file-server --listen :8000
 
 #### 3. Abrir en el navegador
 
-Navegue a: **<http://localhost:8000>**
+Navegue a: **<http://localhost:8000>**.
 
 #### 4. Detener el servidor
 
@@ -124,8 +124,6 @@ python3 -m http.server 8000
 
 # Abrir http://localhost:8000 en el navegador.
 ```
-
-### Nota importante
 
 ## Code Highlighter
 
