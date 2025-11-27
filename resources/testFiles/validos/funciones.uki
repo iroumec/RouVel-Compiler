@@ -14,6 +14,7 @@ FUNCIONES {
 
     A := FUNCION(1UI->X,2UI->Y,3UI->Z);         ## Invocación a función ##
     B := FUNCION(2UI->Y,3UI->Z,1UI->X);         ## Invocación a función con argumentos en diferente orden ##
+    print(B);
     C := FUNCIONCVR(A->X,B->Y);                 ## Invocación a funcion con parametro CVR ##
 
     print(A);

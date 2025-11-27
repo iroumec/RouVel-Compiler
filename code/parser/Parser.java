@@ -1489,7 +1489,7 @@ case 90:
             if (!this.symbolTable.entryExists(this.scopeStack.appendScope(val_peek(0).sval))) {
                 /* De entrar acá, la variable debe ser local.*/
                 errorState = true;
-                notifySemanticError(String.format("Variable %s no declarada.", val_peek(0).sval));
+                notifySemanticError(String.format("El identificador '%s' no corresponde a ninguna variable/función declarada.", val_peek(0).sval));
             } else {
                 /* A la entrada sin el scope, se le agrega el scope.*/
                 /* Se combina con otra entrada en caso de coincidir el scope.*/

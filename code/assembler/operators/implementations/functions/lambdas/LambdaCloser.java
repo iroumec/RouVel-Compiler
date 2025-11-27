@@ -2,12 +2,11 @@ package assembler.operators.implementations.functions.lambdas;
 
 import java.util.List;
 
+import common.Symbol;
+import common.SymbolType;
+import common.SymbolTable;
 import assembler.CodeRepository;
 import assembler.operators.AssemblerOperator;
-import common.Symbol;
-import common.SymbolCategory;
-import common.SymbolTable;
-import common.SymbolType;
 
 public class LambdaCloser implements AssemblerOperator {
 
@@ -30,7 +29,7 @@ public class LambdaCloser implements AssemblerOperator {
 
     @Override
     public void generateAssembler(CodeRepository repository) {
-        
+
         dumpOutOfScopeParameters(repository);
 
         repository.decreaseIndentation();
@@ -45,7 +44,8 @@ public class LambdaCloser implements AssemblerOperator {
         SymbolTable symbolTable = SymbolTable.getInstance();
 
         List<Symbol> outOfScopeVariables = symbolTable
-                .getOutOfScopeVariables(symbolTable.getFunctionSymbol(repository.getCurrentScope().replaceFirst("main",symbolTable.getProgramName())));
+                .getOutOfScopeVariables(symbolTable.getFunctionSymbol(
+                        repository.getCurrentScope().replaceFirst("main", symbolTable.getProgramName())));
 
         for (Symbol symbol : outOfScopeVariables) {
 
