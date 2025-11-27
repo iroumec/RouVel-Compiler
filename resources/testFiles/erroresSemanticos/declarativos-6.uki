@@ -1,0 +1,8 @@
+## Este programa no ejecutará por errores semánticos declarativos ##
+DECLARATIVOS {
+    uint A;
+    A := FUNC(1UI->X); ## Invocación a función aun no declarada ##
+    uint FUNC(uint X) {
+        return (X);
+    };
+}

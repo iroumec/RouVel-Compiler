@@ -1,0 +1,15 @@
+## Este programa explora una variedad de expresiones lambda. ##
+LAMBDA {
+    uint A,E;
+
+    (uint A) { if (A > .23) print(A); endif; } (8UI);
+
+    (uint A){ print (A); }(3UI);
+
+    (uint A) { if (LAMBDA.A > 3UI) print("Hola"); endif; } (4UI);
+
+    (uint G) { LAMBDA.E := G; } (10.0);
+
+    print(A);
+    print(E);
+}

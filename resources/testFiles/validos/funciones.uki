@@ -1,0 +1,23 @@
+## En este programa se exploran las posibilidades de invocación a funciones ##
+FUNCIONES {
+    uint A,B,C,D;
+
+    uint FUNCION (uint X, uint Y, uint Z) {
+        FUNCIONES.D := 5UI;
+        return (X*Y+Z);
+    }
+
+    uint FUNCIONCVR (cvr uint X, uint Y) {
+        X := 5UI;
+        return (Y+X);
+    }
+
+    A := FUNCION(1UI->X,2UI->Y,3UI->Z);         ## Invocación a función ##
+    B := FUNCION(2UI->Y,3UI->Z,1UI->X);         ## Invocación a función con argumentos en diferente orden ##
+    print(B);
+    C := FUNCIONCVR(A->X,B->Y);                 ## Invocación a funcion con parametro CVR ##
+
+    print(A);
+    print(B);
+    print(C);
+}

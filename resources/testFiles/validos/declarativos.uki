@@ -1,0 +1,47 @@
+## 
+ # En este programa se exploran las posibilidades de declaraciones de variables y 
+ # funciones, poniendo a prueba el compilador teniendo varios casos que se repiten
+ # los nombres pero, siempre, en distintos ámbitos. También se prueba el alcance.
+ #
+ # !Importante: Este programa no fue hecho con el propósito de ser ejecutado, la
+ #              mayoría de variables no tienen valor. Se puede verificar que todo
+ #              funciona correctamente con tan solo compilarlo.
+##
+DECLARATIVOS {                                          ## Variables de DECLARATIVOS: A.            Funciones de DECLARATIVOS: F, G.    ##
+
+    uint A;                                             
+    A := 271UI;                                         
+
+    uint F (uint X) {                                   ## Variables de DECLARATIVOS:F: X,A.        Funciones de DECLARATIVOS:F: I.     ##
+        uint A;                                         
+        uint I (uint X, uint A) {                       ## Variables de DECLARATIVOS:F:I: X,A,F.    Funciones de DECLARATIVOS:F:I: J    ##
+            uint F;                                    
+            uint J (cvr uint F) {                       ## Variables de DECLARATIVOS:F:I:J: F,I,A.  Funciones de DECLARATIVOS:F:I:J: K  ##
+                uint I;                                 
+                uint A;                                 
+                uint K (uint A) {                       ## Variables de DECLARATIVOS:F:I:J:K: A.                                        ##
+                    return (DECLARATIVOS.A);
+                }
+                return (K(A+F.I(I->X,A->A)->A));
+            }
+            return (F.A); 
+        }
+        return (I(DECLARATIVOS.A->A,A->X));
+    }
+    uint G (uint F) {                                   ## Variables de DECLARATIVOS:G: F,X.        Funciones de DECLARATIVOS:G: A.     ##
+        uint X;
+        uint A (uint A) {                               ## Variables de DECLARATIVOS:G:A: A.        Funciones de DECLARATIVOS:G:A: X.   ##
+            uint X (uint A) {                           ## Variables de DECLARATIVOS:G:A:X: A.      Funciones de DECLARATIVOS:G:A:X: I. ##
+                uint I (uint J) {                       ## Variables de DECLARATIVOS:G:A:X:I: J,A.                                      ##
+                    uint A;
+                    return (X.A);
+                }
+                return (DECLARATIVOS.F(I(A->J)->X));
+            }
+            return (X(A->A));
+        }
+        return (A(X+F->A));
+    }
+    A := F(3UI->X) * G(14UI->F);
+    print(A);
+} 

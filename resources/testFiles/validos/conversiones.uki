@@ -1,0 +1,53 @@
+## 
+ # En este programa se explorarán los distintos casos de conversión.
+ # Por indicación de la cátedra, en todos los casos, la conversion 
+ # es de float a uint.
+ # Al ejecutar el programa, se puede comprobar la conversión efectuada
+ # en la impresión: donde se indica el tipo de dato que se imprimió.
+ #
+ # Si se desea verificar la conversión en el assembler generado, se
+ # recomienda ejecutar el archivo "conversiones-A.uki", que contiene
+ # los mismos casos pero sin la impresión.
+##
+CONVERSIONES {
+    uint A, B, C;
+    uint F(uint X) {
+        return(X);
+    };
+
+    print("Conversión en asignacion:");
+    print("A := 1.;");
+    print("A: ");
+    A := 1.;
+    print(A);
+    print("");
+
+    print("Conversión en asignacion múltiple:");
+    print("A, B = 2., 3.;");
+    A, B = 2., 3.;
+    print("A: ");
+    print(A);
+    print("B: ");
+    print(B);
+    print("");
+
+    print("Conversión en suma de constantes:");
+    print("C := 1. + 4.;");
+    C := 1. + 4.;
+    print("C: ");
+    print(C);
+    print("");
+
+    print("Conversión en suma de variable y constante:");
+    print("C := A + 5.;");
+    C := A + 5.;
+    print("C: ");
+    print(C);
+    print("");
+
+    print("Conversión en invocación a función:");
+    print("print(F(6.->X));:");
+    print(F(6.->X));
+    print("");
+
+}

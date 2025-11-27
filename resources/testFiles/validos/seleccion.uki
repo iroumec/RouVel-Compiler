@@ -1,0 +1,69 @@
+## En este programa se exploran las posibilidades semánticamente válidas de la estructura de control if. ##
+IF {
+    uint A, B, C, D, E, F, G, H;
+
+    ## If simple ##
+    if (A > B) {                                                        
+        A := A + 1UI;
+    } endif;
+
+    ## If-else ##
+    if (B < C) {                                                          
+        B := B + 1UI;
+    } else {
+        B := B + 1UI;
+    } endif;
+
+    ## If-else anidado dentro de un if-else ##
+    if (C == 13.) {                                                     
+        C := C + 1UI;                                                   
+    } else {
+        if (D =! E) {
+            D := D + 1UI;
+        } else {
+            D := D + 1UI;
+        } endif;
+    } endif;
+
+    ## If-else con múltiples anidaciones ##
+    if (E >= F)                                                         
+        E := E + 1UI;
+    else if (F <= A)
+        F := F + 1UI;
+    else if (A =! B) 
+        F := F + 1UI;
+    else
+        A := A + 1UI;
+    endif;
+    endif;
+    endif;
+
+    ## If-else con muchas múltiples anidaciones ##
+    if (G >= H) {
+        G := G + 1UI;
+    } else {
+        if (H <= F) {
+            if (H <= A) {
+                if (H <= B) {
+                    H := H  + 1UI;
+                } endif;
+                if (H <= C) {
+                    if (C > A) 
+                        C := C + 1UI;
+                    endif;
+                } else {
+                    if (C <= A) {
+                        C := C + 1UI;
+                    } endif;
+                } endif;
+            } else {
+                A := A + 1UI;
+            } endif;
+        } else {
+            F := F  + 1UI;
+            if (F == A) {
+                B := B + 1UI;
+            } endif;
+        } endif;
+    } endif;
+}

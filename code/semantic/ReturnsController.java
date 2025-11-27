@@ -1,0 +1,195 @@
+package semantic;
+
+/**
+ * Clase encargada de controlar que exista una cantidad de retornos apropiada en
+ * el código.
+ * 
+ * Separa la lógica de la gramática.
+ */
+public class ReturnsController {
+
+    // ============================================================================================
+
+    private static final boolean debug = false;
+
+    // ============================================================================================
+
+    private int returnsFound;
+    private int functionLevel;
+    private int returnsNeeded;
+    private int selectionDepth;
+    private boolean isThereReturn;
+
+    /**
+     * -1 si no hay retorno.
+     * Si tiene otro número, indica la
+     * profundidad en la que aparece.
+     */
+    private int depthOfReturn;
+
+    // ============================================================================================
+
+    public ReturnsController() {
+        this.returnsFound = 0;
+        this.functionLevel = 0;
+        this.returnsNeeded = 0;
+        this.selectionDepth = 0;
+        this.depthOfReturn = -1;
+        this.isThereReturn = false;
+
+        if (debug)
+            debugPrint("ReturnsController");
+    }
+
+    // ============================================================================================
+
+    public void notifyStartOfFunctionDeclaration() {
+        this.functionLevel++;
+        this.returnsNeeded++;
+
+        if (debug)
+            debugPrint("notifyStartOfFunctionDeclaration");
+    }
+
+    // ============================================================================================
+
+    public void notifyEndOfFunctionDeclaration() {
+        this.functionLevel--;
+        this.returnsFound--;
+        this.returnsNeeded--;
+        this.isThereReturn = false;
+
+        this.notifySectionEnd();
+
+        if (debug)
+            debugPrint("notifyEndOfFunctionDeclaration");
+    }
+
+    // ============================================================================================
+
+    public void notifyEmptyElse() {
+
+        // Se decrementa la cantidad de retornos que se requieren si el if está solo.
+        this.returnsNeeded--;
+
+        // Se decrementa la cantidad de returns hallados.
+        this.returnsFound--;
+
+        if (debug)
+            debugPrint("notifyEmptyElse");
+    }
+
+    // ============================================================================================
+
+    public void notifySelectionStart() {
+
+        this.returnsNeeded++;
+        this.selectionDepth++;
+
+        if (debug)
+            debugPrint("notifySelectionStart");
+    }
+
+    // ============================================================================================
+
+    public void notifyAlternativeStart() {
+        // this.returnsNeeded++;
+        this.selectionDepth++;
+        this.depthOfReturn = -1;
+
+        if (debug)
+            debugPrint("notifyAlternativeStart");
+    }
+
+    // ============================================================================================
+
+    public void notifyAlternativeEnd() {
+
+        this.notifySectionEnd();
+
+        this.selectionDepth--;
+
+        if (debug)
+            debugPrint("notifyAlternativeEnd");
+    }
+
+    // ============================================================================================
+
+    public void notifySelectionEnd() {
+
+        // Se está saliendo del if más externo.
+        if (this.selectionDepth == 1) {
+            if (this.returnsNeeded == this.returnsFound) {
+                this.isThereReturn = true;
+                this.returnsFound = 1;
+                this.returnsNeeded = 1;
+            } else {
+                if (!this.isThereReturn) {
+                    this.returnsNeeded = 1;
+                    this.returnsFound = 0;
+                }
+            }
+        }
+
+        this.selectionDepth--;
+
+        if (debug)
+            debugPrint("notifySelectionEnd");
+    }
+
+    // ============================================================================================
+
+    public void notifySectionEnd() {
+        if (this.selectionDepth == this.depthOfReturn) {
+            this.depthOfReturn = -1;
+        }
+    }
+
+    // ============================================================================================
+
+    public void notifyReturn() {
+
+        if (!this.isThereReturnInSection()) {
+            this.returnsFound++;
+            this.depthOfReturn = this.selectionDepth;
+
+            if (this.selectionDepth == 0) {
+                this.isThereReturn = true;
+            }
+
+        }
+
+        if (debug)
+            debugPrint("notifyReturn");
+    }
+
+    // ============================================================================================
+
+    public boolean isThereReturnInSection() {
+        return this.selectionDepth == this.depthOfReturn;
+    }
+
+    // ============================================================================================
+
+    public boolean insideFunction() {
+        return this.functionLevel > 0;
+    }
+
+    // ============================================================================================
+
+    public boolean isThereReturnInDeclaration() {
+        return this.isThereReturn;
+    }
+
+    // ============================================================================================
+
+    public void debugPrint(String message) {
+        System.out.println(message +
+                "\nreturnsFound: " + returnsFound +
+                "\nfunctionLevel: " + functionLevel +
+                "\nreturnsNeeded: " + returnsNeeded +
+                "\nselectionDepth: " + selectionDepth +
+                "\nisThereReturn: " + isThereReturn +
+                "\ndepthOfReturn: " + depthOfReturn);
+    }
+}

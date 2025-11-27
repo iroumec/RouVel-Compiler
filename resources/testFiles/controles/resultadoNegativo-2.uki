@@ -1,0 +1,8 @@
+## Resta de variables ##
+NEGATIVO {
+    uint A,B;
+    A := 1UI;
+    B := 2UI;
+
+    print(A - B);   ## error en tiempo de ejecución ##
+}

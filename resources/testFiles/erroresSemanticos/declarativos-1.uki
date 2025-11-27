@@ -1,0 +1,5 @@
+## Este programa no ejecutará por errores semánticos declarativos ##
+DECLARATIVOS {
+    uint X;
+    uint X; ## Redeclaración de identificador ##
+}

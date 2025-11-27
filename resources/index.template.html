@@ -1,0 +1,117 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>RouVel Compiler</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            font-size: 18px;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+
+        h3 {
+            font-size: 28px;
+            color: #333;
+        }
+
+        #output {
+            font-size: 16px;
+            line-height: 1.6;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 15px;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <h3>Salida del Programa</h3>
+    <pre id="output"></pre>
+    <script>
+        function appendOutput(text) {
+            const out = document.getElementById("output");
+            out.textContent += text + "\n";
+        }
+
+        // Memoria
+        const memory = new WebAssembly.Memory({ initial: 1 });
+
+        // Logs redefinidos para escribir en HTML
+        function log_i32(x) { appendOutput("[i32] " + x); }
+        function formatF32(x) {
+            // Fuerza la precisión de float32 y toma hasta 7 cifras significativas.
+            // Esto debido a que JavaScript recibe el flotante, desde Wasm, como double,
+            // con cifras basura al final.
+            const f = Math.fround(x);
+            let s = f.toPrecision(7);
+
+            // Se quitan los ceros finales innecesarios y el punto si queda al final.
+            s = s.replace(/(?:\.0+|(\.\d*?[1-9])0+)$/, '$1');
+
+            return s;
+        }
+        function log_f32(x) { appendOutput("[f32] " + formatF32(x)); }
+        function log_string(ptr, len) {
+            const bytes = new Uint8Array(memory.buffer, ptr, len);
+            const str = new TextDecoder("utf8").decode(bytes);
+            appendOutput("[str] " + str);
+        }
+
+        //Errores customizados.
+        const tagDivideByZeroException = new WebAssembly.Tag({ parameters: []});
+        const tagOverflowException = new WebAssembly.Tag({ parameters: ['i32','i32']});
+        const tagNegativeSubtractionException = new WebAssembly.Tag({ parameters: []});
+
+        const importObject = {
+            console: {
+                log_i32,
+                log_f32,
+                log_string
+            },
+            js: { mem: memory },
+            errors: {
+                divideByZeroException: tagDivideByZeroException,
+                overflowException: tagOverflowException,
+                negativeSubtractionException: tagNegativeSubtractionException
+            }
+        };
+
+        // Carga dinámica del WASM.
+        fetch("{{WASM_FILE}}")
+            .then(r => WebAssembly.instantiateStreaming(r, importObject))
+            .then(result => {
+                const main = result.instance.exports.main;
+                if (typeof main === "function") {
+                    main();
+                } else {
+                    appendOutput("ERROR: El módulo no exporta main()");
+                }
+            })
+            //.catch(err => appendOutput("Error cargando WASM: " + err));
+            .catch(e => {
+                if (e instanceof WebAssembly.Exception) {
+                    if (e.is(tagDivideByZeroException)) {
+                        appendOutput("RUNTIME ERROR: Dividend is zero.");
+                    } else if (e.is(tagOverflowException)) {
+                        const value = e.getArg(tagOverflowException, 0);
+                        const max = e.getArg(tagOverflowException, 1);
+                        appendOutput("RUNTIME ERROR: Integer overflow, value " + value + " exceeds max " + max + " for uint.");
+                    } else if (e.is(tagNegativeSubtractionException)) {
+                        appendOutput("RUNTIME ERROR: Integer negative subtraction.");
+                    } else {
+                        appendOutput("RUNTIME ERROR: Unknown exception.");
+                    }
+                } else {
+                    appendOutput("Error cargando WASM: " + e);
+                }
+            }) 
+    </script>
+</body>
+
+</html>

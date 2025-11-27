@@ -1,0 +1,25 @@
+## Este programa indica la paridad un numero indicado. ##
+MAIN {
+    uint ESPAR (uint X) {
+        uint AUX;
+
+        AUX := X + 2UI;
+        do { AUX := AUX - 2UI; } while ( AUX >= 2UI );
+
+        print("Numero: ");
+        print(X);
+        if (AUX == 1UI)
+            print("El número es impar.");
+        else
+            print("El número es par.");
+        endif;
+        return (AUX);
+    }
+
+    uint NUMERO;
+
+    ## SETEAR 'NUMERO' CON EL VALOR QUE DESEA CONOCER SU PARIDAD. ##
+    NUMERO := 13UI;
+
+    ESPAR(NUMERO->X);
+}

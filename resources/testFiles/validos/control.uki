@@ -1,0 +1,19 @@
+## En este programa se pone a prueba la anidación de estructuras de control if-else y do-while. ##
+CONTROL {
+    uint A, B;
+    A := 4UI;
+    B := 2UI;
+    if (A <= 5UI) {
+        do {
+            print(B * A);
+            if(B * A < 25UI) {
+                B := B + 1UI;
+            } else {
+                A := A - 1UI;
+            } endif;
+            print(B * A);
+        } while (A > 5UI);
+    } else {
+        A := 1UI;
+    } endif;
+}

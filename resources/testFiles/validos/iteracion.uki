@@ -1,0 +1,25 @@
+## En este programa se exploran diferentes posibilidades válidas semanticamente de la estructura de control do-while. ##
+DOWHILE {
+    uint A,B;
+
+    ## Do-while simple ##
+    do {
+        A := A + 1UI;
+        B := B + A;
+    } while (A < 50UI);
+
+    ## Do-while de única instrucción ##
+    do A := A + 1UI; while (A < 50UI);
+
+    ## Do-while anidado ##
+    A := 1UI;
+    B := 1UI;
+    do {
+        do {
+            print(B*A);
+            B := B + 2UI;
+        } while (A+B < 200UI);
+        A := A + 1UI;
+    } while (A < 10UI);
+
+}

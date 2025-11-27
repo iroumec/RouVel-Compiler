@@ -1,0 +1,15 @@
+## Este programa calcula A mod B ##
+MODULO {
+    uint A, B, C;
+
+    ## SETEAR 'A' y 'B' CON VALORES QUE DESEA PARA CALCULAR MODULO ##
+    A := 15UI;
+    B := 4UI;
+
+    C := A + B;
+    do {
+        C := C - B;
+    } while (C >= B);
+
+    print(C);
+}
