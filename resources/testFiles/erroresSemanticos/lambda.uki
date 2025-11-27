@@ -1,6 +1,6 @@
+## Este programa no ejecutara por error semántico ##
 LAMBDA {
     uint E;
-    (uint G) { E := G; } (10.0);
-
-    G := 3UI;
+    (uint G) { LAMBDA.E := G; } (10UI);
+    G := 5UI;                           ## G no está al alcance ##
 }

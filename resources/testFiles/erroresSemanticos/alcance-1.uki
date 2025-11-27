@@ -1,3 +1,4 @@
+## Este programa no ejecutará por errores semánticos de alcance ##
 ALCANCE {
     uint F (uint X) {
         uint A (uint Y) {

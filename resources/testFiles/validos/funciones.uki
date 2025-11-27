@@ -1,5 +1,9 @@
+## En este programa se exploran las posibilidades de invocación a funciones ##
 FUNCIONES {
+    uint A,B,C,D;
+
     uint FUNCION (uint X, uint Y, uint Z) {
+        FUNCIONES.D := 5UI;
         return (X*Y+Z);
     }
 
@@ -7,8 +11,6 @@ FUNCIONES {
         X := 5UI;
         return (Y+X);
     }
-
-    uint A,B,C;
 
     A := FUNCION(1UI->X,2UI->Y,3UI->Z);         ## Invocación a función ##
     B := FUNCION(2UI->Y,3UI->Z,1UI->X);         ## Invocación a función con argumentos en diferente orden ##

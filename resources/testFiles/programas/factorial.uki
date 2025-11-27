@@ -10,6 +10,7 @@ FACTORIAL {
 
     uint A;
 
+    ## SETEAR 'A' CON EL VALOR QUE DESEA CALCULAR SU FACTORIAL ##
     A := 6UI;
 
     print("El factorial de ");

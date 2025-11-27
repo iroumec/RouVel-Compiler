@@ -10,6 +10,8 @@ PRIMOS {
     }
 
     uint N;
+
+    ## SETEAR 'N' CON EL VALOR DE LÍMITE QUE DESEA ##
     N := 100UI;
 
     uint AUX1, AUX2, RESTO, CANT;

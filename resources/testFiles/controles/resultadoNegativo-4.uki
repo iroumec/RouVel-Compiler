@@ -2,5 +2,5 @@
 NEGATIVO {
     uint A;
     A := 1UI;
-    print(A + -2.); ## No hay error. Por convención, se toma el valor absoluto del flotante y se lo convierte a entero. Se imprime '3'.##
+    print(A + -2.); ## No hay error. Por convención, al hacer la conversion a entero, se toma el valor absoluto del flotante. El programa imprime '3'.##
 }

@@ -1,4 +1,4 @@
-## En este programa se explora la variedad semántica válida de cada estructura del lenguaje ##
+## En este programa se explora la variedad semántica válida de las estructuras del lenguaje que no tienen archivo propio de prueba. ##
 CASOSSEMANTICAMENTEVALIDOS {                                            ## Longitud de ID > 20, se truncará. ##
     ## ------ Declaración de variables ------ ##
     uint A;                                                             ## Declaración de una variable ##

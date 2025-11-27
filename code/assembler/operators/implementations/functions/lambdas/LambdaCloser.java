@@ -1,7 +1,13 @@
 package assembler.operators.implementations.functions.lambdas;
 
+import java.util.List;
+
 import assembler.CodeRepository;
 import assembler.operators.AssemblerOperator;
+import common.Symbol;
+import common.SymbolCategory;
+import common.SymbolTable;
+import common.SymbolType;
 
 public class LambdaCloser implements AssemblerOperator {
 
@@ -24,10 +30,31 @@ public class LambdaCloser implements AssemblerOperator {
 
     @Override
     public void generateAssembler(CodeRepository repository) {
+        
+        dumpOutOfScopeParameters(repository);
 
         repository.decreaseIndentation();
         repository.addCode(")");
         repository.endBlock();
+    }
+
+    // ============================================================================================
+
+    private void dumpOutOfScopeParameters(CodeRepository repository) {
+
+        SymbolTable symbolTable = SymbolTable.getInstance();
+
+        List<Symbol> outOfScopeVariables = symbolTable
+                .getOutOfScopeVariables(symbolTable.getFunctionSymbol(repository.getCurrentScope().replaceFirst("main",symbolTable.getProgramName())));
+
+        for (Symbol symbol : outOfScopeVariables) {
+
+            repository.addCode(String.format(";; Apilamiento del valor de las variables pertenecientes a otro ámbito.",
+                    symbol.getLexemaWithoutScope()));
+            repository.addCode(String.format("%s", getCode(symbol, SymbolType.UINT, repository)));
+
+            repository.addCode("\n");
+        }
     }
 
 }

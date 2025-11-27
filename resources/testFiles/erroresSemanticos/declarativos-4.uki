@@ -1,5 +1,5 @@
-## Uso de variable no declarada ##
+## Este programa no ejecutará por errores semánticos declarativos ##
 DECLARATIVOS {
     uint A;
-    A := 1UI + B;
+    A := 1UI + B; ## Uso de variable no declarada ##
 }

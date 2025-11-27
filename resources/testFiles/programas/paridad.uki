@@ -1,3 +1,4 @@
+## Este programa indica la paridad un numero indicado. ##
 MAIN {
     uint ESPAR (uint X) {
         uint AUX;
@@ -16,6 +17,8 @@ MAIN {
     }
 
     uint NUMERO;
+
+    ## SETEAR 'NUMERO' CON EL VALOR QUE DESEA CONOCER SU PARIDAD. ##
     NUMERO := 13UI;
 
     ESPAR(NUMERO->X);

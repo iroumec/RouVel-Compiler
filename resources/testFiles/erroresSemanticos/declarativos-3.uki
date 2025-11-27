@@ -1,7 +1,7 @@
-## Redeclaración de identificador, variable y parámetro ##
+## Este programa no ejecutará por errores semánticos declarativos ##
 DECLARATIVOS {
     uint X;
-    uint Y(uint F) {
+    uint Y(uint F) { ## Redeclaración de identificador, con variable y parámetro ##
         uint F;
         F := 0UI;
         return (F);

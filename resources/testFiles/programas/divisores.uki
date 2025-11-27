@@ -10,14 +10,16 @@ DIVISORES {
     }
 
     uint N;
+
+    ## SETEAR 'N' CON EL VALOR QUE DESEA CALCULAR SUS DIVISORES ##
     N := 100UI;   
 
-    uint AUX1, RESTO;
 
     print("Divisores de: ");
     print(N);
     print("----------------------");
 
+    uint AUX1, RESTO;
     AUX1 := 1UI;
     do {
         RESTO := MODULO(N->X, AUX1->Y);

@@ -1,3 +1,4 @@
+## Este programa no ejecutará por error semántico en la asignación múltiple ##
 MULTIPLES {
     uint A, B, C;
 

@@ -1,5 +1,5 @@
 ## En este programa se exploran las diferentes estructuras sintácticas del lenguaje ##
-ESTRUCTURAS{
+SINTACTICAS{
     uint A, B, C;                       ## 1. Declaración de variables ##
 
     uint FUNC(uint X) {                 ## 2. Declaración de función ##

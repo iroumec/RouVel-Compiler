@@ -1,4 +1,4 @@
-## Invocación a función con argumento no referenciable como parametro CVR ##
+## Este programa no ejecutara por error semántico en el pasaje de parametros. ##
 FUNCIONES {
 
     uint FUNCIONCVR (cvr uint X, uint Y) {
@@ -10,5 +10,5 @@ FUNCIONES {
     uint A;
     A := 1UI;
 
-    A := FUNCIONCVR(1UI->X,A->Y);         
+    A := FUNCIONCVR(1UI->X,A->Y);   ## Invocación a función con argumento no referenciable como parametro CVR ##       
 }

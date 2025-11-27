@@ -1,3 +1,4 @@
+## En este programa se pone a prueba la anidación de estructuras de control if-else y do-while. ##
 CONTROL {
     uint A, B;
     A := 4UI;
