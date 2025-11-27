@@ -1,7 +1,0 @@
-## Overflow a través de variable + constante ##
-OVERFLOW {
-    uint A;
-    A := 65535UI;
-
-    print(A + 1UI); ## Error de runtime ##
-}

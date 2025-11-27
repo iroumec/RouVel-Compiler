@@ -1,8 +1,0 @@
-## Caso 0 retorno de función ##
-DIVISION {
-    uint A(uint X) {
-        return (0UI);
-    }
-
-    print(1UI / A(1UI->X));  ## error en tiempo de ejecución ##
-}

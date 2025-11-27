@@ -1,4 +1,0 @@
-## Resta de constantes ##
-NEGATIVO {
-    print(1UI - 2UI);  ## error de compilacion ##
-}

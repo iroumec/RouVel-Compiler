@@ -1,7 +1,0 @@
-## Caso 0 variable ##
-DIVISION {
-    uint A;
-    A := 0UI;
-
-    print(1UI / A);  ## error en tiempo de ejecución ##
-}

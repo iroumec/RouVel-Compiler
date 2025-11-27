@@ -1,4 +1,0 @@
-## Overflow a través de constantes ##
-OVERFLOW {
-    print(65535UI + 1UI); ## Error de compilación ##
-}

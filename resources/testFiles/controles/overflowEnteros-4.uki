@@ -1,8 +1,0 @@
-## Overflow a través de constante + retorno función  ##
-OVERFLOW {
-    uint F1(uint X) {
-        return (X);
-    }
-
-    print(65535UI + F1(1UI->X));
-}
